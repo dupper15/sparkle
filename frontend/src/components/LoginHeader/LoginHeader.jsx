@@ -9,31 +9,31 @@ const LoginHeader = ({ loginButtonClick, signUpButtonClick }) => {
       <ul className='flex items-center justify-end gap-8 text-lg text-white font-medium '>
         <li>
           <a href='#'>
-            <span className='text-blue-300'>Home</span>
+            <span className='text-blue-300 hover:text-blue-900'>Home</span>
           </a>
         </li>
         <li>
           <a
             href='#'
             className=' relative group hover:text-gray-200 duration-500 gap-1'>
-            <span>Introduce</span>
-            <span className='absolute bottom-0 mt-1 left-0 w-0 h-1 bg-gradient-to-r from-purple-900 to-blue-500 transition-all duration-500 group-hover:w-full'></span>
+            <span className='pb-1'>Introduce</span>
+            <span className='absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-purple-900 to-blue-500 transition-all duration-500 group-hover:w-full transform translate-y-1'></span>
           </a>
         </li>
         <li>
           <a
             href='#'
-            className='relative group hover:text-gray-200 duration-500 gap-1'>
+            className='relative group hover:text-gray-400 duration-500 gap-1'>
             <span>Service</span>
-            <span className='absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-purple-900 to-blue-500 transition-all duration-500 group-hover:w-full'></span>
+            <span className='absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-purple-900 to-blue-500 transition-all duration-500 group-hover:w-full transform translate-y-1'></span>
           </a>
         </li>
         <li>
           <a
             href='#'
-            className='relative group hover:text-gray-200 duration-500 gap-1'>
+            className='relative group hover:text-gray-400 duration-500 gap-1'>
             <span>Contact</span>
-            <span className='absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-purple-900 to-blue-500 transition-all duration-500 group-hover:w-full'></span>
+            <span className='absolute bottom-0 left-0 w-0 h-1 bg-gradient-to-r from-purple-900 to-blue-500 transition-all duration-500 group-hover:w-full transform translate-y-1'></span>
           </a>
         </li>
       </ul>

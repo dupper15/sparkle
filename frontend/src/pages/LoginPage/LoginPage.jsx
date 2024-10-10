@@ -12,10 +12,10 @@ const LoginPage = () => {
         signUpButtonClick={() => setShowSignUpForm(true)}
       />
       <div className='px-20 flex flex-col justify-center items-start h-full gap-10'>
-        <div className='text-5xl text-white font-bold'>
+        <div className='text-5xl text-white font-bold space leading-tight'>
           Chào mừng đến với website <br />
           <span className='gradient'>Sparkle</span> của chúng tôi <br />
-          <span className='font-normal text-2xl'>
+          <span className='font-normal text-2xl leading-none'>
             Tạo thiết kế của riêng bạn ngay
           </span>
         </div>
