@@ -1,6 +1,6 @@
 import {LuHome, LuLayoutTemplate, LuNewspaper} from "react-icons/lu";
 
-const HomePageSideBar = () => {
+const Sidebar = () => {
     return (
         <div className='w-[100px] z-50 h-full overflow-y-auto'>
             <div onClick={() => {
@@ -24,4 +24,4 @@ const HomePageSideBar = () => {
         </div>
     )
 }
-export default HomePageSideBar
+export default Sidebar

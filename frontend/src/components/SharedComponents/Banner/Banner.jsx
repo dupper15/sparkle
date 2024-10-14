@@ -1,5 +1,5 @@
 import hpBanner from "../../../assets/homepage-banner.png"
-function HomePageBanner() {
+function Banner() {
     return (
         <header className="banner w-full">
             <div className="profile-image w-[80%] ml-auto mr-auto">
@@ -9,4 +9,4 @@ function HomePageBanner() {
     );
 }
 
-export default HomePageBanner;
+export default Banner;
