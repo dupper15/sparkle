@@ -17,35 +17,61 @@ const responsive = {
     }
 };
 
+
 //const names = [['frontend/src/assets/homepage-banner.png', 'test1'], ['frontend/src/assets/homepage-banner.png', 'test2']];
 
 function HomePageCarousel() {
     return (
-        <div className='w-full flex flex-row'>
-            <Carousel containerClass='container w-full'
-                      responsive={responsive}>
-                <div>
-                    <img src={testImage} alt='Test'/>
-                    <span>Item 1</span>
-                </div>
-                <div>
-                    <img src={testImage} alt='Test'/>
-                    <span>Item 1</span>
-                </div>
-                <div>
-                    <img src={testImage} alt='Test'/>
-                    <span>Item 1</span>
-                </div>
-                <div>
-                    <img src={testImage} alt='Test'/>
-                    <span>Item 1</span>
-                </div>
-                <div>
-                    <img src={testImage} alt='Test'/>
-                    <span>Item 1</span>
-                </div>
-            </Carousel>
-        </div>)
+        <Carousel
+            className="carousel"
+            swipeable={false}
+            draggable={false}
+            responsive={responsive}
+            infinite={true}
+            autoPlaySpeed={1000}
+            keyBoardControl={true}
+            transitionDuration={500}
+            containerClass="carousel-container"
+            removeArrowOnDeviceType={["tablet", "mobile"]}
+            dotListClass="custom-dot-list-style"
+            itemClass="carousel-item-padding-40-px carousel-item-width-100-px">
+            <div>
+                <img className='' src={testImage} alt='Test'/>
+                <span>Item 1</span>
+            </div>
+            <div>
+                <img className='' src={testImage} alt='Test'/>
+                <span>Item 1</span>
+            </div>
+            <div>
+                <img className='' src={testImage} alt='Test'/>
+                <span>Item 1</span>
+            </div>
+            <div>
+                <img className='' src={testImage} alt='Test'/>
+                <span>Item 1</span>
+            </div>
+            <div>
+                <img className='' src={testImage} alt='Test'/>
+                <span>Item 1</span>
+            </div>
+            <div>
+                <img className='' src={testImage} alt='Test'/>
+                <span>Item 1</span>
+            </div>
+            <div>
+                <img className='' src={testImage} alt='Test'/>
+                <span>Item 1</span>
+            </div>
+            <div>
+                <img className='' src={testImage} alt='Test'/>
+                <span>Item 1</span>
+            </div>
+            <div>
+                <img className='' src={testImage} alt='Test'/>
+                <span>Item 1</span>
+            </div>
+        </Carousel>)
 }
 
 export default HomePageCarousel

@@ -1,4 +1,4 @@
-
+import profileIcon from '../../../assets/default-profile-icon.png'
 const HomePageHeader = () => {
     return (
         <div className='flex items-center justify-between w-full h-[50px] px-5 py-8 bg-[#18191B]'>
@@ -13,7 +13,7 @@ const HomePageHeader = () => {
                     <span className='text-black'> Create a design</span>
                 </button>
                 <div className="rounded-full border-2 border-gray-200 bg-white p-2 h-[40px] w-[40px]">
-                    <img className="object-cover w-full h-full rounded-full" src="assets/default-profile-icon.png" alt="Profile Image"/>
+                    <img className="object-cover w-full h-full rounded-full" src={profileIcon} alt="Profile Image"/>
                 </div>
             </div>
         </div>
