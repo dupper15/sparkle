@@ -1,8 +1,6 @@
-import {LuArrowLeftCircle, LuArrowRightCircle} from "react-icons/lu";
 import testImage from '../../../assets/homepage-banner.png'
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import CarouselItemCard from "./CarouselItemCard.jsx";
 
 const responsive = {
     superLargeDesktop: {
@@ -20,7 +18,7 @@ const responsive = {
 
 //const names = [['frontend/src/assets/homepage-banner.png', 'test1'], ['frontend/src/assets/homepage-banner.png', 'test2']];
 
-function HomePageCarousel() {
+function CustomCarousel() {
     return (
         <Carousel
             className="carousel"
@@ -74,4 +72,4 @@ function HomePageCarousel() {
         </Carousel>)
 }
 
-export default HomePageCarousel
+export default CustomCarousel

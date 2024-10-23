@@ -2,7 +2,7 @@ import UITLogo from '../../../assets/uit_logo.png'
 import {FaFacebookSquare, FaYoutubeSquare} from "react-icons/fa";
 import {FaSquareXTwitter} from "react-icons/fa6";
 
-const HomePageFooter = () => {
+const Footer = () => {
     return (
         <div className='flex flex-col'>
             <div className='pt-4 pb-4 flex flex-row w-full justify-between'>
@@ -40,4 +40,4 @@ const HomePageFooter = () => {
     )
 }
 
-export default HomePageFooter
+export default Footer
