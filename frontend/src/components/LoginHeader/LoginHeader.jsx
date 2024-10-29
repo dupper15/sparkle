@@ -6,7 +6,7 @@ const LoginHeader = ({ loginButtonClick, signUpButtonClick }) => {
         <div className="w-[40px] h-[40px] bg-[url('./assets/logo.png')] bg-cover bg-center" />
         <div className='text-3xl text-white font-bold'>Sparkle</div>
       </div>
-      <ul className='flex items-center justify-end gap-8 text-lg text-white font-medium '>
+      <ul className='hidden md:flex md:items-center md:justify-end md:gap-8 md:text-md md:text-white md:font-medium '>
         <li>
           <a href='#'>
             <span className='text-blue-300 hover:text-blue-900'>Home</span>
