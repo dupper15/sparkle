@@ -10,5 +10,5 @@ export default {
       },
     },
   },
-  plugins: [scrollbarHide],
+  plugins: [scrollbarHide, require("daisyui")],
 };

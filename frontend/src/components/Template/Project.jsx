@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'; 
-
+import template from '../../assets/bg-dm.png'
 const Project = () => {
     return (
         <div className='h-[88vh] overflow-x-auto flex justify-start items-start scrollbar-hide w-full'>
@@ -7,7 +7,7 @@ const Project = () => {
             {
                 [1,2,3,4,5,6].map((img,i) => (
                     <div to="/your-path" key={i} className='w-full h-[90px] overflow-hidden rounded-sm cursor-pointer'>
-                        <img className='w-full h-full object-fill' src="/assets/bg-dm.png" alt="" />
+                        <img className='w-full h-full object-fill' src={template} alt="" />
                     </div>
                 ))
             }
