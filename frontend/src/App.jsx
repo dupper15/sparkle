@@ -18,6 +18,14 @@ const router = createBrowserRouter([
     path: "/edit",
     element: <WorkplacePage />,
   },
+  {
+    path: "/home",
+    element: <HomePage />,
+  },
+  {
+    path: "/projects",
+    element: <ProjectPage />,
+  },
 ]);
 export default function App() {
   return <RouterProvider router={router} />;
