@@ -1,5 +1,9 @@
 import profileIcon from '../../../assets/default-profile-icon.png'
+import UserProfileMenu from "../UserProfileMenu/UserProfileMenu.jsx";
+import {useState} from "react";
 const Header = () => {
+    const [openProfile, setOpenProfile] = useState(false);
+
     return (
         <div className='flex items-center justify-between w-full h-[50px] px-5 py-8 bg-[#18191B]'>
             <div className='flex items-center justify-items-start gap-2'>
@@ -12,9 +16,17 @@ const Header = () => {
                     className='w-[160px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2'>
                     <span className='text-black'> Create a design</span>
                 </button>
-                <div className="rounded-full border-2 border-gray-200 bg-white p-2 h-[40px] w-[40px]">
-                    <img className="object-cover w-full h-full rounded-full" src={profileIcon} alt="Profile Image"/>
+                <div className="rounded-full p-2 h-[64]px] w-[64px]">
+                    <input type='image' className="object-cover w-full h-full rounded-full" src={profileIcon} alt="Profile Image" onClick={()=>{
+                        setOpenProfile((prev)=>!prev);
+                    }}/>
                 </div>
+                {
+                    openProfile &&
+                    <div  className='absolute top-[4rem] right-[1.5rem] padding-[15px]'>
+                        <UserProfileMenu></UserProfileMenu>
+                    </div>
+                }
             </div>
         </div>
     );
