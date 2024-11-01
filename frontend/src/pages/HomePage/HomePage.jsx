@@ -3,10 +3,11 @@ import Banner from "../../components/SharedComponents/Banner/Banner.jsx";
 import CustomCarousel from "../../components/SharedComponents/Carousel/CustomCarousel.jsx";
 import Footer from "../../components/SharedComponents/Footer/Footer.jsx";
 import Sidebar from "../../components/SharedComponents/SideBar/Sidebar.jsx";
+import CustomizeSizeDialogue from "../../components/dialogs/CustomizeSizeDialogue.jsx";
 
 const HomePage = () => {
     return (
-        <div className="w-screen h-screen flex flex-col">
+        <div className="w-screen h-screen flex flex-col relative">
             <header>
                 <Header />
             </header>

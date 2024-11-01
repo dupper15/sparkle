@@ -26,11 +26,12 @@ const router = createBrowserRouter([
         path: "/template",
         element: <TemplatePage />,
     },
+  {
+    path: "/testing",
+    element: <TestingPage/>,
+  },
     {
-        path:"/testing",
-        element: <TestingPage />,
-    {
-        path: "/projects",
+        path: "/project",
         element: <ProjectPage />,
     },
     {

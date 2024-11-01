@@ -1,7 +1,8 @@
-const CustomizeSizeDialogue = () => {
+// eslint-disable-next-line react/prop-types
+const CustomizeSizeDialogue = ({childCloseFormRequest}) => {
     return(
         <div className="relative h-[400px] w-[600px] flex-column items-center justify-center bg-gray-800 p-6 rounded-lg shadow-lg text-center">
-            <button className="absolute top-2 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl" onClick="closeModal()">×</button>
+            <button className="absolute top-2 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl" onClick={()=>childCloseFormRequest(false)}>×</button>
             <h2 className="text-lg font-semibold mb-6">Customize size</h2>
             <div>
                 <input type="text" placeholder="Enter name..."
