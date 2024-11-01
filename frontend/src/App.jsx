@@ -5,6 +5,8 @@ import HomePage from "./pages/HomePage/HomePage";
 import ProjectPage from "./pages/ProjectPage/ProjectPage.jsx";
 import MyAccountPage from "./pages/MyAccountPage/MyAccountPage.jsx";
 import SettingPage from "./pages/SettingPage/SettingPage.jsx";
+import TemplatePage from "./pages/TemplatePage/TemplatePage.jsx";
+import TestingPage from "./pages/TestingPage/TestingPage.jsx";
 
 //const userInfo = token_decode(localStorage.getItem("sparkle_token"));
 const router = createBrowserRouter([
@@ -21,9 +23,12 @@ const router = createBrowserRouter([
         element: <WorkplacePage />,
     },
     {
-        path: "/home",
-        element: <HomePage />,
+        path: "/template",
+        element: <TemplatePage />,
     },
+    {
+        path:"/testing",
+        element: <TestingPage />,
     {
         path: "/projects",
         element: <ProjectPage />,
