@@ -10,39 +10,39 @@ import TestingPage from "./pages/TestingPage/TestingPage.jsx";
 
 //const userInfo = token_decode(localStorage.getItem("sparkle_token"));
 const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <LoginPage />,
-    },
-    {
-        path: "/home",
-        element: <HomePage />,
-    },
-    {
-        path: "/edit",
-        element: <WorkplacePage />,
-    },
-    {
-        path: "/template",
-        element: <TemplatePage />,
-    },
+  {
+    path: "/",
+    element: <LoginPage />,
+  },
+  {
+    path: "/home",
+    element: <HomePage />,
+  },
+  {
+    path: "/edit",
+    element: <WorkplacePage />,
+  },
+  {
+    path: "/template",
+    element: <TemplatePage />,
+  },
   {
     path: "/testing",
-    element: <TestingPage/>,
+    element: <TestingPage />,
   },
-    {
-        path: "/project",
-        element: <ProjectPage />,
-    },
-    {
-        path: "/my-account",
-        element: <MyAccountPage />,
-    },
-    {
-        path: "/setting",
-        element: <SettingPage />,
-    },
+  {
+    path: "/projects",
+    element: <ProjectPage />,
+  },
+  {
+    path: "/my-account",
+    element: <MyAccountPage />,
+  },
+  {
+    path: "/setting",
+    element: <SettingPage />,
+  },
 ]);
 export default function App() {
-    return <RouterProvider router={router} />;
+  return <RouterProvider router={router} />;
 }
