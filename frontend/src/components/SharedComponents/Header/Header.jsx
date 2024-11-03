@@ -1,8 +1,14 @@
 import profileIcon from '../../../assets/default-profile-icon.png'
 import UserProfileMenu from "../UserProfileMenu/UserProfileMenu.jsx";
 import {useState} from "react";
+import CustomizeSizeDialogue from "../../dialogs/CustomizeSizeDialogue.jsx";
 const Header = () => {
     const [openProfile, setOpenProfile] = useState(false);
+    const [openCustomizeSizeDialogue, setOpenCustomizeSizeDialogue] = useState(false);
+
+    const childCloseFormRequest=(childData)=>{
+        setOpenCustomizeSizeDialogue(childData)
+    }
 
     return (
         <div className='flex items-center justify-between w-full h-[50px] px-5 py-8 bg-[#18191B]'>
@@ -13,9 +19,16 @@ const Header = () => {
 
             <div className='flex items-center justify-center gap-5 px-3 py-10'>
                 <button
-                    className='w-[160px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2'>
-                    <span className='text-black'> Create a design</span>
+                    className='w-[160px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2'
+                    onClick={() => setOpenCustomizeSizeDialogue((prev)=>!prev)}>
+                    <span className=' text-white'> Create a design</span>
                 </button>
+                {
+                    openCustomizeSizeDialogue &&
+                    <div className="absolute top-[10rem] right-[30rem]">
+                        <CustomizeSizeDialogue childCloseFormRequest={childCloseFormRequest}></CustomizeSizeDialogue>
+                    </div>
+                }
                 <div className="rounded-full p-2 h-[64]px] w-[64px]">
                     <input type='image' className="object-cover w-full h-full rounded-full" src={profileIcon} alt="Profile Image" onClick={()=>{
                         setOpenProfile((prev)=>!prev);

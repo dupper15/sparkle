@@ -12,15 +12,15 @@ const UserProfileMenu =()=>{
             <div className="">
                 <Link className='flex mt-2 mb-6 pl-4' to=''>
                     <MdOutlinePerson className="h-8 w-8 pr-2"/>
-                    <span className='mt-auto mb-auto'>Thông tin cá nhân</span>
+                    <span className='mt-auto mb-auto'>Profile</span>
                 </Link>
                 <Link className='flex mb-6 pl-4' to=''>
                     <MdOutlineSettings className="h-8 w-8 pr-2"/>
-                    <span className='mt-auto mb-auto'>Cài đặt</span>
+                    <span className='mt-auto mb-auto'>Settings</span>
                 </Link>
                 <Link className='flex mb-4 pl-4' to="">
                     <RxExit className="h-8 w-8 pr-2"/>
-                    <span className='mt-auto mb-auto'>Đăng xuất</span>
+                    <span className='mt-auto mb-auto'>Log Out</span>
                 </Link>
             </div>
         </div>
