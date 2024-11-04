@@ -1,11 +1,9 @@
-import CustomizeSizeDialogue from "../../components/dialogs/CustomizeSizeDialogue.jsx";
+
+import ResponsiveGrid from "../../components/SharedComponents/ResponsiveGrid/ResponsiveGrid.jsx";
 
 const TestingPage =()=>{
     return(
-        <div>
-            <CustomizeSizeDialogue></CustomizeSizeDialogue>
-            <div className='h-[100px] w-[100px] bg-amber-200'></div>
-        </div>
+        <ResponsiveGrid></ResponsiveGrid>
     )
 
 }

@@ -4,13 +4,15 @@ import "react-multi-carousel/lib/styles.css";
 
 const responsive = {
     superLargeDesktop: {
-        // the naming can be any, depends on you.
         breakpoint: {max: 4000, min: 3000}, items: 5
-    }, desktop: {
+    },
+    desktop: {
         breakpoint: {max: 3000, min: 1024}, items: 3
-    }, tablet: {
+    },
+    tablet: {
         breakpoint: {max: 1024, min: 464}, items: 2
-    }, mobile: {
+    },
+    mobile: {
         breakpoint: {max: 464, min: 0}, items: 1
     }
 };
@@ -21,18 +23,18 @@ const responsive = {
 function CustomCarousel() {
     return (
         <Carousel
-            className="carousel"
+            responsive={responsive}
             swipeable={false}
             draggable={false}
-            responsive={responsive}
-            infinite={true}
+            infinite={false}
             autoPlaySpeed={1000}
             keyBoardControl={true}
             transitionDuration={500}
-            containerClass="carousel-container"
+            // containerClass="carousel-container"
             removeArrowOnDeviceType={["tablet", "mobile"]}
-            dotListClass="custom-dot-list-style"
-            itemClass="carousel-item-padding-40-px carousel-item-width-100-px">
+            // dotListClass="custom-dot-list-style"
+            // carousel-item-padding-40-px carousel-item-width-100-px
+            itemClass="">
             <div>
                 <img className='' src={testImage} alt='Test'/>
                 <span>Item 1</span>

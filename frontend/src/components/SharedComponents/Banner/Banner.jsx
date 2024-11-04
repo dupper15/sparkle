@@ -2,8 +2,8 @@ import hpBanner from "../../../assets/homepage-banner.png"
 function Banner() {
     return (
         <header className="banner w-full">
-            <div className="profile-image w-[80%] ml-auto mr-auto">
-                <img src={hpBanner} alt="Profile" />
+            <div className="profile-image ml-auto mr-auto">
+                <img className='rounded-2xl w-[1220px] h-[300px]' src={hpBanner} alt="Profile" />
             </div>
         </header>
     );
