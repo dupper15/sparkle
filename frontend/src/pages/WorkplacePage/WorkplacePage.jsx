@@ -76,7 +76,6 @@ const WorkplacePage = () => {
   return (
     <div className='w-screen h-screen bg-no-repeat bg-cover bg-[#151318] flex flex-col scrollbar-hide overflow-hidden'>
       <WorkplaceHeader />
-
       <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide'>
         <div className='w-[80px] bg-black z-50 scrollbar-hide h-full text-white overflow-y-auto'>
           {[
@@ -96,8 +95,11 @@ const WorkplacePage = () => {
               key={type}
               onClick={() => setElements(type, label.toLowerCase())}
               className={`${
-                show.name === label.toLowerCase() ? "bg-[#252627]" : ""
-              } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}>
+                show.name === label.toLowerCase()
+                  ? "bg-[#252627] text-[#610BEF]"
+                  : "text-white"
+              } 
+              w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}>
               <span className='text-2xl'>{icon}</span>
               <span className='text-xs font-medium'>{label}</span>
             </div>
@@ -107,8 +109,10 @@ const WorkplacePage = () => {
         <div className='h-full w-[calc(100%-75px)]'>
           <div
             className={`${
-              show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
-            } bg-[#252627] h-full fixed transition-all w-[350px] z-30 duration-500`}>
+              show.status
+                ? "px-8 h-[calc(100%-60px)] -left-[350px]"
+                : "px-8 left-[75px] h-[calc(100%-60px)]"
+            } bg-[#252627] fixed transition-all w-[350px] z-30 duration-500`}>
             <div
               onClick={() => setShow({ name: "", status: true })}
               className='flex absolute justify-center items-center bg-[#252627] w-[20px] -right-2 text-slate-300 top-[40%] cursor-pointer h-[100px] rounded-full'>
@@ -139,7 +143,7 @@ const WorkplacePage = () => {
             {state === "background" && <Background />}
           </div>
 
-          <div className='flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
+          <div className='flex flex-col items-center justify-start gap-8 m-4 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
             {quantity.map((_, index) => (
               <Page
                 key={index}

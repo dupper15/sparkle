@@ -4,10 +4,9 @@ import { MdOutlineMail } from "react-icons/md";
 const ButtonMessage = ({ toggleChatBox }) => {
   return (
     <div
-      className="flex flex-col w-[60px] h-[60px] bg-[#4335DE] fixed bottom-3 right-3 rounded-full justify-center items-center cursor-pointer"
-      onClick={toggleChatBox}
-    >
-      <button className="text-white text-3xl">
+      className='flex flex-col w-[60px] h-[60px] bg-[#4335DE] fixed bottom-3 right-3 rounded-full justify-center items-center cursor-pointer hover:bg-[#6055da]'
+      onClick={toggleChatBox}>
+      <button className='text-white text-3xl'>
         <MdOutlineMail />
       </button>
     </div>
