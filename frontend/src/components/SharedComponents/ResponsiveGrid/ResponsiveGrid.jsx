@@ -22,41 +22,23 @@ const presentations = [
         image: "https://via.placeholder.com/150", //
     },
     {
-        id: 1,
+        id: 4,
         title: "ẢNH HƯỞNG CỦA MXH HỘI UIT",
         subtitle: "Presentation",
         image: "https://via.placeholder.com/150", //
     },
     {
-        id: 2,
+        id: 5,
         title: "Nhóm 8_Giới thiệu nhóm",
         subtitle: "Presentation",
         image: "https://via.placeholder.com/150", //
     },
     {
-        id: 3,
+        id: 6,
         title: "SE346.021_Nhom36",
         subtitle: "Presentation",
         image: "https://via.placeholder.com/150",
-    },
-    {
-        id: 1,
-        title: "ẢNH HƯỞNG CỦA MXH HỘI UIT",
-        subtitle: "Presentation",
-        image: "https://via.placeholder.com/150",
-    },
-    {
-        id: 2,
-        title: "Nhóm 8_Giới thiệu nhóm",
-        subtitle: "Presentation",
-        image: "https://via.placeholder.com/150",
-    },
-    {
-        id: 3,
-        title: "SE346.021_Nhom36",
-        subtitle: "Presentation",
-        image: "https://via.placeholder.com/150",
-    },
+    }
 ];
 
 const ResponsiveGrid = () => {

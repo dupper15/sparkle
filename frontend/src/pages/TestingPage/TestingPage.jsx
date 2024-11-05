@@ -1,9 +1,13 @@
-
-import ResponsiveGrid from "../../components/SharedComponents/ResponsiveGrid/ResponsiveGrid.jsx";
+import TextPropertyBar from "../../components/SharedComponents/PropertyBars/TextToolBar.jsx";
+import ImageToolbar from "../../components/SharedComponents/PropertyBars/ImageToolBar.jsx";
 
 const TestingPage =()=>{
     return(
-        <ResponsiveGrid></ResponsiveGrid>
+        <div>
+            <TextPropertyBar/>
+            <ImageToolbar/>
+        </div>
+
     )
 
 }
