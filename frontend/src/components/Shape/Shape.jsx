@@ -1,9 +1,19 @@
-const Shape = () => {
+const Shape = ({ createShape }) => {
+  const handleClick = (shapeType) => {
+    createShape("shape", shapeType);
+  };
   return (
     <div className="grid grid-cols-3 gap-2">
-      <div className="h-[90px] bg-[#e5e5e5] cursor-pointer"></div>
-      <div className="h-[90px] bg-[#e5e5e5] cursor-pointer rounded-full"></div>
       <div
+        onClick={() => handleClick("rect")}
+        className="h-[90px] bg-[#e5e5e5] cursor-pointer"
+      ></div>
+      <div
+        onClick={() => handleClick("circle")}
+        className="h-[90px] bg-[#e5e5e5] cursor-pointer rounded-full"
+      ></div>
+      <div
+        onClick={() => handleClick("triangle")}
         style={{ clipPath: "polygon(50% 0,100% 100%, 0 100%)" }}
         className="h-[90px] bg-[#e5e5e5] cursor-pointer"
       ></div>
