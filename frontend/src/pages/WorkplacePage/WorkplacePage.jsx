@@ -33,6 +33,7 @@ const WorkplacePage = () => {
         behavior: "smooth",
         block: "center",
       });
+      setCurrentPage(index + 1);
     }
   };
 
@@ -41,11 +42,18 @@ const WorkplacePage = () => {
   const location = useLocation();
   const designData = location.state || {};
 
-  const [pages, setPages] = useState([{ ...designData, id: 1 }]);
+  const [pages, setPages] = useState([
+    { ...designData, id: 1, components: [] },
+  ]);
+  const [current_page, setCurrentPage] = useState(1);
 
   const addPage = () => {
     setPages((prev) => {
-      const newPages = [...prev, { ...designData, id: prev.length + 1 }];
+      const newPages = [
+        ...prev,
+        { ...designData, id: prev.length + 1, components: [] },
+      ];
+      setCurrentPage(newPages.length);
 
       setTimeout(() => {
         scrollToPage(newPages.length - 1);
@@ -59,6 +67,7 @@ const WorkplacePage = () => {
     setPages((prev) => {
       const newPages = prev.filter((page) => page.id !== id);
       if (newPages.length > 0) {
+        setCurrentPage(newPages.length);
         setTimeout(() => {
           scrollToPage(newPages.length - 1);
         }, 0);
@@ -98,33 +107,35 @@ const WorkplacePage = () => {
   ]);
 
   const createShape = (name, type) => {
-    setComponents((prevComponents) => {
-      const baseShape = {
-        id: Date.now(),
-        name,
-        type,
-        left: 10,
-        top: 10,
-        opacity: 1,
-        width: 100,
-        height: 100,
-        rotate: 0,
-        z_index: 2,
-        color: "blue",
-        setCurrentComponent: (a) => setCurrentComponent(a),
-      };
-
-      const newShape = {
-        ...baseShape,
-        ...(type === "circle" && { borderRadius: "50%" }),
-        ...(type === "rect" && {}),
-        ...(type === "triangle" && {
-          clipPath: "polygon(50% 0,100% 100%, 0 100%)",
-        }),
-      };
-
-      return [...prevComponents, newShape];
-    });
+    setPages((prevPages) =>
+      prevPages.map((page) =>
+        page.id === current_page
+          ? {
+              ...page,
+              components: [
+                ...page.components,
+                {
+                  id: Date.now(),
+                  name,
+                  type,
+                  left: 10,
+                  top: 10,
+                  opacity: 1,
+                  width: 100,
+                  height: 100,
+                  rotate: 0,
+                  z_index: 2,
+                  color: "blue",
+                  ...(type === "circle" && { borderRadius: "50%" }),
+                  ...(type === "triangle" && {
+                    clipPath: "polygon(50% 0,100% 100%, 0 100%)",
+                  }),
+                },
+              ],
+            }
+          : page
+      )
+    );
   };
 
   const moveElement = () => {
@@ -140,9 +151,16 @@ const WorkplacePage = () => {
   };
 
   const removeElement = (id) => {
-    const temp = components.filter((c) => c.id !== id);
-    setCurrentComponent("");
-    setComponents(temp);
+    setPages((prevPages) =>
+      prevPages.map((page) =>
+        page.id === current_page
+          ? {
+              ...page,
+              components: page.components.filter((c) => c.id !== id),
+            }
+          : page
+      )
+    );
   };
 
   const [showChatBox, setShowChatBox] = useState(false);
@@ -156,7 +174,6 @@ const WorkplacePage = () => {
       <WorkplaceHeader />
       <div className="flex h-[calc(100%-60px)] w-screen scrollbar-hide">
         <div className="w-[80px] bg-black z-50 scrollbar-hide h-full text-white overflow-y-auto">
-
           {[
             { icon: <LuLayoutTemplate />, label: "Design", type: "design" },
             { icon: <LuShapes />, label: "Shape", type: "shape" },
@@ -221,18 +238,16 @@ const WorkplacePage = () => {
           </div>
           <div className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
             {pages.map((pageData, index) => (
-
               <Page
                 key={pageData.id}
                 title={`${index + 1}`}
                 width={pageData.width}
                 height={pageData.height}
                 name={pageData.name}
-                components={components}
+                components={pageData.components}
                 removeElement={removeElement}
                 removeButton={() => removePage(pageData.id)}
                 upButton={() => scrollToPage(index - 1)}
-                s
                 downButton={() => scrollToPage(index + 1)}
                 ref={(el) => (pageRef.current[index] = el)}
               />
