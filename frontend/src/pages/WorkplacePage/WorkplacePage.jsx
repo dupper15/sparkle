@@ -154,9 +154,9 @@ const WorkplacePage = () => {
   return (
     <div className="w-screen h-screen bg-no-repeat bg-cover bg-[#151318] flex flex-col scrollbar-hide overflow-hidden">
       <WorkplaceHeader />
-
       <div className="flex h-[calc(100%-60px)] w-screen scrollbar-hide">
         <div className="w-[80px] bg-black z-50 scrollbar-hide h-full text-white overflow-y-auto">
+
           {[
             { icon: <LuLayoutTemplate />, label: "Design", type: "design" },
             { icon: <LuShapes />, label: "Shape", type: "shape" },
@@ -219,9 +219,9 @@ const WorkplacePage = () => {
             )}
             {state === "background" && <Background />}
           </div>
-
           <div className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
             {pages.map((pageData, index) => (
+
               <Page
                 key={pageData.id}
                 title={`${index + 1}`}

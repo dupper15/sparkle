@@ -34,7 +34,7 @@ const LoginPage = () => {
           onClick={() => {
             setShowDialog(true);
           }}
-          className='w-[170px] h-[60px] text-xl bg-gradient rounded-lg shadow-sm cursor-pointer font-bold text-white hover:scale-110 transform transition-transform duration-500 flex justify-center items-center p-2'>
+          className='w-[170px] h-[60px] text-xl bg-gradient rounded-lg shadow-sm cursor-pointer font-bold text-white flex justify-center items-center p-2'>
           Get started <span className='text-3xl pb-1 pl-1'> →</span>
         </button>
         {showDialog && (

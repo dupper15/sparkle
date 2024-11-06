@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../../../assets/default-profile-icon.png";
 import UserProfileMenu from "../UserProfileMenu/UserProfileMenu.jsx";
+
 import CustomizeSizeDialogue from "../../dialogs/CustomizeSizeDialogue.jsx";
 
 const Header = () => {
@@ -50,6 +51,7 @@ const Header = () => {
         {openProfile && (
           <div className="absolute top-[4rem] right-[1.5rem] padding-[15px]">
             <UserProfileMenu />
+
           </div>
         )}
       </div>
