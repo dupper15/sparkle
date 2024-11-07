@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
 import {
@@ -27,16 +27,6 @@ const WorkplacePage = () => {
   const [state, setState] = useState("");
   const pageRef = useRef([]);
 
-  const scrollToPage = (index) => {
-    if (pageRef.current[index]) {
-      pageRef.current[index].scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-      setCurrentPage(index + 1);
-    }
-  };
-
   const [rotate, setRotate] = useState(0);
 
   const location = useLocation();
@@ -47,6 +37,15 @@ const WorkplacePage = () => {
   ]);
   const [current_page, setCurrentPage] = useState(1);
 
+  const scrollToPage = (index) => {
+    if (pageRef.current[index]) {
+      pageRef.current[index].scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   const addPage = () => {
     setPages((prev) => {
       const newPages = [
@@ -55,10 +54,6 @@ const WorkplacePage = () => {
       ];
       setCurrentPage(newPages.length);
 
-      setTimeout(() => {
-        scrollToPage(newPages.length - 1);
-      }, 0);
-
       return newPages;
     });
   };
@@ -66,16 +61,26 @@ const WorkplacePage = () => {
   const removePage = (id) => {
     setPages((prev) => {
       const newPages = prev.filter((page) => page.id !== id);
-      if (newPages.length > 0) {
-        setCurrentPage(newPages.length);
-        setTimeout(() => {
-          scrollToPage(newPages.length - 1);
-        }, 0);
+
+      if (newPages.length < 1) {
+        return prev;
       }
+
+      const pageIndex = prev.findIndex((page) => page.id === id);
+      const nextPageIndex =
+        pageIndex < newPages.length ? pageIndex : pageIndex - 1;
+
+      setCurrentPage(nextPageIndex + 1);
 
       return newPages;
     });
   };
+
+  useEffect(() => {
+    if (current_page > 0) {
+      scrollToPage(current_page - 1);
+    }
+  }, [current_page]);
 
   const [current_component, setCurrentComponent] = useState("");
   const [show, setShow] = useState({
@@ -192,8 +197,7 @@ const WorkplacePage = () => {
               onClick={() => setElements(type, label.toLowerCase())}
               className={`${
                 show.name === label.toLowerCase() ? "bg-[#252627]" : ""
-              } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}
-            >
+              } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}>
               <span className="text-2xl">{icon}</span>
               <span className="text-xs font-medium">{label}</span>
             </div>
@@ -204,12 +208,10 @@ const WorkplacePage = () => {
           <div
             className={`${
               show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
-            } bg-[#252627] h-full fixed transition-all w-[350px] z-30 duration-500`}
-          >
+            } bg-[#252627] h-full fixed transition-all w-[350px] z-30 duration-500`}>
             <div
               onClick={() => setShow({ name: "", status: true })}
-              className="flex absolute justify-center items-center bg-[#252627] w-[20px] -right-2 text-slate-300 top-[40%] cursor-pointer h-[100px] rounded-full"
-            >
+              className="flex absolute justify-center items-center bg-[#252627] w-[20px] -right-2 text-slate-300 top-[40%] cursor-pointer h-[100px] rounded-full">
               <MdKeyboardArrowLeft />
             </div>
             {state === "design" && (
@@ -252,7 +254,9 @@ const WorkplacePage = () => {
                 ref={(el) => (pageRef.current[index] = el)}
               />
             ))}
-            <AddPageButton addPage={addPage} />
+            <div>
+              <AddPageButton addPage={addPage} />
+            </div>
           </div>
         </div>
         <ButtonMessage toggleChatBox={toggleChatBox} />
