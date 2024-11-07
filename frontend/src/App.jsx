@@ -43,6 +43,10 @@ const router = createBrowserRouter([
     path: "/design/create",
     element: <CreateDesign />,
   },
+  {
+    path: "/testing",
+    element: <TestingPage />,
+  },
 ]);
 export default function App() {
   return <RouterProvider router={router} />;
