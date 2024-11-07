@@ -25,7 +25,7 @@ const Header = () => {
                 </button>
                 {
                     openCustomizeSizeDialogue &&
-                    <div className="absolute top-[10rem] right-[30rem]">
+                    <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
                         <CustomizeSizeDialogue childCloseFormRequest={childCloseFormRequest}></CustomizeSizeDialogue>
                     </div>
                 }
@@ -36,7 +36,7 @@ const Header = () => {
                 </div>
                 {
                     openProfile &&
-                    <div  className='absolute top-[4rem] right-[1.5rem] padding-[15px]'>
+                    <div  className='absolute top-[4rem] right-[0rem] padding-[15px]'>
                         <UserProfileMenu></UserProfileMenu>
                     </div>
                 }
