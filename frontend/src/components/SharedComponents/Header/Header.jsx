@@ -32,7 +32,7 @@ const Header = () => {
           <span className=" text-white"> Create a design</span>
         </button>
         {openCustomizeSizeDialogue && (
-          <div className="absolute top-[10rem] right-[30rem]">
+          <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
             <CustomizeSizeDialogue
               childCloseFormRequest={setOpenCustomizeSizeDialogue}
               onCreate={(data) => handleCreate(data)}
@@ -59,4 +59,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header
