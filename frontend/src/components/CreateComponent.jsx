@@ -36,18 +36,17 @@ const CreateComponent = ({ info, current_component, removeComponent }) => {
 
   return (
     <div
+      ref={setNodeRef}
       onClick={() => info.setCurrentComponent(info)}
       style={getShapeStyle(info.type)}
-      className="group hover:border-[2px] hover:border-indigo-500 shadow-md"
-    >
+      className='group hover:border-[2px] hover:border-indigo-500 shadow-md'>
       {current_component.id === info.id && (
         <div
           onClick={(e) => {
             e.stopPropagation();
             removeComponent(info.id);
           }}
-          className="px-3 py-2 bg-white absolute top-0 hidden group-hover:block cursor-pointer rounded-md"
-        >
+          className='px-3 py-2 bg-white absolute top-0 hidden group-hover:block cursor-pointer rounded-md'>
           <FaRegTrashCan />
         </div>
       )}
