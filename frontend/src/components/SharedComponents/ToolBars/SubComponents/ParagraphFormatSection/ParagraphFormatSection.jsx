@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaAlignLeft, FaAlignCenter, FaAlignRight, FaAlignJustify, FaListOl, FaListUl } from 'react-icons/fa';
 import {PiPlaceholderThin} from "react-icons/pi";
 
-const ParagraphFormatBar = () => {
+const ParagraphFormatSection = () => {
     const [alignmentType, setAlignmentType] = useState('left'); // Initial state
 
     const handleAlignmentClick = () => {
@@ -73,9 +73,9 @@ const ParagraphFormatBar = () => {
         }
     };
     return (
-        <div className="paragraph-format-bar">
+        <div className="h-8 toolbar flex">
             <button
-                className={`text-gray-700 text-xl pr-2 ${alignmentType !== 'none' ? 'active' : ''}`}
+                className={`text-gray-700 text-xl pr-2 mr-1 ${alignmentType !== 'none' ? 'active' : ''}`}
                 onClick={handleAlignmentClick}
             >
                 {getAlignmentIcon(alignmentType)}
@@ -90,4 +90,4 @@ const ParagraphFormatBar = () => {
     );
 };
 
-export default ParagraphFormatBar;
+export default ParagraphFormatSection;

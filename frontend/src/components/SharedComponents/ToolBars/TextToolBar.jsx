@@ -1,40 +1,11 @@
-import {
-    FaAlignLeft,
-    FaBold, FaBrush,
-    FaItalic, FaLayerGroup, FaListUl, FaMagic, FaPlayCircle,
-    FaStrikethrough,
-    FaUnderline
-} from "react-icons/fa";
-import {RxDividerVertical, RxTransparencyGrid} from "react-icons/rx";
+import {RxDividerVertical} from "react-icons/rx";
 import FontSelector from "./SubComponents/FontSelector/FontSelector.jsx";
 import FontSizeField from "./SubComponents/FontSizeField/FontSizeField.jsx";
-import TextFormatBar from "./SubComponents/TextFormatBar/TextFormatBar.jsx";
-import ParagraphFormatBar from "./SubComponents/ParagraphFormatBar/ParagraphFormatBar.jsx";
+import ParagraphFormatSection from "./SubComponents/ParagraphFormatSection/ParagraphFormatSection.jsx";
+import TextFormatSection from "./SubComponents/TextFormatSection/TextFormatSection.jsx";
+import PositionEditSection from "./SubComponents/PositionEditSection/PositionEditSection.jsx";
 /* eslint react/prop-types: 0*/
-const TextToolbar = ({
-                         onBoldToggle = () => {
-                         },
-                         onItalicToggle = () => {
-                         },
-                         onUnderlineToggle = () => {
-                         },
-                         onStrikethroughToggle = () => {
-                         },
-                         onAllCapsToggle = () => {
-                         },
-                         onChangeAlignment = () => {
-                         },
-                         onList = () => {
-                         },
-                         onEffects = () => {
-                         },
-                         onAnimate = () => {
-                         },
-                         onPosition = () => {
-                         },
-                         onChangeTransparency = () => {
-                         }
-                     }) => {
+const TextToolbar = () => {
     return (<div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
             {/* Font */}
             <FontSelector fontName='Ariel'></FontSelector>
@@ -43,44 +14,37 @@ const TextToolbar = ({
             <FontSizeField></FontSizeField>
 
             {/* Text Formatting */}
-            <TextFormatBar></TextFormatBar>
+            <TextFormatSection></TextFormatSection>
+
+            <RxDividerVertical/>
 
             {/* Paragraph Formatting */}
-            <ParagraphFormatBar></ParagraphFormatBar>
+            <ParagraphFormatSection></ParagraphFormatSection>
 
             <RxDividerVertical/>
 
-            {/* Transparency */}
-            <button className="text-black text-xl" onClick={onChangeTransparency}>
-                <RxTransparencyGrid/>
-            </button>
+            {/*/!* Transparency *!/*/}
+            {/*<button className="text-black text-xl" onClick={onChangeTransparency}>*/}
+            {/*    <RxTransparencyGrid/>*/}
+            {/*</button>*/}
 
-            <RxDividerVertical/>
+            {/*<RxDividerVertical/>*/}
 
-            {/* Effects */}
-            <button className="bg-purple-200 text-purple-700 px-2 rounded text-xl" onClick={onEffects}>
-                <FaMagic></FaMagic>
-            </button>
+            {/*/!* Effects *!/*/}
+            {/*<button className="bg-purple-200 text-purple-700 px-2 rounded text-xl" onClick={onEffects}>*/}
+            {/*    <FaMagic></FaMagic>*/}
+            {/*</button>*/}
 
-            <RxDividerVertical/>
+            {/*<RxDividerVertical/>*/}
 
-            {/* Animate and Position */}
-            <button className="text-gray-700 text-xl" onClick={onAnimate}>
-                <FaPlayCircle></FaPlayCircle>
-            </button>
+            {/*/!* Animate and Position *!/*/}
+            {/*<button className="text-gray-700 text-xl" onClick={onAnimate}>*/}
+            {/*    <FaPlayCircle></FaPlayCircle>*/}
+            {/*</button>*/}
 
-            <RxDividerVertical/>
+            {/*<RxDividerVertical/>*/}
 
-            <button className="text-gray-700 text-xl" onClick={onPosition}>
-                <FaLayerGroup></FaLayerGroup>
-            </button>
-
-            <RxDividerVertical/>
-
-            {/* Paint Brush Icon */}
-            <button className="text-gray-700 text-xl">
-                <FaBrush></FaBrush>
-            </button>
+            <PositionEditSection></PositionEditSection>
         </div>
     );
 };

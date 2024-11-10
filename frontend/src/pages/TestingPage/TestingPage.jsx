@@ -1,7 +1,7 @@
 import TextPropertyBar from "../../components/SharedComponents/ToolBars/TextToolBar.jsx";
 import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBar.jsx";
 import ColorPickerPanel
-    from "../../components/SharedComponents/ToolBars/SubComponents/ColorPickerPanel/ColorPickerPanel.jsx";
+    from "../../components/SharedComponents/ColorPickerPanel/ColorPickerPanel.jsx";
 
 const TestingPage =()=>{
     return(
