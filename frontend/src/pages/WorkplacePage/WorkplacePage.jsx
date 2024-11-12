@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
 import {
@@ -21,13 +21,12 @@ import Page from "./../../components/Page/Page";
 import Background from "../../components/Background/Background";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import ButtonMessage from "../../components/ChatBox/ButtonMessage";
-import CreateComponent from "../../components/CreateComponent";
 import { DndContext } from "@dnd-kit/core";
-import Test from "../../components/test";
 
 const WorkplacePage = () => {
   const [state, setState] = useState("");
   const pageRef = useRef([]);
+
   const scrollToPage = (index) => {
     if (pageRef.current[index]) {
       pageRef.current[index].scrollIntoView({
@@ -63,10 +62,39 @@ const WorkplacePage = () => {
       return newPages;
     });
   };
+  const [draggingShape, setDraggingShape] = useState(null);
+  const [shapes, setShapes] = useState([]);
 
+  const updateShapes = (newItem, testId) => {
+    setShapes((prevShapes) => [...prevShapes, { ...newItem, testId }]);
+  };
+  const handleDragEnd = (event) => {
+    const { over, active } = event;
+    const shapeRect = active.rect.current.translated;
+
+    if (over && draggingShape) {
+      const dropAreaRect = document
+        .getElementById(over.id)
+        .getBoundingClientRect();
+
+      const relativeX = shapeRect.left - dropAreaRect.left;
+      const relativeY = shapeRect.top - dropAreaRect.top;
+      updateShapes(
+        {
+          id: Date.now(),
+          shapeType: draggingShape.shapeType,
+          x: relativeX,
+          y: relativeY,
+        },
+        over.id
+      );
+    }
+    setDraggingShape(null);
+  };
   const removePage = (id) => {
     setPages((prev) => {
       const newPages = prev.filter((page) => page.id !== id);
+
       if (newPages.length > 0) {
         setCurrentPage(newPages.length);
         setTimeout(() => {
@@ -152,6 +180,10 @@ const WorkplacePage = () => {
   };
 
   const removeElement = (id) => {
+    // Xóa shape từ mảng shapes
+    setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
+
+    // Xóa component khỏi trang hiện tại
     setPages((prevPages) =>
       prevPages.map((page) =>
         page.id === current_page
@@ -171,7 +203,7 @@ const WorkplacePage = () => {
   };
 
   return (
-    <DndContext>
+    <DndContext onDragEnd={handleDragEnd}>
       <div className='w-screen h-screen bg-no-repeat bg-cover bg-[#151318] flex flex-col scrollbar-hide overflow-hidden'>
         <WorkplaceHeader />
         <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide'>
@@ -216,7 +248,9 @@ const WorkplacePage = () => {
                   <TemplateDesign />
                 </div>
               )}
-              {state === "shape" && <Shape createShape={createShape} />}
+              {state === "shape" && (
+                <Shape addNewShape={updateShapes} drag={setDraggingShape} />
+              )}
               {state === "upload" && <UploadImage />}
               {state === "project" && <Project />}
               {state === "text" && (
@@ -236,22 +270,24 @@ const WorkplacePage = () => {
               {state === "background" && <Background />}
             </div>
             <div className='flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
-              {/* {pages.map((pageData, index) => (
+              {pages.map((pageData, index) => (
                 <Page
                   key={pageData.id}
+                  id={`drop-area-${pageData.id}`}
                   title={`${index + 1}`}
                   width={pageData.width}
                   height={pageData.height}
                   name={pageData.name}
-                  components={pageData.components}
+                  shapes={shapes.filter(
+                    (shape) => shape.testId === `drop-area-${pageData.id}`
+                  )}
                   removeElement={removeElement}
                   removeButton={() => removePage(pageData.id)}
                   upButton={() => scrollToPage(index - 1)}
                   downButton={() => scrollToPage(index + 1)}
                   ref={(el) => (pageRef.current[index] = el)}
                 />
-              ))} */}
-              {/* <Test>{}</Test> */}
+              ))}
               <AddPageButton addPage={addPage} />
             </div>
           </div>
