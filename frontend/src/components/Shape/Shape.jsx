@@ -104,8 +104,7 @@ const DraggableShape = ({ shape, onDragStart }) => {
   );
 };
 
-const Shape = ({ addNewShape, drag }) => {
-  const [shapes, setShapes] = useState([]);
+const Shape = ({ drag }) => {
   const [draggingShape, setDraggingShape] = useState(null);
 
   const handleDragStart = (shape) => {
@@ -135,7 +134,6 @@ const Shape = ({ addNewShape, drag }) => {
     }
     setDraggingShape(null);
   };
-
   return (
     <div>
       <ShapePalette onDragStart={handleDragStart} />

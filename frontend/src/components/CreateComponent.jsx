@@ -187,11 +187,13 @@ const CreateComponent = ({ info, current_component, removeComponent }) => {
     };
   }, [isSelected, info.id, removeComponent]);
 
-  const getShapeStyle = (type) => {
+  const getShapeStyle = (info) => {
     const baseStyle = {
       width: `${size.width}px`,
       height: `${size.height}px`,
-      backgroundColor: "#e5e5e5",
+      backgroundColor: info.link ? "#e5e5e5" : "#e5e5e5",
+      backgroundImage: info.link ? `url(${info.link})` : null,
+      backgroundSize: "cover",
       position: "absolute",
       left: position.x,
       top: position.y,
@@ -214,16 +216,24 @@ const CreateComponent = ({ info, current_component, removeComponent }) => {
       arrowLeft: { clipPath: "polygon(100% 50%, 50% 0%, 50% 25%, 0% 25%, 0% 75%, 50% 75%, 50% 100%)" },
     };
 
-    return { ...baseStyle, ...shapeStyles[type] };
+    return { ...baseStyle, ...shapeStyles[info.shapeType] };
   };
 
   return (
     <div
       onMouseDown={handleMouseDown}
       onClick={() => info.setCurrentComponent(info)}
-      style={getShapeStyle(info.shapeType)}
+      style={getShapeStyle(info)}
       className="resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative"
     >
+      {current_component.id === info.id && (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            removeComponent(info.id);
+          }
+        />
+      )}
       {isSelected && (
         <MdOutlineChangeCircle
           className="resize-handle rotate-icon"
@@ -233,10 +243,11 @@ const CreateComponent = ({ info, current_component, removeComponent }) => {
             bottom: "-40px",
             transform: "translateX(-50%)",
             cursor: "pointer",
-          }}
+            }}
           onMouseDown={handleRotateMouseDown}
         />
-      )}
+      
+      
 
 
       {isSelected && (
