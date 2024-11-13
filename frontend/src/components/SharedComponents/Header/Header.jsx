@@ -51,7 +51,6 @@ const Header = () => {
         {openProfile && (
           <div className="absolute top-[4rem] right-[1.5rem] padding-[15px]">
             <UserProfileMenu />
-
           </div>
         )}
       </div>

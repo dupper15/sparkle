@@ -13,8 +13,8 @@ const HomePage = () => {
       <div className='flex w-full bg-black'>
         <Sidebar />
         <div className='w-[calc(100%-100px)] flex flex-col h-full '>
-          <div className='mx-10 my-2 flex justify-center items-center'>
-            <Banner className='w-auto h-auto'></Banner>
+          <div className='mr-auto ml-auto mt-8 mb-8'>
+            <Banner></Banner>
           </div>
           <div className=''>
             <div className='flex justify-between items-center mx-10 my-2'>
