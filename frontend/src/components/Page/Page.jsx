@@ -10,6 +10,7 @@ const Page = React.forwardRef(
     {
       id,
       title,
+      bgLink,
       width,
       height,
       upButton,
@@ -50,12 +51,14 @@ const Page = React.forwardRef(
           style={{
             width: `${width}px`,
             height: `${height}px`,
-            border: isOver ? "2px solid blue" : "",
-            backgroundColor: "white",
+            border: isOver ? "2px solid blue" : "transparent",
+            backgroundColor: !bgLink ? "white" : "white",
+            backgroundImage: bgLink ? `url(${bgLink})` : "",
+            backgroundSize: "cover",
             overflow: "hidden",
             zIndex: 0,
           }}
-          className='bg-white border border-gray-300 relative'>
+          className='bg-white border relative'>
           {shapes.map((info) => (
             <CreateComponent
               key={info.id}
