@@ -136,56 +136,6 @@ const Shape = ({ addNewShape, drag }) => {
     setDraggingShape(null);
   };
 
-  const renderShapes = () => {
-    return shapes.map((shape) => (
-      <div
-        key={shape.id}
-        style={{
-          position: "absolute",
-          left: shape.x,
-          top: shape.y,
-          width: "90px",
-          height: "90px",
-          backgroundColor: "#e5e5e5",
-          zIndex: 10,
-          ...(shape.shapeType === "circle" && { borderRadius: "50%" }), // Hình tròn
-          ...(shape.shapeType === "triangle" && {
-            clipPath: "polygon(50% 0,100% 100%, 0 100%)", // Hình tam giác
-          }),
-          ...(shape.shapeType === "invertedTriangle" && {
-            clipPath: "polygon(50% 100%, 0 0, 100% 0)", // Hình tam giác ngược
-          }),
-          ...(shape.shapeType === "pentagon" && {
-            clipPath: "polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)", // Hình ngũ giác
-          }),
-          ...(shape.shapeType === "hexagon" && {
-            clipPath:
-              "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)", // Hình lục giác
-          }),
-          ...(shape.shapeType === "octagon" && {
-            clipPath:
-              "polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%)", // Hình bát giác
-          }),
-          ...(shape.shapeType === "arrowUp" && {
-            clipPath:
-              "polygon(50% 0%, 100% 50%, 75% 50%, 75% 100%, 25% 100%, 25% 50%, 0% 50%)", // Mũi tên hướng lên
-          }),
-          ...(shape.shapeType === "arrowDown" && {
-            clipPath:
-              "polygon(50% 100%, 100% 50%, 75% 50%, 75% 0%, 25% 0%, 25% 50%, 0% 50%)", // Mũi tên hướng xuống
-          }),
-          ...(shape.shapeType === "arrowRight" && {
-            clipPath:
-              "polygon(0% 50%, 50% 0%, 50% 25%, 100% 25%, 100% 75%, 50% 75%, 50% 100%)", // Mũi tên hướng phải
-          }),
-          ...(shape.shapeType === "arrowLeft" && {
-            clipPath:
-              "polygon(100% 50%, 50% 0%, 50% 25%, 0% 25%, 0% 75%, 50% 75%, 50% 100%)", // Mũi tên hướng trái
-          }),
-        }}></div>
-    ));
-  };
-
   return (
     <div>
       <ShapePalette onDragStart={handleDragStart} />

@@ -66,22 +66,38 @@ const WorkplacePage = () => {
   const [shapes, setShapes] = useState([]);
 
   const updateShapes = (newItem, testId) => {
-    setShapes((prevShapes) => [...prevShapes, { ...newItem, testId }]);
+    setShapes((prevShapes) => {
+      // Kiểm tra xem shape đã tồn tại trong danh sách chưa
+      const existingShapeIndex = prevShapes.findIndex((shape) => shape.id === newItem.id);
+  
+      if (existingShapeIndex !== -1) {
+        // Nếu shape đã tồn tại, cập nhật vị trí mới
+        const updatedShapes = [...prevShapes];
+        updatedShapes[existingShapeIndex] = {
+          ...updatedShapes[existingShapeIndex],
+          x: newItem.x,
+          y: newItem.y,
+        };
+        return updatedShapes;
+      } else {
+        // Nếu shape chưa tồn tại, thêm shape mới với id mới
+        return [...prevShapes, { ...newItem, testId, id: Date.now() }];
+      }
+    });
   };
+  
   const handleDragEnd = (event) => {
     const { over, active } = event;
     const shapeRect = active.rect.current.translated;
-
+  
     if (over && draggingShape) {
-      const dropAreaRect = document
-        .getElementById(over.id)
-        .getBoundingClientRect();
-
+      const dropAreaRect = document.getElementById(over.id).getBoundingClientRect();
       const relativeX = shapeRect.left - dropAreaRect.left;
       const relativeY = shapeRect.top - dropAreaRect.top;
+  
       updateShapes(
         {
-          id: Date.now(),
+          id: draggingShape.id, // Sử dụng id của shape đang kéo
           shapeType: draggingShape.shapeType,
           x: relativeX,
           y: relativeY,
@@ -91,6 +107,7 @@ const WorkplacePage = () => {
     }
     setDraggingShape(null);
   };
+  
   const removePage = (id) => {
     setPages((prev) => {
       const newPages = prev.filter((page) => page.id !== id);
@@ -135,54 +152,9 @@ const WorkplacePage = () => {
     },
   ]);
 
-  const createShape = (name, type) => {
-    setPages((prevPages) =>
-      prevPages.map((page) =>
-        page.id === current_page
-          ? {
-              ...page,
-              components: [
-                ...page.components,
-                {
-                  id: Date.now(),
-                  name,
-                  type,
-                  left: 10,
-                  top: 10,
-                  opacity: 1,
-                  width: 100,
-                  height: 100,
-                  rotate: 0,
-                  z_index: 2,
-                  color: "blue",
-                  ...(type === "circle" && { borderRadius: "50%" }),
-                  ...(type === "triangle" && {
-                    clipPath: "polygon(50% 0,100% 100%, 0 100%)",
-                  }),
-                },
-              ],
-            }
-          : page
-      )
-    );
-  };
-
-  const moveElement = () => {
-    console.log("move element");
-  };
-
-  const resizeElement = () => {
-    console.log("resize element");
-  };
-
-  const rotateElement = () => {
-    console.log("rotate element");
-  };
-
   const removeElement = (id) => {
     // Xóa shape từ mảng shapes
     setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
-
     // Xóa component khỏi trang hiện tại
     setPages((prevPages) =>
       prevPages.map((page) =>
@@ -285,6 +257,7 @@ const WorkplacePage = () => {
                   removeButton={() => removePage(pageData.id)}
                   upButton={() => scrollToPage(index - 1)}
                   downButton={() => scrollToPage(index + 1)}
+                  onDragEnd={(event) => handleDragEnd(event, `drop-area-${pageData.id}`)}
                   ref={(el) => (pageRef.current[index] = el)}
                 />
               ))}

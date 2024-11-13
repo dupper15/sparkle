@@ -18,6 +18,8 @@ const Page = React.forwardRef(
       shapes,
       removeElement,
       current_page,
+      onDragEnd,
+      updateShapePosition
     },
     ref
   ) => {
@@ -26,7 +28,7 @@ const Page = React.forwardRef(
     });
 
     return (
-      <div ref={ref} className='flex flex-col gap-4'>
+      <div ref={ref}  className='flex flex-col gap-4'>
         <div className='flex justify-between items-center'>
           <div className='text-white text-2xl font-bold'>Page {title}</div>
           <div className='flex gap-2'>
@@ -47,11 +49,13 @@ const Page = React.forwardRef(
         <div
           id={id}
           ref={setNodeRef}
+          onDrag={onDragEnd}
           style={{
             width: `${width}px`,
             height: `${height}px`,
             border: isOver ? "2px solid blue" : "",
             backgroundColor: "white",
+            position:"relative",
             overflow: "hidden",
             zIndex: 0,
           }}
@@ -63,6 +67,7 @@ const Page = React.forwardRef(
               current_component={info}
               current_page={current_page}
               removeComponent={removeElement}
+              updateShapePosition={updateShapePosition}
             />
           ))}
         </div>
