@@ -94,9 +94,40 @@ const WorkplacePage = () => {
       setShapes((prevShapes) => [...prevShapes, {...newShape, testId}]);
     };
 
-    const handleDragEnd = (event) => {
-      const {over, active} = event;
-      const shapeRect = active.rect.current.translated;
+  const updateShapes = (newShape, testId) => {
+    setShapes((prevShapes) => [...prevShapes, { ...newShape, testId }]);
+  };
+  const handleDragEnd = (event) => {
+    const { over, active } = event;
+    const shapeRect = active.rect.current.translated;
+
+    if (over && draggingShape) {
+      const dropAreaRect = document
+        .getElementById(over.id)
+        .getBoundingClientRect();
+
+      const relativeX = shapeRect.left - dropAreaRect.left;
+      const relativeY = shapeRect.top - dropAreaRect.top;
+      updateShapes(
+        {
+          id: Date.now(),
+          shapeType: draggingShape.shapeType,
+          link: draggingShape.backgroundImage
+            ? draggingShape.backgroundImage
+            : "",
+          x: relativeX,
+          y: relativeY,
+        },
+        over.id
+      );
+    }
+    setDraggingShape(null);
+  };
+  const removePage = (id) => {
+    setPages((prev) => {
+      const newPages = prev.filter((page) => page.id !== id);
+
+
 
       if (over && draggingShape) {
         const dropAreaRect = document.getElementById(over.id).getBoundingClientRect();
@@ -142,6 +173,7 @@ const WorkplacePage = () => {
         scrollToPage(current_page - 1);
       }
     }, [current_page]);
+
 
     const [current_component, setCurrentComponent] = useState("");
     const [show, setShow] = useState({
@@ -264,6 +296,7 @@ const WorkplacePage = () => {
                   {state === "image" && <Image drag={setDraggingShape}/>}
                   {state === "background" && (
                       <Background setBackground={setBackground}/>
+
 
                   )}
                 </div>
