@@ -22,6 +22,8 @@ import Background from "../../components/Background/Background";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import ButtonMessage from "../../components/ChatBox/ButtonMessage";
 import CreateComponent from "../../components/CreateComponent";
+import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBar.jsx";
+import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar.jsx";
 
 const WorkplacePage = () => {
   const [state, setState] = useState("");
@@ -46,6 +48,16 @@ const WorkplacePage = () => {
     { ...designData, id: 1, components: [] },
   ]);
   const [current_page, setCurrentPage] = useState(1);
+
+  const [isImageToolBarOpen, setOpenImageToolBar] =useState(false)
+  const [isTextToolBarOpen, setOpenTextToolBar] =useState(false)
+  const handleImageClick=()=>{
+    setOpenImageToolBar((prev) => !prev);
+  }
+  const handleTextClick=()=>{
+    setOpenTextToolBar((prev) => !prev);
+  }
+
 
   const addPage = () => {
     setPages((prev) => {
@@ -202,61 +214,80 @@ const WorkplacePage = () => {
 
         <div className="h-full w-[calc(100%-75px)]">
           <div
-            className={`${
-              show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
-            } bg-[#252627] h-full fixed transition-all w-[350px] z-30 duration-500`}
+              className={`${
+                  show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
+              } bg-[#252627] h-full fixed transition-all w-[350px] z-30 duration-500`}
           >
             <div
-              onClick={() => setShow({ name: "", status: true })}
-              className="flex absolute justify-center items-center bg-[#252627] w-[20px] -right-2 text-slate-300 top-[40%] cursor-pointer h-[100px] rounded-full"
+                onClick={() => setShow({name: "", status: true})}
+                className="flex absolute justify-center items-center bg-[#252627] w-[20px] -right-2 text-slate-300 top-[40%] cursor-pointer h-[100px] rounded-full"
             >
-              <MdKeyboardArrowLeft />
+              <MdKeyboardArrowLeft/>
             </div>
             {state === "design" && (
-              <div className="grid grid-cols-2 gap-2">
-                <TemplateDesign />
-              </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <TemplateDesign/>
+                </div>
             )}
-            {state === "shape" && <Shape createShape={createShape} />}
-            {state === "upload" && <UploadImage />}
-            {state === "project" && <Project />}
+            {state === "shape" && <Shape createShape={createShape}/>}
+            {state === "upload" && <UploadImage/>}
+            {state === "project" && <Project/>}
             {state === "text" && (
-              <div>
-                <div className="grid grid-cols-1 gap-2">
-                  <div className="bg-[#3c3c3d] cursor-pointer font-bold p-3 text-white text-x1 rounded-sm">
-                    <h2>Add a text</h2>
+                <div>
+                  <div className="grid grid-cols-1 gap-2">
+                    <div className="bg-[#3c3c3d] cursor-pointer font-bold p-3 text-white text-x1 rounded-sm">
+                      <h2>Add a text</h2>
+                    </div>
                   </div>
                 </div>
-              </div>
             )}
             {state === "image" && (
-              <div className="h-[88vh] overflow-x-auto flex justify-start items-start scrollbar-hide">
-                <Image />
-              </div>
+                <div className="h-[88vh] overflow-x-auto flex justify-start items-start scrollbar-hide">
+                  <Image/>
+                </div>
             )}
-            {state === "background" && <Background />}
+            {state === "background" && <Background/>}
           </div>
-          <div className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
+          <div className={''}>
+            <button className={'pr-4'} onClick={handleImageClick}>Image</button>
+            <button onClick={handleTextClick}>Text</button>
+          </div>
+          <div
+              className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
+            <div className={'z-50'}>
+              {
+                  isImageToolBarOpen &&
+                  <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
+                    <ImageToolbar/>
+                  </div>
+              }
+              {
+                  isTextToolBarOpen &&
+                  <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
+                    <TextToolbar/>
+                  </div>
+              }
+            </div>
             {pages.map((pageData, index) => (
-              <Page
-                key={pageData.id}
-                title={`${index + 1}`}
-                width={pageData.width}
-                height={pageData.height}
-                name={pageData.name}
-                components={pageData.components}
-                removeElement={removeElement}
-                removeButton={() => removePage(pageData.id)}
-                upButton={() => scrollToPage(index - 1)}
-                downButton={() => scrollToPage(index + 1)}
-                ref={(el) => (pageRef.current[index] = el)}
-              />
+                <Page
+                    key={pageData.id}
+                    title={`${index + 1}`}
+                    width={pageData.width}
+                    height={pageData.height}
+                    name={pageData.name}
+                    components={pageData.components}
+                    removeElement={removeElement}
+                    removeButton={() => removePage(pageData.id)}
+                    upButton={() => scrollToPage(index - 1)}
+                    downButton={() => scrollToPage(index + 1)}
+                    ref={(el) => (pageRef.current[index] = el)}
+                />
             ))}
-            <AddPageButton addPage={addPage} />
+            <AddPageButton addPage={addPage}/>
           </div>
         </div>
-        <ButtonMessage toggleChatBox={toggleChatBox} />
-        {showChatBox && <ChatBox toggleChatBox={toggleChatBox} />}
+        <ButtonMessage toggleChatBox={toggleChatBox}/>
+        {showChatBox && <ChatBox toggleChatBox={toggleChatBox}/>}
       </div>
     </div>
   );

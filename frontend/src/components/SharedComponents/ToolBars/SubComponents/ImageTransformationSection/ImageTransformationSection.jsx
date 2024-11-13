@@ -50,7 +50,7 @@ const ImageTransformationSection = () => {
                 )}
             </div>
             <div>
-                {isCropModeOpen && {}}
+                {/*{isCropModeOpen && {}}*/}
             </div>
         </div>
     );
