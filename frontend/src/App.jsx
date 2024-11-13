@@ -8,6 +8,7 @@ import SettingPage from "./pages/SettingPage/SettingPage.jsx";
 import TemplatePage from "./pages/TemplatePage/TemplatePage.jsx";
 import TestingPage from "./pages/TestingPage/TestingPage.jsx";
 import CreateDesign from "./components/CreateDesign.jsx";
+import Place from "./pages/place.jsx";
 
 //const userInfo = token_decode(localStorage.getItem("sparkle_token"));
 const router = createBrowserRouter([
@@ -44,8 +45,8 @@ const router = createBrowserRouter([
     element: <CreateDesign />,
   },
   {
-    path: "/testing",
-    element: <TestingPage />,
+    path: "/te",
+    element: <Place />,
   },
 ]);
 export default function App() {
