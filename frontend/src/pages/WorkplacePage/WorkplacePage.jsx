@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
 import {
@@ -27,16 +27,6 @@ const WorkplacePage = () => {
   const [state, setState] = useState("");
   const pageRef = useRef([]);
 
-  const scrollToPage = (index) => {
-    if (pageRef.current[index]) {
-      pageRef.current[index].scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-      setCurrentPage(index + 1);
-    }
-  };
-
   const [rotate, setRotate] = useState(0);
 
   const location = useLocation();
@@ -47,6 +37,15 @@ const WorkplacePage = () => {
   ]);
   const [current_page, setCurrentPage] = useState(1);
 
+  const scrollToPage = (index) => {
+    if (pageRef.current[index]) {
+      pageRef.current[index].scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   const addPage = () => {
     setPages((prev) => {
       const newPages = [
@@ -54,10 +53,6 @@ const WorkplacePage = () => {
         { ...designData, id: prev.length + 1, components: [] },
       ];
       setCurrentPage(newPages.length);
-
-      setTimeout(() => {
-        scrollToPage(newPages.length - 1);
-      }, 0);
 
       return newPages;
     });
@@ -95,16 +90,25 @@ const WorkplacePage = () => {
     setPages((prev) => {
       const newPages = prev.filter((page) => page.id !== id);
 
-      if (newPages.length > 0) {
-        setCurrentPage(newPages.length);
-        setTimeout(() => {
-          scrollToPage(newPages.length - 1);
-        }, 0);
+      if (newPages.length < 1) {
+        return prev;
       }
+
+      const pageIndex = prev.findIndex((page) => page.id === id);
+      const nextPageIndex =
+        pageIndex < newPages.length ? pageIndex : pageIndex - 1;
+
+      setCurrentPage(nextPageIndex + 1);
 
       return newPages;
     });
   };
+
+  useEffect(() => {
+    if (current_page > 0) {
+      scrollToPage(current_page - 1);
+    }
+  }, [current_page]);
 
   const [current_component, setCurrentComponent] = useState("");
   const [show, setShow] = useState({
