@@ -21,6 +21,9 @@ import Page from "./../../components/Page/Page";
 import Background from "../../components/Background/Background";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import ButtonMessage from "../../components/ChatBox/ButtonMessage";
+import CreateComponent from "../../components/CreateComponent";
+import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBar.jsx";
+import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar.jsx";
 import { DndContext } from "@dnd-kit/core";
 
 const WorkplacePage = () => {
@@ -36,6 +39,15 @@ const WorkplacePage = () => {
     { ...designData, id: 1, components: [] },
   ]);
   const [current_page, setCurrentPage] = useState(1);
+
+  const [isImageToolBarOpen, setOpenImageToolBar] =useState(false)
+  const [isTextToolBarOpen, setOpenTextToolBar] =useState(false)
+  const handleImageClick=()=>{
+    setOpenImageToolBar((prev) => !prev);
+  }
+  const handleTextClick=()=>{
+    setOpenTextToolBar((prev) => !prev);
+  }
 
   const scrollToPage = (index) => {
     if (pageRef.current[index]) {
@@ -300,6 +312,8 @@ const WorkplacePage = () => {
           <ButtonMessage toggleChatBox={toggleChatBox} />
           {showChatBox && <ChatBox toggleChatBox={toggleChatBox} />}
         </div>
+        <ButtonMessage toggleChatBox={toggleChatBox}/>
+        {showChatBox && <ChatBox toggleChatBox={toggleChatBox}/>}
       </div>
     </DndContext>
   );
