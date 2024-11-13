@@ -112,6 +112,28 @@ const Shape = ({ drag }) => {
     drag(shape);
   };
 
+  const handleDragEnd = (event) => {
+    const { over, active } = event;
+
+    if (over && over.id === "drop-area" && draggingShape) {
+      const dropAreaRect = document
+        .getElementById("drop-area")
+        .getBoundingClientRect();
+
+      const shapeRect = active.rect.current.translated;
+
+      setShapes((prevShapes) => [
+        ...prevShapes,
+        {
+          id: Date.now(),
+          shapeType: draggingShape.shapeType,
+          x: shapeRect.left - dropAreaRect.left,
+          y: shapeRect.top - dropAreaRect.top,
+        },
+      ]);
+    }
+    setDraggingShape(null);
+  };
   return (
     <div>
       <ShapePalette onDragStart={handleDragStart} />
