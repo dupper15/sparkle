@@ -2,11 +2,13 @@ import React from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 
 const CreateComponent = ({ info, current_component, removeComponent }) => {
-  const getShapeStyle = (type) => {
+  const getShapeStyle = (info) => {
     const baseStyle = {
       width: "90px",
       height: "90px",
-      backgroundColor: "#e5e5e5",
+      backgroundColor: info.link ? "#e5e5e5" : "#e5e5e5",
+      backgroundImage: info.link ? `url(${info.link})` : null,
+      backgroundSize: "cover",
       position: "absolute",
       left: info.x,
       top: info.y,
@@ -48,14 +50,14 @@ const CreateComponent = ({ info, current_component, removeComponent }) => {
       },
     };
 
-    return { ...baseStyle, ...shapeStyles[type] };
+    return { ...baseStyle, ...shapeStyles[info.shapeType] };
   };
 
   return (
     <div
       onClick={() => info.setCurrentComponent(info)}
-      style={getShapeStyle(info.shapeType)}
-      className='group hover:border-[2px] hover:border-indigo-500 shadow-md'>
+      style={getShapeStyle(info)}
+      className='group'>
       {current_component.id === info.id && (
         <div
           onClick={(e) => {

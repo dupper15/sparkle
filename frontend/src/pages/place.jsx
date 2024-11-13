@@ -6,33 +6,39 @@ import WorkplaceHeader from "../components/WorkplaceHeader/WorkplaceHeader";
 import TemplateDesign from "../components/Template/TemplateDesign";
 import Shape from "./../components/Shape/Shape";
 import Test from "../components/test";
-
+import { RxTransparencyGrid } from "react-icons/rx";
+import Background from "../components/Background/Background";
+import Image from "../components/Image/Image";
+import { LuLayoutTemplate, LuUpload, LuFolder, LuImage } from "react-icons/lu";
 const Place = () => {
-  const [draggingShape, setDraggingShape] = useState(null);
-  const [shapes, setShapes] = useState([]);
-  const [tests, setTests] = useState([{ id: 1 }, { id: 2 }, { id: 3 }]); // Tạo 3 trang Test mẫu
+  const [draggingItem, setDraggingItem] = useState(null);
+  const [items, setItems] = useState([]);
+  const [tests] = useState([{ id: 1 }, { id: 2 }, { id: 3 }]); // Mẫu trang
+  const [backgrounds, setBackgrounds] = useState({});
+  const [currentPage, setCurrentPage] = useState(null);
+  const [panelState, setPanelState] = useState({ status: true, name: "" });
+  const [currentTab, setCurrentTab] = useState("");
 
-  const updateShapes = (newItem, testId) => {
-    setShapes((prevShapes) => [...prevShapes, { ...newItem, testId }]);
+  const updateItems = (newItem, testId) => {
+    setItems((prevShapes) => [...prevShapes, { ...newItem, testId }]);
   };
 
-  const [show, setShow] = useState({
-    status: true,
-    name: "",
-  });
-  const [state, setState] = useState("");
-  const setElements = (type, name) => {
-    setState(type);
-    setShow({
-      status: false,
-      name,
-    });
+  const setBackground = (bgLink) => {
+    if (currentPage !== null) {
+      setBackgrounds((prev) => ({ ...prev, [currentPage]: bgLink || "white" }));
+    }
   };
+
+  const handleTabSelect = (type, name) => {
+    setCurrentTab(type);
+    setPanelState({ status: false, name });
+  };
+
   const handleDragEnd = (event) => {
     const { over, active } = event;
     const shapeRect = active.rect.current.translated;
 
-    if (over && draggingShape) {
+    if (over && draggingItem) {
       const dropAreaRect = document
         .getElementById(over.id)
         .getBoundingClientRect();
@@ -40,68 +46,88 @@ const Place = () => {
       const relativeX = shapeRect.left - dropAreaRect.left;
       const relativeY = shapeRect.top - dropAreaRect.top;
 
-      // Lưu hình mới vào trang Test tương ứng với vùng thả
-      updateShapes(
+      updateItems(
         {
           id: Date.now(),
-          shapeType: draggingShape.shapeType,
+          shapeType: draggingItem.shapeType,
+          link: draggingItem.backgroundImage
+            ? draggingItem.backgroundImage
+            : null,
           x: relativeX,
           y: relativeY,
         },
-        over.id // Lưu testId là ID của vùng thả
+        over.id
       );
     }
-    setDraggingShape(null);
+    setDraggingItem(null);
   };
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div className='w-screen h-screen bg-no-repeat bg-cover bg-[#151318] flex flex-col scrollbar-hide overflow-hidden'>
+      <div className='w-screen h-screen bg-no-repeat bg-cover bg-[#151318] flex flex-col overflow-hidden'>
         <WorkplaceHeader />
-        <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide'>
-          <div className='w-[80px] bg-black z-50 scrollbar-hide h-full text-white overflow-y-auto'>
-            {[{ icon: <LuShapes />, label: "Shape", type: "shape" }].map(
-              ({ icon, label, type }) => (
-                <div
-                  key={type}
-                  onClick={() => setElements(type, label.toLowerCase())}
-                  className={`${
-                    show.name === label.toLowerCase() ? "bg-[#252627]" : ""
-                  } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}>
-                  <span className='text-2xl'>{icon}</span>
-                  <span className='text-xs font-medium'>{label}</span>
-                </div>
-              )
-            )}
+        <div className='flex h-[calc(100%-60px)] w-screen'>
+          <div className='w-[80px] bg-black h-full text-white overflow-y-auto'>
+            {[
+              { icon: <LuShapes />, label: "Shape", type: "shape" },
+              {
+                icon: <RxTransparencyGrid />,
+                label: "Background",
+                type: "background",
+              },
+              { icon: <LuImage />, label: "Image", type: "image" },
+            ].map(({ icon, label, type }) => (
+              <div
+                key={type}
+                onClick={() => handleTabSelect(type, label.toLowerCase())}
+                className={`${
+                  panelState.name === label.toLowerCase() ? "bg-[#252627]" : ""
+                } w-full h-[80px] cursor-pointer flex flex-col items-center gap-1 hover:text-[#610BEF]`}>
+                <span className='text-2xl'>{icon}</span>
+                <span className='text-xs font-medium'>{label}</span>
+              </div>
+            ))}
           </div>
 
           <div className='h-full w-[calc(100%-75px)]'>
             <div
               className={`${
-                show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
+                panelState.status
+                  ? "py-5 -left-[350px]"
+                  : "px-8 left-[75px] py-5"
               } bg-[#252627] h-full fixed transition-all w-[350px] z-30 duration-500`}>
               <div
-                onClick={() => setShow({ name: "", status: true })}
+                onClick={() => setPanelState({ name: "", status: true })}
                 className='flex absolute justify-center items-center bg-[#252627] w-[20px] -right-2 text-slate-300 top-[40%] cursor-pointer h-[100px] rounded-full'>
                 <MdKeyboardArrowLeft />
               </div>
-              {state === "design" && (
+              {currentTab === "design" && (
                 <div className='grid grid-cols-2 gap-2'>
                   <TemplateDesign />
                 </div>
               )}
-              {state === "shape" && (
-                <Shape addNewShape={updateShapes} drag={setDraggingShape} />
+              {currentTab === "background" && (
+                <Background setBackground={setBackground} />
               )}
+              {currentTab === "image" && <Image drag={setDraggingItem} />}
+              {currentTab === "shape" && <Shape drag={setDraggingItem} />}
             </div>
-            <div className='flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
+
+            <div className='flex flex-col items-center gap-8 m-8 overflow-y-auto h-[calc(100%-50px)]'>
               {tests.map((test) => (
-                <Test
+                <div
                   key={test.id}
-                  id={`drop-area-${test.id}`}
-                  shapes={shapes.filter(
-                    (shape) => shape.testId === `drop-area-${test.id}`
-                  )}
-                />
+                  onClick={() => setCurrentPage(test.id)}
+                  style={{
+                    border: currentPage === test.id ? "2px solid blue" : "none",
+                  }}>
+                  <Test
+                    id={`drop-area-${test.id}`}
+                    items={items.filter(
+                      (item) => item.testId === `drop-area-${test.id}`
+                    )}
+                    bgLink={backgrounds[test.id] || "white"}
+                  />
+                </div>
               ))}
             </div>
           </div>
