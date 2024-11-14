@@ -22,9 +22,7 @@ const Page = React.forwardRef(
     },
     ref
   ) => {
-    const { isOver, setNodeRef } = useDroppable({
-      id,
-    });
+    const { isOver, setNodeRef } = useDroppable({ id });
 
     return (
       <div ref={ref} className='flex flex-col gap-4'>
@@ -59,19 +57,38 @@ const Page = React.forwardRef(
             zIndex: 0,
           }}
           className='bg-white border relative'>
-          {shapes.map((info) => (
-            <CreateComponent
-              key={info.id}
-              info={info}
-              current_component={info}
-              current_page={current_page}
-              removeComponent={removeElement}
-            />
-          ))}
+          {shapes.map((info) =>
+            info.type === "text" ? (
+              <div
+                key={info.id}
+                id={`text-${info.id}`}
+                contentEditable={true}
+                suppressContentEditableWarning={true}
+                style={{
+                  position: "absolute",
+                  left: info.x,
+                  top: info.y,
+                  fontSize: `${info.font || 16}px`,
+                  color: info.color || "#000",
+                  padding: "5px",
+                }}>
+                {info.title}
+              </div>
+            ) : (
+              <CreateComponent
+                key={info.id}
+                info={info}
+                current_component={info}
+                current_page={current_page}
+                removeComponent={removeElement}
+              />
+            )
+          )}
         </div>
       </div>
     );
   }
 );
+
 Page.displayName = "Page";
 export default Page;
