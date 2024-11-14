@@ -72,8 +72,8 @@ const WorkplacePage = () => {
   const [draggingShape, setDraggingShape] = useState(null);
   const [shapes, setShapes] = useState([]);
 
-  const updateShapes = (newItem, testId) => {
-    setShapes((prevShapes) => [...prevShapes, { ...newItem, testId }]);
+  const updateShapes = (newShape, testId) => {
+    setShapes((prevShapes) => [...prevShapes, { ...newShape, testId }]);
   };
   const handleDragEnd = (event) => {
     const { over, active } = event;
@@ -90,6 +90,9 @@ const WorkplacePage = () => {
         {
           id: Date.now(),
           shapeType: draggingShape.shapeType,
+          link: draggingShape.backgroundImage
+            ? draggingShape.backgroundImage
+            : "",
           x: relativeX,
           y: relativeY,
         },
@@ -127,7 +130,15 @@ const WorkplacePage = () => {
     status: true,
     name: "",
   });
-
+  const [backgrounds, setBackgrounds] = useState({});
+  const setBackground = (bgLink) => {
+    if (current_page !== null) {
+      setBackgrounds((prev) => ({
+        ...prev,
+        [current_page]: bgLink || "white",
+      }));
+    }
+  };
   const setElements = (type, name) => {
     setState(type);
     setShow({
@@ -196,10 +207,7 @@ const WorkplacePage = () => {
   };
 
   const removeElement = (id) => {
-    // Xóa shape từ mảng shapes
     setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
-
-    // Xóa component khỏi trang hiện tại
     setPages((prevPages) =>
       prevPages.map((page) =>
         page.id === current_page
@@ -260,9 +268,9 @@ const WorkplacePage = () => {
                 <MdKeyboardArrowLeft />
               </div>
               {state === "design" && (
-                <div className="grid grid-cols-2 gap-2">
+                <>
                   <TemplateDesign />
-                </div>
+                </>
               )}
               {state === "shape" && (
                 <Shape addNewShape={updateShapes} drag={setDraggingShape} />
@@ -278,31 +286,49 @@ const WorkplacePage = () => {
                   </div>
                 </div>
               )}
-              {state === "image" && (
-                <div className="h-[88vh] overflow-x-auto flex justify-start items-start scrollbar-hide">
-                  <Image />
-                </div>
+              {state === "image" && <Image drag={setDraggingShape} />}
+              {state === "background" && (
+                <Background setBackground={setBackground} />
+
               )}
-              {state === "background" && <Background />}
             </div>
             <div className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
+            <div className={'z-50'}>
+                    {
+                        isImageToolBarOpen &&
+                        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
+                          <ImageToolbar/>
+                        </div>
+                    }
+                    {
+                        isTextToolBarOpen &&
+                        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
+                          <TextToolbar/>
+                        </div>
+                    }
+                  </div>
               {pages.map((pageData, index) => (
-                <Page
+                <div
                   key={pageData.id}
-                  id={`drop-area-${pageData.id}`}
-                  title={`${index + 1}`}
-                  width={pageData.width}
-                  height={pageData.height}
-                  name={pageData.name}
-                  shapes={shapes.filter(
-                    (shape) => shape.testId === `drop-area-${pageData.id}`
-                  )}
-                  removeElement={removeElement}
-                  removeButton={() => removePage(pageData.id)}
-                  upButton={() => scrollToPage(index - 1)}
-                  downButton={() => scrollToPage(index + 1)}
-                  ref={(el) => (pageRef.current[index] = el)}
-                />
+                  onClick={() => setCurrentPage(pageData.id)}>
+                  <Page
+                    key={pageData.id}
+                    id={`drop-area-${pageData.id}`}
+                    title={`${index + 1}`}
+                    width={pageData.width}
+                    height={pageData.height}
+                    name={pageData.name}
+                    shapes={shapes.filter(
+                      (shape) => shape.testId === `drop-area-${pageData.id}`
+                    )}
+                    bgLink={backgrounds[pageData.id] || "white"}
+                    removeElement={removeElement}
+                    removeButton={() => removePage(pageData.id)}
+                    upButton={() => scrollToPage(index - 1)}
+                    downButton={() => scrollToPage(index + 1)}
+                    ref={(el) => (pageRef.current[index] = el)}
+                  />
+                </div>
               ))}
               <div>
                 <AddPageButton addPage={addPage} />
