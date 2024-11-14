@@ -291,7 +291,7 @@ const WorkplacePage = () => {
               {state === "design" && (
                 <div className='grid grid-cols-2 gap-2'>
                   <TemplateDesign />
-                </>
+                </div>
               )}
               {state === "shape" && (
                 <Shape addNewShape={updateShapes} drag={setDraggingShape} />
@@ -304,21 +304,19 @@ const WorkplacePage = () => {
                 <Background setBackground={setBackground} />
               )}
             </div>
-            <div className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
-            <div className={'z-50'}>
-                    {
-                        isImageToolBarOpen &&
-                        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
-                          <ImageToolbar/>
-                        </div>
-                    }
-                    {
-                        isTextToolBarOpen &&
-                        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
-                          <TextToolbar/>
-                        </div>
-                    }
+            <div className='flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
+              <div className={"z-50"}>
+                {isImageToolBarOpen && (
+                  <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
+                    <ImageToolbar />
                   </div>
+                )}
+                {isTextToolBarOpen && (
+                  <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
+                    <TextToolbar />
+                  </div>
+                )}
+              </div>
               {pages.map((pageData, index) => (
                 <div
                   key={pageData.id}
