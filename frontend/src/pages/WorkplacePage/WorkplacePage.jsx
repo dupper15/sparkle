@@ -25,6 +25,7 @@ import CreateComponent from "../../components/CreateComponent";
 import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBar.jsx";
 import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar.jsx";
 import { DndContext } from "@dnd-kit/core";
+import Text from "../../components/Text/Text.jsx";
 
 const WorkplacePage = () => {
   const [state, setState] = useState("");
@@ -40,14 +41,14 @@ const WorkplacePage = () => {
   ]);
   const [current_page, setCurrentPage] = useState(1);
 
-  const [isImageToolBarOpen, setOpenImageToolBar] =useState(false)
-  const [isTextToolBarOpen, setOpenTextToolBar] =useState(false)
-  const handleImageClick=()=>{
+  const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
+  const [isTextToolBarOpen, setOpenTextToolBar] = useState(false);
+  const handleImageClick = () => {
     setOpenImageToolBar((prev) => !prev);
-  }
-  const handleTextClick=()=>{
+  };
+  const handleTextClick = () => {
     setOpenTextToolBar((prev) => !prev);
-  }
+  };
 
   const scrollToPage = (index) => {
     if (pageRef.current[index]) {
@@ -68,6 +69,41 @@ const WorkplacePage = () => {
 
       return newPages;
     });
+  };
+  const [components, setComponents] = useState([
+    {
+      name: "main_frame",
+      type: "rect",
+      id: Math.floor(Math.random() * 100 + 1),
+      nameProject: state.nameProject,
+      height: state.height,
+      width: state.width,
+      z_index: 1,
+      color: "red",
+      image: "",
+      setCurrentComponent: (a) => setCurrentComponent(a),
+    },
+  ]);
+  const add_text = () => {
+    if (current_page === null) {
+      console.log("ko");
+      return;
+    }
+
+    const newItem = {
+      id: Date.now(),
+      nameProject: state.nameProject,
+      name: "Sample Text",
+      type: "text",
+      x: 10,
+      y: 10,
+      font: 22,
+      title: "Add Your Text",
+      color: "#3c3c3d",
+      testId: `drop-area-${current_page}`,
+    };
+
+    setShapes((prevShapes) => [...prevShapes, { ...newItem }]);
   };
   const [draggingShape, setDraggingShape] = useState(null);
   const [shapes, setShapes] = useState([]);
@@ -147,21 +183,6 @@ const WorkplacePage = () => {
     });
   };
 
-  const [components, setComponents] = useState([
-    {
-      name: "main_frame",
-      type: "rect",
-      id: Math.floor(Math.random() * 100 + 1),
-      nameProject: state.nameProject,
-      height: state.height,
-      width: state.width,
-      z_index: 1,
-      color: "red",
-      image: "",
-      setCurrentComponent: (a) => setCurrentComponent(a),
-    },
-  ]);
-
   const createShape = (name, type) => {
     setPages((prevPages) =>
       prevPages.map((page) =>
@@ -228,10 +249,10 @@ const WorkplacePage = () => {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div className="w-screen h-screen bg-no-repeat bg-cover bg-[#151318] flex flex-col scrollbar-hide overflow-hidden">
+      <div className='w-screen h-screen bg-no-repeat bg-cover bg-[#151318] flex flex-col scrollbar-hide overflow-hidden'>
         <WorkplaceHeader />
-        <div className="flex h-[calc(100%-60px)] w-screen scrollbar-hide">
-          <div className="w-[80px] bg-black z-50 scrollbar-hide h-full text-white overflow-y-auto">
+        <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide'>
+          <div className='w-[80px] bg-black z-50 scrollbar-hide h-full text-white overflow-y-auto'>
             {[
               { icon: <LuLayoutTemplate />, label: "Design", type: "design" },
               { icon: <LuShapes />, label: "Shape", type: "shape" },
@@ -251,62 +272,51 @@ const WorkplacePage = () => {
                 className={`${
                   show.name === label.toLowerCase() ? "bg-[#252627]" : ""
                 } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}>
-                <span className="text-2xl">{icon}</span>
-                <span className="text-xs font-medium">{label}</span>
+                <span className='text-2xl'>{icon}</span>
+                <span className='text-xs font-medium'>{label}</span>
               </div>
             ))}
           </div>
 
-          <div className="h-full w-[calc(100%-75px)]">
+          <div className='h-full w-[calc(100%-75px)]'>
             <div
               className={`${
                 show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
               } bg-[#252627] h-full fixed transition-all w-[350px] z-30 duration-500`}>
               <div
                 onClick={() => setShow({ name: "", status: true })}
-                className="flex absolute justify-center items-center bg-[#252627] w-[20px] -right-2 text-slate-300 top-[40%] cursor-pointer h-[100px] rounded-full">
+                className='flex absolute justify-center items-center bg-[#252627] w-[20px] -right-2 text-slate-300 top-[40%] cursor-pointer h-[100px] rounded-full'>
                 <MdKeyboardArrowLeft />
               </div>
               {state === "design" && (
-                <>
+                <div className='grid grid-cols-2 gap-2'>
                   <TemplateDesign />
-                </>
+                </div>
               )}
               {state === "shape" && (
                 <Shape addNewShape={updateShapes} drag={setDraggingShape} />
               )}
               {state === "upload" && <UploadImage />}
               {state === "project" && <Project />}
-              {state === "text" && (
-                <div>
-                  <div className="grid grid-cols-1 gap-2">
-                    <div className="bg-[#3c3c3d] cursor-pointer font-bold p-3 text-white text-x1 rounded-sm">
-                      <h2>Add a text</h2>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {state === "text" && <Text addNewText={add_text} />}
               {state === "image" && <Image drag={setDraggingShape} />}
               {state === "background" && (
                 <Background setBackground={setBackground} />
-
               )}
             </div>
-            <div className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
-            <div className={'z-50'}>
-                    {
-                        isImageToolBarOpen &&
-                        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
-                          <ImageToolbar/>
-                        </div>
-                    }
-                    {
-                        isTextToolBarOpen &&
-                        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
-                          <TextToolbar/>
-                        </div>
-                    }
+            <div className='flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
+              <div className={"z-50"}>
+                {isImageToolBarOpen && (
+                  <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
+                    <ImageToolbar />
                   </div>
+                )}
+                {isTextToolBarOpen && (
+                  <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
+                    <TextToolbar />
+                  </div>
+                )}
+              </div>
               {pages.map((pageData, index) => (
                 <div
                   key={pageData.id}
@@ -338,8 +348,8 @@ const WorkplacePage = () => {
           <ButtonMessage toggleChatBox={toggleChatBox} />
           {showChatBox && <ChatBox toggleChatBox={toggleChatBox} />}
         </div>
-        <ButtonMessage toggleChatBox={toggleChatBox}/>
-        {showChatBox && <ChatBox toggleChatBox={toggleChatBox}/>}
+        <ButtonMessage toggleChatBox={toggleChatBox} />
+        {showChatBox && <ChatBox toggleChatBox={toggleChatBox} />}
       </div>
     </DndContext>
   );
