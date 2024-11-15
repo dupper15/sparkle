@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MdOutlineChangeCircle } from "react-icons/md";
 
-const CreateComponent = ({ info, current_component, removeComponent }) => {
+const CreateComponent = ({ info, current_component, removeComponent, }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [position, setPosition] = useState({ x: info.x, y: info.y });
@@ -10,17 +10,43 @@ const CreateComponent = ({ info, current_component, removeComponent }) => {
   const [resizeDirection, setResizeDirection] = useState(null);
   const [isSelected, setIsSelected] = useState(false);
   const [resizeStartPosition, setResizeStartPosition] = useState({ x: 0, y: 0 });
-  const [rotate, setRotate] = useState(info.rotate || 0); 
-  const [isRotating, setIsRotating] = useState(false); // Trạng thái xoay
-  const startAngleRef = useRef(0); // Góc bắt đầu khi nhấn chuột
-  const calculateRotation = (e) => {
-    const centerX = position.x + size.width / 2;
-    const centerY = position.y + size.height / 2;
-    const dx = e.clientX - centerX;
-    const dy = e.clientY - centerY;
+  const [isTransforming, setIsTransforming] = useState(false); 
+  const startTransformRef = useRef({ x: 0, y: 0, width: 90, height: 90, rotate: 0 });
+  const [deg, setDeg] = useState(0);
+
+
+  const calculateTransform = (e) => {
+    const dx = e.clientX - startTransformRef.current.x;
+    const dy = e.clientY - startTransformRef.current.y;
     const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-    return angle;
+    const newDeg = angle < 0 ? angle + 360 : angle; // Tính toán góc xoay
+    return newDeg;
   };
+
+  const handleTransformMouseDown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isResizing) {
+        setIsTransforming(true);
+        startTransformRef.current = {
+            x: e.clientX,
+            y: e.clientY,
+            rotate: deg, // Khởi tạo góc quay ban đầu là 0 độ
+        };
+    }
+  };
+
+  const handleTransformMouseUp = () => {
+    setIsTransforming(false);
+  };
+
+  const handleTransformMouseMove = (e) => {
+    if (isTransforming) {
+      const newDeg = calculateTransform(e);
+      setDeg(newDeg); 
+    }
+  };
+
   const handleMouseDown = (e) => {
     e.preventDefault();
     if (!isResizing) {
@@ -39,15 +65,14 @@ const CreateComponent = ({ info, current_component, removeComponent }) => {
       setPosition({ x: newX, y: newY });
     } else if (isResizing) {
       handleResizeMouseMove(e);
-    } else if (isRotating) {
-      const newAngle = calculateRotation(e);
-      setRotate(newAngle);
+    } else if (isTransforming) {
+      handleTransformMouseMove(e);
     }
   };
   const handleMouseUp = () => {
     setIsDragging(false);
     setIsResizing(false);
-    setIsRotating(false);
+    setIsTransforming(false);
     setResizeDirection(null);
   };
   const handleResizeMouseDown = (e, direction) => {
@@ -114,44 +139,36 @@ const CreateComponent = ({ info, current_component, removeComponent }) => {
       setIsSelected(false);
     }
   };
-  const handleRotateMouseDown = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsRotating(true);
-    startAngleRef.current = calculateRotation(e) - rotate;
-    document.addEventListener("mousemove", handleRotateMouseMove);
-    document.addEventListener("mouseup", handleRotateMouseUp);
-  };
-  const handleRotateMouseMove = (e) => {
-    if (isRotating) {
-        const newAngle = calculateRotation(e);
-        const angleDifference = newAngle - startAngleRef.current;
-        setRotate((prevRotate) => prevRotate + angleDifference);
-        startAngleRef.current = newAngle; // Cập nhật lại góc để làm tham chiếu cho lần xoay tiếp theo
-    }
-};
-  const handleRotateMouseUp = () => {
-    setIsRotating(false);
-    document.removeEventListener("mousemove", handleRotateMouseMove);
-    document.removeEventListener("mouseup", handleRotateMouseUp);
-  };
+  
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
   useEffect(() => {
-    if (isDragging || isResizing) {
+    if (isDragging || isResizing || isTransforming) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
-    } else {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
     }
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, isResizing]);
+  }, [isDragging, isResizing, isTransforming]);
+
+  useEffect(() => {
+    if (isTransforming) {
+      document.addEventListener("mousemove", handleTransformMouseMove);
+      document.addEventListener("mouseup", handleTransformMouseUp);
+    } else {
+      document.removeEventListener("mousemove", handleTransformMouseMove);
+      document.removeEventListener("mouseup", handleTransformMouseUp);
+    }
+    return () => {
+      document.removeEventListener("mousemove", handleTransformMouseMove);
+      document.removeEventListener("mouseup", handleTransformMouseUp);
+    };
+  }, [isTransforming]);
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Delete" && isSelected) {
@@ -171,22 +188,21 @@ const CreateComponent = ({ info, current_component, removeComponent }) => {
   const getShapeStyle = (info) => {
     const baseStyle = {
       width: `${size.width}px`,
-      height: `${size.height}px`,
+      width: "100%",
+      height: "100%",
       backgroundColor: info.link ? "#e5e5e5" : "#e5e5e5",
       backgroundImage: info.link ? `url(${info.link})` : null,
       backgroundSize: "cover",
-      position: "absolute",
-      left: position.x,
-      top: position.y,
-      zIndex: 10,
-      cursor: "move",
-      transform: `rotate(${rotate}deg)`
+      clipPath: info.clipPath,
     };
 
     const shapeStyles = {
       rect: {},
       circle: { borderRadius: "50%" },
-      triangle: { clipPath: "polygon(50% 0, 100% 100%, 0 100%)" },
+      triangle: {
+        clipPath: "polygon(50% 0, 100% 100%, 0 100%)",
+        position: "relative",
+      },
       invertedTriangle: { clipPath: "polygon(50% 100%, 0 0, 100% 0)" },
       pentagon: {
         clipPath: "polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)",
@@ -222,40 +238,171 @@ const CreateComponent = ({ info, current_component, removeComponent }) => {
 
   return (
     <div
-      onMouseDown={handleMouseDown}
-      onClick={() => info.setCurrentComponent(info)}
-      style={getShapeStyle(info)}
-      className="resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative">
-      {isSelected && (
-        <MdOutlineChangeCircle
-          className="resize-handle rotate-icon"
+    className="wrapperDiv"
+    style={{
+      position: "absolute",
+      width: size.width,
+      height: size.height,
+      left: position.x,
+      top: position.y,
+      zIndex: 10,
+      clipPath: info.clipPath,
+      transform: `rotate(${deg}deg)`, // Xoay shape
+      transformOrigin: "center", // Xác định gốc xoay tại trung tâm
+    }}
+    onMouseDown={handleMouseDown}
+  >
+    {/* Nút xoay (icon) */}
+    {isSelected && (
+      <MdOutlineChangeCircle
+        size={20}
+        className="resize-handle transform-icon"
+        style={{
+          position: "absolute",
+          left: "50%",
+          bottom: "-30px",
+          transform: "translateX(-50%)",
+          cursor: "pointer",
+          zIndex: 10,
+        }}
+        onMouseDown={handleTransformMouseDown}
+      />
+    )}
+  
+    {/* Nút resize 8 hướng */}
+    {isSelected && (
+      <>
+        {/* Top-Left */}
+        <div
+          onMouseDown={(e) => handleResizeMouseDown(e, "top-left")}
           style={{
             position: "absolute",
-            left: "50%",
-            bottom: "-40px",
-            transform: "translateX(-50%)",
-            cursor: "pointer",
+            top: "-10px",
+            left: "-10px",
+            width: "10px",
+            height: "10px",
+            cursor: "nwse-resize",
+            backgroundColor: "blue",
+            zIndex: 10,
           }}
-          onMouseDown={handleRotateMouseDown}
         />
-      )}
-
-{isSelected && (
-        <>
-          <div onMouseDown={(e) => handleResizeMouseDown(e, "top-left")} style={{ position: "absolute", top: "-10px", left: "-10px", width: "10px", height: "10px", cursor: "nwse-resize", backgroundColor: "blue" }} />
-          <div onMouseDown={(e) => handleResizeMouseDown(e, "top")} style={{ position: "absolute", top: "-10px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", cursor: "ns-resize", backgroundColor: "blue" }} />
-          <div onMouseDown={(e) => handleResizeMouseDown(e, "top-right")} style={{ position: "absolute", top: "-10px", right: "-10px", width: "10px", height: "10px", cursor: "nesw-resize", backgroundColor: "blue" }} />
-          <div onMouseDown={(e) => handleResizeMouseDown(e, "right")} style={{ position: "absolute", top: "50%", right: "-10px", transform: "translateY(-50%)", width: "10px", height: "10px", cursor: "ew-resize", backgroundColor: "blue" }} />
-          <div onMouseDown={(e) => handleResizeMouseDown(e, "bottom-right")} style={{ position: "absolute", bottom: "-10px", right: "-10px", width: "10px", height: "10px", cursor: "nwse-resize", backgroundColor: "blue" }} />
-          <div onMouseDown={(e) => handleResizeMouseDown(e, "bottom")} style={{ position: "absolute", bottom: "-10px", left: "50%", transform: "translateX(-50%)", width: "10px", height: "10px", cursor: "ns-resize", backgroundColor: "blue" }} />
-          <div onMouseDown={(e) => handleResizeMouseDown(e, "bottom-left")} style={{ position: "absolute", bottom: "-10px", left: "-10px", width: "10px", height: "10px", cursor: "nesw-resize", backgroundColor: "blue" }} />
-          <div onMouseDown={(e) => handleResizeMouseDown(e, "left")} style={{ position: "absolute", top: "50%", left: "-10px", transform: "translateY(-50%)", width: "10px", height: "10px", cursor: "ew-resize", backgroundColor: "blue" }} />
-        </>
-      ) }
-
-
+        {/* Top */}
+        <div
+          onMouseDown={(e) => handleResizeMouseDown(e, "top")}
+          style={{
+            position: "absolute",
+            top: "-10px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "10px",
+            height: "10px",
+            cursor: "ns-resize",
+            backgroundColor: "blue",
+            zIndex: 10,
+          }}
+        />
+        {/* Top-Right */}
+        <div
+          onMouseDown={(e) => handleResizeMouseDown(e, "top-right")}
+          style={{
+            position: "absolute",
+            top: "-10px",
+            right: "-10px",
+            width: "10px",
+            height: "10px",
+            cursor: "nesw-resize",
+            backgroundColor: "blue",
+            zIndex: 10,
+          }}
+        />
+        {/* Right */}
+        <div
+          onMouseDown={(e) => handleResizeMouseDown(e, "right")}
+          style={{
+            position: "absolute",
+            top: "50%",
+            right: "-10px",
+            transform: "translateY(-50%)",
+            width: "10px",
+            height: "10px",
+            cursor: "ew-resize",
+            backgroundColor: "blue",
+            zIndex: 10,
+          }}
+        />
+        {/* Bottom-Right */}
+        <div
+          onMouseDown={(e) => handleResizeMouseDown(e, "bottom-right")}
+          style={{
+            position: "absolute",
+            bottom: "-10px",
+            right: "-10px",
+            width: "10px",
+            height: "10px",
+            cursor: "nwse-resize",
+            backgroundColor: "blue",
+            zIndex: 10,
+          }}
+        />
+        {/* Bottom */}
+        <div
+          onMouseDown={(e) => handleResizeMouseDown(e, "bottom")}
+          style={{
+            position: "absolute",
+            bottom: "-10px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "10px",
+            height: "10px",
+            cursor: "ns-resize",
+            backgroundColor: "blue",
+            zIndex: 10,
+          }}
+        />
+        {/* Bottom-Left */}
+        <div
+          onMouseDown={(e) => handleResizeMouseDown(e, "bottom-left")}
+          style={{
+            position: "absolute",
+            bottom: "-10px",
+            left: "-10px",
+            width: "10px",
+            height: "10px",
+            cursor: "nesw-resize",
+            backgroundColor: "blue",
+            zIndex: 10,
+          }}
+        />
+        {/* Left */}
+        <div
+          onMouseDown={(e) => handleResizeMouseDown(e, "left")}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "-10px",
+            transform: "translateY(-50%)",
+            width: "10px",
+            height: "10px",
+            cursor: "ew-resize",
+            backgroundColor: "blue",
+            zIndex: 10,
+          }}
+        />
+      </>
+    )}
+  
+    {/* Nội dung của shape */}
+    <div
+      onClick={() => info.setCurrentComponent(info)}
+      style={getShapeStyle(info)}
+      className="resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative"
+    >
     </div>
+  </div>
+  
+
   );
 };
 
 export default CreateComponent;
+

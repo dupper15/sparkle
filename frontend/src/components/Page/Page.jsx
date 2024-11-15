@@ -1,10 +1,11 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import CreateComponent from "../../components/CreateComponent";
 import { useDroppable } from "@dnd-kit/core";
 
+  
 const Page = React.forwardRef(
   (
     {
@@ -27,6 +28,20 @@ const Page = React.forwardRef(
     const { isOver, setNodeRef } = useDroppable({
       id,
     });
+
+    const [selectedId, setSelectedId] = useState(null); // Lưu trữ id của shape được chọn
+
+  const handleSelect = (id) => {
+    setSelectedId(id); // Cập nhật id của shape được chọn
+  };
+
+  const components = [
+    { id: 1, shapeType: "rect", x: 50, y: 50, clipPath: "", link: "" },
+    { id: 2, shapeType: "circle", x: 200, y: 200, clipPath: "", link: "" },
+    // Thêm các shapes khác
+  ];
+
+    
 
     return (
       <div ref={ref}  className='flex flex-col gap-4'>
@@ -70,6 +85,8 @@ const Page = React.forwardRef(
               current_page={current_page}
               removeComponent={removeElement}
               updateShapePosition={updateShapePosition}
+              isSelected={info.id === selectedId} // Truyền trạng thái selected cho từng shape
+              onSelect={() => handleSelect(info.id)} // Gọi hàm select khi hình được click
             />
           ))}
         </div>
