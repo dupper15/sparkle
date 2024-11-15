@@ -256,7 +256,6 @@ const WorkplacePage = () => {
             {[
               { icon: <LuLayoutTemplate />, label: "Design", type: "design" },
               { icon: <LuShapes />, label: "Shape", type: "shape" },
-              { icon: <LuUpload />, label: "Upload", type: "upload" },
               { icon: <LuFolder />, label: "Project", type: "project" },
               { icon: <RiText />, label: "Text", type: "text" },
               { icon: <LuImage />, label: "Image", type: "image" },
@@ -296,7 +295,6 @@ const WorkplacePage = () => {
               {state === "shape" && (
                 <Shape addNewShape={updateShapes} drag={setDraggingShape} />
               )}
-              {state === "upload" && <UploadImage />}
               {state === "project" && <Project />}
               {state === "text" && <Text addNewText={add_text} />}
               {state === "image" && <Image drag={setDraggingShape} />}

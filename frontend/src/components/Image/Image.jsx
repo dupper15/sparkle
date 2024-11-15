@@ -4,18 +4,49 @@ import template from "../../assets/bg-dm.png"; // Đảm bảo đúng đường 
 
 const Image = ({ drag }) => {
   const [draggingImage, setDraggingImage] = useState(null);
-
+  const [images, setImages] = useState([
+    { id: 1, url: template },
+    { id: 2, url: template },
+    { id: 3, url: template },
+    { id: 4, url: template },
+    { id: 5, url: template },
+    { id: 6, url: template },
+  ]);
   const handleDragStart = (img) => {
-    const imgObject = { backgroundImage: template, id: img };
+    const imgObject = { backgroundImage: img.url || template, id: img.id };
     setDraggingImage(imgObject);
     drag(imgObject);
+  };
+  const handleUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const newImage = {
+        id: images.length + 1,
+        url: URL.createObjectURL(file),
+      };
+      setImages((prevImages) => [...prevImages, newImage]);
+    }
   };
 
   return (
     <div>
+      <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
+        <label className='text-center cursor-pointer' htmlFor='uploadImage'>
+          Upload Image
+        </label>
+        <input
+          type='file'
+          id='uploadImage'
+          className='hidden'
+          onChange={handleUpload}></input>
+      </div>
       <div className='grid grid-cols-3 gap-2 w-full'>
-        {[1, 2, 3, 4, 5, 6].map((img, i) => (
-          <DraggableImage key={i} img={img} onDragStart={handleDragStart} />
+        {images.map((img, i) => (
+          <DraggableImage
+            key={img.id || i}
+            img={img}
+            onDragStart={handleDragStart}
+          />
         ))}
       </div>
       <DragOverlay>
@@ -36,7 +67,7 @@ const Image = ({ drag }) => {
 
 const DraggableImage = ({ img, onDragStart }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
-    id: img.toString(),
+    id: img?.id ? img.id.toString() : "default",
   });
 
   return (
@@ -46,7 +77,7 @@ const DraggableImage = ({ img, onDragStart }) => {
       {...listeners}
       {...attributes}
       onMouseDown={() => onDragStart(img)}>
-      <img className='w-full h-full' src={template} alt='' />
+      <img className='w-full h-full' src={img.url} alt='' />
     </div>
   );
 };
