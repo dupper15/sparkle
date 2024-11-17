@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
     {
-        userName: String,
+        userName: {type: String, default: null},
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
-        image: String,
+        image: {type: String, default: null},
         isOnline: { type: Boolean, default: false },
         isLinkedFB: { type: Boolean, default: false },
         isLinkedGG: { type: Boolean, default: false }
