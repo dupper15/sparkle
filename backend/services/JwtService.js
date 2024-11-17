@@ -21,23 +21,27 @@ const generalRefreshToken = (payload) => {
 const refreshTokenJwt = (token) => {
     return new Promise((resolve, reject) => {
         try {
-            const decoded = jwt.verify(token, process.env.REFRESH_TOKEN);
-            const { payload } = decoded;
-
-            const access_token = generateAccessToken({
-                id: payload?.id
-            });
-
-            resolve({
-                status: "OK",
-                message: "SUCCESS",
-                access_token
-            });
-        } catch (err) {
-            resolve({
-                status: "ERROR",
-                message: "The authentication failed"
-            });
+            jwt.verify(token, process.env.REFRESH_TOKEN, async (err, user) => {
+                if (err){
+                    resolve({
+                        status: "ERROR",
+                        message: "The authentication",                   
+                    })
+                    return;
+                }
+                const {payload} = user
+                const access_token = await generalAccessToken({
+                    id: payload?.id
+                })
+                resolve({
+                    status: "OK",
+                    message: "SUCCESS",
+                    data: access_token
+                })   
+            })
+                     
+        } catch (e) {
+            reject(e)
         }
     })
 }
