@@ -62,19 +62,19 @@ const TextFormatSection = () => {
                 >
                     <FaUnderline/>
                 </button>
-                <button
-                    className={`rounded text-gray-700 pl-1 pr-1 mr-1 ${isStrikethrough ? 'bg-purple-200 text-purple-700' : ''}`}
-                    onClick={handleStrikethroughClick}
-                >
-                    <FaStrikethrough/>
-                </button>
+                {/*<button*/}
+                {/*    className={`rounded text-gray-700 pl-1 pr-1 mr-1 ${isStrikethrough ? 'bg-purple-200 text-purple-700' : ''}`}*/}
+                {/*    onClick={handleStrikethroughClick}*/}
+                {/*>*/}
+                {/*    <FaStrikethrough/>*/}
+                {/*</button>*/}
 
-                <button
-                    className={`rounded text-gray-700 pl-1 pr-1 font-medium ${isUppercase ? 'bg-purple-200 text-purple-700' : ''}`}
-                    onClick={handleUppercaseClick}
-                >
-                    aA
-                </button>
+                {/*<button*/}
+                {/*    className={`rounded text-gray-700 pl-1 pr-1 font-medium ${isUppercase ? 'bg-purple-200 text-purple-700' : ''}`}*/}
+                {/*    onClick={handleUppercaseClick}*/}
+                {/*>*/}
+                {/*    aA*/}
+                {/*</button>*/}
             </div>
             <div className={'fixed top-1/2 left-1/2 translate-x-[120%] '}>
                 {

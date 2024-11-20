@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MdOutlineChangeCircle } from "react-icons/md";
 
-const CreateComponent = ({ info, current_component, removeComponent, }) => {
+const CreateComponent = ({ info, current_component, removeComponent, handleClick }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [position, setPosition] = useState({ x: info.x, y: info.y });

@@ -45,12 +45,12 @@ const ImageStylesEditSection = () => {
                 </button>
 
                 {/*Crop*/}
-                <button
-                    className='text-gray-700 text-xl'
-                    onClick={handleUppercaseClick}
-                >
-                    <FaBorderStyle />
-                </button>
+                {/*<button*/}
+                {/*    className='text-gray-700 text-xl'*/}
+                {/*    onClick={handleUppercaseClick}*/}
+                {/*>*/}
+                {/*    <FaBorderStyle />*/}
+                {/*</button>*/}
             </div>
             <div className={'fixed top-1/2 left-1/2 translate-x-[120%] '}>
                 {
