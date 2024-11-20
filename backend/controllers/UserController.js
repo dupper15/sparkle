@@ -77,7 +77,7 @@ const getDetailUser = async (req, res) => {
                 message: 'Id is not defined'
             })
         }
-        const response = await UserService.getAllUser(userId)
+        const response = await UserService.getDetailUser(userId)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
