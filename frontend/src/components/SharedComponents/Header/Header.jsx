@@ -27,7 +27,7 @@ const Header = () => {
   return (
     <div
       className={`flex items-center justify-between w-full h-[50px] px-5 py-8 transition-colors duration-500 ${
-        isDarkMode ? "bg-[#18191B]" : "bg-gray-100"
+        isDarkMode ? "bg-[#18191B]" : "bg-gray-200"
       }`}>
       <div className="flex items-center justify-items-start gap-2">
         <div className="w-[40px] h-[40px] bg-[url('./assets/logo.png')] bg-cover bg-center" />

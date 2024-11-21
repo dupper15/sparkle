@@ -1,8 +1,11 @@
 import { FaPlus } from "react-icons/fa6";
 import avt from "../../assets/default-profile-icon.png";
 import { useNavigate } from "react-router-dom";
+import { useDarkMode } from "../../contexts/DarkModeContext";
 
 const WorkplaceHeader = () => {
+  const { isDarkMode } = useDarkMode();
+
   const navigate = useNavigate();
 
   const goHome = () => {
@@ -10,12 +13,17 @@ const WorkplaceHeader = () => {
   };
 
   return (
-    <div className="flex items-center justify-between w-full h-[50px] px-5 py-8 bg-black">
+    <div
+      className={`flex items-center justify-between w-full h-[50px] px-5 py-8 ${
+        isDarkMode ? "bg-[#18191B]" : "bg-gray-200"
+      }`}>
       <div className="flex items-center justify-items-start gap-2">
         <div className="w-[40px] h-[40px] bg-[url('./assets/logo.png')] bg-cover bg-center" />
         <div
           onClick={goHome}
-          className="text-3xl gradient font-bold cursor-pointer">
+          className={`text-3xl font-bold cursor-pointer ${
+            isDarkMode ? "text-white" : "text-black"
+          }`}>
           Sparkle
         </div>
       </div>

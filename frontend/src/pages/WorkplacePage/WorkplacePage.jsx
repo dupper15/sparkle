@@ -26,8 +26,11 @@ import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBa
 import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar.jsx";
 import { DndContext } from "@dnd-kit/core";
 import Text from "../../components/Text/Text.jsx";
+import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
 
 const WorkplacePage = () => {
+  const { isDarkMode } = useDarkMode();
+
   const [state, setState] = useState("");
   const pageRef = useRef([]);
 
@@ -249,10 +252,16 @@ const WorkplacePage = () => {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <div className="w-screen h-screen bg-no-repeat bg-cover bg-[#151318] flex flex-col scrollbar-hide overflow-hidden">
+      <div
+        className={`w-screen h-screen bg-no-repeat bg-cover flex flex-col scrollbar-hide overflow-hidden ${
+          isDarkMode ? "bg-[#151318]" : "bg-slate-300"
+        }`}>
         <WorkplaceHeader />
         <div className="flex h-[calc(100%-60px)] w-screen scrollbar-hide">
-          <div className="w-[80px] bg-black z-50 scrollbar-hide h-full text-white overflow-y-auto">
+          <div
+            className={`w-[80px] z-50 scrollbar-hide h-full overflow-y-auto ${
+              isDarkMode ? "bg-black text-white" : "bg-gray-100 text-black"
+            }`}>
             {[
               { icon: <LuLayoutTemplate />, label: "Design", type: "design" },
               { icon: <LuShapes />, label: "Shape", type: "shape" },
@@ -269,7 +278,11 @@ const WorkplacePage = () => {
                 key={type}
                 onClick={() => setElements(type, label.toLowerCase())}
                 className={`${
-                  show.name === label.toLowerCase() ? "bg-[#252627]" : ""
+                  show.name === label.toLowerCase()
+                    ? isDarkMode
+                      ? "bg-[#252627]"
+                      : "bg-white"
+                    : ""
                 } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}>
                 <span className="text-2xl">{icon}</span>
                 <span className="text-xs font-medium">{label}</span>
@@ -281,10 +294,16 @@ const WorkplacePage = () => {
             <div
               className={`${
                 show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
-              } bg-[#252627] h-full fixed transition-all w-[350px] z-30 duration-500`}>
+              } ${
+                isDarkMode ? "bg-[#252627]" : "bg-white"
+              } h-full fixed transition-all w-[350px] z-30 duration-500`}>
               <div
                 onClick={() => setShow({ name: "", status: true })}
-                className="flex absolute justify-center items-center bg-[#252627] w-[20px] -right-2 text-slate-300 top-[40%] cursor-pointer h-[100px] rounded-full">
+                className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${
+                  isDarkMode
+                    ? "bg-white text-slate-700"
+                    : "bg-[#252627] text-slate-300"
+                }`}>
                 <MdKeyboardArrowLeft />
               </div>
               {state === "design" && (

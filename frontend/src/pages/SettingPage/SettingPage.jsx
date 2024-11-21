@@ -7,7 +7,7 @@ const SettingPage = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   return (
-    <div className="flex flex-col h-screen overflow-y-auto bg-white transition-colors duration-500 dark:bg-black">
+    <div className="flex flex-col h-screen overflow-y-auto bg-white transition-colors duration-500 dark:bg-[#101010]">
       <header>
         <Header className="fixed top-0 left-0 w-full z-50" />
       </header>
@@ -27,7 +27,7 @@ const SettingPage = () => {
             </div>
             <button
               onClick={toggleDarkMode}
-              className={`relative ml-auto inline-flex items-center h-8 px-4 rounded-full transition-colors hover:bg-slate-400 duration-300 ${
+              className={`ml-auto inline-flex items-center h-8 px-4 rounded-full transition-colors hover:bg-slate-400 duration-300 ${
                 isDarkMode ? "bg-white" : "bg-black"
               }`}>
               <span

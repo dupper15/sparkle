@@ -54,7 +54,9 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
           onChange={inputHandle}
           type="text"
           placeholder="Enter name..."
-          className="w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className={`w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300 ${
+            isDarkMode ? "bg-black text-white" : "bg-white text-black"
+          }`}
         />
       </div>
       <div>
@@ -63,7 +65,9 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
           onChange={inputHandle}
           type="number"
           placeholder="Enter width..."
-          className="w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className={`w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300 ${
+            isDarkMode ? "bg-black text-white" : "bg-white text-black"
+          }`}
         />
       </div>
       <div>
@@ -72,7 +76,9 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
           onChange={inputHandle}
           type="number"
           placeholder="Enter height..."
-          className="w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          className={`w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300 ${
+            isDarkMode ? "bg-black text-white" : "bg-white text-black"
+          }`}
         />
       </div>
       <button

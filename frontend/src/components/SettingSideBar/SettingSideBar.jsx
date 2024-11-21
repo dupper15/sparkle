@@ -13,7 +13,7 @@ const SettingSideBar = () => {
   };
 
   const goToSettingPage = () => {
-    navigate("/setting");
+    navigate("/settings");
   };
   return (
     <div
