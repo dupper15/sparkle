@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useDarkMode } from "../../contexts/DarkModeContext";
 
 // eslint-disable-next-line react/prop-types
 const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
+  const { isDarkMode } = useDarkMode();
+
   const [state, setState] = useState({
     nameProject: "",
     width: "",
@@ -30,14 +33,21 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
   };
 
   return (
-    <div className="relative h-[400px] w-[600px] flex-column items-center justify-center bg-gray-800 p-6 rounded-lg shadow-lg text-center">
+    <div
+      className={`relative h-[400px] w-[600px] flex-column items-center justify-center p-6 rounded-lg shadow-lg text-center ${
+        isDarkMode ? "bg-gray-800" : "bg-gray-100"
+      }`}>
       <button
         className="absolute top-2 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl"
-        onClick={() => childCloseFormRequest(false)}
-      >
+        onClick={() => childCloseFormRequest(false)}>
         ×
       </button>
-      <h2 className="text-lg font-semibold mb-6">Customize size</h2>
+      <h2
+        className={`text-lg font-semibold mb-6 ${
+          isDarkMode ? "text-white" : "text-black"
+        }`}>
+        Customize size
+      </h2>
       <div>
         <input
           name="name"
@@ -67,8 +77,7 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
       </div>
       <button
         onClick={create}
-        className="w-[120px] py-3 mt-4 font-bold text-white rounded-md bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90"
-      >
+        className="w-[120px] py-3 mt-4 font-bold text-white rounded-md bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90">
         Create
       </button>
     </div>
