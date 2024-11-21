@@ -1,4 +1,4 @@
-import {RxDividerVertical} from "react-icons/rx";
+import { RxDividerVertical } from "react-icons/rx";
 import FontSelector from "./SubComponents/FontSelector/FontSelector.jsx";
 import FontSizeField from "./SubComponents/FontSizeField/FontSizeField.jsx";
 import ParagraphFormatSection from "./SubComponents/ParagraphFormatSection/ParagraphFormatSection.jsx";
@@ -6,47 +6,48 @@ import TextFormatSection from "./SubComponents/TextFormatSection/TextFormatSecti
 import PositionEditSection from "./SubComponents/PositionEditSection/PositionEditSection.jsx";
 /* eslint react/prop-types: 0*/
 const TextToolbar = () => {
-    return (<div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
-            {/* Font */}
-            <FontSelector fontName='Ariel'></FontSelector>
+  return (
+    <div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
+      {/* Font */}
+      <FontSelector fontName="Ariel"></FontSelector>
 
-            {/* Font Size */}
-            <FontSizeField></FontSizeField>
+      {/* Font Size */}
+      <FontSizeField></FontSizeField>
 
-            {/* Text Formatting */}
-            <TextFormatSection></TextFormatSection>
+      {/* Text Formatting */}
+      <TextFormatSection></TextFormatSection>
 
-            <RxDividerVertical/>
+      <RxDividerVertical />
 
-            {/* Paragraph Formatting */}
-            <ParagraphFormatSection></ParagraphFormatSection>
+      {/* Paragraph Formatting */}
+      <ParagraphFormatSection></ParagraphFormatSection>
 
-            <RxDividerVertical/>
+      <RxDividerVertical />
 
-            {/*/!* Transparency *!/*/}
-            {/*<button className="text-black text-xl" onClick={onChangeTransparency}>*/}
-            {/*    <RxTransparencyGrid/>*/}
-            {/*</button>*/}
+      {/*/!* Transparency *!/*/}
+      {/*<button className="text-black text-xl" onClick={onChangeTransparency}>*/}
+      {/*    <RxTransparencyGrid/>*/}
+      {/*</button>*/}
 
-            {/*<RxDividerVertical/>*/}
+      {/*<RxDividerVertical/>*/}
 
-            {/*/!* Effects *!/*/}
-            {/*<button className="bg-purple-200 text-purple-700 px-2 rounded text-xl" onClick={onEffects}>*/}
-            {/*    <FaMagic></FaMagic>*/}
-            {/*</button>*/}
+      {/*/!* Effects *!/*/}
+      {/*<button className="bg-purple-200 text-purple-700 px-2 rounded text-xl" onClick={onEffects}>*/}
+      {/*    <FaMagic></FaMagic>*/}
+      {/*</button>*/}
 
-            {/*<RxDividerVertical/>*/}
+      {/*<RxDividerVertical/>*/}
 
-            {/*/!* Animate and Position *!/*/}
-            {/*<button className="text-gray-700 text-xl" onClick={onAnimate}>*/}
-            {/*    <FaPlayCircle></FaPlayCircle>*/}
-            {/*</button>*/}
+      {/*/!* Animate and Position *!/*/}
+      {/*<button className="text-gray-700 text-xl" onClick={onAnimate}>*/}
+      {/*    <FaPlayCircle></FaPlayCircle>*/}
+      {/*</button>*/}
 
-            {/*<RxDividerVertical/>*/}
+      {/*<RxDividerVertical/>*/}
 
-            <PositionEditSection></PositionEditSection>
-        </div>
-    );
+      <PositionEditSection></PositionEditSection>
+    </div>
+  );
 };
 
 export default TextToolbar;

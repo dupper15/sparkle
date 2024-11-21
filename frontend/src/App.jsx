@@ -9,6 +9,7 @@ import TemplatePage from "./pages/TemplatePage/TemplatePage.jsx";
 import TestingPage from "./pages/TestingPage/TestingPage.jsx";
 import CreateDesign from "./components/CreateDesign.jsx";
 import Place from "./pages/place.jsx";
+import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 
 //const userInfo = token_decode(localStorage.getItem("sparkle_token"));
 const router = createBrowserRouter([
@@ -37,7 +38,7 @@ const router = createBrowserRouter([
     element: <MyAccountPage />,
   },
   {
-    path: "/setting",
+    path: "/settings",
     element: <SettingPage />,
   },
   {
@@ -50,5 +51,9 @@ const router = createBrowserRouter([
   },
 ]);
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <DarkModeProvider>
+      <RouterProvider router={router} />
+    </DarkModeProvider>
+  );
 }

@@ -4,8 +4,8 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import CreateComponent from "../../components/CreateComponent";
 import { useDroppable } from "@dnd-kit/core";
+import { useDarkMode } from "../../contexts/DarkModeContext";
 
-  
 const Page = React.forwardRef(
   (
     {
@@ -21,7 +21,7 @@ const Page = React.forwardRef(
       removeElement,
       current_page,
       onDragEnd,
-      updateShapePosition
+      updateShapePosition,
     },
     ref
   ) => {
@@ -29,33 +29,36 @@ const Page = React.forwardRef(
 
     const [selectedId, setSelectedId] = useState(null); // Lưu trữ id của shape được chọn
 
-  const handleSelect = (id) => {
-    setSelectedId(id); // Cập nhật id của shape được chọn
-  };
+    const handleSelect = (id) => {
+      setSelectedId(id); // Cập nhật id của shape được chọn
+    };
 
-  const components = [
-    { id: 1, shapeType: "rect", x: 50, y: 50, clipPath: "", link: "" },
-    { id: 2, shapeType: "circle", x: 200, y: 200, clipPath: "", link: "" },
-    // Thêm các shapes khác
-  ];
+    const components = [
+      { id: 1, shapeType: "rect", x: 50, y: 50, clipPath: "", link: "" },
+      { id: 2, shapeType: "circle", x: 200, y: 200, clipPath: "", link: "" },
+      // Thêm các shapes khác
+    ];
 
-    
+    const { isDarkMode } = useDarkMode();
 
     return (
-      <div ref={ref}  className='flex flex-col gap-4'>
-        <div className='flex justify-between items-center'>
-          <div className='text-white text-2xl font-bold'>Page {title}</div>
-          <div className='flex gap-2'>
+      <div ref={ref} className="flex flex-col gap-4">
+        <div
+          className={`flex justify-between items-center ${
+            isDarkMode ? "text-white" : "text-black"
+          }`}>
+          <div className="text-2xl font-bold">Page {title}</div>
+          <div className="flex gap-2">
             <IoIosArrowUp
-              className='text-slate-400 hover:text-red-600 cursor-pointer text-2xl'
+              className="hover:text-red-600 cursor-pointer text-2xl"
               onClick={upButton}
             />
             <IoIosArrowDown
-              className='text-slate-400 hover:text-red-600 cursor-pointer text-2xl'
+              className="hover:text-red-600 cursor-pointer text-2xl"
               onClick={downButton}
             />
             <FaRegTrashCan
-              className='text-slate-400 hover:text-red-600 cursor-pointer text-xl'
+              className="hover:text-red-600 cursor-pointer text-xl"
               onClick={removeButton}
             />
           </div>
@@ -74,8 +77,7 @@ const Page = React.forwardRef(
             overflow: "hidden",
             zIndex: 0,
           }}
-          className='bg-white border relative'>
-
+          className="bg-white border relative">
           {shapes.map((info) =>
             info.type === "text" ? (
               <div
