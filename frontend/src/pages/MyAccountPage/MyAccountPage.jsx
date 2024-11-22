@@ -54,7 +54,7 @@ const MyAccountPage = () => {
             <div className="flex items-center justify-between w-full">
               <div className="flex flex-col space-y-2">
                 <span className="font-semibold text-xl pointer-events-none">
-                  Username
+                  Nickname
                 </span>
                 <span className="font-thin text-s md:text-m pointer-events-none">
                   {user.userName}

@@ -8,9 +8,11 @@ import * as UserService from '../../services/UserService'
 import { useEffect, useState } from "react"
 import * as Alert from '../../components/Alert/Alert'
 import { useNavigate } from "react-router-dom";
+import { MdOutlineEmail } from "react-icons/md";
 const SignupPage = () => {
 
   const navigate = useNavigate();
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -38,6 +40,7 @@ const SignupPage = () => {
 
   const handleSignup = () => {
     mutation.mutate({
+      userName,
       email,  
       password,
       confirmPassword
@@ -63,6 +66,15 @@ const SignupPage = () => {
         <h1 className='text-white text-3xl font-bold mt-0'>Sign up</h1>
         <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-500'>
             <FaRegUser className='text-white mr-2' />
+            <input
+            onChange={(e) => setUserName(e.target.value)}
+            type='text'
+            placeholder='Enter your username...'
+            className='w-full h-10 placeholder:text-slate-400 text-white bg-black outline-none'
+            />
+        </div>
+        <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-500'>
+            <MdOutlineEmail  className='text-white mr-2' />
             <input
             onChange={(e) => setEmail(e.target.value)}
             type='email'

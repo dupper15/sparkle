@@ -6,10 +6,10 @@ const { generalAccessToken, generalRefreshToken } = require("../services/JwtServ
 
 const createUser = async (req, res) => {
     try {
-        const { email, password, confirmPassword} = req.body
+        const {userName, email, password, confirmPassword} = req.body
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         const isCheckEmail = emailRegex.test(email)
-        if (!email || !password || !confirmPassword) {
+        if ( !userName ||!email || !password || !confirmPassword) {
             return res.status(400).json({
                 status: 'ERROR',
                 message: 'The input is required'
@@ -39,6 +39,7 @@ const createUser = async (req, res) => {
         const hash = bcrypt.hashSync(password, 10)
             
         const createdUser = await User.create({
+            userName,
             email, 
             password: hash,
         })
