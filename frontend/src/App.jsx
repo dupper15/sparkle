@@ -12,6 +12,8 @@ import CreateDesign from "./components/CreateDesign.jsx";
 import Place from "./pages/place.jsx";
 import HeroPage from "./pages/HeroPage/HeroPage.jsx";
 import SignupPage from "./pages/SignupPage/SignupPage.jsx";
+import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
+
 
 // Tạo đối tượng queryClient
 const queryClient = new QueryClient();
@@ -51,7 +53,7 @@ const router = createBrowserRouter([
     element: <MyAccountPage />,
   },
   {
-    path: "/setting",
+    path: "/settings",
     element: <SettingPage />,
   },
   {
@@ -65,7 +67,7 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  
+
   return (
     <QueryClientProvider client={queryClient}> 
       <RouterProvider router={router} />

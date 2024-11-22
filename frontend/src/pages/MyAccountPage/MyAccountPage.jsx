@@ -3,13 +3,17 @@ import Footer from "../../components/SharedComponents/Footer/Footer.jsx";
 import SettingSideBar from "../../components/SettingSideBar/SettingSideBar.jsx";
 import profileIcon from "../../assets/default-profile-icon.png";
 import { FaGoogle, FaFacebook } from "react-icons/fa6";
+import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
 import { useSelector } from "react-redux";
 
 const MyAccountPage = () => {
-
   const user = useSelector((state) => state.user)
+  const { isDarkMode } = useDarkMode();
   return (
-    <div className="flex flex-col h-screen overflow-y-auto bg-black">
+    <div
+      className={`flex flex-col h-screen overflow-y-auto ${
+        isDarkMode ? "bg-black" : "bg-white"
+      }`}>
       <header>
         <Header className="fixed top-0 left-0 w-full z-50" />
       </header>
@@ -17,7 +21,10 @@ const MyAccountPage = () => {
         <div className="w-[55px] md:w-[80px] z-50 h-full overflow-y-auto overflow-x-hidden scrollbar-hide">
           <SettingSideBar />
         </div>
-        <div className="flex flex-col w-[calc(100%-50px)] md:w-[calc(100%-80px)] overflow-y-auto text-white gap-4 ps-14 pe-20 scrollbar-hide">
+        <div
+          className={`flex flex-col w-[calc(100%-50px)] md:w-[calc(100%-80px)] overflow-y-auto gap-4 ps-14 pe-20 scrollbar-hide ${
+            isDarkMode ? "text-white" : "text-black"
+          }`}>
           <span className="font-bold text-xl md:text-3xl pointer-events-none">
             My Profile
           </span>
@@ -53,7 +60,10 @@ const MyAccountPage = () => {
                   {user.userName}
                 </span>
               </div>
-              <button className="w-[80px] h-[40px] bg-white text-black font-semibold rounded-lg shadow-sm flex justify-center items-center p-2 hover:bg-slate-400">
+              <button
+                className={`w-[80px] h-[40px] font-semibold rounded-lg shadow-sm flex justify-center items-center p-2 hover:bg-slate-400 ${
+                  isDarkMode ? "bg-white text-black" : "bg-black text-white"
+                }`}>
                 Edit
               </button>
             </div>
@@ -73,7 +83,10 @@ const MyAccountPage = () => {
                   Password
                 </span>
               </div>
-              <button className="w-[auto] h-[40px] bg-white text-black font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400">
+              <button
+                className={`w-[auto] h-[40px] font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
+                  isDarkMode ? "bg-white text-black" : "bg-black text-white"
+                }`}>
                 Change Password
               </button>
             </div>
@@ -86,7 +99,10 @@ const MyAccountPage = () => {
                 Services you have used
               </span>
             </div>
-            <div className="flex flex-row items-center w-max md:w-full h-[auto] border-2 border-white rounded-lg my-2 py-3 px-2">
+            <div
+              className={`flex flex-row items-center w-max md:w-full h-[auto] border-2 rounded-lg my-2 py-3 px-2 ${
+                isDarkMode ? "border-white" : "border-black"
+              }`}>
               <div className="flex flex-row items-center">
                 <FaGoogle className="h-[40px] w-[40px]" />
                 <div className="flex flex-col px-4">
@@ -98,11 +114,17 @@ const MyAccountPage = () => {
                   </span>
                 </div>
               </div>
-              <button className="w-[auto] h-[40px] ml-auto bg-white text-black font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400">
+              <button
+                className={`w-[auto] h-[40px] ml-auto font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
+                  isDarkMode ? "bg-white text-black" : "bg-black text-white"
+                }`}>
                 Disconnect
               </button>
             </div>
-            <div className="flex flex-row items-center w-max md:w-full h-[auto] border-2 border-white rounded-lg my-2 py-3 px-2">
+            <div
+              className={`flex flex-row items-center w-max md:w-full h-[auto] border-2 rounded-lg my-2 py-3 px-2 ${
+                isDarkMode ? "border-white" : "border-black"
+              }`}>
               <div className="flex flex-row items-center">
                 <FaFacebook className="h-[40px] w-[40px]" />
                 <div className="flex flex-col px-4">
@@ -114,7 +136,10 @@ const MyAccountPage = () => {
                   </span>
                 </div>
               </div>
-              <button className="w-[auto] h-[40px] ml-auto bg-white text-black font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400">
+              <button
+                className={`w-[auto] h-[40px] ml-auto font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
+                  isDarkMode ? "bg-white text-black" : "bg-black text-white"
+                }`}>
                 Disconnect
               </button>
             </div>

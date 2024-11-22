@@ -5,8 +5,15 @@ import { RxExit } from "react-icons/rx";
 import { useSelector } from "react-redux";
 const UserProfileMenu = () => {
   const user = useSelector((state) => state.user)
+
+import { useDarkMode } from "../../../contexts/DarkModeContext";
+const UserProfileMenu = () => {
+  const { isDarkMode } = useDarkMode();
   return (
-    <div className="profile-dropdown box-border justify-center align-middle bg-black pb-2 rounded-2xl">
+    <div
+      className={`profile-dropdown box-border justify-center align-middle pb-2 shadow-lg rounded-2xl ${
+        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+      }`}>
       <div className="profile-header flex p-4">
         <img
           src={profileIcon}
@@ -22,7 +29,7 @@ const UserProfileMenu = () => {
           <MdOutlinePerson className="h-8 w-8 pr-2" />
           <span className="mt-auto mb-auto">Profile</span>
         </Link>
-        <Link className="flex mb-6 pl-4" to="../setting">
+        <Link className="flex mb-6 pl-4" to="../settings">
           <MdOutlineSettings className="h-8 w-8 pr-2" />
           <span className="mt-auto mb-auto">Settings</span>
         </Link>
