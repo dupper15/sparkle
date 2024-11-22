@@ -7,8 +7,8 @@ const userSchema = new mongoose.Schema(
         password: { type: String, required: true },
         image: {type: String, default: null},
         isOnline: { type: Boolean, default: false },
-        isLinkedFB: { type: Boolean, default: false },
-        isLinkedGG: { type: Boolean, default: false }
+        LinkedFB: { type: String, default: null },
+        LinkedGG: { type: String, default: null }
     },
     { 
         timestamps: true 

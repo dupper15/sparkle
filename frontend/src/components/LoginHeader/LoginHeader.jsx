@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-const LoginHeader = ({ loginButtonClick, signUpButtonClick }) => {
+const LoginHeader = ({ handleNavigateLogin, handleNavigateSignup }) => {
   return (
     <div className='flex items-center justify-between w-full h-[50px] px-5 py-8'>
       <div className='flex items-center justify-items-start gap-2'>
@@ -39,12 +39,12 @@ const LoginHeader = ({ loginButtonClick, signUpButtonClick }) => {
       </ul>
       <div className='flex items-center justify-center gap-5 px-3 py-10'>
         <button
-          onClick={loginButtonClick}
+          onClick={handleNavigateLogin}
           className='w-[80px] h-[40px] bg-black font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2 transition-all hover:bg-white duration-500'>
           <span className='gradient'> Login</span>
         </button>
         <button
-          onClick={signUpButtonClick}
+          onClick={handleNavigateSignup}
           className='w-[80px] h-[40px] bg-transparent font-semibold rounded-lg border-2 border-black shadow-sm cursor-pointer text-black flex justify-center items-center p-2 transition-all hover:bg-gray-200 duration-500 hover:border-gray-200'>
           Sign up
         </button>

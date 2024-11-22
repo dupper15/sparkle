@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import LoginPage from "./pages/LoginPage/LoginPage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"; // Import QueryClient và QueryClientProvider
+import LoginPage from "./pages/LoginPage/LoginPage.jsx";
 import WorkplacePage from "./pages/WorkplacePage/WorkplacePage";
 import HomePage from "./pages/HomePage/HomePage";
 import ProjectPage from "./pages/ProjectPage/ProjectPage.jsx";
@@ -9,12 +10,25 @@ import TemplatePage from "./pages/TemplatePage/TemplatePage.jsx";
 import TestingPage from "./pages/TestingPage/TestingPage.jsx";
 import CreateDesign from "./components/CreateDesign.jsx";
 import Place from "./pages/place.jsx";
+import HeroPage from "./pages/HeroPage/HeroPage.jsx";
+import SignupPage from "./pages/SignupPage/SignupPage.jsx";
 
-//const userInfo = token_decode(localStorage.getItem("sparkle_token"));
+// Tạo đối tượng queryClient
+const queryClient = new QueryClient();
+
+// Định nghĩa các route
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LoginPage />,
+    element: <HeroPage/>
+  },
+  {
+    path:  "/sign-up",
+    element: <SignupPage/>
+  },
+  {
+    path: "/login",
+    element: <LoginPage/>
   },
   {
     path: "/home",
@@ -49,6 +63,12 @@ const router = createBrowserRouter([
     element: <Place />,
   },
 ]);
+
 export default function App() {
-  return <RouterProvider router={router} />;
+  
+  return (
+    <QueryClientProvider client={queryClient}> 
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }

@@ -3,8 +3,11 @@ import Footer from "../../components/SharedComponents/Footer/Footer.jsx";
 import SettingSideBar from "../../components/SettingSideBar/SettingSideBar.jsx";
 import profileIcon from "../../assets/default-profile-icon.png";
 import { FaGoogle, FaFacebook } from "react-icons/fa6";
+import { useSelector } from "react-redux";
 
 const MyAccountPage = () => {
+
+  const user = useSelector((state) => state.user)
   return (
     <div className="flex flex-col h-screen overflow-y-auto bg-black">
       <header>
@@ -47,7 +50,7 @@ const MyAccountPage = () => {
                   Username
                 </span>
                 <span className="font-thin text-s md:text-m pointer-events-none">
-                  caoduonglam
+                  {user.userName}
                 </span>
               </div>
               <button className="w-[80px] h-[40px] bg-white text-black font-semibold rounded-lg shadow-sm flex justify-center items-center p-2 hover:bg-slate-400">
@@ -60,7 +63,7 @@ const MyAccountPage = () => {
                 Email
               </span>
               <span className="font-thin text-s md:text-m pointer-events-none">
-                caoduonglamhuhu@gmail.com
+                {user.email}
               </span>
             </div>
             <div className="w-full h-[1px] bg-gray-400 my-4"></div>

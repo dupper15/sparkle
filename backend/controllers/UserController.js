@@ -1,5 +1,8 @@
 const UserService = require('../services/UserService')
 const JwtService = require('../services/JwtService')
+const User = require('../models/UserModel')
+const bcrypt = require("bcrypt")
+const { generalAccessToken, generalRefreshToken } = require("../services/JwtService")
 
 const createUser = async (req, res) => {
     try {
@@ -20,11 +23,31 @@ const createUser = async (req, res) => {
         else if ( password !== confirmPassword){
             return res.status(400).json({
                 status: 'ERROR',
-                message: 'The password is equal confirmPassword'
+                message: 'The password is equal confirm password'
             })
         }
-        const response = await UserService.createUser(req.body)
-        return res.status(200).json(response)
+        const checkUser = await User.findOne({
+            email: email
+        })
+        if (checkUser){
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'The email is exist'
+            })
+        }
+
+        const hash = bcrypt.hashSync(password, 10)
+            
+        const createdUser = await User.create({
+            email, 
+            password: hash,
+        })
+
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Sign up success',
+            data: createdUser
+        })
     } catch (e) {
         return res.status(404).json({
             message: e
@@ -48,8 +71,37 @@ const loginUser = async (req, res) => {
                 message: 'Email invalid'
             })
         }
-        const response = await UserService.loginUser(req.body)
-        return res.status(200).json(response)
+        const checkUser = await User.findOne({
+            email: email
+        })
+        if (!checkUser){
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'Account is not exist'
+            })
+        }
+        const comparePassword = bcrypt.compareSync(password, checkUser.password)
+        if (!comparePassword){
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'The password is incorrect'
+            })
+        }
+        const access_token =  await generalAccessToken({
+            id: checkUser.id,
+        })
+        const refresh_token = await generalRefreshToken({
+            id: checkUser.id,
+        })
+        res.cookie('refresh-token', refresh_token, {
+            HttpOnly: true,
+            Secure: true,
+        })
+        return res.status(200).json({
+            status: "OK",
+            message: "Login success !",
+            access_token
+        })
     } catch (e) {
         return res.status(404).json({
             message: e
@@ -107,7 +159,8 @@ const updateInfoUser = async (req, res) => {
 
 const refreshTokenJwt =  async (req, res) => {
     try {
-        const token = req.headers.token.split(' ')[1]
+        console.log("req.cookies", req.cookies)
+        const token = req.cookies.refresh_token
         if (!token){
             return res.status(200).json({
                 status: 'ERROR',
