@@ -188,7 +188,6 @@ const CreateComponent = ({ info, current_component, removeComponent, handleClick
   const getShapeStyle = (info) => {
     const baseStyle = {
       width: `${size.width}px`,
-      width: "100%",
       height: "100%",
       backgroundColor: info.link ? "#e5e5e5" : "#e5e5e5",
       backgroundImage: info.link ? `url(${info.link})` : null,

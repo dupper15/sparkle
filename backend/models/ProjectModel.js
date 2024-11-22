@@ -5,12 +5,15 @@ const projectSchema = new mongoose.Schema(
         userArray: {type: Array, required: true},
         canvasArray: {type: Array, required: true},
         projectName: {type: String, required: true},
-        owner: {type: String, required: true},
-        editorArray: {type: Array, required: true},
+        owner: { 
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User", 
+            required: true},
+        editorArray: {type: Array, required: true}, //ngu
         isPublic: {type: Boolean, required: true},
         height: {type: Number, required: true},
         width: {type: Number, required: true},
-    },
+    }, 
     {
         timestamps: true
     }

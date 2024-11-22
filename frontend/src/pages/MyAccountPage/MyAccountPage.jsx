@@ -4,10 +4,11 @@ import SettingSideBar from "../../components/SettingSideBar/SettingSideBar.jsx";
 import profileIcon from "../../assets/default-profile-icon.png";
 import { FaGoogle, FaFacebook } from "react-icons/fa6";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
+import { useSelector } from "react-redux";
 
 const MyAccountPage = () => {
+  const user = useSelector((state) => state.user)
   const { isDarkMode } = useDarkMode();
-
   return (
     <div
       className={`flex flex-col h-screen overflow-y-auto ${
@@ -56,7 +57,7 @@ const MyAccountPage = () => {
                   Username
                 </span>
                 <span className="font-thin text-s md:text-m pointer-events-none">
-                  caoduonglam
+                  {user.userName}
                 </span>
               </div>
               <button
@@ -72,7 +73,7 @@ const MyAccountPage = () => {
                 Email
               </span>
               <span className="font-thin text-s md:text-m pointer-events-none">
-                caoduonglamhuhu@gmail.com
+                {user.email}
               </span>
             </div>
             <div className="w-full h-[1px] bg-gray-400 my-4"></div>
