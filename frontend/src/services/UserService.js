@@ -29,3 +29,8 @@ export const refreshToken = async () => {
     })
     return res.data
 }
+
+export const logoutUser = async () => {
+    const res = await axios.post(`${import.meta.env.VITE_API_KEY}/user/logout`)
+    return res.data
+}
