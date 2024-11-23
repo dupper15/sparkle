@@ -15,10 +15,15 @@ export const userSlice = createSlice({
             state.userName = userName;
             state.email = email;
             state.access_token = access_token
+        },
+        resetUser: (state) => {
+            state.userName = '';
+            state.email = '';
+            state.access_token = ''
         }
     }
 })
 
-export const { updateUser } = userSlice.actions
+export const { updateUser , resetUser } = userSlice.actions
 
 export default userSlice.reducer
