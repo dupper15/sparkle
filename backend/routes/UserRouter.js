@@ -8,7 +8,7 @@ router.post('/login', userController.loginUser)
 router.get('/getAll', userController.getAllUser)
 router.get('/get-detail/:id', authMiddleware, userController.getDetailUser)
 router.put('/update-info/:id', userController.updateInfoUser)
-router.post('/refresh-token' , userController.refreshTokenJwt);
+router.post('/refresh-token' , userController.refreshToken);
 
 
 module.exports = router

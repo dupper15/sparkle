@@ -2,7 +2,6 @@ const UserService = require('../services/UserService')
 const JwtService = require('../services/JwtService')
 const User = require('../models/UserModel')
 const bcrypt = require("bcrypt")
-const { generalAccessToken, generalRefreshToken } = require("../services/JwtService")
 
 const createUser = async (req, res) => {
     try {
@@ -72,37 +71,14 @@ const loginUser = async (req, res) => {
                 message: 'Email invalid'
             })
         }
-        const checkUser = await User.findOne({
-            email: email
+        const response = await UserService.loginUser(req.body)
+        const { refresh_token, ...newResponse } = response
+        res.cookie('refresh_token', refresh_token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
         })
-        if (!checkUser){
-            return res.status(400).json({
-                status: 'ERROR',
-                message: 'Account is not exist'
-            })
-        }
-        const comparePassword = bcrypt.compareSync(password, checkUser.password)
-        if (!comparePassword){
-            return res.status(400).json({
-                status: 'ERROR',
-                message: 'The password is incorrect'
-            })
-        }
-        const access_token =  await generalAccessToken({
-            id: checkUser.id,
-        })
-        const refresh_token = await generalRefreshToken({
-            id: checkUser.id,
-        })
-        res.cookie('refresh-token', refresh_token, {
-            HttpOnly: true,
-            Secure: true,
-        })
-        return res.status(200).json({
-            status: "OK",
-            message: "Login success !",
-            access_token
-        })
+        return res.status(200).json(newResponse)
     } catch (e) {
         return res.status(404).json({
             message: e
@@ -158,10 +134,11 @@ const updateInfoUser = async (req, res) => {
     }
 }
 
-const refreshTokenJwt =  async (req, res) => {
+const refreshToken =  async (req, res) => {
+    console.log("req.cookies", req.cookies)
     try {
-        console.log("req.cookies", req.cookies)
         const token = req.cookies.refresh_token
+        console.log("token", token)
         if (!token){
             return res.status(200).json({
                 status: 'ERROR',
@@ -184,5 +161,5 @@ module.exports = {
     getAllUser,
     getDetailUser,
     updateInfoUser,
-    refreshTokenJwt
+    refreshToken
 }
