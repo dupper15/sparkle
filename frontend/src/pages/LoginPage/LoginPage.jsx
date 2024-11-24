@@ -52,10 +52,9 @@ const LoginPage = () => {
   useEffect(() => {
     if (isSuccess){
       handleNavigateHome()
-      localStorage.setItem('access_token', mutation.data?.access_token)
+      localStorage.setItem('access_token',  JSON.stringify(mutation.data?.access_token))
       if(mutation.data?.access_token) {
         const decoded = jwtDecode(mutation.data?.access_token)
-        console.log("decode", decoded)
         if (decoded?.id){
             handleGetDetailUser(decoded?.id, mutation.data?.access_token)
         }

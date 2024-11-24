@@ -9,4 +9,7 @@ export default defineConfig({
       external: ['react/jsx-runtime'], // Thêm dòng này nếu cần thiết
     },
   },
+  server: {
+    port: 5000,
+  }
 })

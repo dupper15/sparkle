@@ -1,4 +1,6 @@
 const User = require('../models/UserModel')
+const bcrypt = require("bcrypt")
+const { generalAccessToken, generalRefreshToken } = require("../services/JwtService")
 
 // const createUser = (newUser) => {
 //     return new Promise(async (resolve, reject) => {
@@ -41,53 +43,53 @@ const User = require('../models/UserModel')
 //     })
 // }
 
-// const loginUser = (userLogin) => {
-//     return new Promise(async (resolve, reject) => {
-//         const { email, password} = userLogin
-//         try {
-//             const checkUser = await User.findOne({
-//                 email: email
-//             })
-//             if (!checkUser){
-//                 reject({
-//                     status: "ERROR",
-//                     message: "Account not found!"
-//                 })
-//                 return;
-//             }
+const loginUser = (userLogin) => {
+    return new Promise(async (resolve, reject) => {
+        const { email, password} = userLogin
+        try {
+            const checkUser = await User.findOne({
+                email: email
+            })
+            if (!checkUser){
+                reject({
+                    status: "ERROR",
+                    message: "Account not found!"
+                })
+                return;
+            }
 
-//             const comparePassword = bcrypt.compareSync(password, checkUser.password)
-//             if (!comparePassword){
-//                 reject({
-//                     status: "ERROR",
-//                     message: "The password or user is incorrect"
-//                 })
-//                 return;
-//             }
+            const comparePassword = bcrypt.compareSync(password, checkUser.password)
+            if (!comparePassword){
+                reject({
+                    status: "ERROR",
+                    message: "The password or user is incorrect"
+                })
+                return;
+            }
             
-//             const access_token =  await generalAccessToken({
-//                 id: checkUser.id,
-//             })
-//             const refresh_token = await generalRefreshToken({
-//                 id: checkUser.id,
-//             })
+            const access_token =  await generalAccessToken({
+                id: checkUser.id,
+            })
+            const refresh_token = await generalRefreshToken({
+                id: checkUser.id,
+            })
 
-//             resolve({
-//                 status: "OK",
-//                 message: "SUCCESS",
-//                 access_token,
-//                 refresh_token
-//             })
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                access_token,
+                refresh_token
+            })
 
-//         } catch (error) {
-//             reject({
-//                 status: "ERROR",
-//                 message: "Failed to create user",
-//                 error: error.message,
-//             });
-//         }
-//     })
-// }
+        } catch (error) {
+            reject({
+                status: "ERROR",
+                message: "Failed to create user",
+                error: error.message,
+            });
+        }
+    })
+}
 
 const getDetailUser = (userId) => {
     return new Promise(async (resolve, reject) => {
@@ -180,7 +182,7 @@ const updateInfoUser = (userId, data) => {
 
 module.exports = {
     //createUser,
-    //loginUser,
+    loginUser,
     getAllUser,
     getDetailUser,
     updateInfoUser

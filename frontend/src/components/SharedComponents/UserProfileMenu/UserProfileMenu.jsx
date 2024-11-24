@@ -1,14 +1,22 @@
 import profileIcon from "../../../assets/default-profile-icon.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdOutlinePerson, MdOutlineSettings } from "react-icons/md";
 import { RxExit } from "react-icons/rx";
-import { useSelector } from "react-redux";
-
-
+import { useDispatch, useSelector } from "react-redux";
+import * as UserService from '../../../services/UserService';
 import { useDarkMode } from "../../../contexts/DarkModeContext";
+import { resetUser } from "../../../redux/slides/userSlide"
+
 const UserProfileMenu = () => {
   const user = useSelector((state) => state.user)
   const { isDarkMode } = useDarkMode();
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const handleLogoutUser = async () => {
+    await UserService.logoutUser()
+    dispatch(resetUser())
+    navigate('/')
+  }
   return (
     <div
       className={`profile-dropdown box-border justify-center align-middle pb-2 shadow-lg rounded-2xl ${
@@ -33,7 +41,7 @@ const UserProfileMenu = () => {
           <MdOutlineSettings className="h-8 w-8 pr-2" />
           <span className="mt-auto mb-auto">Settings</span>
         </Link>
-        <Link className="flex mb-4 pl-4 hover:text-[#4335DE]" to="../">
+        <Link onClick={handleLogoutUser} className="flex mb-4 pl-4 hover:text-[#4335DE]" to="../">
           <RxExit className="h-8 w-8 pr-2" />
           <span className="mt-auto mb-auto">Log Out</span>
         </Link>
