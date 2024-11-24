@@ -4,7 +4,6 @@ const createProject = (newProject) => {
     return new Promise(async (resolve, reject) => {
         try {
             const createdProject = await Project.create({
-                userArray: newProject.userArray,
                 canvasArray: newProject.canvasArray,
                 projectName: newProject.projectName,
                 owner: newProject.owner,

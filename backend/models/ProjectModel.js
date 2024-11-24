@@ -2,18 +2,26 @@ const mongoose = require('mongoose')
 
 const projectSchema = new mongoose.Schema(
     {
-        userArray: {type: Array, required: true},
-        canvasArray: {type: Array, required: true},
-        projectName: {type: String, required: true},
-        owner: { 
+        canvasArray: [{
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User", 
-            required: true},
-        editorArray: {type: Array, required: true}, //ngu
+            ref: "Canvas",
+            required: true
+        }],
+        projectName: {type: String, required: true},
+        owner: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
+        editorArray: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        }],
         isPublic: {type: Boolean, required: true},
         height: {type: Number, required: true},
         width: {type: Number, required: true},
-    }, 
+    },
     {
         timestamps: true
     }
