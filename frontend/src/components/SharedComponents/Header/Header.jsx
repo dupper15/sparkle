@@ -8,10 +8,8 @@ import { useDarkMode } from "../../../contexts/DarkModeContext.jsx";
 
 const Header = () => {
   const { isDarkMode } = useDarkMode();
-
   const [openProfile, setOpenProfile] = useState(false);
-  const [openCustomizeSizeDialogue, setOpenCustomizeSizeDialogue] =
-    useState(false);
+  const [openCustomizeSizeDialogue, setOpenCustomizeSizeDialogue] = useState(false);
 
   const navigate = useNavigate();
 

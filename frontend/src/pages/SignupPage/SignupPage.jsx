@@ -24,7 +24,7 @@ const SignupPage = () => {
       mutationFn: UserService.signupUser,
       onError: (error) => {
         const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
-        setErrorMessage(apiErrorMessage);
+        setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
         console.error("Error:", apiErrorMessage);
       },
       onSuccess: (data) => {
@@ -35,8 +35,6 @@ const SignupPage = () => {
       },
     }
   )
-
-  console.log('mutation', mutation)
 
   const handleSignup = () => {
     mutation.mutate({

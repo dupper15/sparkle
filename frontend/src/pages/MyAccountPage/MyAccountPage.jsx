@@ -4,11 +4,83 @@ import SettingSideBar from "../../components/SettingSideBar/SettingSideBar.jsx";
 import profileIcon from "../../assets/default-profile-icon.png";
 import { FaGoogle, FaFacebook } from "react-icons/fa6";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import * as UserService from '../../services/UserService.js'
+import { useMutationHooks } from "../../hooks/useMutationHook.js";
+import * as Alert from "../../components/Alert/Alert.jsx";
+import { updateUser } from "../../redux/slides/userSlide.js";
+import FormChangePassword from "../../components/SharedComponents/FormChangePassword/FormChangePassword.jsx";
 
 const MyAccountPage = () => {
   const user = useSelector((state) => state.user)
   const { isDarkMode } = useDarkMode();
+
+  const [isEditingUserName, setIsEditingUserName] = useState(false)
+  const [userName, setUserName] = useState("")
+  const [initialUserName, setInitialUserName] = useState("");
+
+  const [isChangePassword, setChangePassword] = useState(false)
+  const [password, setPassword] = useState("")
+  const [image, setImage] = useState("")
+  const dispatch = useDispatch()
+  const mutation = useMutationHooks((data) => {
+    const {id, access_token, ...rests} = data
+    UserService.updateInfoUser(id, rests, access_token);
+  });
+  
+  const { data, isSuccess, isError} = mutation
+
+  useEffect(() => {
+    setImage(user?.image)
+    setUserName(user?.userName)
+    setPassword(user?.password)
+    setInitialUserName(user?.userName);
+  }, [user])
+
+  useEffect(() => {
+    if(isSuccess){
+      Alert.success("Update information success !")
+      handleGetDetailUser(user?.id, user?.access_token)
+    } else if (isError){
+      
+    }
+  },[isSuccess])
+
+  const handleGetDetailUser = async (id, token) => {
+    const res = await UserService.getDetailUser(id, token)
+    dispatch(updateUser({...res?.data, access_token: token}))
+  }
+
+  const handleOnChangeUserName = (e) => {
+    setUserName(e.target.value)
+  }
+
+  const handleEditUserName = () => {
+    setIsEditingUserName(!isEditingUserName)
+  }
+
+  const handleOnChangePassword = () => {
+    setPassword(value)
+  }
+
+  const handleOnChangeImage = () => {
+    setImage(value)
+  }
+  
+  const handleChangePassword = () => {
+    setChangePassword(!isChangePassword)
+  }
+
+  const handleCancelClick = () => {
+    setUserName(initialUserName);
+    setIsEditingUserName(false);
+  };
+
+  const handleUpdateUserName = () => {
+    mutation.mutate ({ id: user?.id, userName, access_token: user?.access_token});
+    setIsEditingUserName(false);
+  }
   return (
     <div
       className={`flex flex-col h-screen overflow-y-auto ${
@@ -56,16 +128,48 @@ const MyAccountPage = () => {
                 <span className="font-semibold text-xl pointer-events-none">
                   Nickname
                 </span>
-                <span className="font-thin text-s md:text-m pointer-events-none">
-                  {user.userName}
-                </span>
+                {isEditingUserName ? (
+                  <input
+                    type="text"
+                    className={`font-thin text-s md:text-m rounded p-1 border ${
+                      isDarkMode ? "text-black" : "text-black"
+                    }`}
+                    value={userName}
+                    onChange={handleOnChangeUserName}
+                  />
+                ) : (
+                  <span className="font-thin text-s md:text-m">{userName}</span>
+                )}
               </div>
-              <button
-                className={`w-[80px] h-[40px] font-semibold rounded-lg shadow-sm flex justify-center items-center p-2 hover:bg-slate-400 ${
-                  isDarkMode ? "bg-white text-black" : "bg-black text-white"
-                }`}>
-                Edit
-              </button>
+              <div className="flex space-x-2 mt-2">
+              {isEditingUserName ? (
+                <>
+                  <button
+                    className="w-[80px] h-[40px] font-semibold rounded-lg shadow-sm flex justify-center items-center p-2 bg-red-500 text-white hover:bg-red-600"
+                    onClick={handleCancelClick}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    className="w-[80px] h-[40px] font-semibold rounded-lg shadow-sm flex justify-center items-center p-2 bg-green-500 text-white hover:bg-green-600"
+                    onClick={handleUpdateUserName}
+                  >
+                    Save
+                  </button>
+                </>
+              ) : (
+                <button
+                  className={`w-[80px] h-[40px] font-semibold rounded-lg shadow-sm flex justify-center items-center p-2 hover:bg-slate-400 ${
+                    isDarkMode
+                      ? "bg-white text-black"
+                      : "bg-black text-white "
+                  }`}
+                  onClick={handleEditUserName}
+                >
+                  Edit
+                </button>
+              )}
+            </div>
             </div>
             <div className="w-full h-[1px] bg-gray-400 my-4"></div>
             <div className="flex flex-col justify-between w-full space-y-2">
@@ -86,9 +190,17 @@ const MyAccountPage = () => {
               <button
                 className={`w-[auto] h-[40px] font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
                   isDarkMode ? "bg-white text-black" : "bg-black text-white"
-                }`}>
+                }`}
+                onClick={handleChangePassword}>
                 Change Password
               </button>
+              {isChangePassword && (
+                <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
+                  <FormChangePassword closeForm={() => setChangePassword(false)}
+        
+                  />
+                </div>
+              )}
             </div>
             <div className="w-full h-[1px] bg-gray-400 my-4"></div>
             <div className="flex flex-col space-y-2">

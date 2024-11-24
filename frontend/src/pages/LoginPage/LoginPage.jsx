@@ -23,19 +23,15 @@ const LoginPage = () => {
       mutationFn: UserService.loginUser,
       onError: (error) => {
         const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
-        setErrorMessage(apiErrorMessage);
-        console.error("Error:", apiErrorMessage);
+        setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
       },
       onSuccess: (data) => {
         setErrorMessage("");
         const apiSuccessMessage = data.message || "Login successful!";
         setSuccessMessage(apiSuccessMessage)
-        console.log("Login successful:", data);
       },
     }
   )
-
-  console.log('mutation', mutation)
 
   const handleLogin = () => {
     mutation.mutate({
@@ -93,9 +89,8 @@ const LoginPage = () => {
           Forgot Password?
         </div>
         {errorMessage && typeof errorMessage === "string" && (
-          <span className="text-red-500">{errorMessage}</span>
+          <span className="text-red-500">{errorMessage || apiErrorMessage.message}</span>
         )}
-
         <button
           onClick={handleLogin}
           className="w-full h-max p-1 bg-gradient text-black rounded-lg font-semibold text-lg"
