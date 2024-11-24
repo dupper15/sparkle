@@ -166,7 +166,48 @@ const updateInfoUser = (userId, data) => {
 
             resolve({
                 status: "OK",
-                message: "SUCCESS",
+                message: "Update information success",
+                data: updatedUser
+            })
+
+        } catch (error) {
+            reject({
+                status: "ERROR",
+                message: "Failed to update user",
+                error: error.message,
+            });
+        }
+    })
+}
+
+const changePassword = (userId, passwordNew) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const checkUser = await User.findOne({
+                _id: userId
+            })
+            if (!checkUser){
+                resolve({
+                    status: "ERROR",
+                    message: "Account is not defined!"
+                })
+                return;
+            }
+
+            const hash = bcrypt.hashSync(passwordNew, 10)
+            const updatedUser = await User.findByIdAndUpdate(userId, {password: hash}, {new: true})
+
+            if (!updatedUser) {
+                resolve({
+                    status: "ERROR",
+                    message: "User update failed or not found",
+                });
+                return;
+            }
+
+            resolve({
+                status: "OK",
+                message: "Password updated successfully",
                 data: updatedUser
             })
 
@@ -185,5 +226,6 @@ module.exports = {
     loginUser,
     getAllUser,
     getDetailUser,
-    updateInfoUser
+    updateInfoUser,
+    changePassword
 }

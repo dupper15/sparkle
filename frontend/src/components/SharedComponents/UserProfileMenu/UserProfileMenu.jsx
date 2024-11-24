@@ -5,18 +5,25 @@ import { RxExit } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import * as UserService from '../../../services/UserService';
 import { useDarkMode } from "../../../contexts/DarkModeContext";
-import { resetUser } from "../../../redux/slides/userSlide"
+import { resetUser, updateUser } from "../../../redux/slides/userSlide"
+import { useEffect, useState } from "react";
 
 const UserProfileMenu = () => {
   const user = useSelector((state) => state.user)
+  const [userName, setUserName] = useState('')
   const { isDarkMode } = useDarkMode();
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
   const handleLogoutUser = async () => {
     await UserService.logoutUser()
     dispatch(resetUser())
     navigate('/')
   }
+
+  useEffect(() => {
+    setUserName(user?.userName);
+  }, [user?.userName]);
   return (
     <div
       className={`profile-dropdown box-border justify-center align-middle pb-2 shadow-lg rounded-2xl ${
@@ -29,7 +36,7 @@ const UserProfileMenu = () => {
           className="profile-image w-[40px] h-[40px] rounded-[50%]"
         />
         <span className="profile-name font-bold mt-auto mb-auto pl-4">
-          {user.userName}
+          {userName}
         </span>
       </div>
       <div className="">

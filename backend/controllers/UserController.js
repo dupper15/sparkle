@@ -166,6 +166,33 @@ const logoutUser =  async (req, res) => {
     }
 }
 
+const changePassword = async (req, res) => {
+    try {
+        const userId = req.params.id
+        const {passwordCurrent, passwordNew, passwordConfirm} = req.body
+        const user = await User.findById({_id: userId})
+        const isMatch = bcrypt.compareSync(passwordCurrent, user.password);
+        if (!isMatch) {
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'Current password is incorrect'
+            });
+        }
+        else if (passwordNew !== passwordConfirm){
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'The password is equal confirm password'
+            })
+        }
+        const response = await UserService.changePassword(userId, passwordNew)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
 
 module.exports = {
     createUser,
@@ -174,5 +201,6 @@ module.exports = {
     getDetailUser,
     updateInfoUser,
     refreshToken,
-    logoutUser
+    logoutUser,
+    changePassword
 }
