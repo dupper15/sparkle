@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../../../assets/default-profile-icon.png";
 import UserProfileMenu from "../UserProfileMenu/UserProfileMenu.jsx";
 
 import CustomizeSizeDialogue from "../../dialogs/CustomizeSizeDialogue.jsx";
 import { useDarkMode } from "../../../contexts/DarkModeContext.jsx";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const { isDarkMode } = useDarkMode();
+  const [image, setImage] = useState('')
   const [openProfile, setOpenProfile] = useState(false);
   const [openCustomizeSizeDialogue, setOpenCustomizeSizeDialogue] = useState(false);
+  const user = useSelector((state) => state.user)
+
+  useEffect(()=> {
+    setImage(user?.image)
+  }, [user?.image])
 
   const navigate = useNavigate();
 
@@ -56,7 +63,7 @@ const Header = () => {
           <input
             type="image"
             className="object-cover w-full h-full rounded-full"
-            src={profileIcon}
+            src={image}
             alt="Profile Image"
             onClick={() => setOpenProfile((prev) => !prev)}
           />

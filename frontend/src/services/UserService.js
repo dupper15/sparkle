@@ -52,3 +52,4 @@ export const changePassword = async (id, data, access_token) => {
     })
     return res.data
 }
+

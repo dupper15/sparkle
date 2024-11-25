@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 const UserProfileMenu = () => {
   const user = useSelector((state) => state.user)
   const [userName, setUserName] = useState('')
+  const [image, setImage] = useState('')
   const { isDarkMode } = useDarkMode();
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -23,7 +24,8 @@ const UserProfileMenu = () => {
 
   useEffect(() => {
     setUserName(user?.userName);
-  }, [user?.userName]);
+    setImage(user?.image)
+  }, [user?.userName, user?.image]);
   return (
     <div
       className={`profile-dropdown box-border justify-center align-middle pb-2 shadow-lg rounded-2xl ${
@@ -31,9 +33,9 @@ const UserProfileMenu = () => {
       }`}>
       <div className="profile-header flex p-4 w-[250px]">
         <img
-          src={profileIcon}
+          src={image}
           alt="Profile Image"
-          className="profile-image w-[40px] h-[40px] rounded-[50%]"
+          className="profile-image w-[40px] h-[40px] rounded-[50%] object-cover"
         />
         <span className="profile-name font-bold mt-auto mb-auto pl-4">
           {userName}

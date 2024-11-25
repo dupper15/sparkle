@@ -1,5 +1,4 @@
 const ImageService = require('../services/ImageService')
-const cloudinary = require('../utils/cloudinary')
 const ImageUpload = require('../models/ImageUploadModel')
 
 const uploadImage = async (req, res) => {
