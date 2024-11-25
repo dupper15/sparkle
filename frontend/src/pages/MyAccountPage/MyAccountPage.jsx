@@ -11,6 +11,8 @@ import { useMutationHooks } from "../../hooks/useMutationHook.js";
 import * as Alert from "../../components/Alert/Alert.jsx";
 import { updateUser } from "../../redux/slides/userSlide.js";
 import FormChangePassword from "../../components/SharedComponents/FormChangePassword/FormChangePassword.jsx";
+import axios from "axios";
+
 
 const MyAccountPage = () => {
   const user = useSelector((state) => state.user)
@@ -21,8 +23,10 @@ const MyAccountPage = () => {
   const [initialUserName, setInitialUserName] = useState("");
 
   const [isChangePassword, setChangePassword] = useState(false)
-  const [password, setPassword] = useState("")
-  const [image, setImage] = useState("")
+
+  const [image, setImage] = useState(profileIcon)
+  const [isUploading, setIsUploading] = useState(false);
+  const [isViewImage, setViewImage] = useState(false);
   const dispatch = useDispatch()
   const mutation = useMutationHooks((data) => {
     const {id, access_token, ...rests} = data
@@ -32,9 +36,8 @@ const MyAccountPage = () => {
   const { data, isSuccess, isError} = mutation
 
   useEffect(() => {
-    setImage(user?.image)
+    setImage(user?.image || profileIcon)
     setUserName(user?.userName)
-    setPassword(user?.password)
     setInitialUserName(user?.userName);
   }, [user])
 
@@ -43,9 +46,9 @@ const MyAccountPage = () => {
       Alert.success("Update information success !")
       handleGetDetailUser(user?.id, user?.access_token)
     } else if (isError){
-      
+      Alert.error("Update failed. Please try again.");
     }
-  },[isSuccess])
+  },[isSuccess, isError])
 
   const handleGetDetailUser = async (id, token) => {
     const res = await UserService.getDetailUser(id, token)
@@ -59,14 +62,6 @@ const MyAccountPage = () => {
   const handleEditUserName = () => {
     setIsEditingUserName(!isEditingUserName)
   }
-
-  const handleOnChangePassword = () => {
-    setPassword(value)
-  }
-
-  const handleOnChangeImage = () => {
-    setImage(value)
-  }
   
   const handleChangePassword = () => {
     setChangePassword(!isChangePassword)
@@ -79,8 +74,83 @@ const MyAccountPage = () => {
 
   const handleUpdateUserName = () => {
     mutation.mutate ({ id: user?.id, userName, access_token: user?.access_token});
+    dispatch(updateUser({
+      ...user,
+      userName: userName
+    }))
     setIsEditingUserName(false);
   }
+
+  const handleViewImage = () => {
+    setViewImage(!isViewImage)
+  }
+
+  const closeModal = () => {
+    setViewImage(false);
+  };
+
+  const handleOnChangeImage = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      handleUploadImage(file);
+    }
+  };
+  
+  const handleUploadImage = async (file) => {
+    try {
+      setIsUploading(true);
+      const uploadPreset = "afh5sfc";
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
+
+      const response = await fetch("https://api.cloudinary.com/v1_1/ddcjjegzf/image/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      setImage(result.secure_url); 
+      dispatch(updateUser({
+        ...user,
+        image: result.secure_url,
+      }))
+      mutation.mutate({
+        id: user?.id,
+        image: result.secure_url,
+        access_token: user?.access_token,
+      });
+    } catch (error) {
+      Alert.error("Failed to upload image. Please try again.");
+      console.error(error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleRemoveImage = async () => {
+    if (image === profileIcon) {
+      Alert.error("You cannot remove the default profile image.");
+      return; 
+    }
+    try {
+      setImage(profileIcon);  
+      mutation.mutate({
+        id: user?.id,
+        image: null, 
+        access_token: user?.access_token,
+      });
+      dispatch(updateUser({  
+        ...user,
+        image: profileIcon,
+      }));
+    } catch (error) {
+      Alert.error("Failed to remove image. Please try again.");
+      console.error(error);
+    } 
+  };
+  
+  
   return (
     <div
       className={`flex flex-col h-screen overflow-y-auto ${
@@ -105,23 +175,42 @@ const MyAccountPage = () => {
               Avatar
             </span>
             <div className="flex items-center justify-between">
-              <img
-                className="object-cover w-[100px] h-[100px] rounded-full mt-3 cursor-pointer"
-                src={profileIcon}
-                alt="Profile Image"
-              />
+            <label htmlFor="upload-avatar" className="cursor-pointer">
+                <img
+                  className="object-cover w-[100px] h-[100px] rounded-full"
+                  src={image}
+                  alt="Profile Avatar"
+                />
+              </label>
               <div className="flex flex-col text-right cursor-pointer space-y-2">
-                <span className="md:text-m hover:text-[#4335DE] cursor-pointer">
-                  Change image
-                </span>
-                <span className="md:text-m hover:text-[#4335DE] cursor-pointer">
+                <label className='md:text-m hover:text-[#4335DE] cursor-pointer' htmlFor="image">Change image</label>
+                <input type="file" id="image" onChange={handleOnChangeImage} className='hidden' accept="image/jpeg, image/png, image/jpg"></input>
+                {isUploading && (
+                  <span className="text-sm text-gray-500">Uploading...</span>
+                )}
+                <span onClick={handleViewImage} className="md:text-m hover:text-[#4335DE] cursor-pointer">
                   View image
                 </span>
-                <span className="md:text-m hover:text-[#4335DE] cursor-pointer">
+                <span onClick={handleRemoveImage} className="md:text-m hover:text-[#4335DE] cursor-pointer">
                   Remove photo
                 </span>
               </div>
             </div>
+            {isViewImage && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+                onClick={closeModal}>
+                <div
+                  className="bg-white rounded shadow-lg relative"
+                  onClick={(e) => e.stopPropagation()}>
+                  <img
+                    src={image}
+                    alt="Profile Image"
+                    className="object-fill w-[640px] h-[360px] rounded"
+                  />
+                </div>
+              </div>
+            )}
             <div className="w-full h-[1px] bg-gray-400 my-4"></div>
             <div className="flex items-center justify-between w-full">
               <div className="flex flex-col space-y-2">

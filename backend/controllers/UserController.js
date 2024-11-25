@@ -193,7 +193,6 @@ const changePassword = async (req, res) => {
     }
 }
 
-
 module.exports = {
     createUser,
     loginUser,
@@ -202,5 +201,5 @@ module.exports = {
     updateInfoUser,
     refreshToken,
     logoutUser,
-    changePassword
+    changePassword,
 }
