@@ -16,9 +16,9 @@ const projectSchema = new mongoose.Schema(
         editorArray: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true
+            default: null,
         }],
-        isPublic: {type: Boolean, required: true},
+        isPublic: {type: Boolean, default: false},
         height: {type: Number, required: true},
         width: {type: Number, required: true},
     },

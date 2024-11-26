@@ -1,11 +1,12 @@
 const Canvas = require('../models/CanvasModel')
+const Project = require('../models/ProjectModel')
 
-const createCanvas = (newCanvas) => {
+const createCanvas = () => {
     return new Promise(async (resolve, reject) => {
         try {
             const createdCanvas = await Canvas.create({
-                background: newCanvas.background,
-                componentArray: newCanvas.componentArray,
+                background,
+                componentArray,
             })
 
             if(createdCanvas){
@@ -16,9 +17,7 @@ const createCanvas = (newCanvas) => {
                         Canvas: createdCanvas
                     }
                 })
-                //return; //Unnecessary
             }
-
         } catch (error) {
             reject({
                 status: "ERROR",
@@ -98,7 +97,7 @@ const updateCanvas = (canvasId, data) => {
     })
 }
 
-const deleteCanvas = (canvasId) => {
+const deleteCanvas = (canvasId, projectId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const canvas = await Canvas.findOne({
@@ -112,6 +111,20 @@ const deleteCanvas = (canvasId) => {
                 return;
             }
             await Canvas.findByIdAndDelete(canvasId)
+
+            const project = await Project.findById(projectId);
+            if (!project) {
+                resolve({
+                    status: "ERROR",
+                    message: "Project not found!"
+                });
+                return;
+            }
+            const updatedCanvasArray = project.canvasArray.filter(
+                (canvasItem) => canvasItem.toString() !== canvasId
+            );
+            project.canvasArray = updatedCanvasArray;
+            await project.save();
 
             resolve({
                 status: "OK",

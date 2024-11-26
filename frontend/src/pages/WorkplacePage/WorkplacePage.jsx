@@ -4,7 +4,6 @@ import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
 import {
   LuLayoutTemplate,
   LuShapes,
-  LuUpload,
   LuFolder,
   LuImage,
 } from "react-icons/lu";
@@ -12,7 +11,6 @@ import { RiText } from "react-icons/ri";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import TemplateDesign from "../../components/Template/TemplateDesign";
-import UploadImage from "../../components/Image/Upload";
 import Project from "../../components/Template/Project";
 import Image from "../../components/Image/Image";
 import Shape from "../../components/Shape/Shape";
@@ -27,25 +25,96 @@ import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar.
 import { DndContext } from "@dnd-kit/core";
 import Text from "../../components/Text/Text.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
+import * as ProjectService from '../../services/ProjectService.js'
+import { useDispatch, useSelector } from "react-redux";
+import { updateProject } from "../../redux/slides/projectSlide.js";
+import { deleteCanvas } from "../../services/CanvasService.js";
+import * as Alert from '../../components/Alert/Alert.jsx'
+import { useMutationHooks } from "../../hooks/useMutationHook.js";
+import { useMutation } from "@tanstack/react-query";
 
 const WorkplacePage = () => {
-  const { isDarkMode } = useDarkMode();
+  const dispatch = useDispatch();
+  const project = useSelector((state) => state.project);
+  const [width, setWidth] = useState('')
+  const [height, setHeight] = useState()
+ 
+  useEffect(() => {
+    setWidth(project?.width)
+    setHeight(project?.height)
+  },[project])
 
+  useEffect(() => {
+    // Lấy id từ localStorage
+    const storedProjectId = localStorage.getItem('projectId');
+    
+    if (storedProjectId) {
+      // Gọi API để lấy chi tiết dự án
+      const fetchProject = async () => {
+        const res = await ProjectService.getDetailProject(storedProjectId);
+        dispatch(updateProject(res.data)); // Cập nhật dữ liệu dự án vào Redux store
+      };
+      
+      fetchProject();
+    }
+  }, [dispatch]);
+
+  const handleGetDetailProject = async (id) => {
+    const res = await ProjectService.getDetailProject(id)
+    localStorage.setItem('project', JSON.stringify(res?.data));
+    dispatch(updateProject({...res?.data}))
+  };
+  
+  const { isDarkMode } = useDarkMode();
   const [state, setState] = useState("");
   const pageRef = useRef([]);
-
-  const [rotate, setRotate] = useState(0);
-
+ 
   const location = useLocation();
   const designData = location.state || {};
 
-  const [pages, setPages] = useState([
-    { ...designData, id: 1, components: [] },
-  ]);
-  const [current_page, setCurrentPage] = useState(1);
+  const [pages, setPages] = useState([]);
+  const [current_page, setCurrentPage] = useState(null);
+
+  useEffect(() => {
+    if (project?.canvasArray) {
+      const newPages = project.canvasArray.map((canvas, index) => ({
+        ...canvas,  
+        id: canvas.id || index,  
+        name: canvas.name || `Page ${index + 1}`, 
+      }));
+      setPages(newPages);
+      setCurrentPage(newPages[0]?.id)
+    }
+  }, [project]); 
+
+  const mutation = useMutation(
+  {
+    mutationFn: (data) => {
+      const { id } = data; 
+      return ProjectService.updateProject(id);
+    },
+    onSuccess: (data) => {
+      dispatch(updateProject(data.data));
+      handleGetDetailProject(data.data.id)
+      console.log('Project updated successfully:', data);
+    },
+    onError: (error) => {
+      console.error('Failed to update project:', error);
+    }
+  })
+
+  const {data, isSuccess} = mutation
+ 
+  useEffect(() => {
+    if(isSuccess){
+      Alert.success('Add success')
+      handleGetDetailProject(project?.id)
+    }
+  },[isSuccess])
 
   const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
   const [isTextToolBarOpen, setOpenTextToolBar] = useState(false);
+
   const handleImageClick = () => {
     setOpenImageToolBar((prev) => !prev);
   };
@@ -54,25 +123,36 @@ const WorkplacePage = () => {
   };
 
   const scrollToPage = (index) => {
-    if (pageRef.current[index]) {
-      pageRef.current[index].scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+    if (index >= 0 && index < pages.length) { 
+      if (pageRef.current[index]) {
+        pageRef.current[index].scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+      setCurrentPage(pages[index].id);
     }
   };
 
-  const addPage = () => {
+  const addPage = async () => {
+    mutation.mutate({ id: project?.id });
+  
     setPages((prev) => {
-      const newPages = [
-        ...prev,
-        { ...designData, id: prev.length + 1, components: [] },
-      ];
-      setCurrentPage(newPages.length);
-
+      const newPages = [...prev, ...project.canvasArray];
+  
+      setCurrentPage(newPages[newPages.length - 1]?.id);  
+  
+      setTimeout(() => {
+        pageRef.current[newPages.length - 1]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 0);
+  
       return newPages;
     });
   };
+
   const [components, setComponents] = useState([
     {
       name: "main_frame",
@@ -140,29 +220,36 @@ const WorkplacePage = () => {
     }
     setDraggingShape(null);
   };
-  const removePage = (id) => {
-    setPages((prev) => {
-      const newPages = prev.filter((page) => page.id !== id);
-
-      if (newPages.length < 1) {
-        return prev;
+  const removePage = async (id) => {
+    try {
+      
+      if (project?.canvasArray?.length === 1) {
+        Alert.error("Can not delete page!");
+        return; 
       }
 
-      const pageIndex = prev.findIndex((page) => page.id === id);
-      const nextPageIndex =
-        pageIndex < newPages.length ? pageIndex : pageIndex - 1;
-
-      setCurrentPage(nextPageIndex + 1);
-
-      return newPages;
-    });
+      const canvasId = project?.canvasArray[id]
+      await deleteCanvas(canvasId, project?.id);
+    
+      setPages((prev) => {
+        const newPages = prev.filter((page) => page.id !== id);
+  
+        const pageIndex = prev.findIndex((page) => page.id === id);
+        const nextPageIndex =
+          pageIndex < newPages.length ? pageIndex : pageIndex - 1;
+  
+        setCurrentPage(newPages[nextPageIndex]?.id || null);
+        return newPages;
+      });
+  
+      // Đồng bộ dữ liệu dự án
+      await handleGetDetailProject(project?.id);
+    } catch (error) {
+      console.error("Failed to delete canvas:", error.message);
+      Alert.error("Failed to delete page.");
+    }
   };
 
-  useEffect(() => {
-    if (current_page > 0) {
-      scrollToPage(current_page - 1);
-    }
-  }, [current_page]);
 
   const [current_component, setCurrentComponent] = useState("");
   const [show, setShow] = useState({
@@ -216,18 +303,6 @@ const WorkplacePage = () => {
           : page
       )
     );
-  };
-
-  const moveElement = () => {
-    console.log("move element");
-  };
-
-  const resizeElement = () => {
-    console.log("resize element");
-  };
-
-  const rotateElement = () => {
-    console.log("rotate element");
   };
 
   const removeElement = (id) => {
@@ -337,13 +412,17 @@ const WorkplacePage = () => {
               {pages.map((pageData, index) => (
                 <div
                   key={pageData.id}
-                  onClick={() => setCurrentPage(pageData.id)}>
+                  onClick={() => {
+                    if (current_page !== pageData.id) {
+                      setCurrentPage(pageData.id);
+                    }
+                  }}>
                   <Page
                     key={pageData.id}
                     id={`drop-area-${pageData.id}`}
                     title={`${index + 1}`}
-                    width={pageData.width}
-                    height={pageData.height}
+                    width={width}
+                    height={height}
                     name={pageData.name}
                     shapes={shapes.filter(
                       (shape) => shape.testId === `drop-area-${pageData.id}`
@@ -356,6 +435,7 @@ const WorkplacePage = () => {
                     ref={(el) => (pageRef.current[index] = el)}
                   />
                 </div>
+              
               ))}
               <div>
                 <AddPageButton addPage={addPage} />

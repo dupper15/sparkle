@@ -1,0 +1,30 @@
+import axios from "axios";
+
+export const createProject = async (id, data) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_KEY}/project/${id}/create`, data);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'API call failed');
+    }
+};
+
+export const getDetailProject = async (id) => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_KEY}/project/get-detail/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'API call failed');
+    }
+};
+
+export const updateProject = async (id, data) => {
+    try {
+      const response = await axios.put(`${import.meta.env.VITE_API_KEY}/project/update/${id}`, data);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'API call failed');
+    }
+};
+  
+  

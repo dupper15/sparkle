@@ -4,9 +4,11 @@ import CustomCarousel from "../../components/SharedComponents/Carousel/CustomCar
 import Footer from "../../components/SharedComponents/Footer/Footer.jsx";
 import Sidebar from "../../components/SharedComponents/SideBar/Sidebar.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
+import { useSelector } from "react-redux";
 
 const HomePage = () => {
   const { isDarkMode } = useDarkMode();
+  const user = useSelector((state) => state.user)
 
   return (
     <div

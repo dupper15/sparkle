@@ -26,7 +26,6 @@ const Header = () => {
 
   const handleCreate = (designData) => {
     navigate("/edit", { state: designData });
-    setOpenCustomizeSizeDialogue(false);
   };
 
   return (
@@ -54,7 +53,7 @@ const Header = () => {
         {openCustomizeSizeDialogue && (
           <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
             <CustomizeSizeDialogue
-              childCloseFormRequest={setOpenCustomizeSizeDialogue}
+              childCloseFormRequest={() => setOpenCustomizeSizeDialogue(false)}
               onCreate={(data) => handleCreate(data)}
             />
           </div>
