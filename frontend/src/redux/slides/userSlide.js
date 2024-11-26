@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
+import profileIcon from '../../assets/default-profile-icon.png'
 
 const initialState = {
    id: '',
    userName: '',
    email: '',
    password: '',
-   image: '',
+   image: profileIcon,
    access_token: ''
 }
 
