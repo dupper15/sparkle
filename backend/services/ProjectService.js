@@ -1,30 +1,33 @@
+const Canvas = require('../models/CanvasModel')
 const Project = require('../models/ProjectModel')
 
 const createProject = (newProject) => {
     return new Promise(async (resolve, reject) => {
         try {
+            const createdCanvas = await Canvas.create({
+                background: "#ffffff",
+                componentArray: [],
+            })
             const createdProject = await Project.create({
-                canvasArray: newProject.canvasArray,
+                canvasArray: [createdCanvas],
                 projectName: newProject.projectName,
                 owner: newProject.owner,
-                editorArray: newProject.editorArray,
-                isPublic: newProject.isPublic,
+                editorArray: [],
                 height: newProject.height,
                 width: newProject.width,
             })
-
             if (createdProject) {
                 resolve({
                     status: "OK",
                     message: "Create success",
-                    data: {
-                        Project: createdProject
-                    }
+                    data: createdProject,
                 })
-                //return; //Unnecessary
+            } else {
+                throw new Error('Project creation failed.');
             }
 
         } catch (error) {
+            console.error("Error creating project:", error.message);
             reject({
                 status: "ERROR",
                 message: "Failed to create Project",
@@ -64,7 +67,7 @@ const getDetailProject = (projectId) => {
     })
 }
 
-const updateProject = (projectId, data) => {
+const updateProject = (projectId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const checkProject = await Project.findOne({
@@ -77,7 +80,15 @@ const updateProject = (projectId, data) => {
                 })
                 return;
             }
-            const updatedProject = await Project.findByIdAndUpdate(projectId, data, {new: true});
+
+            const createdCanvas = await Canvas.create({
+                background: "#ffffff",
+                componentArray: [],
+            })
+
+            const canvasArray = [...checkProject.canvasArray, createdCanvas._id];
+
+            const updatedProject = await Project.findByIdAndUpdate(projectId, {canvasArray}, {new: true});
 
             if (!updatedProject) {
                 resolve({

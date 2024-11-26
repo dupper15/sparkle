@@ -51,13 +51,14 @@ const updateCanvas = async (req, res) => {
 const deleteCanvas = async (req, res) => {
     try {
         const canvasId = req.params.id
+        const projectId = req.body.projectId;
         if (!canvasId){
             return res.status(400).json({
                 status: 'ERROR',
                 message: 'Id is not defined'
             })
         }
-        const response = await CanvasService.deleteCanvas(canvasId)
+        const response = await CanvasService.deleteCanvas(canvasId, projectId)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({

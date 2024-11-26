@@ -39,7 +39,6 @@ import { useMutation } from '@tanstack/react-query';
           );
         
         const { data, isSuccess, isError } = mutation;
-        console.log('data',data)
     
         useEffect(() => {
             if(isSuccess){

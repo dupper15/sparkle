@@ -41,6 +41,8 @@ const MyAccountPage = () => {
     setInitialUserName(user?.userName);
   }, [user])
 
+  
+
   useEffect(() => {
     if(isSuccess){
       Alert.success("Update information success !")
