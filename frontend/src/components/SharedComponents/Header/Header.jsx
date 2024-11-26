@@ -15,7 +15,7 @@ const Header = () => {
   const user = useSelector((state) => state.user)
 
   useEffect(()=> {
-    setImage(user?.image)
+    setImage(user?.image || profileIcon)
   }, [user?.image])
 
   const navigate = useNavigate();

@@ -24,7 +24,7 @@ const UserProfileMenu = () => {
 
   useEffect(() => {
     setUserName(user?.userName);
-    setImage(user?.image)
+    setImage(user?.image || profileIcon)
   }, [user?.userName, user?.image]);
   return (
     <div
