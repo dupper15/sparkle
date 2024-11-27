@@ -1,4 +1,3 @@
-// frontend/src/components/SharedComponents/ToolBars/ImageToolBar/ImageToolBar.jsx
 import React from "react";
 import { RxDividerVertical } from "react-icons/rx";
 import PositionEditSection from "../SubComponents/PositionEditSection/PositionEditSection.jsx";
@@ -7,43 +6,43 @@ import ImageTransformationSection from "../SubComponents/ImageTransformationSect
 import useImageToolbarViewModel from "./ImageToolbarViewModel";
 
 const ImageToolbar = () => {
-    const { selectedComponentId, handleImageClick } = useImageToolbarViewModel();
+    const {
+        openColorPickerPanel,
+        handleColorClick,
+        setOpenPickerPanel,
+        activeColor,
+        setActiveColor,
+        isFlipMenuOpen,
+        isCropModeOpen,
+        handleFlipClick,
+        handleCropClick,
+        setIsFlipMenuOpen,
+        setOpenCropMode,
+    } = useImageToolbarViewModel();
 
     return (
         <div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md ">
-            {/* Edit Image */}
-            {/*<button className="pl-1 flex flex-row py-1 text-gray-700" onClick={onEditImage}>*/}
-            {/*    <FaImage className='text-xl mt-auto mb-auto mr-2'/>*/}
-            {/*    <span>Edit</span>*/}
-            {/*</button>*/}
-
-            {/*<RxDividerVertical />*/}
-
-            {/* Color Selector */}
-            <ImageStylesEditSection />
+            <ImageStylesEditSection
+                openColorPickerPanel={openColorPickerPanel}
+                handleColorClick={handleColorClick}
+                setOpenPickerPanel={setOpenPickerPanel}
+                activeColor={activeColor}
+                setActiveColor={setActiveColor}
+            />
 
             <RxDividerVertical />
 
-            {/* Crop */}
-            <ImageTransformationSection />
+            <ImageTransformationSection
+                isFlipMenuOpen={isFlipMenuOpen}
+                isCropModeOpen={isCropModeOpen}
+                handleFlipClick={handleFlipClick}
+                handleCropClick={handleCropClick}
+                setIsFlipMenuOpen={setIsFlipMenuOpen}
+                setOpenCropMode={setOpenCropMode}
+            />
 
             <RxDividerVertical />
 
-            {/* Transparency */}
-            {/*<button className="text-gray-700 text-xl" onClick={onTransparency}>*/}
-            {/*    <RxTransparencyGrid />*/}
-            {/*</button>*/}
-
-            {/*<RxDividerVertical />*/}
-
-            {/*/!* Animation *!/*/}
-            {/*<button className="text-gray-700 text-xl" onClick={onAnimate}>*/}
-            {/*    <MdAnimation />*/}
-            {/*</button>*/}
-
-            {/*<RxDividerVertical />*/}
-
-            {/* Position */}
             <PositionEditSection />
         </div>
     );
