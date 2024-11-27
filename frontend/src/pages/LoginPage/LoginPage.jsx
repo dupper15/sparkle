@@ -51,6 +51,9 @@ const LoginPage = () => {
       localStorage.setItem('access_token',  JSON.stringify(mutation.data?.access_token))
       if(mutation.data?.access_token) {
         const decoded = jwtDecode(mutation.data?.access_token)
+        console.log(mutation.data?.access_token)
+        console.log(decoded)
+        console.log(decoded.id)
         if (decoded?.id){
             handleGetDetailUser(decoded?.id, mutation.data?.access_token)
         }
@@ -60,6 +63,7 @@ const LoginPage = () => {
 
   const handleGetDetailUser = async (id, token) => {
     const res = await UserService.getDetailUser(id, token)
+    console.log(res)
     dispatch(updateUser({...res?.data, access_token: token}))
   }
 

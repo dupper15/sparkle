@@ -20,7 +20,7 @@ import Background from "../../components/Background/Background";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import ButtonMessage from "../../components/ChatBox/ButtonMessage";
 import CreateComponent from "../../components/CreateComponent";
-import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBar.jsx";
+import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBar/ImageToolBar.jsx";
 import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar.jsx";
 import { DndContext } from "@dnd-kit/core";
 import Text from "../../components/Text/Text.jsx";
@@ -111,16 +111,6 @@ const WorkplacePage = () => {
       handleGetDetailProject(project?.id)
     }
   },[isSuccess])
-
-  const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
-  const [isTextToolBarOpen, setOpenTextToolBar] = useState(false);
-
-  const handleImageClick = () => {
-    setOpenImageToolBar((prev) => !prev);
-  };
-  const handleTextClick = () => {
-    setOpenTextToolBar((prev) => !prev);
-  };
 
   const scrollToPage = (index) => {
     if (index >= 0 && index < pages.length) { 
@@ -397,18 +387,7 @@ const WorkplacePage = () => {
               )}
             </div>
             <div className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
-              <div className={"z-50"}>
-                {isImageToolBarOpen && (
-                  <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
-                    <ImageToolbar />
-                  </div>
-                )}
-                {isTextToolBarOpen && (
-                  <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
-                    <TextToolbar />
-                  </div>
-                )}
-              </div>
+
               {pages.map((pageData, index) => (
                 <div
                   key={pageData.id}
