@@ -490,7 +490,6 @@ const WorkplacePage = () => {
                       ref={(el) => (pageRef.current[index] = el)}
                     />
                   </div>
-                
                 ))}
               <div>
                 <AddPageButton addPage={addPage} />

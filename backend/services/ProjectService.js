@@ -41,7 +41,7 @@ const getDetailProject = (projectId) => {
     try {
       const project = await Project.findOne({
         _id: projectId,
-      });
+      }).populate("canvasArray");
       if (!Project) {
         resolve({
           status: "ERROR",
