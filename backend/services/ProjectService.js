@@ -42,7 +42,7 @@ const getDetailProject = (projectId) => {
       const project = await Project.findOne({
         _id: projectId,
       }).populate("canvasArray");
-      if (!Project) {
+      if (!project) {
         resolve({
           status: "ERROR",
           message: "Account is not defined!",
@@ -54,6 +54,64 @@ const getDetailProject = (projectId) => {
         status: "OK",
         message: "SUCCESS",
         data: project,
+      });
+    } catch (error) {
+      reject({
+        status: "ERROR",
+        message: "Failed to create Project",
+        error: error.message,
+      });
+    }
+  });
+};
+
+const getAllProject = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const projects = await Project.find({
+        owner: userId,
+      }).populate("canvasArray");
+      if (!projects) {
+        resolve({
+          status: "ERROR",
+          message: "Account is not defined!",
+        });
+        return;
+      }
+
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: projects,
+      });
+    } catch (error) {
+      reject({
+        status: "ERROR",
+        message: "Failed to create Project",
+        error: error.message,
+      });
+    }
+  });
+};
+
+const getAllTeamProject = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const projects = await Project.find({
+        editorArray: { $in: [userId] }, 
+      }).populate("canvasArray");
+      if (!projects) {
+        resolve({
+          status: "ERROR",
+          message: "Account is not defined!",
+        });
+        return;
+      }
+
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: projects,
       });
     } catch (error) {
       reject({
@@ -182,6 +240,8 @@ const addEditor = async (projectId, email) => {
 module.exports = {
   createProject,
   getDetailProject,
+  getAllProject,
+  getAllTeamProject,
   updateProject,
   deleteProject,
   addEditor,

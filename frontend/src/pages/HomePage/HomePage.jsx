@@ -5,10 +5,10 @@ import Footer from "../../components/SharedComponents/Footer/Footer.jsx";
 import Sidebar from "../../components/SharedComponents/SideBar/Sidebar.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
 import { useSelector } from "react-redux";
+import CarouselTeamProject from "../../components/SharedComponents/Carousel/CarouselTeamProject.jsx";
 
 const HomePage = () => {
   const { isDarkMode } = useDarkMode();
-  const user = useSelector((state) => state.user)
 
   return (
     <div
@@ -29,11 +29,11 @@ const HomePage = () => {
           </div>
           <div className="">
             <div className="flex justify-between items-center mx-10 my-2">
-              <div className="text-2xl font-bold w-max pointer-events-none">
+              <div className="ml-2 text-2xl font-bold w-max pointer-events-none">
                 Your recent design
               </div>
               <a
-                className="mr-0 text-right underline font-bold hover:text-[#4335DE]"
+                className="mr-2 text-right underline font-bold hover:text-[#4335DE]"
                 href="">
                 See all
               </a>
@@ -44,17 +44,17 @@ const HomePage = () => {
           </div>
           <div className="">
             <div className="flex justify-between items-center mx-10 my-2">
-              <div className="text-2xl font-bold w-max pointer-events-none">
-                Your recent design
+              <div className="ml-2 text-2xl font-bold w-max pointer-events-none">
+                Team projects
               </div>
               <a
-                className="mr-0 text-right underline font-bold hover:text-[#4335DE]"
+                className="mr-2 text-right underline font-bold hover:text-[#4335DE]"
                 href="">
                 See all
               </a>
             </div>
             <div className="px-8">
-              <CustomCarousel></CustomCarousel>
+              <CarouselTeamProject/>
             </div>
           </div>
         </div>

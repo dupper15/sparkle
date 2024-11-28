@@ -27,7 +27,7 @@ const responsive = {
   },
 };
 
-function CustomCarousel() {
+function CarouselTeamProject() {
   
   const user = useSelector((state) => state.user)
   console.log("user", user?.id)
@@ -37,7 +37,7 @@ function CustomCarousel() {
 
   const mutation = useMutationHooks(async (data) => {
     try {
-      const project_arr = await ProjectService.getAllProject(data); 
+      const project_arr = await ProjectService.getAllTeamProject(data); 
       setProjects(project_arr.data); 
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -46,10 +46,10 @@ function CustomCarousel() {
   
 
   useEffect(() => {
-    handleGetAllProject()
+    handleGetAllTeamProject()
   }, [user])
 
-  const handleGetAllProject = () => {
+  const handleGetAllTeamProject = () => {
     mutation.mutate(user?.id)
   }
 
@@ -91,4 +91,4 @@ function CustomCarousel() {
   );
 }
 
-export default CustomCarousel;
+export default CarouselTeamProject;

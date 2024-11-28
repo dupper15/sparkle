@@ -23,6 +23,28 @@ export const getDetailProject = async (id) => {
   }
 };
 
+export const getAllProject = async (id) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_KEY}/project/getAll/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};
+
+export const getAllTeamProject = async (id) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_KEY}/project/get-teamProject/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};
+
 export const updateProject = async (id, data) => {
   try {
     const response = await axios.put(`${import.meta.env.VITE_API_KEY}/project/update/${id}`, data);

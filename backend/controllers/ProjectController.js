@@ -44,6 +44,42 @@ const getDetailProject = async (req, res) => {
   }
 };
 
+const getAllProject = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Id is not defined",
+      });
+    }
+    const response = await ProjectService.getAllProject(userId);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const getAllTeamProject = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Id is not defined",
+      });
+    }
+    const response = await ProjectService.getAllTeamProject(userId);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const updateProject = async (req, res) => {
   try {
     const projectId = req.params.id;
@@ -135,6 +171,8 @@ const addEditor = async (req, res) => {
 module.exports = {
   createProject,
   getDetailProject,
+  getAllProject,
+  getAllTeamProject,
   updateProject,
   deleteProject,
   addEditor,
