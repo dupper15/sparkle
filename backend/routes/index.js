@@ -7,6 +7,7 @@ const MessageRouter = require("./MessageRouter");
 const GroupChatRouter = require("./GroupChatRouter");
 const ProjectRouter = require("./ProjectRouter")
 const CanvasRouter = require("./CanvasRouter")
+const BackgroundRouter = require("./BackgroundRouter")
 
 const routes = (app) => {
     app.use('/api/user', (UserRouter))
@@ -18,6 +19,7 @@ const routes = (app) => {
     app.use("/api/groupChat", GroupChatRouter);
     app.use('/api/project', (ProjectRouter))
     app.use('/api/canvas', (CanvasRouter))
+    app.use('/api/background', (BackgroundRouter))
 }
 
 module.exports = routes;

@@ -11,16 +11,16 @@ const createCanvas = async (req, res) => {
     }
 }
 
-const getDetailCanvas = async (req, res) => {
+const getAllCanvas = async (req, res) => {
     try {
-        const canvasId = req.params.id
-        if (!canvasId){
+        const projectId = req.params.id
+        if (!projectId){
             return res.status(400).json({
                 status: 'ERROR',
                 message: 'Id is not defined'
             })
         }
-        const response = await CanvasService.getDetailCanvas(canvasId)
+        const response = await CanvasService.getAllCanvas(projectId)
         return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
@@ -70,7 +70,7 @@ const deleteCanvas = async (req, res) => {
 
 module.exports = {
     createCanvas,
-    getDetailCanvas,
+    getAllCanvas,
     updateCanvas,
     deleteCanvas
 }
