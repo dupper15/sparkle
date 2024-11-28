@@ -1,11 +1,12 @@
+// eslint-disable-next-line no-unused-vars
 import React from "react";
-import { RxDividerVertical } from "react-icons/rx";
+import {RxDividerVertical} from "react-icons/rx";
 import PositionEditSection from "../SubComponents/PositionEditSection/PositionEditSection.jsx";
 import ImageStylesEditSection from "../SubComponents/ImageStylesEditSection/ImageStylesEditSection.jsx";
 import ImageTransformationSection from "../SubComponents/ImageTransformationSection/ImageTransformationSection.jsx";
 import useImageToolbarViewModel from "./ImageToolbarViewModel";
 
-const ImageToolbar = () => {
+const ImageToolbar = (selectedComponentId) => {
     const {
         openColorPickerPanel,
         handleColorClick,
@@ -18,19 +19,20 @@ const ImageToolbar = () => {
         handleCropClick,
         setIsFlipMenuOpen,
         setOpenCropMode,
-    } = useImageToolbarViewModel();
+        handleColorChange,
+    } = useImageToolbarViewModel(selectedComponentId);
 
-    return (
-        <div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md ">
+    return (<div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md ">
             <ImageStylesEditSection
                 openColorPickerPanel={openColorPickerPanel}
                 handleColorClick={handleColorClick}
                 setOpenPickerPanel={setOpenPickerPanel}
                 activeColor={activeColor}
                 setActiveColor={setActiveColor}
+                handleColorChange={handleColorChange}
             />
 
-            <RxDividerVertical />
+            <RxDividerVertical/>
 
             <ImageTransformationSection
                 isFlipMenuOpen={isFlipMenuOpen}
@@ -41,11 +43,10 @@ const ImageToolbar = () => {
                 setOpenCropMode={setOpenCropMode}
             />
 
-            <RxDividerVertical />
+            <RxDividerVertical/>
 
-            <PositionEditSection />
-        </div>
-    );
+            <PositionEditSection/>
+        </div>);
 };
 
 export default ImageToolbar;

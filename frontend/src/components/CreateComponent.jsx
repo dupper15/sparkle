@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MdOutlineChangeCircle } from "react-icons/md";
 
-const CreateComponent = ({ info, current_component, removeComponent, onClick }) => {
+const
+    CreateComponent = ({ info, current_component, removeComponent, onClick }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [position, setPosition] = useState({ x: info.x, y: info.y });
@@ -250,7 +251,6 @@ const CreateComponent = ({ info, current_component, removeComponent, onClick }) 
       transformOrigin: "center", // Xác định gốc xoay tại trung tâm
     }}
     onMouseDown={handleMouseDown}
-    onClick={() => onClick(info)}
   >
     {/* Nút xoay (icon) */}
     {isSelected && (
@@ -393,7 +393,8 @@ const CreateComponent = ({ info, current_component, removeComponent, onClick }) 
   
     {/* Nội dung của shape */}
     <div
-      onClick={() => info.setCurrentComponent(info)}
+        onClick={() => onClick(info)}
+      //onClick={() => info.setCurrentComponent(info)}
       style={getShapeStyle(info)}
       className="resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative"
     >

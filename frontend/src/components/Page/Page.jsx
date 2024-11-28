@@ -79,7 +79,7 @@ const Page = React.forwardRef(
             <div className={"z-50"}>
                 {isImageToolBarOpen && (
                     <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
-                        <ImageToolbar componentId={selectedComponentId}/>
+                        <ImageToolbar selectedComponentId={selectedComponentId}/>
                     </div>
                 )}
                 {isTextToolBarOpen && (

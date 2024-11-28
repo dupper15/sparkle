@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from "react";
 import { FaCircle } from "react-icons/fa";
 import ColorPickerPanel from "../../../ColorPickerPanel/ColorPickerPanel.jsx";
@@ -9,6 +10,7 @@ const ImageStylesEditSection = ({
                                     setOpenPickerPanel,
                                     activeColor,
                                     setActiveColor,
+                                    handleColorChange,
                                 }) => {
     return (
         <div>
@@ -23,6 +25,7 @@ const ImageStylesEditSection = ({
                         colorPanelCloseRequest={setOpenPickerPanel}
                         activeColor={activeColor}
                         setActiveColor={setActiveColor}
+                        handleColorChange={handleColorChange}
                     />
                 )}
             </div>
