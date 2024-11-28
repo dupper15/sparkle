@@ -1,12 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
-import {
-  LuLayoutTemplate,
-  LuShapes,
-  LuFolder,
-  LuImage,
-} from "react-icons/lu";
+import { LuLayoutTemplate, LuShapes, LuFolder, LuImage } from "react-icons/lu";
 import { RiText } from "react-icons/ri";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { MdKeyboardArrowLeft } from "react-icons/md";
@@ -25,50 +20,51 @@ import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar.
 import { DndContext } from "@dnd-kit/core";
 import Text from "../../components/Text/Text.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
-import * as ProjectService from '../../services/ProjectService.js'
+import * as ProjectService from "../../services/ProjectService.js";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProject } from "../../redux/slides/projectSlide.js";
 import { deleteCanvas } from "../../services/CanvasService.js";
-import * as Alert from '../../components/Alert/Alert.jsx'
+import * as Alert from "../../components/Alert/Alert.jsx";
 import { useMutationHooks } from "../../hooks/useMutationHook.js";
 import { useMutation } from "@tanstack/react-query";
 
 const WorkplacePage = () => {
   const dispatch = useDispatch();
+
   const project = useSelector((state) => state.project);
-  const [width, setWidth] = useState('')
-  const [height, setHeight] = useState()
- 
+  const [width, setWidth] = useState("");
+  const [height, setHeight] = useState();
+
   useEffect(() => {
-    setWidth(project?.width)
-    setHeight(project?.height)
-  },[project])
+    setWidth(project?.width);
+    setHeight(project?.height);
+  }, [project]);
 
   useEffect(() => {
     // Lấy id từ localStorage
-    const storedProjectId = localStorage.getItem('projectId');
-    
+    const storedProjectId = localStorage.getItem("projectId");
+
     if (storedProjectId) {
       // Gọi API để lấy chi tiết dự án
       const fetchProject = async () => {
         const res = await ProjectService.getDetailProject(storedProjectId);
         dispatch(updateProject(res.data)); // Cập nhật dữ liệu dự án vào Redux store
       };
-      
+
       fetchProject();
     }
   }, [dispatch]);
 
   const handleGetDetailProject = async (id) => {
-    const res = await ProjectService.getDetailProject(id)
-    localStorage.setItem('project', JSON.stringify(res?.data));
-    dispatch(updateProject({...res?.data}))
+    const res = await ProjectService.getDetailProject(id);
+    localStorage.setItem("project", JSON.stringify(res?.data));
+    dispatch(updateProject({ ...res?.data }));
   };
-  
+
   const { isDarkMode } = useDarkMode();
   const [state, setState] = useState("");
   const pageRef = useRef([]);
- 
+
   const location = useLocation();
   const designData = location.state || {};
 
@@ -78,39 +74,38 @@ const WorkplacePage = () => {
   useEffect(() => {
     if (project?.canvasArray) {
       const newPages = project.canvasArray.map((canvas, index) => ({
-        ...canvas,  
-        id: canvas.id || index,  
-        name: canvas.name || `Page ${index + 1}`, 
+        ...canvas,
+        id: canvas.id || index,
+        name: canvas.name || `Page ${index + 1}`,
       }));
       setPages(newPages);
-      setCurrentPage(newPages[0]?.id)
+      setCurrentPage(newPages[0]?.id);
     }
-  }, [project]); 
+  }, [project]);
 
-  const mutation = useMutation(
-  {
+  const mutation = useMutation({
     mutationFn: (data) => {
-      const { id } = data; 
+      const { id } = data;
       return ProjectService.updateProject(id);
     },
     onSuccess: (data) => {
       dispatch(updateProject(data.data));
-      handleGetDetailProject(data.data.id)
-      console.log('Project updated successfully:', data);
+      handleGetDetailProject(data.data.id);
+      console.log("Project updated successfully:", data);
     },
     onError: (error) => {
-      console.error('Failed to update project:', error);
-    }
-  })
+      console.error("Failed to update project:", error);
+    },
+  });
 
-  const {data, isSuccess} = mutation
- 
+  const { data, isSuccess } = mutation;
+
   useEffect(() => {
-    if(isSuccess){
-      Alert.success('Add success')
-      handleGetDetailProject(project?.id)
+    if (isSuccess) {
+      Alert.success("Add success");
+      handleGetDetailProject(project?.id);
     }
-  },[isSuccess])
+  }, [isSuccess]);
 
   const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
   const [isTextToolBarOpen, setOpenTextToolBar] = useState(false);
@@ -123,7 +118,7 @@ const WorkplacePage = () => {
   };
 
   const scrollToPage = (index) => {
-    if (index >= 0 && index < pages.length) { 
+    if (index >= 0 && index < pages.length) {
       if (pageRef.current[index]) {
         pageRef.current[index].scrollIntoView({
           behavior: "smooth",
@@ -136,19 +131,19 @@ const WorkplacePage = () => {
 
   const addPage = async () => {
     mutation.mutate({ id: project?.id });
-  
+
     setPages((prev) => {
       const newPages = [...prev, ...project.canvasArray];
-  
-      setCurrentPage(newPages[newPages.length - 1]?.id);  
-  
+
+      setCurrentPage(newPages[newPages.length - 1]?.id);
+
       setTimeout(() => {
         pageRef.current[newPages.length - 1]?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
+          behavior: "smooth",
+          block: "start",
         });
       }, 0);
-  
+
       return newPages;
     });
   };
@@ -222,26 +217,25 @@ const WorkplacePage = () => {
   };
   const removePage = async (id) => {
     try {
-      
       if (project?.canvasArray?.length === 1) {
         Alert.error("Can not delete page!");
-        return; 
+        return;
       }
 
-      const canvasId = project?.canvasArray[id]
+      const canvasId = project?.canvasArray[id];
       await deleteCanvas(canvasId, project?.id);
-    
+
       setPages((prev) => {
         const newPages = prev.filter((page) => page.id !== id);
-  
+
         const pageIndex = prev.findIndex((page) => page.id === id);
         const nextPageIndex =
           pageIndex < newPages.length ? pageIndex : pageIndex - 1;
-  
+
         setCurrentPage(newPages[nextPageIndex]?.id || null);
         return newPages;
       });
-  
+
       // Đồng bộ dữ liệu dự án
       await handleGetDetailProject(project?.id);
     } catch (error) {
@@ -249,7 +243,6 @@ const WorkplacePage = () => {
       Alert.error("Failed to delete page.");
     }
   };
-
 
   const [current_component, setCurrentComponent] = useState("");
   const [show, setShow] = useState({
@@ -332,7 +325,7 @@ const WorkplacePage = () => {
           isDarkMode ? "bg-[#151318]" : "bg-slate-300"
         }`}>
         <WorkplaceHeader />
-        <div className="flex h-[calc(100%-60px)] w-screen scrollbar-hide">
+        <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide'>
           <div
             className={`w-[80px] z-50 scrollbar-hide h-full overflow-y-auto ${
               isDarkMode ? "bg-black text-white" : "bg-gray-100 text-black"
@@ -359,13 +352,13 @@ const WorkplacePage = () => {
                       : "bg-white"
                     : ""
                 } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}>
-                <span className="text-2xl">{icon}</span>
-                <span className="text-xs font-medium">{label}</span>
+                <span className='text-2xl'>{icon}</span>
+                <span className='text-xs font-medium'>{label}</span>
               </div>
             ))}
           </div>
 
-          <div className="h-full w-[calc(100%-75px)]">
+          <div className='h-full w-[calc(100%-75px)]'>
             <div
               className={`${
                 show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
@@ -382,7 +375,7 @@ const WorkplacePage = () => {
                 <MdKeyboardArrowLeft />
               </div>
               {state === "design" && (
-                <div className="grid grid-cols-2 gap-2">
+                <div className='grid grid-cols-2 gap-2'>
                   <TemplateDesign />
                 </div>
               )}
@@ -396,15 +389,15 @@ const WorkplacePage = () => {
                 <Background setBackground={setBackground} />
               )}
             </div>
-            <div className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
+            <div className='flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
               <div className={"z-50"}>
                 {isImageToolBarOpen && (
-                  <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
+                  <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
                     <ImageToolbar />
                   </div>
                 )}
                 {isTextToolBarOpen && (
-                  <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
+                  <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
                     <TextToolbar />
                   </div>
                 )}
@@ -435,7 +428,6 @@ const WorkplacePage = () => {
                     ref={(el) => (pageRef.current[index] = el)}
                   />
                 </div>
-              
               ))}
               <div>
                 <AddPageButton addPage={addPage} />
