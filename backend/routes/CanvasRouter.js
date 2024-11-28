@@ -3,7 +3,7 @@ const router = express.Router()
 const canvasController = require('../controllers/CanvasController')
 
 router.post('/create', canvasController.createCanvas)
-router.get('/get-detail/:id', canvasController.getDetailCanvas)
+router.get('/getAll/:id', canvasController.getAllCanvas)
 router.put('/update/:id', canvasController.updateCanvas)
 router.delete('/delete/:id', canvasController.deleteCanvas)
 

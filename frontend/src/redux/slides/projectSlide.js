@@ -21,7 +21,10 @@ export const projectSlice = createSlice({
             state.id = _id
             state.height = height
             state.width = width
-            state.canvasArray = canvasArray
+            state.canvasArray = canvasArray.map((canvas, index) => ({
+                ...canvas,
+                index: index // Cập nhật lại index cho mỗi phần tử trong canvasArray
+            }));
             state.editorArray = editorArray
             state.isPublic = isPublic
             state.owner = owner
