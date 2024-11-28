@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import React from 'react';
 import { FaCrop } from "react-icons/fa";
 import { RiFlipHorizontalFill, RiFlipVerticalFill } from "react-icons/ri";
 
+
 const ImageTransformationSection = ({
                                         isFlipMenuOpen,
-                                        isCropModeOpen,
                                         handleFlipClick,
                                         handleCropClick,
                                         setIsFlipMenuOpen,
                                         setOpenCropMode,
+                                        handleHorizontalFlipClick,
+                                        handleVerticalFlipClick,
                                     }) => {
     return (
         <div className={'relative'}>
@@ -28,7 +30,10 @@ const ImageTransformationSection = ({
             <div>
                 {isFlipMenuOpen && (
                     <div className="absolute top-[6rem] right-[1rem] translate-x-[50%] translate-y-[-55%] shadow">
-                        <FlipMenu />
+                        <FlipMenu
+                            handleHorizontalFlipClick={handleHorizontalFlipClick}
+                            handleVerticalFlipClick={handleVerticalFlipClick}
+                        />
                     </div>
                 )}
             </div>
@@ -41,14 +46,17 @@ const ImageTransformationSection = ({
 
 export default ImageTransformationSection;
 
-const FlipMenu = () => {
+// eslint-disable-next-line react/prop-types
+const FlipMenu = ({ handleHorizontalFlipClick, handleVerticalFlipClick }) => {
     return (
         <div className="bg-white profile-dropdown box-border rounded-2xl text-sm text-gray-700 py-2">
-            <button className="flex items-center rounded-md hover:bg-gray-200 px-2 py-2 w-40 mb-1">
+            <button className="flex items-center rounded-md hover:bg-gray-200 px-2 py-2 w-40 mb-1"
+                    onClick={handleHorizontalFlipClick}>
                 <RiFlipHorizontalFill className={'h-6 w-8 mr-2'} />
                 <span>Flip Horizontal</span>
             </button>
-            <button className="flex items-center rounded-md hover:bg-gray-200 px-2 py-2 w-40 mt-1">
+            <button className="flex items-center rounded-md hover:bg-gray-200 px-2 py-2 w-40 mt-1"
+                    onClick={handleVerticalFlipClick}>
                 <RiFlipVerticalFill className={'h-6 w-8 mr-2'} />
                 <span>Flip Vertical</span>
             </button>

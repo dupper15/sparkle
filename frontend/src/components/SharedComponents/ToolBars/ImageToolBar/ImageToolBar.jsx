@@ -1,12 +1,12 @@
-// eslint-disable-next-line no-unused-vars
 import React from "react";
-import {RxDividerVertical} from "react-icons/rx";
+import { RxDividerVertical } from "react-icons/rx";
 import PositionEditSection from "../SubComponents/PositionEditSection/PositionEditSection.jsx";
 import ImageStylesEditSection from "../SubComponents/ImageStylesEditSection/ImageStylesEditSection.jsx";
 import ImageTransformationSection from "../SubComponents/ImageTransformationSection/ImageTransformationSection.jsx";
 import useImageToolbarViewModel from "./ImageToolbarViewModel";
 
-const ImageToolbar = (selectedComponentId) => {
+// eslint-disable-next-line react/prop-types
+const ImageToolbar = ({ selectedComponentId }) => {
     const {
         openColorPickerPanel,
         handleColorClick,
@@ -20,9 +20,12 @@ const ImageToolbar = (selectedComponentId) => {
         setIsFlipMenuOpen,
         setOpenCropMode,
         handleColorChange,
+        handleHorizontalFlipClick,
+        handleVerticalFlipClick,
     } = useImageToolbarViewModel(selectedComponentId);
 
-    return (<div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md ">
+    return (
+        <div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md">
             <ImageStylesEditSection
                 openColorPickerPanel={openColorPickerPanel}
                 handleColorClick={handleColorClick}
@@ -32,7 +35,7 @@ const ImageToolbar = (selectedComponentId) => {
                 handleColorChange={handleColorChange}
             />
 
-            <RxDividerVertical/>
+            <RxDividerVertical />
 
             <ImageTransformationSection
                 isFlipMenuOpen={isFlipMenuOpen}
@@ -41,12 +44,15 @@ const ImageToolbar = (selectedComponentId) => {
                 handleCropClick={handleCropClick}
                 setIsFlipMenuOpen={setIsFlipMenuOpen}
                 setOpenCropMode={setOpenCropMode}
+                handleHorizontalFlipClick={handleHorizontalFlipClick}
+                handleVerticalFlipClick={handleVerticalFlipClick}
             />
 
-            <RxDividerVertical/>
+            <RxDividerVertical />
 
-            <PositionEditSection/>
-        </div>);
+            <PositionEditSection />
+        </div>
+    );
 };
 
 export default ImageToolbar;

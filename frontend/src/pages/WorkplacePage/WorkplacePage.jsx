@@ -21,7 +21,7 @@ import ChatBox from "../../components/ChatBox/ChatBox";
 import ButtonMessage from "../../components/ChatBox/ButtonMessage";
 import CreateComponent from "../../components/CreateComponent";
 import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBar/ImageToolBar.jsx";
-import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar.jsx";
+import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar/TextToolBar.jsx";
 import { DndContext } from "@dnd-kit/core";
 import Text from "../../components/Text/Text.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";

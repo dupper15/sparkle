@@ -6,7 +6,7 @@ import CreateComponent from "../../components/CreateComponent";
 import { useDroppable } from "@dnd-kit/core";
 import { useDarkMode } from "../../contexts/DarkModeContext";
 import ImageToolbar from "../SharedComponents/ToolBars/ImageToolBar/ImageToolBar.jsx";
-import TextToolbar from "../SharedComponents/ToolBars/TextToolBar.jsx";
+import TextToolbar from "../SharedComponents/ToolBars/TextToolBar/TextToolBar.jsx";
 
 const Page = React.forwardRef(
   (

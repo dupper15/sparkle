@@ -1,37 +1,52 @@
-import { useState } from "react";
-import {updateShapeColor} from "../../../../services/ImageService.js";
+import { useState, useCallback } from "react";
+import { updateShapeColor, updateShapeTransformation } from "../../../../services/ImageService.js";
 
 const useImageToolbarViewModel = (selectedComponentId) => {
-    const [componentId, setComponentId] = useState(selectedComponentId);
     const [openColorPickerPanel, setOpenPickerPanel] = useState(false);
-    const [activeColor, setActiveColor] = useState("#aabbcc");
+    const [activeColor, setActiveColor] = useState("#000000");
+    const [isFlipMenuOpen, setIsFlipMenuOpen] = useState(false);
+    const [isCropModeOpen, setOpenCropMode] = useState(false);
 
-    const handleImageClick = (id) => {
-        setComponentId(id);
-    };
     const handleColorClick = () => {
-        setOpenPickerPanel((prev) => !prev);
+        setOpenPickerPanel(!openColorPickerPanel);
     };
-    const handleColorChange = async (color) => {
-        if (componentId) {
-            try {
-                await updateShapeColor(componentId, color);
-                setActiveColor(color);
-            } catch (error) {
-                console.error('Failed to update color:', error);
-            }
-        }
+
+    const handleColorChange = useCallback((color) => {
+        setActiveColor(color);
+        updateShapeColor(selectedComponentId, color).then(r => console.log(r));
+    }, [selectedComponentId]);
+
+    const handleFlipClick = () => {
+        setIsFlipMenuOpen(!isFlipMenuOpen);
+    };
+
+    const handleCropClick = () => {
+        setOpenCropMode(!isCropModeOpen);
+    };
+
+    const handleHorizontalFlipClick = () => {
+        updateShapeTransformation(selectedComponentId, "flip", "horizontal").then(r => console.log(r));
+    };
+
+    const handleVerticalFlipClick = () => {
+        updateShapeTransformation(selectedComponentId, "flip", "vertical").then(r => console.log(r));
     };
 
     return {
-        componentId,
-        handleImageClick,
         openColorPickerPanel,
         handleColorClick,
         setOpenPickerPanel,
         activeColor,
         setActiveColor,
+        isFlipMenuOpen,
+        isCropModeOpen,
+        handleFlipClick,
+        handleCropClick,
+        setIsFlipMenuOpen,
+        setOpenCropMode,
         handleColorChange,
+        handleHorizontalFlipClick,
+        handleVerticalFlipClick,
     };
 };
 

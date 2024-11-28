@@ -1,9 +1,9 @@
 import { RxDividerVertical } from "react-icons/rx";
-import FontSelector from "./SubComponents/FontSelector/FontSelector.jsx";
-import FontSizeField from "./SubComponents/FontSizeField/FontSizeField.jsx";
-import ParagraphFormatSection from "./SubComponents/ParagraphFormatSection/ParagraphFormatSection.jsx";
-import TextFormatSection from "./SubComponents/TextFormatSection/TextFormatSection.jsx";
-import PositionEditSection from "./SubComponents/PositionEditSection/PositionEditSection.jsx";
+import FontSelector from "../SubComponents/FontSelector/FontSelector.jsx";
+import FontSizeField from "../SubComponents/FontSizeField/FontSizeField.jsx";
+import ParagraphFormatSection from "../SubComponents/ParagraphFormatSection/ParagraphFormatSection.jsx";
+import TextFormatSection from "../SubComponents/TextFormatSection/TextFormatSection.jsx";
+import PositionEditSection from "../SubComponents/PositionEditSection/PositionEditSection.jsx";
 /* eslint react/prop-types: 0*/
 const TextToolbar = () => {
   return (
