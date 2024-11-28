@@ -72,6 +72,11 @@ const WorkplacePage = () => {
         dispatch(updateProject(res.data)); // Cập nhật dữ liệu dự án vào Redux store
       };
       fetchProject();
+
+      return () => {
+        // Cleanup khi rời khỏi trang
+        localStorage.removeItem('projectId');
+      };
     }
   }, [dispatch]);
 
