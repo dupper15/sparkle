@@ -2,6 +2,11 @@ import testImage from "../../../assets/banner1.png";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { useMutationHooks } from "../../../hooks/useMutationHook";
+import * as ProjectService from '../../../services/ProjectService'
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const responsive = {
   superLargeDesktop: {
@@ -22,9 +27,38 @@ const responsive = {
   },
 };
 
-//const names = [['frontend/src/assets/homepage-banner.png', 'test1'], ['frontend/src/assets/homepage-banner.png', 'test2']];
-
 function CustomCarousel() {
+  
+  const user = useSelector((state) => state.user)
+  console.log("user", user?.id)
+  const navigate = useNavigate()
+
+  const [projects, setProjects] = useState([])
+
+  const mutation = useMutationHooks(async (data) => {
+    try {
+      const project_arr = await ProjectService.getAllProject(data); 
+      setProjects(project_arr.data); 
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    }
+  });
+  
+
+  useEffect(() => {
+    handleGetAllProject()
+  }, [user])
+
+  const handleGetAllProject = () => {
+    mutation.mutate(user?.id)
+  }
+
+  const handleClick = (id) => {
+    localStorage.setItem('projectId', id)
+    navigate(`/${id}/edit`)
+  }
+  
+  console.log('projects', projects[0]?.canvasArray[0]?.background)
   return (
     <Carousel
       customLeftArrow={<IoIosArrowDropleft className='left-arrow' />}
@@ -36,47 +70,23 @@ function CustomCarousel() {
       autoPlaySpeed={1000}
       keyBoardControl={true}
       transitionDuration={500}
-      // containerClass="carousel-container"
       removeArrowOnDeviceType={["tablet", "mobile"]}
-      // dotListClass="custom-dot-list-style"
-      // carousel-item-padding-40-px carousel-item-width-100-px
-      itemClass='p-2'>
-      <div>
-        <img className='bg-cover' src={testImage} alt='Test' />
-        <span className=''>Item 1</span>
-      </div>
-      <div>
-        <img className='bg-cover' src={testImage} alt='Test' />
-        <span>Item 1</span>
-      </div>
-      <div>
-        <img className='bg-cover' src={testImage} alt='Test' />
-        <span>Item 1</span>
-      </div>
-      <div>
-        <img className='bg-cover' src={testImage} alt='Test' />
-        <span>Item 1</span>
-      </div>
-      <div>
-        <img className='bg-cover' src={testImage} alt='Test' />
-        <span>Item 1</span>
-      </div>
-      <div>
-        <img className='bg-cover' src={testImage} alt='Test' />
-        <span>Item 1</span>
-      </div>
-      <div>
-        <img className='bg-cover' src={testImage} alt='Test' />
-        <span>Item 1</span>
-      </div>
-      <div>
-        <img className='bg-cover' src={testImage} alt='Test' />
-        <span>Item 1</span>
-      </div>
-      <div>
-        <img className='bg-cover' src={testImage} alt='Test' />
-        <span>Item 1</span>
-      </div>
+      itemClass='p-4 flex gap-4'>
+      {projects.slice().reverse().map((project, index) => (
+        <div key={project._id} id={project?._id} onClick={() => handleClick(project._id)} className="cursor-pointer" >
+          <img
+            className='bg-cover h-[200px] w-[420px]'
+            src={
+              project.canvasArray?.[0]?.background === '#ffffff' 
+                ? testImage 
+                : project.canvasArray?.[0]?.background
+            }
+            alt={project.projectName || 'Project Image'}
+          />
+          <span>{project.projectName || 'Unnamed Project'}</span>
+        </div>
+        ))
+      }
     </Carousel>
   );
 }

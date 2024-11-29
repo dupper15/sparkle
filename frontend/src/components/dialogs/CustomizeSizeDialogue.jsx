@@ -38,7 +38,7 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate  }) => {
         localStorage.setItem('projectId', projectId);
 
         dispatch(updateProject(data.data));
-        navigate(`/edit`); 
+        navigate(`/${projectId}/edit`); 
         childCloseFormRequest(); 
       },
     }

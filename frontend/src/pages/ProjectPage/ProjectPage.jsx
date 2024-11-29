@@ -13,7 +13,7 @@ const ProjectPage = () => {
       className={`h-screen flex flex-col overflow-y-auto ${
         isDarkMode ? "bg-[#101010]" : "bg-white"
       }`}>
-      <header className="z-40">
+      <header className='z-40'>
         <Header />
       </header>
       <div
@@ -21,19 +21,19 @@ const ProjectPage = () => {
           isDarkMode ? "bg-[#101010] text-white" : "bg-white text-black"
         }`}>
         <Sidebar />
-        <div className="w-[calc(100%-100px)] flex flex-col h-full ]">
-          <div className="mr-auto ml-auto mt-8 mb-8">
+        <div className='w-[calc(100%-100px)] flex flex-col h-full ]'>
+          <div className='mr-auto ml-auto mt-8 mb-8'>
             <ProjectPageBanner></ProjectPageBanner>
           </div>
-          <div className="">
-            <div className="text-2xl font-bold">Your Projects</div>
-            <div className="pl-8 pr-8">
+          <div className=''>
+            <div className='text-2xl font-bold'>Your Projects</div>
+            <div className='pl-8 pr-8'>
               <ResponsiveGrid></ResponsiveGrid>
             </div>
           </div>
         </div>
       </div>
-      <div className="mt-6">
+      <div className='mt-6'>
         <Footer />
       </div>
     </div>

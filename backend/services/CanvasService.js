@@ -28,16 +28,16 @@ const createCanvas = () => {
     })
 }
 
-const getDetailCanvas = (canvasId) => {
+const getAllCanvas = (projectId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const canvas = await Canvas.findOne({
-                _id: canvasId
-            })
-            if (!Canvas){
+            const project = await Project.findById({
+                _id: projectId
+            }).populate('canvasArray')
+            if (!project){
                 resolve({
                     status: "ERROR",
-                    message: "Account is not defined!"
+                    message: "Project is not defined!"
                 })
                 return;
             }
@@ -45,7 +45,7 @@ const getDetailCanvas = (canvasId) => {
             resolve({
                 status: "OK",
                 message: "SUCCESS",
-                data: canvas
+                data: project.canvasArray 
             })
 
         } catch (error) {
@@ -71,7 +71,7 @@ const updateCanvas = (canvasId, data) => {
                 })
                 return;
             }
-            const updatedCanvas = await Canvas.findByIdAndUpdate(canvasId, data, {new: true});
+            const updatedCanvas = await Canvas.findByIdAndUpdate(canvasId, {background: data.background}, {new: true});
 
             if (!updatedCanvas){
                 resolve({
@@ -143,7 +143,7 @@ const deleteCanvas = (canvasId, projectId) => {
 
 module.exports = {
     createCanvas,
-    getDetailCanvas,
+    getAllCanvas,
     updateCanvas,
     deleteCanvas
 }

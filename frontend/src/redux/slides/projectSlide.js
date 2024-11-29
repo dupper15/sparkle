@@ -1,15 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-   id: '',
-   height: '',
-   width: '',
-   canvasArray: [],
-   editorArray: [],
-   isPublic: [],
-   owner: '',
-   projectName: ''
-}
+  id: "",
+  height: "",
+  width: "",
+  canvasArray: [],
+  editorArray: [],
+  isPublic: [],
+  owner: "",
+  projectName: "",
+};
 
 export const projectSlice = createSlice({
     name: 'counter',
@@ -21,7 +21,10 @@ export const projectSlice = createSlice({
             state.id = _id
             state.height = height
             state.width = width
-            state.canvasArray = canvasArray
+            state.canvasArray = canvasArray.map((canvas, index) => ({
+                ...canvas,
+                index: index // Cập nhật lại index cho mỗi phần tử trong canvasArray
+            }));
             state.editorArray = editorArray
             state.isPublic = isPublic
             state.owner = owner
@@ -30,6 +33,6 @@ export const projectSlice = createSlice({
     }
 })
 
-export const { updateProject } = projectSlice.actions
+export const { updateProject, addEditor } = projectSlice.actions;
 
-export default projectSlice.reducer
+export default projectSlice.reducer;
