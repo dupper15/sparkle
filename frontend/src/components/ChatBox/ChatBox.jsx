@@ -14,10 +14,8 @@ const ChatBox = ({ toggleChatBox }) => {
   useEffect(() => {
     if (!project?.id) return;
 
-    // Tham gia phòng chat
     socket.emit("joinRoom", project.id);
 
-    // Nhận tin nhắn từ server
     const handleLoadMessages = (loadedMessages) => {
       setMessages(loadedMessages);
     };
@@ -29,7 +27,6 @@ const ChatBox = ({ toggleChatBox }) => {
     socket.on("loadMessages", handleLoadMessages);
     socket.on("chatMessage", handleNewMessage);
 
-    // Cleanup
     return () => {
       socket.off("loadMessages", handleLoadMessages);
       socket.off("chatMessage", handleNewMessage);
@@ -43,10 +40,8 @@ const ChatBox = ({ toggleChatBox }) => {
         roomId: project.id,
         text,
       });
-      console.log("1");
     } else {
       console.error("Message or user/project data is missing!");
-      console.log("2");
     }
   };
 

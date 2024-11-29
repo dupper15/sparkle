@@ -1,11 +1,12 @@
 const Message = require("../models/MessageModel");
-const User = require("../models/UserModel"); // Giả sử bạn đã có mô hình User
+const User = require("../models/UserModel");
 const sendMessage = async (newMessage) => {
   const { content, sender, groupId } = newMessage;
 
   if (!content || !sender || !groupId) {
     throw new Error("All fields (content, sender, groupId) are required");
   }
+
   try {
     const message = new Message({
       content,
@@ -14,7 +15,15 @@ const sendMessage = async (newMessage) => {
     });
 
     const savedMessage = await message.save();
-    return { status: "SUCCESS", data: savedMessage };
+    const user = await User.findById(sender).select("image userName").lean();
+    return {
+      status: "SUCCESS",
+      data: {
+        ...savedMessage.toObject(),
+        avatar: user ? user.image : null,
+        senderName: user ? user.userName : "Unknown",
+      },
+    };
   } catch (error) {
     throw new Error(error.message);
   }
@@ -22,22 +31,24 @@ const sendMessage = async (newMessage) => {
 
 const getMessage = async (groupId) => {
   try {
-    const messages = await Message.find({ groupId, isDeleted: false }).sort({
-      createdAt: 1,
-    });
+    const messages = await Message.find({ groupId, isDeleted: false })
+      .sort({ createdAt: 1 })
+      .lean();
 
-    // Lặp qua tất cả tin nhắn để lấy avatar người gửi
-    const messagesWithAvatars = await Promise.all(
+    const messagesFinal = await Promise.all(
       messages.map(async (message) => {
-        const user = await User.findById(message.sender).select("image");
+        const user = await User.findById(message.sender)
+          .select("image userName")
+          .lean();
         return {
-          ...message.toObject(),
-          avatar: user ? user.image : null, // Thêm avatar vào mỗi tin nhắn
+          ...message,
+          avatar: user ? user.image : null,
+          senderName: user ? user.userName : "Unknown",
         };
       })
     );
 
-    return { status: "SUCCESS", data: messagesWithAvatars };
+    return { status: "SUCCESS", data: messagesFinal };
   } catch (error) {
     throw new Error(error.message);
   }
