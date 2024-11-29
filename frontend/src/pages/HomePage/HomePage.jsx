@@ -4,11 +4,20 @@ import CustomCarousel from "../../components/SharedComponents/Carousel/CustomCar
 import Footer from "../../components/SharedComponents/Footer/Footer.jsx";
 import Sidebar from "../../components/SharedComponents/SideBar/Sidebar.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
-import { useSelector } from "react-redux";
-import CarouselTeamProject from "../../components/SharedComponents/Carousel/CarouselTeamProject.jsx";
+import ResponsiveGridTemplate from "../../components/SharedComponents/ResponsiveGrid/ResponsiveGridTemplate.jsx";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const { isDarkMode } = useDarkMode();
+  const navigate = useNavigate()
+
+  const handleNavigateProject = () => {
+    navigate('/project')
+  }
+
+  const handleNavigateTemplate = () => {
+    navigate('/template')
+  }
 
   return (
     <div
@@ -32,7 +41,7 @@ const HomePage = () => {
               <div className="ml-2 text-2xl font-bold w-max pointer-events-none">
                 Your recent design
               </div>
-              <a
+              <a onClick={handleNavigateProject}
                 className="mr-2 text-right underline font-bold hover:text-[#4335DE]"
                 href="">
                 See all
@@ -45,16 +54,16 @@ const HomePage = () => {
           <div className="">
             <div className="flex justify-between items-center mx-10 my-2">
               <div className="ml-2 text-2xl font-bold w-max pointer-events-none">
-                Team projects
+                Hot Trending
               </div>
-              <a
+              <a onClick={handleNavigateTemplate}
                 className="mr-2 text-right underline font-bold hover:text-[#4335DE]"
                 href="">
                 See all
               </a>
             </div>
             <div className="px-8">
-              <CarouselTeamProject/>
+              <ResponsiveGridTemplate/>
             </div>
           </div>
         </div>

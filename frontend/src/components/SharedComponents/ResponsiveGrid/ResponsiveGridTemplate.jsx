@@ -17,14 +17,11 @@ const ResponsiveGrid = () => {
 
     const [projects, setProjects] = useState([])
 
-    const mutation = useMutationHooks(async (data) => {
+    const mutation = useMutationHooks(async () => {
         try {
-            const project_arr = await ProjectService.getAllProject(data); 
-            const projectTeam_arr = await ProjectService.getAllTeamProject(data)
-
-            const combinedProjects = projectTeam_arr.data.concat(project_arr.data);
-    
-            setProjects(combinedProjects);
+            const project_arr = await ProjectService.getPublic(); 
+            setProjects(Array.isArray(project_arr) ? project_arr : []);
+            console.log('project', projects)
         } catch (error) {
             console.error("Error fetching projects:", error);
         }
@@ -32,16 +29,11 @@ const ResponsiveGrid = () => {
     
 
     useEffect(() => {
-        handleGetAllProject()
-        handleGetAllTeamProject()
+        handleGetPublic()
     }, [user])
 
-    const handleGetAllProject = () => {
-        mutation.mutate(user?.id)
-    }
-
-    const handleGetAllTeamProject = () => {
-        mutation.mutate(user?.id)
+    const handleGetPublic= () => {
+        mutation.mutate()
     }
 
     const handleClick = (id) => {
@@ -52,7 +44,7 @@ const ResponsiveGrid = () => {
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
-             {projects.length === 0 ? (
+        {projects.length === 0 ? (
             <div className="text-gray-500 text-center col-span-4">
                There are no projects to display.
             </div>
@@ -82,7 +74,8 @@ const ResponsiveGrid = () => {
                 </div>
             ))
         )}
-        </div>
+    </div>
+    
     );
 };
 

@@ -80,6 +80,17 @@ const getAllTeamProject = async (req, res) => {
   }
 };
 
+const getPublic = async (req, res) => {
+  try {
+    const response = await ProjectService.getPublic();
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const updateProject = async (req, res) => {
   try {
     const projectId = req.params.id;
@@ -173,6 +184,7 @@ module.exports = {
   getDetailProject,
   getAllProject,
   getAllTeamProject,
+  getPublic,
   updateProject,
   deleteProject,
   addEditor,
