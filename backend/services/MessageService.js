@@ -1,8 +1,11 @@
 const Message = require("../models/MessageModel");
-
+const User = require("../models/UserModel"); // Giả sử bạn đã có mô hình User
 const sendMessage = async (newMessage) => {
   const { content, sender, groupId } = newMessage;
 
+  if (!content || !sender || !groupId) {
+    throw new Error("All fields (content, sender, groupId) are required");
+  }
   try {
     const message = new Message({
       content,
@@ -22,7 +25,19 @@ const getMessage = async (groupId) => {
     const messages = await Message.find({ groupId, isDeleted: false }).sort({
       createdAt: 1,
     });
-    return { status: "SUCCESS", data: messages };
+
+    // Lặp qua tất cả tin nhắn để lấy avatar người gửi
+    const messagesWithAvatars = await Promise.all(
+      messages.map(async (message) => {
+        const user = await User.findById(message.sender).select("image");
+        return {
+          ...message.toObject(),
+          avatar: user ? user.image : null, // Thêm avatar vào mỗi tin nhắn
+        };
+      })
+    );
+
+    return { status: "SUCCESS", data: messagesWithAvatars };
   } catch (error) {
     throw new Error(error.message);
   }
