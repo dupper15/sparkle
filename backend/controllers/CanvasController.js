@@ -67,10 +67,32 @@ const deleteCanvas = async (req, res) => {
     }
 }
 
+const addComponentToCanvas = async (req, res) => {
+    try {
+        const canvasId = req.params.id;
+        const { componentId } = req.body;
+        if (!canvasId || !componentId) {
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'Canvas ID and Component ID are required.'
+            });
+        }
+        const response = await CanvasService.addComponentToCanvas(canvasId, componentId);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERROR',
+            message: 'An error occurred while adding the component to the canvas.',
+            error: e.message
+        });
+    }
+};
+
 
 module.exports = {
     createCanvas,
     getAllCanvas,
     updateCanvas,
-    deleteCanvas
+    deleteCanvas,
+    addComponentToCanvas
 }

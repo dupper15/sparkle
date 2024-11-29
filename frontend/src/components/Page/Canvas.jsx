@@ -7,7 +7,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { useDarkMode } from "../../contexts/DarkModeContext";
 import ImageToolbar from "../SharedComponents/ToolBars/ImageToolBar/ImageToolBar.jsx";
 import TextToolbar from "../SharedComponents/ToolBars/TextToolBar/TextToolBar.jsx";
-const Page = React.forwardRef(
+const Canvas = React.forwardRef(
   (
     {
       id,
@@ -58,6 +58,18 @@ const Page = React.forwardRef(
               document.removeEventListener("mousedown", handleClickOutside);
           };
       }, []);
+
+      // useEffect(() => {
+      //     if (project?.canvasArray) {
+      //         const newPages = project.canvasArray.map((canvas, index) => ({
+      //             ...canvas,
+      //             id: canvas.id || index,
+      //             name: canvas.name || `Canvas ${index + 1}`,
+      //         }));
+      //         setPages(newPages);
+      //         setCurrentPage(newPages[0]?.id)
+      //     }
+      // },
 
       const { isDarkMode } = useDarkMode();
 
@@ -147,5 +159,5 @@ const Page = React.forwardRef(
   }
 );
 
-Page.displayName = "Page";
-export default Page;
+Canvas.displayName = "Canvas";
+export default Canvas;

@@ -23,10 +23,6 @@ const TextToolbar = ({ selectedComponentId }) => {
         uploadProperties,
     } = useTextToolbarViewModel(selectedComponentId);
 
-    const handleUploadClick = () => {
-        uploadProperties().then(r => console.log(r));
-    };
-
     return (
         <div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
             {/* Font */}
@@ -54,8 +50,6 @@ const TextToolbar = ({ selectedComponentId }) => {
             <RxDividerVertical />
 
             <PositionEditSection></PositionEditSection>
-
-            <button onClick={handleUploadClick}>Upload Properties</button>
         </div>
     );
 };

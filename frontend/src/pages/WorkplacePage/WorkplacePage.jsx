@@ -15,7 +15,7 @@ import Project from "../../components/Template/Project";
 import Image from "../../components/Image/Image";
 import Shape from "../../components/Shape/Shape";
 import AddPageButton from "./../../components/Button/AddPageButton";
-import Page from "./../../components/Page/Page";
+import Canvas from "../../components/Page/Canvas.jsx";
 import Background from "../../components/Background/Background";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import ButtonMessage from "../../components/ChatBox/ButtonMessage";
@@ -339,7 +339,7 @@ const WorkplacePage = () => {
                                                 setCurrentPage(pageData.id);
                                             }
                                         }}>
-                                        <Page
+                                        <Canvas
                                             key={pageData.id}
                                             id={`drop-area-${pageData.id}`}
                                             title={`${index + 1}`}

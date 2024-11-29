@@ -140,10 +140,41 @@ const deleteCanvas = (canvasId, projectId) => {
     })
 }
 
+const addComponentToCanvas = (canvasId, component) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const canvas = await Canvas.findById(canvasId);
+            if (!canvas) {
+                resolve({
+                    status: "ERROR",
+                    message: "Canvas not found!"
+                });
+                return;
+            }
+
+            canvas.componentArray.push(component);
+            await canvas.save();
+
+            resolve({
+                status: "OK",
+                message: "Component added successfully.",
+                data: canvas
+            });
+        } catch (error) {
+            reject({
+                status: "ERROR",
+                message: "Failed to add component to canvas.",
+                error: error.message,
+            });
+        }
+    });
+};
+
 
 module.exports = {
     createCanvas,
     getAllCanvas,
     updateCanvas,
-    deleteCanvas
+    deleteCanvas,
+    addComponentToCanvas
 }

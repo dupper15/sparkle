@@ -6,5 +6,6 @@ router.post('/create', canvasController.createCanvas)
 router.get('/getAll/:id', canvasController.getAllCanvas)
 router.put('/update/:id', canvasController.updateCanvas)
 router.delete('/delete/:id', canvasController.deleteCanvas)
+router.post('/addComponent/:id', canvasController.addComponentToCanvas);
 
 module.exports = router
