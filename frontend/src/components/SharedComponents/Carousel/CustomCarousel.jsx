@@ -57,8 +57,7 @@ function CustomCarousel() {
     localStorage.setItem('projectId', id)
     navigate(`/${id}/edit`)
   }
-  
-  console.log('projects', projects[0]?.canvasArray[0]?.background)
+
   return (
     <Carousel
       customLeftArrow={<IoIosArrowDropleft className='left-arrow' />}

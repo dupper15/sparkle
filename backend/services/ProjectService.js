@@ -98,9 +98,38 @@ const getAllProject = (userId) => {
 const getAllTeamProject = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const user = await User.findById(userId);
+      const user = await User.findById(userId)
       const projects = await Project.find({
-        editorArray: { $in: [user.email] },
+        editorArray: { $in: [user.email] }, 
+      }).populate("canvasArray");
+      if (!projects) {
+        resolve({
+          status: "ERROR",
+          message: "Account is not defined!",
+        });
+        return;
+      }
+
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: projects,
+      });
+    } catch (error) {
+      reject({
+        status: "ERROR",
+        message: "Failed to create Project",
+        error: error.message,
+      });
+    }
+  });
+};
+
+const getPublic = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const projects = await Project.find({
+        isPublic: true,
       }).populate("canvasArray");
       if (!projects) {
         resolve({
@@ -244,6 +273,7 @@ module.exports = {
   getDetailProject,
   getAllProject,
   getAllTeamProject,
+  getPublic,
   updateProject,
   deleteProject,
   addEditor,
