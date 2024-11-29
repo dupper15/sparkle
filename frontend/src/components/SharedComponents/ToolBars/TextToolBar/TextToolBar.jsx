@@ -1,53 +1,63 @@
+import React from "react";
 import { RxDividerVertical } from "react-icons/rx";
 import FontSelector from "../SubComponents/FontSelector/FontSelector.jsx";
 import FontSizeField from "../SubComponents/FontSizeField/FontSizeField.jsx";
 import ParagraphFormatSection from "../SubComponents/ParagraphFormatSection/ParagraphFormatSection.jsx";
 import TextFormatSection from "../SubComponents/TextFormatSection/TextFormatSection.jsx";
 import PositionEditSection from "../SubComponents/PositionEditSection/PositionEditSection.jsx";
+import useTextToolbarViewModel from "./TextToolbarViewModel";
+
 /* eslint react/prop-types: 0*/
-const TextToolbar = () => {
-  return (
-    <div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
-      {/* Font */}
-      <FontSelector fontName="Ariel"></FontSelector>
+const TextToolbar = ({ selectedComponentId }) => {
+    const {
+        openColorPickerPanel,
+        handleColorClick,
+        setOpenPickerPanel,
+        activeColor,
+        setActiveColor,
+        isBold,
+        isItalic,
+        handleBoldClick,
+        handleItalicClick,
+        handleColorChange,
+        uploadProperties,
+    } = useTextToolbarViewModel(selectedComponentId);
 
-      {/* Font Size */}
-      <FontSizeField></FontSizeField>
+    const handleUploadClick = () => {
+        uploadProperties().then(r => console.log(r));
+    };
 
-      {/* Text Formatting */}
-      <TextFormatSection></TextFormatSection>
+    return (
+        <div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
+            {/* Font */}
+            <FontSelector fontName="Ariel"></FontSelector>
 
-      <RxDividerVertical />
+            {/* Font Size */}
+            <FontSizeField></FontSizeField>
 
-      {/* Paragraph Formatting */}
-      <ParagraphFormatSection></ParagraphFormatSection>
+            {/* Text Formatting */}
+            <TextFormatSection
+                isBold={isBold}
+                isItalic={isItalic}
+                openColorPickerPanel={openColorPickerPanel}
+                handleBoldClick={handleBoldClick}
+                handleItalicClick={handleItalicClick}
+                handleColorClick={handleColorClick}
+                handleColorPanelCloseRequest={setOpenPickerPanel}
+            ></TextFormatSection>
 
-      <RxDividerVertical />
+            <RxDividerVertical />
 
-      {/*/!* Transparency *!/*/}
-      {/*<button className="text-black text-xl" onClick={onChangeTransparency}>*/}
-      {/*    <RxTransparencyGrid/>*/}
-      {/*</button>*/}
+            {/* Paragraph Formatting */}
+            <ParagraphFormatSection></ParagraphFormatSection>
 
-      {/*<RxDividerVertical/>*/}
+            <RxDividerVertical />
 
-      {/*/!* Effects *!/*/}
-      {/*<button className="bg-purple-200 text-purple-700 px-2 rounded text-xl" onClick={onEffects}>*/}
-      {/*    <FaMagic></FaMagic>*/}
-      {/*</button>*/}
+            <PositionEditSection></PositionEditSection>
 
-      {/*<RxDividerVertical/>*/}
-
-      {/*/!* Animate and Position *!/*/}
-      {/*<button className="text-gray-700 text-xl" onClick={onAnimate}>*/}
-      {/*    <FaPlayCircle></FaPlayCircle>*/}
-      {/*</button>*/}
-
-      {/*<RxDividerVertical/>*/}
-
-      <PositionEditSection></PositionEditSection>
-    </div>
-  );
+            <button onClick={handleUploadClick}>Upload Properties</button>
+        </div>
+    );
 };
 
 export default TextToolbar;
