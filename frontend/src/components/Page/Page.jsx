@@ -7,7 +7,6 @@ import { useDroppable } from "@dnd-kit/core";
 import { useDarkMode } from "../../contexts/DarkModeContext";
 import ImageToolbar from "../SharedComponents/ToolBars/ImageToolBar/ImageToolBar.jsx";
 import TextToolbar from "../SharedComponents/ToolBars/TextToolBar/TextToolBar.jsx";
-
 const Page = React.forwardRef(
   (
     {
@@ -52,18 +51,6 @@ const Page = React.forwardRef(
           }
       };
     const { isOver, setNodeRef } = useDroppable({ id });
-
-    const [selectedId, setSelectedId] = useState(null); // Lưu trữ id của shape được chọn
-
-    const handleSelect = (id) => {
-      setSelectedId(id); // Cập nhật id của shape được chọn
-    };
-
-    const components = [
-      { id: 1, shapeType: "rect", x: 50, y: 50, clipPath: "", link: "" },
-      { id: 2, shapeType: "circle", x: 200, y: 200, clipPath: "", link: "" },
-      // Thêm các shapes khác
-    ];
 
       useEffect(() => {
           document.addEventListener("mousedown", handleClickOutside);
@@ -123,6 +110,7 @@ const Page = React.forwardRef(
                     zIndex: 0,
                 }}
                 className="bg-white border relative">
+                {/* eslint-disable-next-line react/prop-types */}
                 {shapes.map((info) =>
                     info.type === "text" ? (
                         <div

@@ -15,7 +15,7 @@ const routes = (app) => {
     app.use('/api/image', (ImageRouter))
     app.use('/api/shape', (ShapeRouter))
     app.use('/api/text', (TextRouter))
-    app.use("/api/message", MessageRouter),
+    app.use("/api/message", MessageRouter);
     app.use("/api/groupChat", GroupChatRouter);
     app.use('/api/project', (ProjectRouter))
     app.use('/api/canvas', (CanvasRouter))

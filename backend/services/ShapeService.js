@@ -2,36 +2,35 @@ const Shape = require('../models/ShapeModel')
 
 const createShape = (newShape) => {
     return new Promise(async (resolve, reject) => {
+        const { x, y, shapeType, height, width, opacity, z_index, rotate, color } = newShape;
         try {
             const createdShape = await Shape.create({
-                left: newShape.left,
-                top: newShape.top,
-                height: newShape.height,
-                width: newShape.width,
-                type_shape: newShape.width,
-                color: "#000000"
-            })
-        
-            if(createdShape){
+                x,
+                y,
+                shapeType,
+                height,
+                width,
+                opacity,
+                z_index,
+                rotate,
+                color
+            });
+            if (createdShape) {
                 resolve({
                     status: "OK",
-                    message: "Create success",
-                    data: {
-                        Shape: createdShape
-                    }
-                })
-                return;
+                    message: "Shape created successfully.",
+                    data: createdShape
+                });
             }
-
-        } catch (error) {
+        } catch (e) {
             reject({
                 status: "ERROR",
-                message: "Failed to create Shape",
-                error: error.message,
+                message: "An error occurred while creating the shape.",
+                error: e
             });
         }
-    })
-}
+    });
+};
 
 const getDetailShape = (shapeId) => {
     return new Promise(async (resolve, reject) => {
@@ -57,6 +56,26 @@ const getDetailShape = (shapeId) => {
             reject({
                 status: "ERROR",
                 message: "Failed to create Shape",
+                error: error.message,
+            });
+        }
+    })
+}
+
+const getAllShape = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allShape = await Shape.find()
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: allShape
+            })
+
+        } catch (error) {
+            reject({
+                status: "ERROR",
+                message: "Failed to get all shape",
                 error: error.message,
             });
         }
@@ -135,6 +154,7 @@ const deleteShape = (shapeId) => {
 module.exports = {
     createShape,
     getDetailShape,
+    getAllShape,
     updateShape,
     deleteShape
 }

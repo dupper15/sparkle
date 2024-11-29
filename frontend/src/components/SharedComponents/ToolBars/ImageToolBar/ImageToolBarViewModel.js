@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { updateShapeColor, updateShapeTransformation } from "../../../../services/ImageService.js";
+import { updateShapeColor, updateShapeTransformation } from "../../../../services/ShapeService.js";
 
 const useImageToolbarViewModel = (selectedComponentId) => {
     const [openColorPickerPanel, setOpenPickerPanel] = useState(false);

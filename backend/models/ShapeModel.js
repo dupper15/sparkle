@@ -2,15 +2,15 @@ const mongoose = require('mongoose')
 
 const shapeSchema = new mongoose.Schema(
     {
-        left: {type: Number, required: true},
-        top: {type: Number, required: true},
-        height: {type: Number, required: true},
-        width: {type: Number, required: true},
-        opacity: {type: Number, required: true, default:1},
-        z_index: {type: Number, required: true, default:1},
-        rotate: {type: Number, required: true, default:0},
-        type_shape: {type: String, required: true},
-        color: {type: String, required: true}
+        x: {type: Number, required: true},
+        y: {type: Number, required: true},
+        shapeType: {type: String, required: true},
+        height: {type: Number, default: 10},
+        width: {type: Number, default: 10},
+        opacity: {type: Number, default:1},
+        z_index: {type: Number, default:1},
+        rotate: {type: Number, default:0},
+        color: {type: String, default:"#e5e5e5"}
     },
     {
         timestamps: true
