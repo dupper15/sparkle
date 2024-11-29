@@ -20,63 +20,41 @@ import Background from "../../components/Background/Background";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import ButtonMessage from "../../components/ChatBox/ButtonMessage";
 import CreateComponent from "../../components/CreateComponent";
-import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBar/ImageToolBar.jsx";
-import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar/TextToolBar.jsx";
 import { DndContext } from "@dnd-kit/core";
 import Text from "../../components/Text/Text.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
 import * as ProjectService from '../../services/ProjectService.js'
-import * as CanvasService from '../../services/CanvasService.js'
 import { useDispatch, useSelector } from "react-redux";
 import { updateProject } from "../../redux/slides/projectSlide.js";
 import { deleteCanvas } from "../../services/CanvasService.js";
 import * as Alert from '../../components/Alert/Alert.jsx'
-import { useMutationHooks } from "../../hooks/useMutationHook.js";
 import { useMutation } from "@tanstack/react-query";
+import {uploadText} from "../../services/TextService.js";
+import {uploadImage} from "../../services/ImageService.js";
 
 const WorkplacePage = () => {
   const dispatch = useDispatch();
   const project = useSelector((state) => state.project);
-
-  const { isDarkMode } = useDarkMode();
-  const [state, setState] = useState("");
-  const pageRef = useRef([]);
-
-  const location = useLocation();
-  const designData = location.state || {};
-
   const [width, setWidth] = useState('')
-  const [height, setHeight] = useState('')
-
+  const [height, setHeight] = useState()
 
   useEffect(() => {
     setWidth(project?.width)
     setHeight(project?.height)
   },[project])
 
-  const [current_page, setCurrentPage] = useState(project?.canvasArray[0]);
-
-  const saveCanvasId = (canvasId) => {
-    localStorage.setItem('canvasId', canvasId);
-  };
-
-  saveCanvasId(project?.canvasArray[current_page]);
-
   useEffect(() => {
     // Lấy id từ localStorage
     const storedProjectId = localStorage.getItem('projectId');
     
     if (storedProjectId) {
+      // Gọi API để lấy chi tiết dự án
       const fetchProject = async () => {
         const res = await ProjectService.getDetailProject(storedProjectId);
         dispatch(updateProject(res.data)); // Cập nhật dữ liệu dự án vào Redux store
       };
-      fetchProject();
 
-      return () => {
-        // Cleanup khi rời khỏi trang
-        localStorage.removeItem('projectId');
-      };
+      fetchProject();
     }
   }, [dispatch]);
 
@@ -86,12 +64,30 @@ const WorkplacePage = () => {
     dispatch(updateProject({...res?.data}))
   };
 
+  const { isDarkMode } = useDarkMode();
+  const [state, setState] = useState("");
+  const pageRef = useRef([]);
+
+  const [pages, setPages] = useState([]);
+  const [current_page, setCurrentPage] = useState(null);
+
+  useEffect(() => {
+    if (project?.canvasArray) {
+      const newPages = project.canvasArray.map((canvas, index) => ({
+        ...canvas,
+        id: canvas.id || index,
+        name: canvas.name || `Page ${index + 1}`,
+      }));
+      setPages(newPages);
+      setCurrentPage(newPages[0]?.id)
+    }
+  }, [project]);
+
   const mutation = useMutation(
   {
     mutationFn: (data) => {
-      console.log('data', data)
-      return ProjectService.updateProject(data.id);
-
+      const { id } = data;
+      return ProjectService.updateProject(id);
     },
     onSuccess: (data) => {
       dispatch(updateProject(data.data));
@@ -107,6 +103,7 @@ const WorkplacePage = () => {
  
   useEffect(() => {
     if(isSuccess){
+      Alert.success('Add success')
       handleGetDetailProject(project?.id)
     }
   },[isSuccess])
@@ -123,137 +120,25 @@ const WorkplacePage = () => {
     }
   };
 
-  const [pages, setPages] = useState([]);
-  const [backgrounds, setBackgrounds] = useState({});
-
-  useEffect(() => {
-    if (project?.canvasArray) {
-      const newPages = project?.canvasArray.map((canvas, index) => ({
-        ...canvas,
-        id: canvas.id || canvas._id,
-        name: canvas.name || `Page ${index + 1}`,
-        background: canvas.background || "white",
-      }));
-      setPages(newPages);
-      setCurrentPage(newPages[0]?.id)
-    }
-  }, [project]);
-
-  useEffect(() => {
-    // Chỉ thực hiện cuộn khi pages đã thay đổi và có ít nhất một trang
-    if (pages.length > 0) {
-      const lastPageIndex = pages.length - 1;
-      pageRef.current[lastPageIndex]?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, [pages]);
-
   const addPage = async () => {
-    try {
-      await mutation.mutateAsync({ id: project?.id });
-      // Cập nhật lại pages (local state)
-      setPages((prev) => {
-        const newPages = [...prev, project?.canvasArray]; // Thêm canvas mới vào list pages
-        setCurrentPage(newPages[newPages.length - 1]?.id); // Chuyển đến trang mới
-
-        return newPages;
-      });
+    mutation.mutate({ id: project?.id });
   
-      // Hiển thị thông báo thành công
-      Alert.success("Add page successfully!");
-    } catch (error) {
-      console.error("Failed to add page:", error.message);
-      Alert.error("Failed to add page.");
-    }
+    setPages((prev) => {
+      const newPages = [...prev, ...project.canvasArray];
+
+      setCurrentPage(newPages[newPages.length - 1]?.id);
+
+      setTimeout(() => {
+        pageRef.current[newPages.length - 1]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 0);
+
+      return newPages;
+    });
   };
-
-  const removePage = async (id) => {
-    try {
-      console.log("id", id)
-      if (project?.canvasArray?.length === 1) {
-        Alert.error("Can not delete page!");
-        return;
-      }
-      const canvasId = id
-      await deleteCanvas(canvasId, project?.id);
-
-      setPages((prev) => {
-        const newPages = prev.filter((page) => page.id !== id);
-
-        const pageIndex = prev.findIndex((page) => page.id === id);
-        const nextPageIndex =
-          pageIndex < newPages.length ? pageIndex : pageIndex - 1;
-
-        setCurrentPage(newPages[nextPageIndex]?.id || null);
-        return newPages;
-      });
-      Alert.success("Delete page successfully!")
-    } catch (error) {
-      console.error("Failed to delete canvas:", error.message);
-      Alert.error("Failed to delete page.");
-    }
-  };
-
-  const setBackground = async (bgLink) => {
-    if (current_page !== null && current_page !== undefined) {
-      try {
-        // Cập nhật trạng thái tạm thời để UI phản hồi nhanh
-        setBackgrounds((prev) => ({
-          ...prev,
-          [current_page]: bgLink || "white",
-        }));
-
-        // Gửi yêu cầu cập nhật lên server
-        const data = { background: bgLink || "white" }; // Giả sử trường là `background`
-        const canvasId = current_page
-        if (!canvasId) {
-          throw new Error("Canvas ID not found");
-        }
-
-        await CanvasService.updateCanvas(canvasId, data);
-
-        const updatedProject = await ProjectService.getDetailProject(project?.id);
-
-        if (updatedProject) {
-
-          // Cập nhật lại backgrounds từ updatedProject
-          const updatedBackgrounds = updatedProject.canvasArray.reduce(
-            (acc, canvas) => ({
-              ...acc,
-              [canvas.id]: canvas.background || "white",
-            }),
-            {}
-          );s
-          setBackgrounds(updatedBackgrounds);
-        }
-
-        console.log("Canvas updated successfully");
-
-      } catch (error) {
-        console.error("Failed to update canvas:", error.message);
-      }
-    }
-  };
-
-  console.log('current page', current_page)
-
-  const [components, setComponents] = useState([
-    {
-      name: "main_frame",
-      type: "rect",
-      id: Math.floor(Math.random() * 100 + 1),
-      nameProject: state.nameProject,
-      height: state.height,
-      width: state.width,
-      z_index: 1,
-      color: "red",
-      image: "",
-      setCurrentComponent: (a) => setCurrentComponent(a),
-    },
-  ]);
-  const add_text = () => {
+  const createText = () => {
     if (current_page === null) {
       console.log("ko");
       return;
@@ -280,40 +165,83 @@ const WorkplacePage = () => {
   const updateShapes = (newShape, testId) => {
     setShapes((prevShapes) => [...prevShapes, { ...newShape, testId }]);
   };
-  const handleDragEnd = (event) => {
-    const { over, active } = event;
+  const handleDragEnd = async (event) => {
+    const {over, active} = event;
     const shapeRect = active.rect.current.translated;
 
     if (over && draggingShape) {
       const dropAreaRect = document
-        .getElementById(over.id)
-        .getBoundingClientRect();
+          .getElementById(over.id)
+          .getBoundingClientRect();
 
       const relativeX = shapeRect.left - dropAreaRect.left;
       const relativeY = shapeRect.top - dropAreaRect.top;
-      updateShapes(
-        {
-          id: Date.now(),
-          shapeType: draggingShape.shapeType,
-          link: draggingShape.backgroundImage
-            ? draggingShape.backgroundImage
-            : "",
-          x: relativeX,
-          y: relativeY,
-        },
-        over.id
-      );
+      const newComponent = {
+        id: Date.now(),
+        shapeType: draggingShape.shapeType,
+        link: draggingShape.backgroundImage ? draggingShape.backgroundImage : "",
+        x: relativeX,
+        y: relativeY,
+      };
+
+      console.log('New component:', newComponent);
+
+      updateShapes(newComponent, over.id);
+
+      // Upload the component properties
+      if (draggingShape.shapeType === "text") {
+        await uploadText(newComponent.id, newComponent);
+      } else {
+        await uploadImage(newComponent.id, newComponent);
+      }
     }
     setDraggingShape(null);
   };
+  const removePage = async (id) => {
+    try {
+
+      if (project?.canvasArray?.length === 1) {
+        Alert.error("Can not delete page!");
+        return;
+      }
+
+      const canvasId = project?.canvasArray[id]
+      await deleteCanvas(canvasId, project?.id);
+
+      setPages((prev) => {
+        const newPages = prev.filter((page) => page.id !== id);
+
+        const pageIndex = prev.findIndex((page) => page.id === id);
+        const nextPageIndex =
+          pageIndex < newPages.length ? pageIndex : pageIndex - 1;
+
+        setCurrentPage(newPages[nextPageIndex]?.id || null);
+        return newPages;
+      });
+
+      // Đồng bộ dữ liệu dự án
+      await handleGetDetailProject(project?.id);
+    } catch (error) {
+      console.error("Failed to delete canvas:", error.message);
+      Alert.error("Failed to delete page.");
+    }
+  };
+
 
   const [current_component, setCurrentComponent] = useState("");
   const [show, setShow] = useState({
     status: true,
     name: "",
   });
-
-
+  const [backgrounds, setBackgrounds] = useState({});
+  const setBackground = (bgLink) => {
+    if (current_page !== null) {
+      setBackgrounds((prev) => ({
+        ...prev,
+        [current_page]: bgLink || "white",
+      }));
+    }
+  };
   const setElements = (type, name) => {
     setState(type);
     setShow({
@@ -425,8 +353,8 @@ const WorkplacePage = () => {
                 onClick={() => setShow({ name: "", status: true })}
                 className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${
                   isDarkMode
-                    ? "bg-[#252627] text-slate-700"
-                    : "bg-white text-slate-300"
+                    ? "bg-white text-slate-700"
+                    : "bg-[#252627] text-slate-300"
                 }`}>
                 <MdKeyboardArrowLeft />
               </div>
@@ -439,14 +367,14 @@ const WorkplacePage = () => {
                 <Shape addNewShape={updateShapes} drag={setDraggingShape} />
               )}
               {state === "project" && <Project />}
-              {state === "text" && <Text addNewText={add_text} />}
+              {state === "text" && <Text addNewText={createText} />}
               {state === "image" && <Image drag={setDraggingShape} />}
               {state === "background" && (
                 <Background setBackground={setBackground} />
               )}
             </div>
             <div className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
-              </div>
+
                 {pages.map((pageData, index) => (
                   <div
                     onClick={() => {
@@ -475,35 +403,6 @@ const WorkplacePage = () => {
                     />
                   </div>
                 ))}
-
-              {pages.map((pageData, index) => (
-                <div
-                  key={pageData.id}
-                  onClick={() => {
-                    if (current_page !== pageData.id) {
-                      setCurrentPage(pageData.id);
-                    }
-                  }}>
-                  <Page
-                    key={pageData.id}
-                    id={`drop-area-${pageData.id}`}
-                    title={`${index + 1}`}
-                    width={width}
-                    height={height}
-                    name={pageData.name}
-                    shapes={shapes.filter(
-                      (shape) => shape.testId === `drop-area-${pageData.id}`
-                    )}
-                    bgLink={backgrounds[pageData.id] || "white"}
-                    removeElement={removeElement}
-                    removeButton={() => removePage(pageData.id)}
-                    upButton={() => scrollToPage(index - 1)}
-                    downButton={() => scrollToPage(index + 1)}
-                    ref={(el) => (pageRef.current[index] = el)}
-                  />
-                </div>
-
-              ))}
               <div>
                 <AddPageButton addPage={addPage} />
               </div>

@@ -1,3 +1,16 @@
+import axios from "axios";
+
+export const uploadText = async (textId, properties) => {
+    try {
+        const response = await axios.post(`http://localhost:5001/api/texts/${textId}/upload`, properties);
+        // console.log(`Notice: Text ID ${textId} properties would be uploaded`, properties);
+        return response.data;
+    } catch (error) {
+        console.error('Failed to upload text properties:', error);
+        throw error;
+    }
+};
+
 export const updateTextColor = async (textId, color) => {
     try {
         //const response = await axios.put(`http://localhost:3001/api/texts/${textId}/color`, { color });
@@ -16,17 +29,6 @@ export const updateTextTransformation = async (textId, transformationType, value
         //return response.data;
     } catch (error) {
         console.error('Failed to update text transformation:', error);
-        throw error;
-    }
-};
-
-export const uploadTextProperties = async (textId, properties) => {
-    try {
-        //const response = await axios.post(`http://localhost:3001/api/texts/${textId}/upload`, properties);
-        console.log(`Notice: Text ID ${textId} properties would be uploaded`, properties);
-        //return response.data;
-    } catch (error) {
-        console.error('Failed to upload text properties:', error);
         throw error;
     }
 };

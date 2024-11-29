@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { updateTextColor, updateTextTransformation, uploadTextProperties } from "../../../../services/TextService.js";
+import {updateTextColor, updateTextTransformation, uploadText} from "../../../../services/TextService.js";
 
 const useTextToolbarViewModel = (selectedComponentId) => {
     const [openColorPickerPanel, setOpenPickerPanel] = useState(false);
@@ -32,7 +32,7 @@ const useTextToolbarViewModel = (selectedComponentId) => {
             bold: isBold,
             italic: isItalic,
         };
-        await uploadTextProperties(selectedComponentId, properties);
+        await uploadText(selectedComponentId, properties);
     };
 
     return {

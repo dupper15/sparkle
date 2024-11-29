@@ -9,11 +9,11 @@ const imageSchema = new mongoose.Schema(
         opacity: {type: Number, required: true, default:1},
         z_index: {type: Number, required: true, default:1},
         rotate: {type: Number, required: true, default:0},
-        // image: {
-        //     type: mongoose.Schema.Types.ObjectId,
-        //     ref: "ImageUpload",
-        //     required: true
-        // }
+        image: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ImageUpload",
+            required: true
+        }
     },
     {
         timestamps: true
