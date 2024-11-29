@@ -1,5 +1,5 @@
+// eslint-disable-next-line no-unused-vars
 import React, {useRef, useState, useEffect} from "react";
-import {useLocation} from "react-router-dom";
 import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
 import {
     LuLayoutTemplate,
@@ -14,8 +14,8 @@ import TemplateDesign from "../../components/Template/TemplateDesign";
 import Project from "../../components/Template/Project";
 import Image from "../../components/Image/Image";
 import Shape from "../../components/Shape/Shape";
-import AddPageButton from "./../../components/Button/AddPageButton";
-import Canvas from "../../components/Page/Canvas.jsx";
+import AddCanvasButton from "../../components/Button/AddCanvasButton.jsx";
+import Canvas from "../../components/Canvas/Canvas.jsx";
 import Background from "../../components/Background/Background";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import ButtonMessage from "../../components/ChatBox/ButtonMessage";
@@ -28,7 +28,6 @@ import {updateProject} from "../../redux/slides/projectSlide.js";
 import {deleteCanvas} from "../../services/CanvasService.js";
 import * as Alert from '../../components/Alert/Alert.jsx'
 import {useMutation} from "@tanstack/react-query";
-import {uploadText} from "../../services/TextService.js";
 import {uploadShape} from "../../services/ShapeService.js";
 
 const WorkplacePage = () => {
@@ -65,20 +64,20 @@ const WorkplacePage = () => {
 
         const {isDarkMode} = useDarkMode();
         const [state, setState] = useState("");
-        const pageRef = useRef([]);
+        const canvasRef = useRef([]);
 
-        const [pages, setPages] = useState([]);
-        const [current_page, setCurrentPage] = useState(null);
+        const [canvases, setCanvases] = useState([]);
+        const [currentCanvas, setCurrentCanvas] = useState(null);
 
         useEffect(() => {
             if (project?.canvasArray) {
-                const newPages = project.canvasArray.map((canvas, index) => ({
+                const newCanvases = project.canvasArray.map((canvas, index) => ({
                     ...canvas,
                     id: canvas.id || index,
-                    name: canvas.name || `Page ${index + 1}`,
+                    name: canvas.name || `Canvas ${index + 1}`,
                 }));
-                setPages(newPages);
-                setCurrentPage(newPages[0]?.id)
+                setCanvases(newCanvases);
+                setCurrentCanvas(newCanvases[0]?.id)
             }
         }, [project]);
 
@@ -98,7 +97,7 @@ const WorkplacePage = () => {
                 }
             })
 
-        const {data, isSuccess} = mutation
+        const { isSuccess} = mutation
 
         useEffect(() => {
             if (isSuccess) {
@@ -107,38 +106,38 @@ const WorkplacePage = () => {
             }
         }, [isSuccess])
 
-        const scrollToPage = (index) => {
-            if (index >= 0 && index < pages.length) {
-                if (pageRef.current[index]) {
-                    pageRef.current[index].scrollIntoView({
+        const scrollToCanvas = (index) => {
+            if (index >= 0 && index < canvases.length) {
+                if (canvasRef.current[index]) {
+                    canvasRef.current[index].scrollIntoView({
                         behavior: "smooth",
                         block: "start",
                     });
                 }
-                setCurrentPage(pages[index].id);
+                setCurrentCanvas(canvases[index].id);
             }
         };
 
-        const addPage = async () => {
+        const addCanvas = async () => {
             mutation.mutate({id: project?.id});
 
-            setPages((prev) => {
-                const newPages = [...prev, ...project.canvasArray];
+            setCanvases((prev) => {
+                const newCanvases = [...prev, ...project.canvasArray];
 
-                setCurrentPage(newPages[newPages.length - 1]?.id);
+                setCurrentCanvas(newCanvases[newCanvases.length - 1]?.id);
 
                 setTimeout(() => {
-                    pageRef.current[newPages.length - 1]?.scrollIntoView({
+                    canvasRef.current[newCanvases.length - 1]?.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start',
                     });
                 }, 0);
 
-                return newPages;
+                return newCanvases;
             });
         };
         const createText = () => {
-            if (current_page === null) {
+            if (currentCanvas === null) {
                 console.log("ko");
                 return;
             }
@@ -153,7 +152,7 @@ const WorkplacePage = () => {
                 font: 22,
                 title: "Add Your Text",
                 color: "#3c3c3d",
-                testId: `drop-area-${current_page}`,
+                testId: `drop-area-${currentCanvas}`,
             };
 
             setShapes((prevShapes) => [...prevShapes, {...newItem}]);
@@ -189,33 +188,33 @@ const WorkplacePage = () => {
             }
             setDraggingShape(null);
         };
-        const removePage = async (id) => {
+        const removeCanvas = async (id) => {
             try {
 
                 if (project?.canvasArray?.length === 1) {
-                    Alert.error("Can not delete page!");
+                    Alert.error("Can not delete canvas!");
                     return;
                 }
 
                 const canvasId = project?.canvasArray[id]
                 await deleteCanvas(canvasId, project?.id);
 
-                setPages((prev) => {
-                    const newPages = prev.filter((page) => page.id !== id);
+                setCanvases((prev) => {
+                    const newCanvases = prev.filter((canvas) => canvas.id !== id);
 
-                    const pageIndex = prev.findIndex((page) => page.id === id);
-                    const nextPageIndex =
-                        pageIndex < newPages.length ? pageIndex : pageIndex - 1;
+                    const canvasIndex = prev.findIndex((canvas) => canvas.id === id);
+                    const nextCanvasIndex =
+                        canvasIndex < newCanvases.length ? canvasIndex : canvasIndex - 1;
 
-                    setCurrentPage(newPages[nextPageIndex]?.id || null);
-                    return newPages;
+                    setCurrentCanvas(newCanvases[nextCanvasIndex]?.id || null);
+                    return newCanvases;
                 });
 
                 // Đồng bộ dữ liệu dự án
                 await handleGetDetailProject(project?.id);
             } catch (error) {
                 console.error("Failed to delete canvas:", error.message);
-                Alert.error("Failed to delete page.");
+                Alert.error("Failed to delete canvas.");
             }
         };
         const [show, setShow] = useState({
@@ -224,10 +223,10 @@ const WorkplacePage = () => {
         });
         const [backgrounds, setBackgrounds] = useState({});
         const setBackground = (bgLink) => {
-            if (current_page !== null) {
+            if (currentCanvas !== null) {
                 setBackgrounds((prev) => ({
                     ...prev,
-                    [current_page]: bgLink || "white",
+                    [currentCanvas]: bgLink || "white",
                 }));
             }
         };
@@ -240,14 +239,14 @@ const WorkplacePage = () => {
         };
         const removeElement = (id) => {
             setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
-            setPages((prevPages) =>
-                prevPages.map((page) =>
-                    page.id === current_page
+            setCanvases((prevCanvas) =>
+                prevCanvas.map((canvas) =>
+                    canvas.id === currentCanvas
                         ? {
-                            ...page,
-                            components: page.components.filter((c) => c.id !== id),
+                            ...canvas,
+                            components: canvas.components.filter((c) => c.id !== id),
                         }
-                        : page
+                        : canvas
                 )
             );
         };
@@ -332,36 +331,36 @@ const WorkplacePage = () => {
                             <div
                                 className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
 
-                                {pages.map((pageData, index) => (
+                                {canvases.map((canvasData, index) => (
                                     <div
                                         onClick={() => {
-                                            if (current_page !== pageData.id) {
-                                                setCurrentPage(pageData.id);
+                                            if (currentCanvas !== canvasData.id) {
+                                                setCurrentCanvas(canvasData.id);
                                             }
                                         }}>
                                         <Canvas
-                                            key={pageData.id}
-                                            id={`drop-area-${pageData.id}`}
+                                            key={canvasData.id}
+                                            id={`drop-area-${canvasData.id}`}
                                             title={`${index + 1}`}
                                             width={width}
                                             height={height}
-                                            name={pageData.name}
+                                            name={canvasData.name}
                                             shapes={shapes.filter(
-                                                (shape) => shape.testId === `drop-area-${pageData.id}`
+                                                (shape) => shape.testId === `drop-area-${canvasData.id}`
                                             )}
                                             bgLink={
-                                                backgrounds[pageData.id] || pageData.background
+                                                backgrounds[canvasData.id] || canvasData.background
                                             }
                                             removeElement={removeElement}
-                                            removeButton={() => removePage(pageData.id)}
-                                            upButton={() => scrollToPage(index - 1)}
-                                            downButton={() => scrollToPage(index + 1)}
-                                            ref={(el) => (pageRef.current[index] = el)}
+                                            removeButton={() => removeCanvas(canvasData.id)}
+                                            upButton={() => scrollToCanvas(index - 1)}
+                                            downButton={() => scrollToCanvas(index + 1)}
+                                            ref={(el) => (canvasRef.current[index] = el)}
                                         />
                                     </div>
                                 ))}
                                 <div>
-                                    <AddPageButton addPage={addPage}/>
+                                    <AddCanvasButton addCanvas={addCanvas}/>
                                 </div>
                             </div>
                         </div>
