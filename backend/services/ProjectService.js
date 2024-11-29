@@ -98,7 +98,6 @@ const getAllProject = (userId) => {
 const getAllTeamProject = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-
       const user = await User.findById(userId)
       const projects = await Project.find({
         editorArray: { $in: [user.email] }, 
