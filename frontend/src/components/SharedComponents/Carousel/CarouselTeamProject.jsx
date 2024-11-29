@@ -4,7 +4,7 @@ import "react-multi-carousel/lib/styles.css";
 import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutationHooks } from "../../../hooks/useMutationHook";
-import * as ProjectService from '../../../services/ProjectService'
+import * as ProjectService from "../../../services/ProjectService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -28,37 +28,35 @@ const responsive = {
 };
 
 function CarouselTeamProject() {
-  
-  const user = useSelector((state) => state.user)
-  console.log("user", user?.id)
-  const navigate = useNavigate()
+  const user = useSelector((state) => state.user);
+  console.log("user", user?.id);
+  const navigate = useNavigate();
 
-  const [projects, setProjects] = useState([])
+  const [projects, setProjects] = useState([]);
 
   const mutation = useMutationHooks(async (data) => {
     try {
-      const project_arr = await ProjectService.getAllTeamProject(data); 
-      setProjects(project_arr.data); 
+      const project_arr = await ProjectService.getAllTeamProject(data);
+      setProjects(project_arr.data);
     } catch (error) {
       console.error("Error fetching projects:", error);
     }
   });
-  
 
   useEffect(() => {
-    handleGetAllTeamProject()
-  }, [user])
+    handleGetAllTeamProject();
+  }, [user]);
 
   const handleGetAllTeamProject = () => {
-    mutation.mutate(user?.id)
-  }
+    mutation.mutate(user?.id);
+  };
 
   const handleClick = (id) => {
-    localStorage.setItem('projectId', id)
-    navigate(`/${id}/edit`)
-  }
-  
-  console.log('projects', projects[0]?.canvasArray[0]?.background)
+    localStorage.setItem("projectId", id);
+    navigate(`/${id}/edit`);
+  };
+
+  console.log("projects", projects[0]?.canvasArray[0]?.background);
   return (
     <Carousel
       customLeftArrow={<IoIosArrowDropleft className='left-arrow' />}
@@ -72,21 +70,27 @@ function CarouselTeamProject() {
       transitionDuration={500}
       removeArrowOnDeviceType={["tablet", "mobile"]}
       itemClass='p-4 flex gap-4'>
-      {projects.slice().reverse().map((project, index) => (
-        <div key={project._id} id={project?._id} onClick={() => handleClick(project._id)} className="cursor-pointer" >
-          <img
-            className='bg-cover h-[200px] w-[420px]'
-            src={
-              project.canvasArray?.[0]?.background === '#ffffff' 
-                ? testImage 
-                : project.canvasArray?.[0]?.background
-            }
-            alt={project.projectName || 'Project Image'}
-          />
-          <span>{project.projectName || 'Unnamed Project'}</span>
-        </div>
-        ))
-      }
+      {projects
+        .slice()
+        .reverse()
+        .map((project, index) => (
+          <div
+            key={project._id}
+            id={project?._id}
+            onClick={() => handleClick(project._id)}
+            className='cursor-pointer'>
+            <img
+              className='bg-cover h-[200px] w-[420px]'
+              src={
+                project.canvasArray?.[0]?.background === "#ffffff"
+                  ? testImage
+                  : project.canvasArray?.[0]?.background
+              }
+              alt={project.projectName || "Project Image"}
+            />
+            <span>{project.projectName || "Unnamed Project"}</span>
+          </div>
+        ))}
     </Carousel>
   );
 }

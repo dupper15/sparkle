@@ -1,7 +1,11 @@
 const Message = require("../models/MessageModel");
-
+const User = require("../models/UserModel");
 const sendMessage = async (newMessage) => {
   const { content, sender, groupId } = newMessage;
+
+  if (!content || !sender || !groupId) {
+    throw new Error("All fields (content, sender, groupId) are required");
+  }
 
   try {
     const message = new Message({
@@ -11,7 +15,15 @@ const sendMessage = async (newMessage) => {
     });
 
     const savedMessage = await message.save();
-    return { status: "SUCCESS", data: savedMessage };
+    const user = await User.findById(sender).select("image userName").lean();
+    return {
+      status: "SUCCESS",
+      data: {
+        ...savedMessage.toObject(),
+        avatar: user ? user.image : null,
+        senderName: user ? user.userName : "Unknown",
+      },
+    };
   } catch (error) {
     throw new Error(error.message);
   }
@@ -19,10 +31,24 @@ const sendMessage = async (newMessage) => {
 
 const getMessage = async (groupId) => {
   try {
-    const messages = await Message.find({ groupId, isDeleted: false }).sort({
-      createdAt: 1,
-    });
-    return { status: "SUCCESS", data: messages };
+    const messages = await Message.find({ groupId, isDeleted: false })
+      .sort({ createdAt: 1 })
+      .lean();
+
+    const messagesFinal = await Promise.all(
+      messages.map(async (message) => {
+        const user = await User.findById(message.sender)
+          .select("image userName")
+          .lean();
+        return {
+          ...message,
+          avatar: user ? user.image : null,
+          senderName: user ? user.userName : "Unknown",
+        };
+      })
+    );
+
+    return { status: "SUCCESS", data: messagesFinal };
   } catch (error) {
     throw new Error(error.message);
   }

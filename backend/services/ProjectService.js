@@ -1,5 +1,6 @@
 const Canvas = require("../models/CanvasModel");
 const Project = require("../models/ProjectModel");
+const User = require("../models/UserModel");
 
 const createProject = (newProject) => {
   return new Promise(async (resolve, reject) => {
@@ -97,8 +98,9 @@ const getAllProject = (userId) => {
 const getAllTeamProject = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
+      const user = await User.findById(userId);
       const projects = await Project.find({
-        editorArray: { $in: [userId] }, 
+        editorArray: { $in: [user.email] },
       }).populate("canvasArray");
       if (!projects) {
         resolve({
