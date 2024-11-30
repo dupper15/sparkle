@@ -114,6 +114,26 @@ const addComponentToCanvas = async (req, res) => {
     }
 };
 
+const getComponentsByCanvasId = async (req, res) => {
+    try {
+        const canvasId = req.params.id;
+        if (!canvasId) {
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'Canvas ID is required.'
+            });
+        }
+
+        const response = await CanvasService.getComponentsByCanvasId(canvasId);
+        return res.status(response.status === 'OK' ? 200 : 400).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERROR',
+            message: 'An error occurred while retrieving components.',
+            error: e.message
+        });
+    }
+};
 
 
 
@@ -124,5 +144,6 @@ module.exports = {
     updateCanvas,
     deleteCanvas,
     addComponentToCanvas,
-    getDetailCanvas
+    getDetailCanvas,
+    getComponentsByCanvasId
 }

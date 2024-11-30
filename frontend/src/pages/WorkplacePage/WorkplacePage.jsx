@@ -19,7 +19,7 @@ import Canvas from "../../components/Canvas/Canvas.jsx";
 import Background from "../../components/Background/Background";
 import ChatBox from "../../components/ChatBox/ChatBox";
 import ButtonMessage from "../../components/ChatBox/ButtonMessage";
-import {DndContext} from "@dnd-kit/core";
+import {DndContext, useDroppable} from "@dnd-kit/core";
 import Text from "../../components/Text/Text.jsx";
 import {useDarkMode} from "../../contexts/DarkModeContext.jsx";
 import * as ProjectService from '../../services/ProjectService.js'
@@ -97,7 +97,7 @@ const WorkplacePage = () => {
                 }
             })
 
-        const { isSuccess} = mutation
+        const {isSuccess} = mutation
 
         useEffect(() => {
             if (isSuccess) {
@@ -164,10 +164,12 @@ const WorkplacePage = () => {
             setShapes((prevShapes) => [...prevShapes, {...newShape, testId}]);
         };
         const handleDragEnd = async (event) => {
+            console.log(event)
             const {over, active} = event;
             const shapeRect = active.rect.current.translated;
 
             if (over && draggingShape) {
+                console.log(over.id);
                 const dropAreaRect = document.getElementById(over.id).getBoundingClientRect();
                 const relativeX = shapeRect.left - dropAreaRect.left;
                 const relativeY = shapeRect.top - dropAreaRect.top;
@@ -176,14 +178,10 @@ const WorkplacePage = () => {
                     x: relativeX,
                     y: relativeY,
                 };
-                console.log(over)
-                console.log(active)
-                console.log(canvases[currentCanvas])
 
                 try {
                     const response = await createAndAddComponentToCanvas(canvases[currentCanvas]._id, 'Shape', newComponent);
                     newComponent.id = response.data._id;
-
                     updateShapes(newComponent, over.id);
                 } catch (error) {
                     console.error('Failed to upload shape:', error);
@@ -342,7 +340,8 @@ const WorkplacePage = () => {
                                             }
                                         }}>
                                         <Canvas
-                                            key={canvasData.id}
+                                            key={index}
+                                            databaseId={canvasData._id}
                                             id={`drop-area-${canvasData.id}`}
                                             title={`${index + 1}`}
                                             width={width}

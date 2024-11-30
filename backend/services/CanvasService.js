@@ -191,7 +191,34 @@ const addComponentToCanvas = async (canvasId, component) => {
     }
 };
 
+const getComponentsByCanvasId = (canvasId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const canvas = await Canvas.findById(canvasId).populate('componentArray');
+            if (!canvas) {
+                resolve({
+                    status: "ERROR",
+                    message: "Canvas not found!"
+                });
+                return;
+            }
+
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                data: canvas.componentArray
+            });
+        } catch (error) {
+            reject({
+                status: "ERROR",
+                message: "Failed to retrieve components",
+                error: error.message,
+            });
+        }
+    });
+};
+
 
 module.exports = {
-    createCanvas, getAllCanvas, updateCanvas, deleteCanvas, addComponentToCanvas, getDetailCanvas
+    createCanvas, getAllCanvas, updateCanvas, deleteCanvas, addComponentToCanvas, getDetailCanvas, getComponentsByCanvasId
 }

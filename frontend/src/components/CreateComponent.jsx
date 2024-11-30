@@ -15,7 +15,6 @@ const
         const startTransformRef = useRef({x: 0, y: 0, width: 90, height: 90, rotate: 0});
         const [deg, setDeg] = useState(0);
 
-
         const calculateTransform = (e) => {
             const dx = e.clientX - startTransformRef.current.x;
             const dy = e.clientY - startTransformRef.current.y;

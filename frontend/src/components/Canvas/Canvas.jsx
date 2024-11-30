@@ -1,6 +1,6 @@
 import React from "react";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import {FaRegTrashCan} from "react-icons/fa6";
+import {IoIosArrowUp, IoIosArrowDown} from "react-icons/io";
 import CreateComponent from "../../components/CreateComponent";
 import ImageToolbar from "../SharedComponents/ToolBars/ImageToolBar/ImageToolBar.jsx";
 import TextToolbar from "../SharedComponents/ToolBars/TextToolBar/TextToolBar.jsx";
@@ -9,6 +9,7 @@ import useCanvasViewModel from "./CanvasViewModel.js";
 /* eslint react/prop-types: 0 */
 const Canvas = React.forwardRef(({
                                      id,
+                                     databaseId,
                                      title,
                                      bgLink,
                                      width,
@@ -31,7 +32,7 @@ const Canvas = React.forwardRef(({
         handleTextClick,
         removeElement,
         shapes,
-    } = useCanvasViewModel(id, updateShapePosition);
+    } = useCanvasViewModel(id, databaseId, updateShapePosition);
 
     return (
         <div ref={ref} className="flex flex-col gap-4">
@@ -64,7 +65,8 @@ const Canvas = React.forwardRef(({
                         onClick={removeButton}
                     />
                 </div>
-            </div>
+                </div>
+                <div><p>{shapes.length}</p></div>
             <div
                 id={id}
                 ref={setNodeRef}
@@ -80,9 +82,9 @@ const Canvas = React.forwardRef(({
                     zIndex: 0,
                 }}
                 className="bg-white border relative">
-                {shapes.map((info) => info.type === "text" ? (
+                {shapes.map((info, index) => info.type === "text" ? (
                     <div
-                        key={info.id}
+                        key={index}
                         id={`text-${info.id}`}
                         contentEditable={true}
                         suppressContentEditableWarning={true}
@@ -99,7 +101,7 @@ const Canvas = React.forwardRef(({
                     </div>
                 ) : (
                     <CreateComponent
-                        key={info.id}
+                        key={index}
                         info={info}
                         current_component={info}
                         current_canvas={current_canvas}
