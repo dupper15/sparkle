@@ -1,24 +1,22 @@
 const mongoose = require('mongoose')
+const Component = require('./ComponentModel');
 
 const textSchema = new mongoose.Schema(
     {
-        left: {type: Number, required: true},
-        top: {type: Number, required: true},
-        height: {type: Number, required: true},
-        width: {type: Number, required: true},
-        opacity: {type: Number, default:1},
-        z_index: {type: Number, default:1},
-        rotate: {type: Number, default:0},
-        content: {type: String, required: true, default: "Add a text"},
+        x: {type: Number, required: true},
+        y: {type: Number, required: true},
+        height: {type: Number, default: 40},
+        width: {type: Number, default: 90},
+        // opacity: {type: Number, default:1},
+        // z_index: {type: Number, default:1},
+        // rotate: {type: Number, default:0},
+        content: {type: String, default: "Add a text"},
         color: {type: String, default: "#000000"},
         fontSize: {type: Number, default: 16},
         fontFamily: {type: String, default: "Times new Roman"},
         fontStyle: {type: String, default: null},
     },
-    {
-        timestamps: true
-    }
 )
 
-const Text = mongoose.model('Text', textSchema)
+const Text = Component.discriminator('Text', textSchema)
 module.exports = Text

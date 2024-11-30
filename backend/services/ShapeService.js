@@ -2,31 +2,19 @@ const Shape = require('../models/ShapeModel')
 
 const createShape = (newShape) => {
     return new Promise(async (resolve, reject) => {
-        const { x, y, shapeType, height, width, opacity, z_index, rotate, color } = newShape;
+        const {x, y, shapeType, height, width, opacity, z_index, rotate, color} = newShape;
         try {
             const createdShape = await Shape.create({
-                x,
-                y,
-                shapeType,
-                height,
-                width,
-                opacity,
-                z_index,
-                rotate,
-                color
+                x, y, shapeType, height, width, opacity, z_index, rotate, color
             });
             if (createdShape) {
                 resolve({
-                    status: "OK",
-                    message: "Shape created successfully.",
-                    data: createdShape
+                    status: "OK", message: "Shape created successfully.", data: createdShape
                 });
             }
         } catch (e) {
             reject({
-                status: "ERROR",
-                message: "An error occurred while creating the shape.",
-                error: e
+                status: "ERROR", message: "An error occurred while creating the shape.", error: e
             });
         }
     });
@@ -38,25 +26,20 @@ const getDetailShape = (shapeId) => {
             const shape = await Shape.findOne({
                 _id: shapeId
             })
-            if (!Shape){
+            if (!Shape) {
                 resolve({
-                    status: "ERROR",
-                    message: "Account is not defined!"
+                    status: "ERROR", message: "Account is not defined!"
                 })
                 return;
             }
 
             resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data: shape
+                status: "OK", message: "SUCCESS", data: shape
             })
 
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to create Shape",
-                error: error.message,
+                status: "ERROR", message: "Failed to create Shape", error: error.message,
             });
         }
     })
@@ -67,16 +50,12 @@ const getAllShape = () => {
         try {
             const allShape = await Shape.find()
             resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data: allShape
+                status: "OK", message: "SUCCESS", data: allShape
             })
 
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to get all shape",
-                error: error.message,
+                status: "ERROR", message: "Failed to get all shape", error: error.message,
             });
         }
     })
@@ -88,34 +67,28 @@ const updateShape = (shapeId, data) => {
             const checkShape = await Shape.findOne({
                 _id: shapeId
             })
-            if (!checkShape){
+            if (!checkShape) {
                 resolve({
-                    status: "ERROR",
-                    message: "Shape is not defined!"
+                    status: "ERROR", message: "Shape is not defined!"
                 })
                 return;
             }
             const updatedShape = await Shape.findByIdAndUpdate(shapeId, data, {new: true});
 
-            if (!updatedShape){
+            if (!updatedShape) {
                 resolve({
-                    status: "ERROR",
-                    message: "Shape update failed or not found"
+                    status: "ERROR", message: "Shape update failed or not found"
                 });
                 return;
             }
 
             resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data: updatedShape
+                status: "OK", message: "SUCCESS", data: updatedShape
             })
 
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to update Shape",
-                error: error.message,
+                status: "ERROR", message: "Failed to update Shape", error: error.message,
             });
         }
     })
@@ -127,24 +100,20 @@ const deleteShape = (shapeId) => {
             const shape = await Shape.findOne({
                 _id: shapeId
             })
-            if (!shape){
+            if (!shape) {
                 resolve({
-                    status: "ERROR",
-                    message: "Shape is not defined!"
+                    status: "ERROR", message: "Shape is not defined!"
                 })
                 return;
             }
             await Shape.findByIdAndDelete(shapeId)
 
             resolve({
-                status: "OK",
-                message: "Delete success",
+                status: "OK", message: "Delete success",
             })
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to create Shape",
-                error: error.message,
+                status: "ERROR", message: "Failed to create Shape", error: error.message,
             });
         }
     })
@@ -152,9 +121,5 @@ const deleteShape = (shapeId) => {
 
 
 module.exports = {
-    createShape,
-    getDetailShape,
-    getAllShape,
-    updateShape,
-    deleteShape
+    createShape, getDetailShape, getAllShape, updateShape, deleteShape
 }

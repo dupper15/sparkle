@@ -10,3 +10,12 @@ export const uploadImage = async (imageId, properties) => {
         throw error;
     }
 };
+
+const ImageService = {
+    async createImage(imageData) {
+        const response = await axios.post(`${import.meta.env.VITE_API_KEY}/image/create`, imageData);
+        return response.data;
+    },
+};
+
+export default ImageService;

@@ -4,7 +4,7 @@ const canvasSchema = new mongoose.Schema({
     background: {type: String, default: "#ffffff"}, 
     componentArray: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Component",
+        ref: 'Component',
         default: null,
     }],
 }, {

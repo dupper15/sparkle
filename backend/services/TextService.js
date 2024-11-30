@@ -2,30 +2,21 @@ const Text = require('../models/TextModel')
 
 const createText = (newText) => {
     return new Promise(async (resolve, reject) => {
+        const {x, y, height, width, content, color, fontSize, fontFamily, fontStyle} = newText;
         try {
             const createdText = await Text.create({
-                left: newText.left,
-                top: newText.top,
-                height: newText.height,
-                width: newText.width,
+                x, y, height, width, content, color, fontSize, fontFamily, fontStyle
             })
-        
-            if(createdText){
+
+            if (createdText) {
                 resolve({
-                    status: "OK",
-                    message: "Create success",
-                    data: {
-                        Text: createdText
-                    }
+                    status: "OK", message: "Create success", data: createdText
                 })
-                return;
             }
 
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to create Text",
-                error: error.message,
+                status: "ERROR", message: "Failed to create Text", error: error.message,
             });
         }
     })
@@ -37,25 +28,20 @@ const getDetailText = (textId) => {
             const text = await Text.findOne({
                 _id: textId
             })
-            if (!Text){
+            if (!Text) {
                 resolve({
-                    status: "ERROR",
-                    message: "Account is not defined!"
+                    status: "ERROR", message: "Account is not defined!"
                 })
                 return;
             }
 
             resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data: text
+                status: "OK", message: "SUCCESS", data: text
             })
 
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to create Text",
-                error: error.message,
+                status: "ERROR", message: "Failed to create Text", error: error.message,
             });
         }
     })
@@ -67,34 +53,28 @@ const updateText = (textId, data) => {
             const checkText = await Text.findOne({
                 _id: textId
             })
-            if (!checkText){
+            if (!checkText) {
                 resolve({
-                    status: "ERROR",
-                    message: "Text is not defined!"
+                    status: "ERROR", message: "Text is not defined!"
                 })
                 return;
             }
             const updatedText = await Text.findByIdAndUpdate(textId, data, {new: true});
 
-            if (!updatedText){
+            if (!updatedText) {
                 resolve({
-                    status: "ERROR",
-                    message: "Text update failed or not found"
+                    status: "ERROR", message: "Text update failed or not found"
                 });
                 return;
             }
 
             resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data: updatedText
+                status: "OK", message: "SUCCESS", data: updatedText
             })
 
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to update Text",
-                error: error.message,
+                status: "ERROR", message: "Failed to update Text", error: error.message,
             });
         }
     })
@@ -106,24 +86,20 @@ const deleteText = (textId) => {
             const text = await Text.findOne({
                 _id: textId
             })
-            if (!text){
+            if (!text) {
                 resolve({
-                    status: "ERROR",
-                    message: "Text is not defined!"
+                    status: "ERROR", message: "Text is not defined!"
                 })
                 return;
             }
             await Text.findByIdAndDelete(textId)
 
             resolve({
-                status: "OK",
-                message: "Delete success",
+                status: "OK", message: "Delete success",
             })
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to create Text",
-                error: error.message,
+                status: "ERROR", message: "Failed to create Text", error: error.message,
             });
         }
     })
@@ -131,8 +107,5 @@ const deleteText = (textId) => {
 
 
 module.exports = {
-    createText,
-    getDetailText,
-    updateText,
-    deleteText
+    createText, getDetailText, updateText, deleteText
 }

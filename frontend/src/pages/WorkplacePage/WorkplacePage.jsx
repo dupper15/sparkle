@@ -28,7 +28,7 @@ import {updateProject} from "../../redux/slides/projectSlide.js";
 import {deleteCanvas} from "../../services/CanvasService.js";
 import * as Alert from '../../components/Alert/Alert.jsx'
 import {useMutation} from "@tanstack/react-query";
-import {uploadShape} from "../../services/ShapeService.js";
+import {createAndAddComponentToCanvas} from "../../services/utils/componentOrchestrator.js";
 
 const WorkplacePage = () => {
         const dispatch = useDispatch();
@@ -178,7 +178,7 @@ const WorkplacePage = () => {
                 };
 
                 try {
-                    const response = await uploadShape( newComponent);
+                    const response = await createAndAddComponentToCanvas(currentCanvas, 'Shape', newComponent);
                     newComponent.id = response.data._id;
 
                     updateShapes(newComponent, over.id);

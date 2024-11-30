@@ -1,15 +1,7 @@
 import axios from "axios";
+export const getAllShapes = async (canvasId) => {
 
-export const uploadShape = async (properties) => {
-    try {
-        const response = await axios.post(`${import.meta.env.VITE_API_KEY}/shape/create`, properties);
-        // console.log(`Notice: Shape ID ${shapeId} properties would be uploaded`, properties);
-        return response.data;
-    } catch (error) {
-        console.error('Failed to upload shape properties:', error);
-        throw error;
-    }
-};
+}
 
 export const updateShapeColor = async (shapeId, color) => {
     try {
@@ -32,3 +24,13 @@ export const updateShapeTransformation = async (shapeId, transformationType, val
         throw error;
     }
 };
+
+
+const ShapeService = {
+    async createShape(shapeData) {
+        const response = await axios.post(`${import.meta.env.VITE_API_KEY}/shapes`, shapeData);
+        return response.data;
+    },
+};
+
+export default ShapeService;

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const Component = require('./ComponentModel');
 
 const shapeSchema = new mongoose.Schema(
     {
@@ -7,15 +8,12 @@ const shapeSchema = new mongoose.Schema(
         shapeType: {type: String, required: true},
         height: {type: Number, default: 90},
         width: {type: Number, default: 90},
-        opacity: {type: Number, default:1},
-        z_index: {type: Number, default:1},
-        rotate: {type: Number, default:0},
+        // opacity: {type: Number, default:1},
+        // z_index: {type: Number, default:1},
+        // rotate: {type: Number, default:0},
         color: {type: String, default:"#e5e5e5"}
     },
-    {
-        timestamps: true
-    }
 )
 
-const Shape = mongoose.model('Shape', shapeSchema)
+const Shape = Component.discriminator('Shape', shapeSchema)
 module.exports = Shape

@@ -3,31 +3,21 @@ const ImageUpload = require('../models/ImageUploadModel')
 
 const createImage = (newImage) => {
     return new Promise(async (resolve, reject) => {
+        const {x, y, height, width} = newImage;
         try {
             const createdImage = await Image.create({
-                left: newImage.left,
-                top: newImage.top,
-                height: newImage.height,
-                width: newImage.width,
-                // image: newImage.image,    
+                x, y, height, width, // image: newImage.image,
             })
-        
-            if(createdImage){
+
+            if (createdImage) {
                 resolve({
-                    status: "OK",
-                    message: "Create success",
-                    data: {
-                        image: createdImage
-                    }
+                    status: "OK", message: "Create success", data: createdImage
                 })
-                return;
             }
 
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to create Image",
-                error: error.message,
+                status: "ERROR", message: "Failed to create Image", error: error.message,
             });
         }
     })
@@ -39,25 +29,20 @@ const getDetailImage = (imageId) => {
             const image = await Image.findOne({
                 _id: imageId
             })
-            if (!Image){
+            if (!Image) {
                 resolve({
-                    status: "ERROR",
-                    message: "Account is not defined!"
+                    status: "ERROR", message: "Account is not defined!"
                 })
                 return;
             }
 
             resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data: image
+                status: "OK", message: "SUCCESS", data: image
             })
 
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to create Image",
-                error: error.message,
+                status: "ERROR", message: "Failed to create Image", error: error.message,
             });
         }
     })
@@ -66,17 +51,13 @@ const getDetailImage = (imageId) => {
 const getAllImage = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allImage = await ImageUpload.find({ creator: userId})
+            const allImage = await ImageUpload.find({creator: userId})
             resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data: allImage
+                status: "OK", message: "SUCCESS", data: allImage
             })
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to get all Image",
-                error: error.message,
+                status: "ERROR", message: "Failed to get all Image", error: error.message,
             });
         }
     })
@@ -88,34 +69,28 @@ const updateImage = (imageId, data) => {
             const checkImage = await Image.findOne({
                 _id: imageId
             })
-            if (!checkImage){
+            if (!checkImage) {
                 resolve({
-                    status: "ERROR",
-                    message: "Image is not defined!"
+                    status: "ERROR", message: "Image is not defined!"
                 })
                 return;
             }
             const updatedImage = await Image.findByIdAndUpdate(imageId, data, {new: true});
 
-            if (!updatedImage){
+            if (!updatedImage) {
                 resolve({
-                    status: "ERROR",
-                    message: "Image update failed or not found"
+                    status: "ERROR", message: "Image update failed or not found"
                 });
                 return;
             }
 
             resolve({
-                status: "OK",
-                message: "SUCCESS",
-                data: updatedImage
+                status: "OK", message: "SUCCESS", data: updatedImage
             })
 
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to update Image",
-                error: error.message,
+                status: "ERROR", message: "Failed to update Image", error: error.message,
             });
         }
     })
@@ -127,24 +102,20 @@ const deleteImage = (imageId) => {
             const image = await Image.findOne({
                 _id: imageId
             })
-            if (!image){
+            if (!image) {
                 resolve({
-                    status: "ERROR",
-                    message: "Image is not defined!"
+                    status: "ERROR", message: "Image is not defined!"
                 })
                 return;
             }
             await Image.findByIdAndDelete(imageId)
 
             resolve({
-                status: "OK",
-                message: "Delete success",
+                status: "OK", message: "Delete success",
             })
         } catch (error) {
             reject({
-                status: "ERROR",
-                message: "Failed to create Image",
-                error: error.message,
+                status: "ERROR", message: "Failed to create Image", error: error.message,
             });
         }
     })
@@ -152,9 +123,5 @@ const deleteImage = (imageId) => {
 
 
 module.exports = {
-    createImage,
-    getAllImage,
-    getDetailImage,
-    updateImage,
-    deleteImage
+    createImage, getAllImage, getDetailImage, updateImage, deleteImage
 }

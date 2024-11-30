@@ -1,5 +1,6 @@
 const Canvas = require('../models/CanvasModel')
 const Project = require('../models/ProjectModel')
+const Component = require('../models/ComponentModel')
 
 const createCanvas = () => {
     return new Promise(async (resolve, reject) => {
@@ -31,9 +32,27 @@ const createCanvas = () => {
 const getAllCanvas = (projectId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const project = await Project.findById({
-                _id: projectId
-            }).populate('canvasArray')
+            const project = await Project.findById(projectId).populate({
+                path: 'canvasArray',
+                populate: {
+                    path: 'componentArray',
+                    model: 'Component',
+                    populate: [
+                        {
+                            path: 'image',
+                            model: 'ImageUpload'
+                        },
+                        {
+                            path: 'text',
+                            model: 'Text'
+                        },
+                        {
+                            path: 'shape', // Replace with actual component type
+                            model: 'Shape' // Replace with actual model name
+                        }
+                    ]
+                }
+            });
             if (!project){
                 resolve({
                     status: "ERROR",
@@ -140,35 +159,42 @@ const deleteCanvas = (canvasId, projectId) => {
     })
 }
 
-const addComponentToCanvas = (canvasId, component) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const canvas = await Canvas.findById(canvasId);
-            if (!canvas) {
-                resolve({
-                    status: "ERROR",
-                    message: "Canvas not found!"
-                });
-                return;
-            }
-
-            canvas.componentArray.push(component);
-            await canvas.save();
-
-            resolve({
-                status: "OK",
-                message: "Component added successfully.",
-                data: canvas
-            });
-        } catch (error) {
-            reject({
+const addComponentToCanvas = async (canvasId, component) => {
+    try {
+        const canvas = await Canvas.findById(canvasId);
+        if (!canvas) {
+            return {
                 status: "ERROR",
-                message: "Failed to add component to canvas.",
-                error: error.message,
-            });
+                message: "Canvas not found!"
+            };
         }
-    });
+
+        const componentExists = await Component.findById(component);
+        if (!componentExists) {
+            return {
+                status: "ERROR",
+                message: "Component not found!"
+            };
+        }
+
+        canvas.componentArray.push(component);
+        await canvas.save();
+        const updatedCanvas = await Canvas.findById(canvasId).populate('componentArray');
+
+        return {
+            status: "OK",
+            message: "Component added successfully.",
+            data: updatedCanvas
+        };
+    } catch (error) {
+        return {
+            status: "ERROR",
+            message: "Failed to add component to canvas.",
+            error,
+        };
+    }
 };
+
 
 
 module.exports = {

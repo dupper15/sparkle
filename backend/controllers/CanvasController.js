@@ -1,4 +1,5 @@
 const CanvasService = require('../services/CanvasService')
+const mongoose = require('mongoose');
 
 const createCanvas = async (req, res) => {
     try {
@@ -71,14 +72,23 @@ const addComponentToCanvas = async (req, res) => {
     try {
         const canvasId = req.params.id;
         const { componentId } = req.body;
+
         if (!canvasId || !componentId) {
             return res.status(400).json({
                 status: 'ERROR',
                 message: 'Canvas ID and Component ID are required.'
             });
         }
+
+        if (!mongoose.isValidObjectId(canvasId) || !mongoose.isValidObjectId(componentId)) {
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'Invalid Canvas ID or Component ID.'
+            });
+        }
+
         const response = await CanvasService.addComponentToCanvas(canvasId, componentId);
-        return res.status(200).json(response);
+        return res.status(response.status === 'OK' ? 200 : 400).json(response);
     } catch (e) {
         return res.status(500).json({
             status: 'ERROR',
@@ -87,6 +97,9 @@ const addComponentToCanvas = async (req, res) => {
         });
     }
 };
+
+
+
 
 
 module.exports = {

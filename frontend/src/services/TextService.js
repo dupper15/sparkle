@@ -32,3 +32,12 @@ export const updateTextTransformation = async (textId, transformationType, value
         throw error;
     }
 };
+
+const TextService = {
+    async createText(textData) {
+        const response = await axios.post(`${import.meta.env.VITE_API_KEY}/texts`, textData);
+        return response.data;
+    },
+};
+
+export default TextService;
