@@ -3,7 +3,7 @@ import {useDroppable} from "@dnd-kit/core";
 import {useDarkMode} from "../../contexts/DarkModeContext";
 import axios from "axios";
 
-const useCanvasViewModel = (id, databaseId, updateShapePosition) => {
+const useCanvasViewModel = (id, databaseId) => {
     const [selectedComponentId, setSelectedComponentId] = useState(null);
     const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
     const [isTextToolBarOpen, setOpenTextToolBar] = useState(false);
@@ -33,16 +33,6 @@ const useCanvasViewModel = (id, databaseId, updateShapePosition) => {
         }
     };
 
-    const fetchComponents = async () => {
-        try {
-            const response = await axios.get(`${import.meta.env.VITE_API_KEY}/canvas/get-components/${databaseId}`);
-            setShapes(response.data.data || []); // Ensure shapes is an array
-            // console.log("Components:", response.data.data);
-        } catch (error) {
-            console.error("Failed to fetch components:", error);
-        }
-    };
-
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
@@ -51,15 +41,29 @@ const useCanvasViewModel = (id, databaseId, updateShapePosition) => {
     }, []);
 
     useEffect(() => {
-        fetchComponents()
-            .then(() => {
-                console.log("Components fetched successfully");
-                console.log("Shapes:", shapes);
-            })
-            .catch((error) => {
-                console.error("Error fetching components:", error);
-            });
+        const fetchComponents = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_KEY}/canvas/get-components/${databaseId}`);
+                setShapes(response.data.data || []); // Ensure shapes is an array
+                // console.log("Components:", response.data.data);
+            } catch (error) {
+                console.error("Failed to fetch components:", error);
+            }
+        };
+        fetchComponents();
     }, [databaseId]);
+
+    useEffect(() => {
+        const updateShapesListener = (event) => {
+            const newShape = event.detail;
+            setShapes((prevShapes) => [...prevShapes, newShape]);
+        };
+
+        document.addEventListener(`update-shapes-${id}`, updateShapesListener);
+        return () => {
+            document.removeEventListener(`update-shapes-${id}`, updateShapesListener);
+        };
+    }, [id]);
 
     return {
         selectedComponentId,

@@ -32,7 +32,7 @@ const Canvas = React.forwardRef(({
         handleTextClick,
         removeElement,
         shapes,
-    } = useCanvasViewModel(id, databaseId, updateShapePosition);
+    } = useCanvasViewModel(id, databaseId);
 
     return (
         <div ref={ref} className="flex flex-col gap-4">
@@ -66,7 +66,6 @@ const Canvas = React.forwardRef(({
                     />
                 </div>
                 </div>
-                <div><p>{shapes.length}</p></div>
             <div
                 id={id}
                 ref={setNodeRef}
