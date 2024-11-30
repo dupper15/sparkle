@@ -30,6 +30,22 @@ const getAllCanvas = async (req, res) => {
     }
 }
 
+const getDetailCanvas = async (req, res) => {
+    try {
+        const canvasId = req.params.id
+        if (!canvasId) {
+            return res.status(400).json({
+                error: 'Bad Request', message: 'Canvas ID is required'
+            })
+        }
+        const response = await CanvasService.getDetailCanvas(canvasId)
+        return res.status(200).json(response)
+    } catch (e) {
+        return res.status(500).json({
+            error: 'Internal Server Error', message: e.message
+        })
+    }
+}
 const updateCanvas = async (req, res) => {
     try {
         const canvasId = req.params.id
@@ -107,5 +123,6 @@ module.exports = {
     getAllCanvas,
     updateCanvas,
     deleteCanvas,
-    addComponentToCanvas
+    addComponentToCanvas,
+    getDetailCanvas
 }

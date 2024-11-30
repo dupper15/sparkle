@@ -28,7 +28,7 @@ export const updateShapeTransformation = async (shapeId, transformationType, val
 
 const ShapeService = {
     async createShape(shapeData) {
-        const response = await axios.post(`${import.meta.env.VITE_API_KEY}/shapes`, shapeData);
+        const response = await axios.post(`${import.meta.env.VITE_API_KEY}/shape/create`, shapeData);
         return response.data;
     },
 };

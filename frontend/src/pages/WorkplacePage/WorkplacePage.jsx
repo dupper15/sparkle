@@ -176,9 +176,12 @@ const WorkplacePage = () => {
                     x: relativeX,
                     y: relativeY,
                 };
+                console.log(over)
+                console.log(active)
+                console.log(canvases[currentCanvas])
 
                 try {
-                    const response = await createAndAddComponentToCanvas(currentCanvas, 'Shape', newComponent);
+                    const response = await createAndAddComponentToCanvas(canvases[currentCanvas]._id, 'Shape', newComponent);
                     newComponent.id = response.data._id;
 
                     updateShapes(newComponent, over.id);
