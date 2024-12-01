@@ -9,6 +9,7 @@ const
         const [isDragging, setIsDragging] = useState(false);
         const [dragOffset, setDragOffset] = useState({x: 0, y: 0});
         const [position, setPosition] = useState({x: info.x, y: info.y});
+        // const [size, setSize] = useState({width: 90, height: 90});
         const [size, setSize] = useState({width: info.width, height: info.height});
         const [isResizing, setIsResizing] = useState(false);
         const [resizeDirection, setResizeDirection] = useState(null);
@@ -277,6 +278,7 @@ const
                 }}
                 onMouseDown={handleMouseDown}
             >
+                <p>{info.x}, {info.y}, {info.height}, {info.width}</p>
                 {/* Nút xoay (icon) */}
                 {isSelected && (
                     <MdOutlineChangeCircle

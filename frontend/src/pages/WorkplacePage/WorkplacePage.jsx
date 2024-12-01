@@ -166,7 +166,7 @@ const WorkplacePage = () => {
         const relativeY = shapeRect.top - dropAreaRect.top;
 
         const newShape = {
-            shapeType: draggingShape.shapeType, x: relativeX, y: relativeY,
+            shapeType: draggingShape.shapeType, x: relativeX, y: relativeY, width: 90, height: 90,
         };
 
         try {
