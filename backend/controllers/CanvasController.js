@@ -114,6 +114,36 @@ const addComponentToCanvas = async (req, res) => {
     }
 };
 
+const removeComponentFromCanvas = async (req, res) => {
+    try {
+        const canvasId = req.params.id;
+        const componentId = req.body.componentId;
+
+        if (!canvasId || !componentId) {
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'Canvas ID and Component ID are required.'
+            });
+        }
+
+        if (!mongoose.isValidObjectId(canvasId) || !mongoose.isValidObjectId(componentId)) {
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'Invalid Canvas ID or Component ID.'
+            });
+        }
+
+        const response = await CanvasService.removeComponentFromCanvas(canvasId, componentId);
+        return res.status(response.status === 'OK' ? 200 : 400).json(response);
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERROR',
+            message: 'An error occurred while removing the component from the canvas.',
+            error: e.message
+        });
+    }
+}
+
 const getComponentsByCanvasId = async (req, res) => {
     try {
         const canvasId = req.params.id;
@@ -144,6 +174,7 @@ module.exports = {
     updateCanvas,
     deleteCanvas,
     addComponentToCanvas,
+    removeComponentFromCanvas,
     getDetailCanvas,
     getComponentsByCanvasId
 }

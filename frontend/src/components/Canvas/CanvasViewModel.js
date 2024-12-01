@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import {useDroppable} from "@dnd-kit/core";
 import {useDarkMode} from "../../contexts/DarkModeContext";
 import axios from "axios";
+import {removeAndPopComponentFromCanvas} from "../../services/utils/componentOrchestrator.js";
 
 const useCanvasViewModel = (id, databaseId) => {
     const [selectedComponentId, setSelectedComponentId] = useState(null);
@@ -30,6 +31,19 @@ const useCanvasViewModel = (id, databaseId) => {
             setOpenImageToolBar(false);
             setOpenTextToolBar(false);
             setSelectedComponentId(null);
+        }
+    };
+
+    const removeComponent = async (componentId, componentType) => {
+        try {
+            await removeAndPopComponentFromCanvas(databaseId, componentType, componentId);
+            console.log("ComponentId:", componentId);
+            console.log("Old components", shapes);
+            setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== componentId));
+            console.log("New components", shapes);
+            console.log("Component removed successfully");
+        } catch (error) {
+            console.error("Failed to remove component:", error);
         }
     };
 
@@ -76,6 +90,7 @@ const useCanvasViewModel = (id, databaseId) => {
         handleImageClick,
         handleTextClick,
         shapes,
+        removeComponent,
     };
 };
 

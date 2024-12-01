@@ -1,9 +1,5 @@
 import axios from "axios";
 
-export const getAllShapes = async (canvasId) => {
-
-}
-
 export const updateShapeColor = async (shapeId, color) => {
     try {
         //const response = await axios.put(`http://localhost:3001/api/shapes/${shapeId}/color`, { color });
@@ -40,6 +36,14 @@ const ShapeService = {
                 throw error; // Re-throw the error to handle it in the component if needed
             });
     },
+    async deleteShape(id) {
+        return axios.delete(`${import.meta.env.VITE_API_KEY}/shape/delete/${id}`)
+            .then((response) => response.data)
+            .catch((error) => {
+                console.error("Error deleting shape:", error);
+                throw error; // Re-throw the error to handle it in the component if needed
+            });
+    }
 };
 
 export default ShapeService;

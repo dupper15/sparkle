@@ -1,8 +1,9 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {MdOutlineChangeCircle} from "react-icons/md";
 import _ from "lodash";
 import ShapeService from "../services/ShapeService.js";
 
+/* eslint react/prop-types: 0 */
 const
     CreateComponent = ({info, removeComponent, onClick}) => {
         const [isDragging, setIsDragging] = useState(false);
@@ -20,7 +21,6 @@ const
 
         const updateShapeInDatabase = useRef(
             _.debounce((updatedData) => {
-                // eslint-disable-next-line react/prop-types
                 ShapeService.updateShape(info._id, updatedData)
                     .then((data) => {
                         console.log("Shape updated successfully", {
@@ -40,8 +40,8 @@ const
             const dx = e.clientX - startTransformRef.current.x;
             const dy = e.clientY - startTransformRef.current.y;
             const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-            const newDeg = angle < 0 ? angle + 360 : angle; // Tính toán góc xoay
-            return newDeg;
+            // Tính toán góc xoay
+            return angle < 0 ? angle + 360 : angle;
         };
 
         const handleTransformMouseDown = (e) => {
@@ -90,7 +90,6 @@ const
             } else if (isTransforming) {
                 handleTransformMouseMove(e);
             }
-            ;
         };
         const handleMouseUp = () => {
             setIsDragging(false);
@@ -199,7 +198,7 @@ const
         useEffect(() => {
             const handleKeyDown = (e) => {
                 if (e.key === "Delete" && isSelected) {
-                    removeComponent(info.id);
+                    removeComponent(info._id, "Shape");
                 }
             };
             // Add event listener when component is selected

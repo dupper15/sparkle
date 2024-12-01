@@ -40,6 +40,30 @@ export const createAndAddComponentToCanvas = async (canvasId, componentType, com
     }
 };
 
+export const removeAndPopComponentFromCanvas = async (canvasId, componentType, componentId) => {
+    try {
+        switch (componentType) {
+        case 'Shape':
+            await ShapeService.deleteShape(componentId);
+            break;
+        case 'Text':
+            await TextService.deleteText(componentId);
+            break;
+        case 'Image':
+            await ImageService.deleteImage(componentId);
+            break;
+        default:
+            throw new Error('Invalid component type.');
+    }
+    } catch (error) {
+        return {
+            status: "ERROR",
+            message: error.message,
+        };
+    }
+};
+
+
 // // Example Usage
 // const canvasId = '64fbdf1c77d13a1b6c8278cd';
 // const shapeData = {

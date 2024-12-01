@@ -146,8 +146,7 @@ const deleteCanvas = (canvasId, projectId) => {
                 });
                 return;
             }
-            const updatedCanvasArray = project.canvasArray.filter((canvasItem) => canvasItem.toString() !== canvasId);
-            project.canvasArray = updatedCanvasArray;
+            project.canvasArray = project.canvasArray.filter((canvasItem) => canvasItem.toString() !== canvasId);
             await project.save();
 
             resolve({
@@ -191,6 +190,35 @@ const addComponentToCanvas = async (canvasId, component) => {
     }
 };
 
+const removeComponentFromCanvas = async (canvasId, componentId) => {
+    try {
+        const canvas = await Canvas.findById(canvasId);
+        if (!canvas) {
+            return {
+                status: "ERROR", message: "Canvas not found!"
+            };
+        }
+
+        const componentExists = await Component.findById(componentId);
+        if (!componentExists) {
+            return {
+                status: "ERROR", message: "Component not found!"
+            };
+        }
+
+        canvas.componentArray = canvas.componentArray.filter((component) => component.toString() !== componentId);
+        await canvas.save();
+
+        return {
+            status: "OK", message: "Component removed successfully."
+        };
+    } catch (error) {
+        return {
+            status: "ERROR", message: "Failed to remove component from canvas.", error,
+        };
+    }
+}
+
 const getComponentsByCanvasId = (canvasId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -220,5 +248,5 @@ const getComponentsByCanvasId = (canvasId) => {
 
 
 module.exports = {
-    createCanvas, getAllCanvas, updateCanvas, deleteCanvas, addComponentToCanvas, getDetailCanvas, getComponentsByCanvasId
+    createCanvas, getAllCanvas, updateCanvas, deleteCanvas, addComponentToCanvas, removeComponentFromCanvas, getDetailCanvas, getComponentsByCanvasId
 }

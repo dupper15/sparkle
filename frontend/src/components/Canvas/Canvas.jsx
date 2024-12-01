@@ -30,7 +30,7 @@ const Canvas = React.forwardRef(({
         isDarkMode,
         handleImageClick,
         handleTextClick,
-        removeElement,
+        removeComponent,
         shapes,
     } = useCanvasViewModel(id, databaseId);
 
@@ -104,7 +104,7 @@ const Canvas = React.forwardRef(({
                         info={info}
                         current_component={info}
                         current_canvas={current_canvas}
-                        removeComponent={removeElement}
+                        removeComponent={removeComponent}
                         updateShapePosition={updateShapePosition}
                         onClick={() => handleImageClick(info.id)}
                     />
