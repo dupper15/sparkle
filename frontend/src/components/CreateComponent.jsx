@@ -1,12 +1,14 @@
 import React, {useState, useRef, useEffect} from "react";
 import {MdOutlineChangeCircle} from "react-icons/md";
+import _ from "lodash";
+import ShapeService from "../services/ShapeService.js";
 
 const
-    CreateComponent = ({info, current_component, removeComponent, onClick}) => {
+    CreateComponent = ({info, removeComponent, onClick}) => {
         const [isDragging, setIsDragging] = useState(false);
         const [dragOffset, setDragOffset] = useState({x: 0, y: 0});
         const [position, setPosition] = useState({x: info.x, y: info.y});
-        const [size, setSize] = useState({width: 90, height: 90});
+        const [size, setSize] = useState({width: info.width, height: info.height});
         const [isResizing, setIsResizing] = useState(false);
         const [resizeDirection, setResizeDirection] = useState(null);
         const [isSelected, setIsSelected] = useState(false);
@@ -14,6 +16,25 @@ const
         const [isTransforming, setIsTransforming] = useState(false);
         const startTransformRef = useRef({x: 0, y: 0, width: 90, height: 90, rotate: 0});
         const [deg, setDeg] = useState(0);
+
+
+        const updateShapeInDatabase = useRef(
+            _.debounce((updatedData) => {
+                // eslint-disable-next-line react/prop-types
+                ShapeService.updateShape(info._id, updatedData)
+                    .then((data) => {
+                        console.log("Shape updated successfully", {
+                            x: data.data.x,
+                            y: data.data.y,
+                            width: data.data.width,
+                            height: data.data.height
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Failed to update shape", error);
+                    });
+            }, 500) // Adjust debounce time as needed
+        ).current;
 
         const calculateTransform = (e) => {
             const dx = e.clientX - startTransformRef.current.x;
@@ -63,17 +84,20 @@ const
                 const newX = e.clientX - dragOffset.x;
                 const newY = e.clientY - dragOffset.y;
                 setPosition({x: newX, y: newY});
+                updateShapeInDatabase({x: newX, y: newY, width: size.width, height: size.height});
             } else if (isResizing) {
                 handleResizeMouseMove(e);
             } else if (isTransforming) {
                 handleTransformMouseMove(e);
             }
+            ;
         };
         const handleMouseUp = () => {
             setIsDragging(false);
             setIsResizing(false);
             setIsTransforming(false);
             setResizeDirection(null);
+            console.log("Position: ", position);
         };
         const handleResizeMouseDown = (e, direction) => {
             e.preventDefault();
@@ -128,10 +152,13 @@ const
                     default:
                         break;
                 }
+                console.log("oldsize: ", {width: size.width, height: size.height});
                 newWidth = Math.max(10, newWidth);
                 newHeight = Math.max(10, newHeight);
+                console.log("newsize: ", {width: newWidth, height: newHeight});
                 setSize({width: newWidth, height: newHeight});
                 setPosition({x: newX, y: newY});
+                updateShapeInDatabase({x: newX, y: newY, width: newWidth, height: newHeight});
             }
         };
         const handleClickOutside = (e) => {

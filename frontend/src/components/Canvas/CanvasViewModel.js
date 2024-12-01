@@ -45,7 +45,7 @@ const useCanvasViewModel = (id, databaseId) => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_KEY}/canvas/get-components/${databaseId}`);
                 setShapes(response.data.data || []); // Ensure shapes is an array
-                // console.log("Components:", response.data.data);
+                console.log("Components:", response.data.data);
             } catch (error) {
                 console.error("Failed to fetch components:", error);
             }

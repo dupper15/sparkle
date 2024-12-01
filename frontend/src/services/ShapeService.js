@@ -1,4 +1,5 @@
 import axios from "axios";
+
 export const getAllShapes = async (canvasId) => {
 
 }
@@ -30,6 +31,14 @@ const ShapeService = {
     async createShape(shapeData) {
         const response = await axios.post(`${import.meta.env.VITE_API_KEY}/shape/create`, shapeData);
         return response.data;
+    },
+    async updateShape(id, updatedData) {
+        return axios.put(`${import.meta.env.VITE_API_KEY}/shape/update/${id}`, updatedData)
+            .then((response) => response.data)
+            .catch((error) => {
+                console.error("Error updating shape:", error);
+                throw error; // Re-throw the error to handle it in the component if needed
+            });
     },
 };
 
