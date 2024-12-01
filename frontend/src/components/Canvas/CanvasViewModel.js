@@ -37,11 +37,9 @@ const useCanvasViewModel = (id, databaseId) => {
     const removeComponent = async (componentId, componentType) => {
         try {
             await removeAndPopComponentFromCanvas(databaseId, componentType, componentId);
-            console.log("ComponentId:", componentId);
-            console.log("Old components", shapes);
-            setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== componentId));
-            console.log("New components", shapes);
-            console.log("Component removed successfully");
+            setShapes((prevShapes) => {
+                return prevShapes.filter((shape) => shape._id !== componentId);
+            });
         } catch (error) {
             console.error("Failed to remove component:", error);
         }
@@ -58,26 +56,17 @@ const useCanvasViewModel = (id, databaseId) => {
         const fetchComponents = async () => {
             try {
                 const response = await axios.get(`${import.meta.env.VITE_API_KEY}/canvas/get-components/${databaseId}`);
-                setShapes(response.data.data || []); // Ensure shapes is an array
-                console.log("Components:", response.data.data);
+                setShapes(response.data.data || []);
             } catch (error) {
                 console.error("Failed to fetch components:", error);
             }
         };
         fetchComponents();
-    }, [databaseId]);
-
-    useEffect(() => {
-        const updateShapesListener = (event) => {
-            const newShape = event.detail;
-            setShapes((prevShapes) => [...prevShapes, newShape]);
-        };
-
-        document.addEventListener(`update-shapes-${id}`, updateShapesListener);
+        document.addEventListener(`update-shapes-${id}`, fetchComponents);
         return () => {
-            document.removeEventListener(`update-shapes-${id}`, updateShapesListener);
+            document.removeEventListener(`update-shapes-${id}`, fetchComponents);
         };
-    }, [id]);
+    }, [databaseId, id]);
 
     return {
         selectedComponentId,

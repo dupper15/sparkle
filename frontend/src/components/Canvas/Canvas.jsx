@@ -65,7 +65,7 @@ const Canvas = React.forwardRef(({
                         onClick={removeButton}
                     />
                 </div>
-                </div>
+            </div>
             <div
                 id={id}
                 ref={setNodeRef}
@@ -81,9 +81,9 @@ const Canvas = React.forwardRef(({
                     zIndex: 0,
                 }}
                 className="bg-white border relative">
-                {shapes.map((info, index) => info.type === "text" ? (
+                {shapes.map((info) => info.type === "text" ? (
                     <div
-                        key={index}
+                        key={info._id}
                         id={`text-${info.id}`}
                         contentEditable={true}
                         suppressContentEditableWarning={true}
@@ -99,15 +99,15 @@ const Canvas = React.forwardRef(({
                         {info.title}
                     </div>
                 ) : (
-                    <CreateComponent
-                        key={index}
-                        info={info}
-                        current_component={info}
-                        current_canvas={current_canvas}
-                        removeComponent={removeComponent}
-                        updateShapePosition={updateShapePosition}
-                        onClick={() => handleImageClick(info.id)}
-                    />
+                        <CreateComponent
+                            key={info._id}
+                            info={info}
+                            current_component={info}
+                            current_canvas={current_canvas}
+                            removeComponent={removeComponent}
+                            updateShapePosition={updateShapePosition}
+                            onClick={() => handleImageClick(info.id)}
+                        />
                 ))}
             </div>
         </div>
