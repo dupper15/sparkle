@@ -178,6 +178,26 @@ const addEditor = async (req, res) => {
     });
   }
 };
+const getAvatar = async (req, res) => {
+  try {
+    const { usersInRoom } = req.body;
+    const avatars = [];
+    for (const userId of usersInRoom) {
+      const user = await User.findById(userId);
+      if (user && user.image) {
+        avatars.push(user.image);
+      } else {
+        console.log(`Không tìm thấy user hoặc avatar cho ID: ${userId}`);
+      }
+    }
+    return res.status(200).json({ avatars });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error loading avatars",
+      error: error.stack,
+    });
+  }
+};
 
 module.exports = {
   createProject,
@@ -188,4 +208,5 @@ module.exports = {
   updateProject,
   deleteProject,
   addEditor,
+  getAvatar,
 };
