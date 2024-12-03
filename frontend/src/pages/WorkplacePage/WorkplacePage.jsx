@@ -28,10 +28,12 @@ import { deleteCanvas } from "../../services/CanvasService.js";
 import * as Alert from "../../components/Alert/Alert.jsx";
 import { useMutationHooks } from "../../hooks/useMutationHook.js";
 import { useMutation } from "@tanstack/react-query";
+import socket from "../../utils/socket";
 
 const WorkplacePage = () => {
   const dispatch = useDispatch();
   const project = useSelector((state) => state.project);
+  const user = useSelector((state) => state.user);
 
   const { isDarkMode } = useDarkMode();
   const [state, setState] = useState("");
@@ -374,7 +376,19 @@ const WorkplacePage = () => {
   const toggleChatBox = () => {
     setShowChatBox((prev) => !prev);
   };
-
+  useEffect(() => {
+    if (project?.id && user?.id) {
+      socket.emit("setUserId", user.id);
+      socket.emit("joinRoom", project.id);
+      const handleUserInRoom = (usersInRoom) => {
+        setUsersInRoom(usersInRoom);
+      };
+      socket.on("userInRoom", handleUserInRoom);
+      return () => {
+        socket.off("userInRoom", handleUserInRoom);
+      };
+    }
+  }, [project?.id, user?.id]);
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div

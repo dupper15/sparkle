@@ -100,8 +100,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
           <button
             onClick={toggleAddMember}
             className='w-[40px] h-[40px] bg-white font-semibold rounded-full
-      border-2 shadow-sm cursor-pointer text-[#4335DE] flex justify-center
-      items-center p-2 hover:bg-slate-200'
+                      border-2 shadow-sm cursor-pointer text-[#4335DE] flex justify-center
+                      items-center p-2 hover:bg-slate-200'
             style={{
               position: "absolute",
               top: "50%",
