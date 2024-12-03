@@ -1,12 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
-import {
-  LuLayoutTemplate,
-  LuShapes,
-  LuFolder,
-  LuImage,
-} from "react-icons/lu";
+import { LuLayoutTemplate, LuShapes, LuFolder, LuImage } from "react-icons/lu";
 import { RiText } from "react-icons/ri";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { MdKeyboardArrowLeft } from "react-icons/md";
@@ -25,12 +20,12 @@ import TextToolbar from "../../components/SharedComponents/ToolBars/TextToolBar.
 import { DndContext } from "@dnd-kit/core";
 import Text from "../../components/Text/Text.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
-import * as ProjectService from '../../services/ProjectService.js'
-import * as CanvasService from '../../services/CanvasService.js'
+import * as ProjectService from "../../services/ProjectService.js";
+import * as CanvasService from "../../services/CanvasService.js";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProject } from "../../redux/slides/projectSlide.js";
 import { deleteCanvas } from "../../services/CanvasService.js";
-import * as Alert from '../../components/Alert/Alert.jsx'
+import * as Alert from "../../components/Alert/Alert.jsx";
 import { useMutationHooks } from "../../hooks/useMutationHook.js";
 import { useMutation } from "@tanstack/react-query";
 
@@ -41,31 +36,30 @@ const WorkplacePage = () => {
   const { isDarkMode } = useDarkMode();
   const [state, setState] = useState("");
   const pageRef = useRef([]);
- 
+  const [usersInRoom, setUsersInRoom] = useState([]);
   const location = useLocation();
   const designData = location.state || {};
- 
-  const [width, setWidth] = useState('')
-  const [height, setHeight] = useState('')
 
-  
+  const [width, setWidth] = useState("");
+  const [height, setHeight] = useState("");
+
   useEffect(() => {
-    setWidth(project?.width)
-    setHeight(project?.height)
-  },[project])
+    setWidth(project?.width);
+    setHeight(project?.height);
+  }, [project]);
 
   const [current_page, setCurrentPage] = useState(project?.canvasArray[0]);
 
   const saveCanvasId = (canvasId) => {
-    localStorage.setItem('canvasId', canvasId);   
+    localStorage.setItem("canvasId", canvasId);
   };
 
   saveCanvasId(project?.canvasArray[current_page]);
 
   useEffect(() => {
     // Lấy id từ localStorage
-    const storedProjectId = localStorage.getItem('projectId');
-    
+    const storedProjectId = localStorage.getItem("projectId");
+
     if (storedProjectId) {
       const fetchProject = async () => {
         const res = await ProjectService.getDetailProject(storedProjectId);
@@ -75,41 +69,39 @@ const WorkplacePage = () => {
 
       return () => {
         // Cleanup khi rời khỏi trang
-        localStorage.removeItem('projectId');
+        localStorage.removeItem("projectId");
       };
     }
   }, [dispatch]);
 
   const handleGetDetailProject = async (id) => {
-    const res = await ProjectService.getDetailProject(id)
-    localStorage.setItem('project', JSON.stringify(res?.data));
-    dispatch(updateProject({...res?.data}))
+    const res = await ProjectService.getDetailProject(id);
+    localStorage.setItem("project", JSON.stringify(res?.data));
+    dispatch(updateProject({ ...res?.data }));
   };
-  
-  const mutation = useMutation(
-  {
+
+  const mutation = useMutation({
     mutationFn: (data) => {
-      console.log('data', data)
+      console.log("data", data);
       return ProjectService.updateProject(data.id);
-      
     },
     onSuccess: (data) => {
       dispatch(updateProject(data.data));
-      handleGetDetailProject(data.data.id)
-      console.log('Project updated successfully:', data);
+      handleGetDetailProject(data.data.id);
+      console.log("Project updated successfully:", data);
     },
     onError: (error) => {
-      console.error('Failed to update project:', error);
-    }
-  })
+      console.error("Failed to update project:", error);
+    },
+  });
 
-  const {data, isSuccess} = mutation
- 
+  const { data, isSuccess } = mutation;
+
   useEffect(() => {
-    if(isSuccess){
-      handleGetDetailProject(project?.id)
+    if (isSuccess) {
+      handleGetDetailProject(project?.id);
     }
-  },[isSuccess])
+  }, [isSuccess]);
 
   const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
   const [isTextToolBarOpen, setOpenTextToolBar] = useState(false);
@@ -122,7 +114,7 @@ const WorkplacePage = () => {
   };
 
   const scrollToPage = (index) => {
-    if (index >= 0 && index < pages.length) { 
+    if (index >= 0 && index < pages.length) {
       if (pageRef.current[index]) {
         pageRef.current[index].scrollIntoView({
           behavior: "smooth",
@@ -139,15 +131,15 @@ const WorkplacePage = () => {
   useEffect(() => {
     if (project?.canvasArray) {
       const newPages = project?.canvasArray.map((canvas, index) => ({
-        ...canvas,  
-        id: canvas.id || canvas._id,  
-        name: canvas.name || `Page ${index + 1}`, 
+        ...canvas,
+        id: canvas.id || canvas._id,
+        name: canvas.name || `Page ${index + 1}`,
         background: canvas.background || "white",
       }));
       setPages(newPages);
-      setCurrentPage(newPages[0]?.id)
+      setCurrentPage(newPages[0]?.id);
     }
-  }, [project]); 
+  }, [project]);
 
   useEffect(() => {
     // Chỉ thực hiện cuộn khi pages đã thay đổi và có ít nhất một trang
@@ -158,8 +150,8 @@ const WorkplacePage = () => {
         block: "start",
       });
     }
-  }, [pages]); 
- 
+  }, [pages]);
+
   const addPage = async () => {
     try {
       await mutation.mutateAsync({ id: project?.id });
@@ -170,7 +162,7 @@ const WorkplacePage = () => {
 
         return newPages;
       });
-  
+
       // Hiển thị thông báo thành công
       Alert.success("Add page successfully!");
     } catch (error) {
@@ -178,15 +170,15 @@ const WorkplacePage = () => {
       Alert.error("Failed to add page.");
     }
   };
-  
+
   const removePage = async (id) => {
     try {
-      console.log("id", id)
+      console.log("id", id);
       if (project?.canvasArray?.length === 1) {
         Alert.error("Can not delete page!");
-        return; 
+        return;
       }
-      const canvasId = id
+      const canvasId = id;
       await deleteCanvas(canvasId, project?.id);
 
       setPages((prev) => {
@@ -198,8 +190,8 @@ const WorkplacePage = () => {
 
         setCurrentPage(newPages[nextPageIndex]?.id || null);
         return newPages;
-      });      
-      Alert.success("Delete page successfully!")
+      });
+      Alert.success("Delete page successfully!");
     } catch (error) {
       console.error("Failed to delete canvas:", error.message);
       Alert.error("Failed to delete page.");
@@ -217,17 +209,18 @@ const WorkplacePage = () => {
 
         // Gửi yêu cầu cập nhật lên server
         const data = { background: bgLink || "white" }; // Giả sử trường là `background`
-        const canvasId = current_page
+        const canvasId = current_page;
         if (!canvasId) {
           throw new Error("Canvas ID not found");
         }
 
         await CanvasService.updateCanvas(canvasId, data);
-   
-        const updatedProject = await ProjectService.getDetailProject(project?.id);
+
+        const updatedProject = await ProjectService.getDetailProject(
+          project?.id
+        );
 
         if (updatedProject) {
-         
           // Cập nhật lại backgrounds từ updatedProject
           const updatedBackgrounds = updatedProject.canvasArray.reduce(
             (acc, canvas) => ({
@@ -235,19 +228,18 @@ const WorkplacePage = () => {
               [canvas.id]: canvas.background || "white",
             }),
             {}
-          );s
+          );
           setBackgrounds(updatedBackgrounds);
         }
-    
-        console.log("Canvas updated successfully");
 
+        console.log("Canvas updated successfully");
       } catch (error) {
         console.error("Failed to update canvas:", error.message);
       }
     }
   };
 
-  console.log('current page', current_page)
+  console.log("current page", current_page);
 
   const [components, setComponents] = useState([
     {
@@ -316,13 +308,12 @@ const WorkplacePage = () => {
     }
     setDraggingShape(null);
   };
-  
+
   const [current_component, setCurrentComponent] = useState("");
   const [show, setShow] = useState({
     status: true,
     name: "",
   });
-
 
   const setElements = (type, name) => {
     setState(type);
@@ -390,8 +381,8 @@ const WorkplacePage = () => {
         className={`w-screen h-screen bg-no-repeat bg-cover flex flex-col scrollbar-hide overflow-hidden ${
           isDarkMode ? "bg-[#151318]" : "bg-slate-300"
         }`}>
-        <WorkplaceHeader />
-        <div className="flex h-[calc(100%-60px)] w-screen scrollbar-hide">
+        <WorkplaceHeader usersInRoom={usersInRoom} />
+        <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide'>
           <div
             className={`w-[80px] z-50 scrollbar-hide h-full overflow-y-auto ${
               isDarkMode ? "bg-black text-white" : "bg-gray-100 text-black"
@@ -418,13 +409,13 @@ const WorkplacePage = () => {
                       : "bg-white"
                     : ""
                 } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}>
-                <span className="text-2xl">{icon}</span>
-                <span className="text-xs font-medium">{label}</span>
+                <span className='text-2xl'>{icon}</span>
+                <span className='text-xs font-medium'>{label}</span>
               </div>
             ))}
           </div>
 
-          <div className="h-full w-[calc(100%-75px)]">
+          <div className='h-full w-[calc(100%-75px)]'>
             <div
               className={`${
                 show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
@@ -441,7 +432,7 @@ const WorkplacePage = () => {
                 <MdKeyboardArrowLeft />
               </div>
               {state === "design" && (
-                <div className="grid grid-cols-2 gap-2">
+                <div className='grid grid-cols-2 gap-2'>
                   <TemplateDesign />
                 </div>
               )}
@@ -455,57 +446,58 @@ const WorkplacePage = () => {
                 <Background setBackground={setBackground} />
               )}
             </div>
-            <div className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
+            <div className='flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
               <div className={"z-50"}>
                 {isImageToolBarOpen && (
-                  <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
+                  <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
                     <ImageToolbar />
                   </div>
                 )}
                 {isTextToolBarOpen && (
-                  <div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
+                  <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
                     <TextToolbar />
                   </div>
                 )}
               </div>
-                {pages.map((pageData, index) => (
-                  <div
-                    onClick={() => {
-                      if (current_page !== pageData.id) {
-                        setCurrentPage(pageData.id);
-                      }
-                    }}>
-                    <Page
-                      key={pageData.id}
-                      id={`drop-area-${pageData.id}`}
-                      title={`${index + 1}`}
-                      width={width}
-                      height={height}
-                      name={pageData.name}
-                      shapes={shapes.filter(
-                        (shape) => shape.testId === `drop-area-${pageData.id}`
-                      )}
-                      bgLink={
-                        backgrounds[pageData.id] || pageData.background
-                      }
-                      removeElement={removeElement}
-                      removeButton={() => removePage(pageData.id)}
-                      upButton={() => scrollToPage(index - 1)}
-                      downButton={() => scrollToPage(index + 1)}
-                      ref={(el) => (pageRef.current[index] = el)}
-                    />
-                  </div>
-                ))}
+              {pages.map((pageData, index) => (
+                <div
+                  onClick={() => {
+                    if (current_page !== pageData.id) {
+                      setCurrentPage(pageData.id);
+                    }
+                  }}>
+                  <Page
+                    key={pageData.id}
+                    id={`drop-area-${pageData.id}`}
+                    title={`${index + 1}`}
+                    width={width}
+                    height={height}
+                    name={pageData.name}
+                    shapes={shapes.filter(
+                      (shape) => shape.testId === `drop-area-${pageData.id}`
+                    )}
+                    bgLink={backgrounds[pageData.id] || pageData.background}
+                    removeElement={removeElement}
+                    removeButton={() => removePage(pageData.id)}
+                    upButton={() => scrollToPage(index - 1)}
+                    downButton={() => scrollToPage(index + 1)}
+                    ref={(el) => (pageRef.current[index] = el)}
+                  />
+                </div>
+              ))}
               <div>
                 <AddPageButton addPage={addPage} />
               </div>
             </div>
           </div>
           <ButtonMessage toggleChatBox={toggleChatBox} />
-          {showChatBox && <ChatBox toggleChatBox={toggleChatBox} />}
+          {showChatBox && (
+            <ChatBox
+              toggleChatBox={toggleChatBox}
+              setUsersInRoom={setUsersInRoom}
+            />
+          )}
         </div>
-        <ButtonMessage toggleChatBox={toggleChatBox} />
-        {showChatBox && <ChatBox toggleChatBox={toggleChatBox} />}
       </div>
     </DndContext>
   );

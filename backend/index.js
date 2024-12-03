@@ -117,8 +117,6 @@ app.use(
 );
 app.use(bodyParser.json());
 app.use(cookieParser());
-
-// Kết nối tới MongoDB và thiết lập adapter
 const DB_NAME = "sparkle_db";
 const COLLECTION_NAME = "socket.io-adapter-events";
 const mongoUri = `mongodb+srv://caoduonglam61:${process.env.MONGO_DB}@sparkle.yhp0w.mongodb.net/?retryWrites=true&w=majority&appName=Sparkle`;
@@ -132,8 +130,6 @@ const mongoClient = new MongoClient(mongoUri, {
   try {
     await mongoClient.connect();
     const mongoCollection = mongoClient.db(DB_NAME).collection(COLLECTION_NAME);
-
-    // Thiết lập adapter với MongoDB
     io.adapter(createAdapter(mongoCollection));
 
     console.log("MongoDB Adapter is set up for Socket.IO!");
@@ -141,14 +137,23 @@ const mongoClient = new MongoClient(mongoUri, {
     console.error("Error setting up MongoDB Adapter:", error);
   }
 })();
-
-// Socket.IO
+const rooms = {};
 io.on("connection", (socket) => {
-  console.log("A user connected");
+  socket.on("setUserId", (userId) => {
+    socket.userId = userId;
+  });
 
   socket.on("joinRoom", async (roomId) => {
     socket.join(roomId);
-    console.log(`User joined room: ${roomId}`);
+    if (!rooms[roomId]) {
+      rooms[roomId] = [];
+    }
+    if (!rooms[roomId].includes(socket.userId)) {
+      rooms[roomId].push(socket.userId);
+    }
+
+    io.to(roomId).emit("userInRoom", rooms[roomId]);
+    console.log("userInRoom", rooms[roomId]);
 
     try {
       const response = await getMessage(roomId);
@@ -160,7 +165,6 @@ io.on("connection", (socket) => {
 
   socket.on("chatMessage", async (data) => {
     const { userId, roomId, text } = data;
-    console.log("Received chatMessage:", data);
 
     try {
       const response = await sendMessage({
@@ -169,7 +173,6 @@ io.on("connection", (socket) => {
         groupId: roomId,
       });
 
-      // Sử dụng `io.to(roomId)` để phát tin nhắn đến tất cả các client trong phòng
       io.to(roomId).emit("chatMessage", response.data);
     } catch (error) {
       console.error("Error sending message:", error);
@@ -177,11 +180,18 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("A user disconnected");
+    for (const roomId of Object.keys(rooms)) {
+      const index = rooms[roomId].indexOf(socket.userId);
+      if (index !== -1) {
+        rooms[roomId].splice(index, 1);
+        io.to(roomId).emit("userInRoom", rooms[roomId]);
+        console.log(`User ${socket.userId} removed from room ${roomId}`);
+      }
+    }
+    console.log("A user disconnected:", socket.userId);
   });
 });
 
-// Routes và kết nối cơ sở dữ liệu
 routes(app);
 
 mongoose

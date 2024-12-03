@@ -5,16 +5,22 @@ import ChatHeader from "./ChatHeader";
 import socket from "../../utils/socket";
 import { useSelector } from "react-redux";
 
-const ChatBox = ({ toggleChatBox }) => {
+const ChatBox = ({ toggleChatBox, setUsersInRoom }) => {
   const [messages, setMessages] = useState([]);
   const project = useSelector((state) => state.project);
   const user = useSelector((state) => state.user);
+  const [test, setTest] = useState([]);
   const messageEndRef = useRef(null);
-
   useEffect(() => {
     if (!project?.id) return;
 
+    socket.emit("setUserId", user.id);
     socket.emit("joinRoom", project.id);
+
+    const handleUserInRoom = (usersInRoom) => {
+      setUsersInRoom(usersInRoom);
+      setTest(usersInRoom);
+    };
 
     const handleLoadMessages = (loadedMessages) => {
       setMessages(loadedMessages);
@@ -24,10 +30,12 @@ const ChatBox = ({ toggleChatBox }) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     };
 
+    socket.on("userInRoom", handleUserInRoom);
     socket.on("loadMessages", handleLoadMessages);
     socket.on("chatMessage", handleNewMessage);
 
     return () => {
+      socket.off("userInRoom", handleUserInRoom);
       socket.off("loadMessages", handleLoadMessages);
       socket.off("chatMessage", handleNewMessage);
     };
@@ -59,6 +67,13 @@ const ChatBox = ({ toggleChatBox }) => {
         <div ref={messageEndRef} />
       </div>
       <SendMessage addMessage={sendMessage} />
+      <div
+        className='text-black font-sm'
+        onClick={() => {
+          console.log(test);
+        }}>
+        fd
+      </div>
     </div>
   );
 };
