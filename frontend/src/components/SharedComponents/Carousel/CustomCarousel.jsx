@@ -71,7 +71,12 @@ function CustomCarousel() {
       transitionDuration={500}
       removeArrowOnDeviceType={["tablet", "mobile"]}
       itemClass='p-4 flex gap-4'>
-      {projects.slice().reverse().map((project, index) => (
+      {projects.length === 0 ? (
+            <div className="flex justify-center items-center h-full w-full text-gray-500 text-center">
+               There are no projects to display.
+            </div>
+        ) : (
+      projects.slice().reverse().map((project, index) => (
         <div key={project._id} id={project?._id} onClick={() => handleClick(project._id)} className="cursor-pointer" >
           <img
             className='bg-cover h-[200px] w-[420px]'
@@ -85,7 +90,7 @@ function CustomCarousel() {
           <span>{project.projectName || 'Unnamed Project'}</span>
         </div>
         ))
-      }
+      )}
     </Carousel>
   );
 }
