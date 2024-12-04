@@ -56,6 +56,12 @@ const loginUser = (userLogin) => {
                     message: "Account not found!"
                 })
                 return;
+            } else if (!checkUser.verify){
+                reject({
+                    status: "ERROR",
+                    message: "You have not verify your email, please verify before logging in. "
+                })
+                return;
             }
 
             const comparePassword = bcrypt.compareSync(password, checkUser.password)
@@ -67,6 +73,43 @@ const loginUser = (userLogin) => {
                 return;
             }
             
+            const access_token =  await generalAccessToken({
+                id: checkUser.id,
+            })
+            const refresh_token = await generalRefreshToken({
+                id: checkUser.id,
+            })
+
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                access_token,
+                refresh_token
+            })
+
+        } catch (error) {
+            reject({
+                status: "ERROR",
+                message: "Failed to create user",
+                error: error.message,
+            });
+        }
+    })
+}
+
+const loginGoogle = (google) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let checkUser = await User.findOne({
+                email: google.emailGoogle
+            })
+            console.log("user", checkUser)
+            if (!checkUser){
+                checkUser = await User.create({email: google.emailGoogle, userName: google.name, image: google.image})
+            }
+            
+            console.log('image', checkUser.image)
+
             const access_token =  await generalAccessToken({
                 id: checkUser.id,
             })
@@ -224,6 +267,7 @@ const changePassword = (userId, passwordNew) => {
 module.exports = {
     //createUser,
     loginUser,
+    loginGoogle,
     getAllUser,
     getDetailUser,
     updateInfoUser,

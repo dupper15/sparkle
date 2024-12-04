@@ -7,12 +7,11 @@ import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import * as UserService from '../../services/UserService.js'
-import { useMutationHooks } from "../../hooks/useMutationHook.js";
 import * as Alert from "../../components/Alert/Alert.jsx";
 import { updateUser } from "../../redux/slides/userSlide.js";
 import FormChangePassword from "../../components/SharedComponents/FormChangePassword/FormChangePassword.jsx";
 import axios from "axios";
-
+import { useMutation } from "@tanstack/react-query";
 
 const MyAccountPage = () => {
   const user = useSelector((state) => state.user)
@@ -27,11 +26,26 @@ const MyAccountPage = () => {
   const [image, setImage] = useState(profileIcon)
   const [isUploading, setIsUploading] = useState(false);
   const [isViewImage, setViewImage] = useState(false);
+  const [verify, setVerify] = useState("");
   const dispatch = useDispatch()
-  const mutation = useMutationHooks((data) => {
-    const {id, access_token, ...rests} = data
-    UserService.updateInfoUser(id, rests, access_token);
-  });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const mutation = useMutation(
+    {
+      mutationFn: ({ id, data, access_token }) => UserService.updateInfoUser(id, data, access_token),
+      onError: (error) => {
+        const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
+        setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
+      },
+      onSuccess: (data) => {
+        setErrorMessage("");
+        const apiSuccessMessage = data.message || "Login successful!";
+        setSuccessMessage(apiSuccessMessage)
+      
+      },
+    }
+  )
   
   const { data, isSuccess, isError} = mutation
 
@@ -39,6 +53,7 @@ const MyAccountPage = () => {
     setImage(user?.image || profileIcon)
     setUserName(user?.userName)
     setInitialUserName(user?.userName);
+    setVerify(user?.verify)
   }, [user])
 
   
@@ -122,6 +137,7 @@ const MyAccountPage = () => {
         image: result.secure_url,
         access_token: user?.access_token,
       });
+      console.log('mutation')
     } catch (error) {
       Alert.error("Failed to upload image. Please try again.");
       console.error(error);
@@ -313,7 +329,7 @@ const MyAccountPage = () => {
                     Google
                   </span>
                   <span className="font-thin text-s pointer-events-none">
-                    caoduonglam@gmail.com
+                    {user?.email}
                   </span>
                 </div>
               </div>
@@ -321,7 +337,7 @@ const MyAccountPage = () => {
                 className={`w-[auto] h-[40px] ml-auto font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
                   isDarkMode ? "bg-white text-black" : "bg-black text-white"
                 }`}>
-                Disconnect
+                Connect
               </button>
             </div>
             <div
