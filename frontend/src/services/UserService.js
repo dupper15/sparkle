@@ -8,6 +8,11 @@ export const loginUser = async (data) => {
     return res.data
 }
 
+export const loginGoogle = async (data) => {
+    const res = await axios.post(`${import.meta.env.VITE_API_KEY}/user/login-google`, data)
+    return res.data
+}
+
 export const signupUser = async (data) => {
     const res = await axios.post(`${import.meta.env.VITE_API_KEY}/user/sign-up`, data)
     return res.data
@@ -53,3 +58,27 @@ export const changePassword = async (id, data, access_token) => {
     return res.data
 }
 
+export const verifyEmail = async (code) => {
+    const res = await axiosJWT.get(`${import.meta.env.VITE_API_KEY}/user/verify-email`, {
+        params: { code },
+    })
+    return res.data
+}
+
+export const sendEmail = async (email) => {
+    console.log("email", email)
+    const res = await axios.post(`${import.meta.env.VITE_API_KEY}/user/send-email`, email)
+    return res.data
+}
+
+export const verifyForgotPassword = async (code) => {
+    const res = await axiosJWT.get(`${import.meta.env.VITE_API_KEY}/user/verify-password`, {
+        params: { code },
+    })
+    return res.data
+}
+
+export const forgotPassword = async (data) => {
+    const res = await axiosJWT.put(`${import.meta.env.VITE_API_KEY}/user/forgot-password`, data)
+    return res.data
+}
