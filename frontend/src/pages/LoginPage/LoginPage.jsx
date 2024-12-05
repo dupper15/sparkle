@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/slides/userSlide";
-import {auth, googleProvider } from "../../utils/firebase"
+import {auth, googleProvider, facebookProvider } from "../../utils/firebase"
 import {signInWithPopup } from 'firebase/auth'
 
 const LoginPage = () => {
@@ -44,6 +44,29 @@ const LoginPage = () => {
   const mutationGoogle = useMutation(
     {
       mutationFn: UserService.loginGoogle,
+      onError: (error) => {
+        const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
+        setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
+      },
+      onSuccess: (data) => {
+        setErrorMessage("");
+        const apiSuccessMessage = data.message || "Login successful!";
+        setSuccessMessage(apiSuccessMessage)
+        navigate('/home')
+        localStorage.setItem('access_token',  JSON.stringify(data?.access_token))
+        if(data?.access_token) {
+          const decoded = jwtDecode(data?.access_token)
+          if (decoded?.id){
+              handleGetDetailUser(decoded?.id, data?.access_token)
+          }
+        }
+      },
+    }
+  )
+
+  const mutationFacebook = useMutation(
+    {
+      mutationFn: UserService.loginFacebook,
       onError: (error) => {
         const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
         setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
@@ -158,7 +181,6 @@ const LoginPage = () => {
   const handleLoginGoogle = async () => {
     try {
         const result = await signInWithPopup(auth, googleProvider);
-        console.log("User logged in:", result.user);
         const emailGoogle = result.user.email
         const name = result.user.displayName
         const image = result.user.photoURL
@@ -167,6 +189,19 @@ const LoginPage = () => {
         console.error("Error during Google login:", error);
     }
   };
+
+  const handleLoginFacebook = async () => {
+    try {
+        const result = await signInWithPopup(auth, facebookProvider);
+        const emailFacebook = result.user.email
+        const name = result.user.displayName
+        const image = result.user.photoURL
+        const fb = result.user.uid
+        mutationFacebook.mutate({emailFacebook, name, image, fb})
+    } catch (error) {
+        console.error("Error during Facebook login:", error);
+    }
+  }
 
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-gray-900 to-black">
@@ -211,7 +246,7 @@ const LoginPage = () => {
               <div className="w-[130px] h-[1px] bg-gray-400"></div>
             </div>
 
-            <button className="flex items-center bg-transparent border-2 rounded-lg border-white text-white w-full h-max p-2 gap-3 hover:border-blue-400 hover:bg-blue-400 transition-all ease-in-out duration-100">
+            <button onClick={handleLoginFacebook} className="flex items-center bg-transparent border-2 rounded-lg border-white text-white w-full h-max p-2 gap-3 hover:border-blue-400 hover:bg-blue-400 transition-all ease-in-out duration-100">
               <FaFacebook className="h-[25px] w-[25px]" />
               <span>Login with Facebook</span>
             </button>

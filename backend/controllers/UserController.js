@@ -139,6 +139,25 @@ const loginGoogle = async (req, res) => {
     }
 }
 
+const loginFacebook = async (req, res) => {
+    try {
+        const { emailFacebook, name, image, fb } = req.body
+        const response = await UserService.loginFacebook(req.body)
+        const { refresh_token, ...newResponse } = response
+        res.cookie('refresh_token', refresh_token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict',
+        })
+        return res.status(200).json(newResponse)
+    } catch (e) {
+        return res.status(404).json({
+            message: e
+        })
+    }
+}
+
+
 const getAllUser = async (req, res) => {
     try {
         const response = await UserService.getAllUser()
@@ -413,6 +432,7 @@ module.exports = {
     createUser,
     loginUser,
     loginGoogle,
+    loginFacebook,
     getAllUser,
     getDetailUser,
     updateInfoUser,

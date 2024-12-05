@@ -13,6 +13,11 @@ export const loginGoogle = async (data) => {
     return res.data
 }
 
+export const loginFacebook = async (data) => {
+    const res = await axios.post(`${import.meta.env.VITE_API_KEY}/user/login-facebook`, data)
+    return res.data
+}
+
 export const signupUser = async (data) => {
     const res = await axios.post(`${import.meta.env.VITE_API_KEY}/user/sign-up`, data)
     return res.data
