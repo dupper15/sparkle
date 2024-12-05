@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
-import { updateShapeColor, updateShapeTransformation } from "../../../../services/ShapeService.js";
+import { useState } from "react";
+import { updateShapeTransformation } from "../../../../services/ShapeService.js";
 
-const useImageToolbarViewModel = (selectedComponentId) => {
+const useShapeToolbarViewModel = (selectedComponentId) => {
     const [openColorPickerPanel, setOpenPickerPanel] = useState(false);
     const [activeColor, setActiveColor] = useState("#000000");
     const [isFlipMenuOpen, setIsFlipMenuOpen] = useState(false);
@@ -10,11 +10,6 @@ const useImageToolbarViewModel = (selectedComponentId) => {
     const handleColorClick = () => {
         setOpenPickerPanel(!openColorPickerPanel);
     };
-
-    const handleColorChange = useCallback((color) => {
-        setActiveColor(color);
-        updateShapeColor(selectedComponentId, color).then(r => console.log(r));
-    }, [selectedComponentId]);
 
     const handleFlipClick = () => {
         setIsFlipMenuOpen(!isFlipMenuOpen);
@@ -44,10 +39,10 @@ const useImageToolbarViewModel = (selectedComponentId) => {
         handleCropClick,
         setIsFlipMenuOpen,
         setOpenCropMode,
-        handleColorChange,
+        // handleColorChange,
         handleHorizontalFlipClick,
         handleVerticalFlipClick,
     };
 };
 
-export default useImageToolbarViewModel;
+export default useShapeToolbarViewModel;

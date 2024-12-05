@@ -1,5 +1,5 @@
 import TextPropertyBar from "../../components/SharedComponents/ToolBars/TextToolBar/TextToolBar.jsx";
-import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBar/ImageToolBar.jsx";
+import ShapeToolBar from "../../components/SharedComponents/ToolBars/ImageToolBar/ShapeToolBar.jsx";
 import ColorPickerPanel
     from "../../components/SharedComponents/ColorPickerPanel/ColorPickerPanel.jsx";
 
@@ -7,7 +7,7 @@ const TestingPage =()=>{
     return(
         <div>
             <TextPropertyBar/>
-            <ImageToolbar/>
+            <ShapeToolBar/>
             <ColorPickerPanel></ColorPickerPanel>
         </div>
 
