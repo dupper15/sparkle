@@ -18,6 +18,7 @@ const UserProfileMenu = () => {
 
   const handleLogoutUser = async () => {
     await UserService.logoutUser()
+    localStorage.removeItem("access_token");
     dispatch(resetUser())
     navigate('/')
   }

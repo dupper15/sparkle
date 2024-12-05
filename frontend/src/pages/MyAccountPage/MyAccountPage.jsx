@@ -10,7 +10,6 @@ import * as UserService from '../../services/UserService.js'
 import * as Alert from "../../components/Alert/Alert.jsx";
 import { updateUser } from "../../redux/slides/userSlide.js";
 import FormChangePassword from "../../components/SharedComponents/FormChangePassword/FormChangePassword.jsx";
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 
 const MyAccountPage = () => {
@@ -93,7 +92,8 @@ const MyAccountPage = () => {
     mutation.mutate ({ id: user?.id, userName, access_token: user?.access_token});
     dispatch(updateUser({
       ...user,
-      userName: userName
+      userName: userName,
+      access_token: user?.access_token, 
     }))
     setIsEditingUserName(false);
   }

@@ -103,12 +103,45 @@ const loginGoogle = (google) => {
             let checkUser = await User.findOne({
                 email: google.emailGoogle
             })
-            console.log("user", checkUser)
+
             if (!checkUser){
                 checkUser = await User.create({email: google.emailGoogle, userName: google.name, image: google.image})
             }
+
+            const access_token =  await generalAccessToken({
+                id: checkUser.id,
+            })
+            const refresh_token = await generalRefreshToken({
+                id: checkUser.id,
+            })
+
+            resolve({
+                status: "OK",
+                message: "SUCCESS",
+                access_token,
+                refresh_token
+            })
+
+        } catch (error) {
+            reject({
+                status: "ERROR",
+                message: "Failed to create user",
+                error: error.message,
+            });
+        }
+    })
+}
+
+const loginFacebook = (facebook) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let checkUser = await User.findOne({
+                LinkedFB: facebook.fb
+            })
             
-            console.log('image', checkUser.image)
+            if (!checkUser){
+                checkUser = await User.create({email: facebook.emailFacebook, userName: facebook.name, image: facebook.image, LinkedFB: facebook.fb})
+            }
 
             const access_token =  await generalAccessToken({
                 id: checkUser.id,
@@ -268,6 +301,7 @@ module.exports = {
     //createUser,
     loginUser,
     loginGoogle,
+    loginFacebook,
     getAllUser,
     getDetailUser,
     updateInfoUser,
