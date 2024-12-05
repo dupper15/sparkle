@@ -48,9 +48,29 @@ const deleteMessage = async (req, res) => {
     });
   }
 };
+const sendChatBot = async (req, res) => {
+  try {
+    const { data } = req.body;
+    if (!data) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Missing message content1",
+      });
+    }
+    const response = await messageService.sendChatBot(data);
+    return res.status(200).json(response);
+  } catch (e) {
+    console.error("Error in sendChatBot1:", e.message);
+    return res.status(500).json({
+      status: "ERROR",
+      message: e.message || "Internal server error",
+    });
+  }
+};
 
 module.exports = {
   sendMessage,
   getMessage,
   deleteMessage,
+  sendChatBot,
 };

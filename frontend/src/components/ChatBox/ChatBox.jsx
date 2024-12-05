@@ -4,13 +4,26 @@ import SendMessage from "./SendMessage";
 import ChatHeader from "./ChatHeader";
 import socket from "../../utils/socket";
 import { useSelector } from "react-redux";
+import { useMutation } from "@tanstack/react-query";
+import * as ChatService from "../../services/ChatService";
 
 const ChatBox = ({ toggleChatBox }) => {
   const [messages, setMessages] = useState([]);
   const project = useSelector((state) => state.project);
   const user = useSelector((state) => state.user);
   const messageEndRef = useRef(null);
-
+  const [botAnswer, setBotAnswer] = useState("");
+  const mutation = useMutation({
+    mutationFn: (messageData) => {
+      return ChatService.sendChatBot(messageData.text);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: (data) => {
+      setBotAnswer(data.data.answer || "");
+    },
+  });
   useEffect(() => {
     if (!project?.id) return;
     const handleLoadMessages = (loadedMessages) => {
@@ -28,18 +41,30 @@ const ChatBox = ({ toggleChatBox }) => {
       socket.off("chatMessage", handleNewMessage);
     };
   }, [project?.id]);
-  const sendMessage = (text) => {
+  const sendMessage = (text, isChatBot) => {
     if (user?.id && project?.id && text) {
       socket.emit("chatMessage", {
         userId: user.id,
         roomId: project.id,
         text,
       });
+      if (isChatBot) {
+        mutation.mutate({ text });
+      }
     } else {
       console.error("Message or user/project data is missing!");
     }
   };
-
+  useEffect(() => {
+    if (botAnswer && project.id) {
+      socket.emit("botReply", {
+        botAnswer,
+        roomId: project.id,
+      });
+    }
+    console.log(botAnswer);
+    setBotAnswer("");
+  }, [botAnswer, project.id]);
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
