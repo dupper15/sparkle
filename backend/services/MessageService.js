@@ -1,5 +1,6 @@
 const Message = require("../models/MessageModel");
 const User = require("../models/UserModel");
+const chatBot = require("../chatBot/chatbot");
 const sendMessage = async (newMessage) => {
   const { content, sender, groupId } = newMessage;
 
@@ -15,15 +16,27 @@ const sendMessage = async (newMessage) => {
     });
 
     const savedMessage = await message.save();
-    const user = await User.findById(sender).select("image userName").lean();
-    return {
-      status: "SUCCESS",
-      data: {
-        ...savedMessage.toObject(),
-        avatar: user ? user.image : null,
-        senderName: user ? user.userName : "Unknown",
-      },
-    };
+    if (sender !== "SparkleBot") {
+      const user = await User.findById(sender).select("image userName").lean();
+
+      return {
+        status: "SUCCESS",
+        data: {
+          ...savedMessage.toObject(),
+          avatar: user ? user.image : null,
+          senderName: user ? user.userName : "Unknown",
+        },
+      };
+    } else {
+      return {
+        status: "SUCCESS",
+        data: {
+          ...savedMessage.toObject(),
+          avatar: "bot",
+          senderName: "SparkleBot",
+        },
+      };
+    }
   } catch (error) {
     throw new Error(error.message);
   }
@@ -37,14 +50,22 @@ const getMessage = async (groupId) => {
 
     const messagesFinal = await Promise.all(
       messages.map(async (message) => {
-        const user = await User.findById(message.sender)
-          .select("image userName")
-          .lean();
-        return {
-          ...message,
-          avatar: user ? user.image : null,
-          senderName: user ? user.userName : "Unknown",
-        };
+        if (message.sender === "SparkleBot") {
+          return {
+            ...message,
+            avatar: "bot_avatar_path",
+            senderName: "SparkleBot",
+          };
+        } else {
+          const user = await User.findById(message.sender)
+            .select("image userName")
+            .lean();
+          return {
+            ...message,
+            avatar: user ? user.image : null,
+            senderName: user ? user.userName : "Unknown",
+          };
+        }
       })
     );
 
@@ -71,9 +92,27 @@ const deleteMessage = async (messageId) => {
     throw new Error(error.message);
   }
 };
+const sendChatBot = async (data) => {
+  try {
+    if (!data) {
+      throw new Error("Missing or empty message content.");
+    }
+    const botReply = await chatBot.generateText(data);
+    return {
+      status: "SUCCESS",
+      data: {
+        answer: botReply,
+      },
+    };
+  } catch (error) {
+    console.error("Error in sendChatBot2:", error.message);
+    throw new Error(error.message || "An unexpected error occurred.");
+  }
+};
 
 module.exports = {
   sendMessage,
   getMessage,
   deleteMessage,
+  sendChatBot,
 };

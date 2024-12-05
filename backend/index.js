@@ -93,7 +93,7 @@ const { Server } = require("socket.io");
 const { MongoClient } = require("mongodb");
 const { createAdapter } = require("@socket.io/mongo-adapter");
 const { sendMessage, getMessage } = require("./services/MessageService");
-
+const { generateText } = require("./chatBot/chatbot");
 dotenv.config();
 
 const app = express();
@@ -119,12 +119,9 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 const DB_NAME = "sparkle_db";
 const COLLECTION_NAME = "socket.io-adapter-events";
-const mongoUri = `mongodb+srv://caoduonglam61:${process.env.MONGO_DB}@sparkle.yhp0w.mongodb.net/?retryWrites=true&w=majority&appName=Sparkle`;
+const mongoUri = process.env.MONGO_URI;
 
-const mongoClient = new MongoClient(mongoUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const mongoClient = new MongoClient(mongoUri, {});
 
 (async () => {
   try {
@@ -162,7 +159,19 @@ io.on("connection", (socket) => {
       console.error("Error loading messages:", error);
     }
   });
-
+  socket.on("botReply", async (data) => {
+    const { botAnswer, roomId } = data;
+    try {
+      const response = await sendMessage({
+        content: botAnswer,
+        sender: "SparkleBot",
+        groupId: roomId,
+      });
+      io.to(roomId).emit("chatMessage", response.data);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  });
   socket.on("chatMessage", async (data) => {
     const { userId, roomId, text } = data;
 
@@ -195,9 +204,7 @@ io.on("connection", (socket) => {
 routes(app);
 
 mongoose
-  .connect(
-    `mongodb+srv://caoduonglam61:${process.env.MONGO_DB}@sparkle.yhp0w.mongodb.net/?retryWrites=true&w=majority&appName=Sparkle`
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connect DB success!!");
   })

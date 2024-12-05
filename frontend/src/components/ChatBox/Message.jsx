@@ -1,7 +1,8 @@
 import React from "react";
 import { useDarkMode } from "../../contexts/DarkModeContext";
 import { useSelector } from "react-redux";
-
+import emptyAvatar from "../../assets/default-profile-icon.png";
+import chatbotAvatar from "../../assets/chatbot.jpg"; // Kiểm tra đúng đường dẫn đến ảnh
 const Message = ({ message }) => {
   const { isDarkMode } = useDarkMode();
   const user = useSelector((state) => state.user);
@@ -14,10 +15,21 @@ const Message = ({ message }) => {
         }`}>
         <div className='chat-image avatar'>
           <div className='w-10 rounded-full'>
-            {message.avatar ? (
-              <img alt={message.senderName || "Avatar"} src={message.avatar} />
+            {message.senderName !== "SparkleBot" ? (
+              message.avatar ? (
+                <img
+                  alt={message.senderName || "Avatar"}
+                  src={message.avatar}
+                />
+              ) : (
+                <img alt={emptyAvatar || "Avatar"} src={emptyAvatar} />
+              )
             ) : (
-              <div className='placeholder-avatar bg-gray-200'></div>
+              <img
+                alt={chatbotAvatar || "Avatar"}
+                src={chatbotAvatar}
+                className='rounded-full object-cover'
+              />
             )}
           </div>
         </div>
