@@ -24,7 +24,7 @@ const ColorPickerPanel = ({ colorPanelCloseRequest, activeColor, setActiveColor,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const debouncedHandleColorChange = useCallback(
         debounce((color) => {
-            handleColorChange(color);
+            handleColorClick(color);
         }, 300),
         []
     );
@@ -34,6 +34,7 @@ const ColorPickerPanel = ({ colorPanelCloseRequest, activeColor, setActiveColor,
     }, [debouncedColor, debouncedHandleColorChange]);
 
     const handleColorClick = (color) => {
+        if(color === activeColor) return;
         handleColorChange(color);
         setActiveColor(color);
     };

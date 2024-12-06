@@ -9,6 +9,10 @@ const ComponentService = {
         const response = await axios.post(`${import.meta.env.VITE_API_KEY}/canvas/remove-component/${canvasId}`, {componentId});
         return response.data;
     },
+    async updateComponentColor(componentType, propertyValue, componentId) {
+        const response = await axios.put(`${import.meta.env.VITE_API_KEY}/${componentType}/update/${componentId}`, {color : propertyValue});
+        return response.data;
+    }
 };
 
 export default ComponentService;
