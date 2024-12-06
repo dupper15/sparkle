@@ -80,6 +80,17 @@ const getAllTeamProject = async (req, res) => {
   }
 };
 
+const getPublic = async (req, res) => {
+  try {
+    const response = await ProjectService.getPublic();
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const updateProject = async (req, res) => {
   try {
     const projectId = req.params.id;
@@ -167,13 +178,35 @@ const addEditor = async (req, res) => {
     });
   }
 };
+const getAvatar = async (req, res) => {
+  try {
+    const { usersInRoom } = req.body;
+    const avatars = [];
+    for (const userId of usersInRoom) {
+      const user = await User.findById(userId);
+      if (user && user.image) {
+        avatars.push(user.image);
+      } else {
+        console.log(`Không tìm thấy user hoặc avatar cho ID: ${userId}`);
+      }
+    }
+    return res.status(200).json({ avatars });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error loading avatars",
+      error: error.stack,
+    });
+  }
+};
 
 module.exports = {
   createProject,
   getDetailProject,
   getAllProject,
   getAllTeamProject,
+  getPublic,
   updateProject,
   deleteProject,
   addEditor,
+  getAvatar,
 };

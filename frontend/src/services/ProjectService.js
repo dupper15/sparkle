@@ -45,14 +45,28 @@ export const getAllTeamProject = async (id) => {
   }
 };
 
-export const updateProject = async (id, data) => {
+export const getPublic = async () => {
   try {
-    const response = await axios.put(`${import.meta.env.VITE_API_KEY}/project/update/${id}`, data);
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_KEY}/project/get-projectPublic`
+    );
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'API call failed');
+    throw new Error(error.response?.data?.message || "API call failed");
   }
-}
+};
+
+export const updateProject = async (id, data) => {
+  try {
+    const response = await axios.put(
+      `${import.meta.env.VITE_API_KEY}/project/update/${id}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};
 
 export const addEditor = async (projectId, email) => {
   try {
@@ -63,5 +77,17 @@ export const addEditor = async (projectId, email) => {
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "API call failed");
+  }
+};
+export const getAvatar = async (usersInRoom) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_KEY}/project/get-avatar`,
+      { usersInRoom }
+    );
+
+    return response.data;
+  } catch (e) {
+    throw new Error(e.response?.data?.message || "API call failed");
   }
 };

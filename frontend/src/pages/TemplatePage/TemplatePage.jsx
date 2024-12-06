@@ -2,7 +2,7 @@ import Header from "../../components/SharedComponents/Header/Header.jsx";
 import Footer from "../../components/SharedComponents/Footer/Footer.jsx";
 import Sidebar from "../../components/SharedComponents/SideBar/Sidebar.jsx";
 import TemplatePageBanner from "../../components/TemplatePageComponents/Banner/TemplatePageBanner.jsx";
-import ResponsiveGrid from "../../components/SharedComponents/ResponsiveGrid/ResponsiveGrid.jsx";
+import ResponsiveGridTemplate from "../../components/SharedComponents/ResponsiveGrid/ResponsiveGridTemplate.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
 
 const TemplatePage = () => {
@@ -28,7 +28,7 @@ const TemplatePage = () => {
           <div className="">
             <div className="text-2xl font-bold">Trending</div>
             <div className="pl-8 pr-8">
-              <ResponsiveGrid></ResponsiveGrid>
+              <ResponsiveGridTemplate/>
             </div>
           </div>
         </div>
