@@ -9,6 +9,6 @@ export const isJsonString = (data) => {
 }
 
 export const extractIdFromOver = (str) => {
-    const match = str.match(/drop-area-(\d+)/);
+    const match = str.match(/drop-area-(.+)/);
     return match ? match[1] : null;
 };

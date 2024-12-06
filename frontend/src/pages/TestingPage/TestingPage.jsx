@@ -1,8 +1,5 @@
-import TextPropertyBar from "../../components/SharedComponents/ToolBars/TextToolBar/TextToolBar.jsx";
-import ImageToolbar from "../../components/SharedComponents/ToolBars/ImageToolBar/ImageToolBar.jsx";
-import ColorPickerPanel
-    from "../../components/SharedComponents/ColorPickerPanel/ColorPickerPanel.jsx";
-import React, { useRef, useState, useEffect } from "react";
+// eslint-disable-next-line no-unused-vars
+import React, { useState } from "react";
 import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
 import ChatBox from "../../components/ChatBox/ChatBox";
 
