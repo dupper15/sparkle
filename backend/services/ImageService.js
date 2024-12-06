@@ -1,6 +1,32 @@
 const Image = require('../models/ImageModel')
 const ImageUpload = require('../models/ImageUploadModel')
 
+const createImageUpload = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            console.log("data", data)
+            const createdImageUpload = await ImageUpload.create({
+                image: data.image,
+                creator: data.id,
+            })
+
+            if(createdImageUpload){
+                resolve({
+                    status: "OK",
+                    message: "Create success",
+                    data: createdImageUpload
+                })
+            }
+        } catch (error) {
+            reject({
+                status: "ERROR",
+                message: "Failed to create Background",
+                error: error.message,
+            });
+        }
+    })
+}
+
 const createImage = (newImage) => {
     return new Promise(async (resolve, reject) => {
         const {x, y, height, width} = newImage;
@@ -123,5 +149,5 @@ const deleteImage = (imageId) => {
 
 
 module.exports = {
-    createImage, getAllImage, getDetailImage, updateImage, deleteImage
+    createImageUpload, createImage, getAllImage, getDetailImage, updateImage, deleteImage
 }

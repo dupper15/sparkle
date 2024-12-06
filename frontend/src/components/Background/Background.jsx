@@ -12,7 +12,6 @@ const Background = ( {setBackground }) => {
   const fetchBackgrounds = async () => {
     try {
       const data = await BackgroundService.getAllBackground(user?.id);
-      console.log("Fetched backgrounds:", data.data);
       setBackgrounds(Array.isArray(data.data) ? data.data : []); // Gán dữ liệu background
     } catch (error) {
       console.error("Failed to fetch backgrounds:", error);

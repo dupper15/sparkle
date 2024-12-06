@@ -1,9 +1,18 @@
 import axios from "axios";
 
-export const uploadImage = async (imageId, properties) => {
+export const createImageUpload = async (data) => {
     try {
-        const response = await axios.post(`http://localhost:5001/api/images/upload/${imageId}`, properties);
-        // console.log(`Notice: Image ID ${imageId} properties would be uploaded`, properties);
+        const response = await axios.post(`${import.meta.env.VITE_API_KEY}/image/create-upload`, data);
+        return response.data;
+    } catch (error) {
+        console.error('Failed to upload image properties:', error);
+        throw error;
+    }
+};
+
+export const getAllImage = async (id) => {
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_API_KEY}/image/getAll/${id}`);
         return response.data;
     } catch (error) {
         console.error('Failed to upload image properties:', error);
