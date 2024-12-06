@@ -1,28 +1,16 @@
 const ImageService = require('../services/ImageService')
-const ImageUpload = require('../models/ImageUploadModel')
 
-const uploadImage = async (req, res) => {
+const createImageUpload = async (req, res) => {
     try {
-        const result = await cloudinary.uploader.upload(image, {
-            folder: "image_Sparkle"
-        })
-        const userId = req.params.id;
-        const uploadedImage = await ImageUpload.create({
-            image: result.secure_url,
-            creator: userId
-        })
-        return res.status(200).json({
-            status: "OK",
-            message: "Upload image success",
-            data: uploadedImage
-        })
+        console.log("req.body", req.body)
+        const response = await ImageService.createImageUpload(req.body)
+        return res.status(200).json(response)
     } catch (e) {
         return res.status(404).json({
             message: e
         })
     }
 }
-
 
 const getAllImage = async (req, res) => {
     try {
@@ -104,8 +92,8 @@ const deleteImage = async (req, res) => {
 
 
 module.exports = {
+    createImageUpload,
     createImage,
-    uploadImage,
     getAllImage,
     getDetailImage,
     updateImage,

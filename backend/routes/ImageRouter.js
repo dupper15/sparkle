@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router()
 const imageController = require('../controllers/ImageController')
-// const upload = require('../middlewares/multer')
 
-router.post('/upload/:id', imageController.uploadImage)
+router.post('/create-upload', imageController.createImageUpload)
 router.get('/getAll/:id', imageController.getAllImage)
 router.post('/create', imageController.createImage)
 router.get('/get-detail/:id', imageController.getDetailImage)

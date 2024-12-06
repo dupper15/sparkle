@@ -1,30 +1,73 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DragOverlay, useDraggable } from "@dnd-kit/core";
-import template from "../../assets/bg-dm.png"; // Đảm bảo đúng đường dẫn tới ảnh
+import { useMutationHooks } from "../../hooks/useMutationHook";
+import { useSelector } from "react-redux";
+import { createImageUpload, getAllImage } from "../../services/ImageService";
+import * as Alert from "../Alert/Alert"
 
 const Image = ({ drag }) => {
   const [draggingImage, setDraggingImage] = useState(null);
-  const [images, setImages] = useState([
-    { id: 1, url: template },
-    { id: 2, url: template },
-    { id: 3, url: template },
-    { id: 4, url: template },
-    { id: 5, url: template },
-    { id: 6, url: template },
-  ]);
+  const [images, setImages] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const user = useSelector((state) => state.user)
+  
   const handleDragStart = (img) => {
-    const imgObject = { backgroundImage: img.url || template, id: img.id };
+    const imgObject = { backgroundImage: img.image , id: img._id };
     setDraggingImage(imgObject);
     drag(imgObject);
   };
-  const handleUpload = (event) => {
+
+
+  const fetchImages = async () => {
+    try {
+      const data = await getAllImage(user?.id);
+      setImages(Array.isArray(data.data) ? data.data : []); // Gán dữ liệu background
+    } catch (error) {
+      console.error("Failed to fetch backgrounds:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchImages();
+  }, [user?.id]);
+
+  const mutationCreate = useMutationHooks((data) => {
+    return createImageUpload(data);
+  });
+
+  const handleUpload = async (event) => {
     const file = event.target.files[0];
-    if (file) {
-      const newImage = {
-        id: images.length + 1,
-        url: URL.createObjectURL(file),
-      };
-      setImages((prevImages) => [...prevImages, newImage]);
+    if (!file) return;
+
+    setIsUploading(true); 
+    try {
+      const uploadPreset = "afh5sfc";
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", uploadPreset);
+
+      const response = await fetch("https://api.cloudinary.com/v1_1/ddcjjegzf/image/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      await mutationCreate.mutateAsync({
+        id: user?.id,
+        image: result.secure_url,
+      });
+
+      
+      setImages((prevImages) => [...prevImages, result.secure_url]);
+      await fetchImages();
+      
+      Alert.success("Upload background success")
+    } catch (error) {
+      Alert.error("Failed to upload image. Please try again.")
+      console.error(error);
+    } finally {
+      setIsUploading(false); 
     }
   };
 
@@ -43,7 +86,7 @@ const Image = ({ drag }) => {
       <div className='grid grid-cols-3 gap-2 w-full'>
         {images.map((img, i) => (
           <DraggableImage
-            key={img.id || i}
+            key={img._id || i}
             img={img}
             onDragStart={handleDragStart}
           />
@@ -55,7 +98,7 @@ const Image = ({ drag }) => {
             style={{
               width: "90px",
               height: "90px",
-              backgroundImage: `url(${draggingImage.backgroundImage})`,
+              backgroundImage: draggingImage.image,
               backgroundSize: "cover",
             }}
           />
@@ -67,7 +110,7 @@ const Image = ({ drag }) => {
 
 const DraggableImage = ({ img, onDragStart }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
-    id: img?.id ? img.id.toString() : "default",
+    id: img._id || img.id || img.url,
   });
 
   return (
@@ -77,7 +120,7 @@ const DraggableImage = ({ img, onDragStart }) => {
       {...listeners}
       {...attributes}
       onMouseDown={() => onDragStart(img)}>
-      <img className='w-full h-full' src={img.url} alt='' />
+      <img className='w-full h-full' src={img.image} alt='' />
     </div>
   );
 };
