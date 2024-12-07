@@ -32,7 +32,10 @@ const MyAccountPage = () => {
 
   const mutation = useMutation(
     {
-      mutationFn: ({ id, data, access_token }) => UserService.updateInfoUser(id, data, access_token),
+      mutationFn: ({id, data, access_token}) => {
+        console.log("Props received:", id, data, access_token);
+        return UserService.updateInfoUser(id, data, access_token);
+      },
       onError: (error) => {
         const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
         setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
@@ -41,7 +44,7 @@ const MyAccountPage = () => {
         setErrorMessage("");
         const apiSuccessMessage = data.message || "Login successful!";
         setSuccessMessage(apiSuccessMessage)
-      
+        handleGetDetailUser(data?.data._id, user?.access_token)
       },
     }
   )
@@ -55,16 +58,14 @@ const MyAccountPage = () => {
     setVerify(user?.verify)
   }, [user])
 
-  
-
-  useEffect(() => {
-    if(isSuccess){
-      Alert.success("Update information success !")
-      handleGetDetailUser(user?.id, user?.access_token)
-    } else if (isError){
-      Alert.error("Update failed. Please try again.");
-    }
-  },[isSuccess, isError])
+  //   useEffect(() => {
+  //   if(isSuccess){
+  //     Alert.success("Update information success !")
+  //     handleGetDetailUser(user?.id, user?.access_token)
+  //   } else if (isError){
+  //     Alert.error("Update failed. Please try again.");
+  //   }
+  // },[isSuccess, isError])
 
   const handleGetDetailUser = async (id, token) => {
     const res = await UserService.getDetailUser(id, token)
@@ -89,13 +90,19 @@ const MyAccountPage = () => {
   };
 
   const handleUpdateUserName = () => {
-    mutation.mutate ({ id: user?.id, userName, access_token: user?.access_token});
-    dispatch(updateUser({
-      ...user,
-      userName: userName,
-      access_token: user?.access_token, 
-    }))
-    setIsEditingUserName(false);
+    try {
+      mutation.mutate (
+        { id: user?.id, 
+          data: {userName: userName}, 
+          access_token: user?.access_token
+        });
+      console.log("id", user?.id)
+      setIsEditingUserName(false)
+      Alert.success("Change user name successfully!")
+    } catch (error) {
+      Alert.error("Failed to change user name !")
+      console.error(error)
+    }
   }
 
   const handleViewImage = () => {
@@ -134,10 +141,11 @@ const MyAccountPage = () => {
       }))
       mutation.mutate({
         id: user?.id,
-        image: result.secure_url,
+        data: {image: result.secure_url},
         access_token: user?.access_token,
       });
-      console.log('mutation')
+
+      Alert.success("Change image successfully!")
     } catch (error) {
       Alert.error("Failed to upload image. Please try again.");
       console.error(error);
@@ -153,15 +161,16 @@ const MyAccountPage = () => {
     }
     try {
       setImage(profileIcon);  
-      mutation.mutate({
-        id: user?.id,
-        image: null, 
-        access_token: user?.access_token,
-      });
       dispatch(updateUser({  
         ...user,
         image: profileIcon,
       }));
+      mutation.mutate({
+        id: user?.id,
+        data: {image: null}, 
+        access_token: user?.access_token,
+      });
+      Alert.success("Remove avatar successfully!")
     } catch (error) {
       Alert.error("Failed to remove image. Please try again.");
       console.error(error);
