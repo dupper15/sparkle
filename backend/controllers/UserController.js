@@ -245,6 +245,14 @@ const changePassword = async (req, res) => {
         const {passwordCurrent, passwordNew, passwordConfirm} = req.body
         const user = await User.findById({_id: userId})
         const isMatch = bcrypt.compareSync(passwordCurrent, user.password);
+
+        if (!passwordCurrent || !passwordNew || !passwordConfirm) {
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'The input is required'
+            });
+        }
+
         if (!isMatch) {
             return res.status(400).json({
                 status: 'ERROR',
