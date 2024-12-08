@@ -33,7 +33,6 @@ const MyAccountPage = () => {
   const mutation = useMutation(
     {
       mutationFn: ({id, data, access_token}) => {
-        console.log("Props received:", id, data, access_token);
         return UserService.updateInfoUser(id, data, access_token);
       },
       onError: (error) => {
@@ -96,7 +95,6 @@ const MyAccountPage = () => {
           data: {userName: userName}, 
           access_token: user?.access_token
         });
-      console.log("id", user?.id)
       setIsEditingUserName(false)
       Alert.success("Change user name successfully!")
     } catch (error) {
