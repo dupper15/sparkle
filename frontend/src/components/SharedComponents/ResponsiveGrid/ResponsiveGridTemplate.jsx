@@ -19,9 +19,14 @@ const ResponsiveGrid = () => {
 
     const mutation = useMutationHooks(async () => {
         try {
-            const project_arr = await ProjectService.getPublic(); 
-            setProjects(Array.isArray(project_arr) ? project_arr : []);
-            console.log('project', projects)
+            const response = await ProjectService.getPublic();
+            if (response?.status === "OK" && Array.isArray(response.data)) {
+                setProjects(response.data); // Đặt vào projects
+                console.log('Projects fetched successfully:', response.data);
+            } else {
+                setProjects([]); // Nếu không phải mảng, đặt mảng rỗng
+                console.warn('Unexpected response format:', response);
+            }
         } catch (error) {
             console.error("Error fetching projects:", error);
         }

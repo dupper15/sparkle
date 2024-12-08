@@ -2,10 +2,12 @@ import { FaPlus } from "react-icons/fa6";
 import avt from "../../assets/default-profile-icon.png";
 import { useNavigate } from "react-router-dom";
 import { useDarkMode } from "../../contexts/DarkModeContext";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import AddEditorForm from "../AddEditorForm/AddEditorForm";
 import { useMutation } from "@tanstack/react-query";
 import * as ProjectService from "../../services/ProjectService";
+import * as Alert from "../Alert/Alert"
+import { useSelector } from "react-redux";
 
 const initialState = {
   isShow: false,
@@ -30,6 +32,11 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   const { isDarkMode } = useDarkMode();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
+  const projectId = localStorage.getItem("projectId")
+  const user = useSelector((state) => state.user)
+  const ownerId = user?.id
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const mutation = useMutation({
     mutationFn: (data) => {
@@ -47,6 +54,42 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     },
   });
 
+  const mutationPublic = useMutation({
+    mutationFn: async  ({projectId, ownerId}) => {
+      const response = await ProjectService.updatePublic(projectId, ownerId);
+      if (response.status === "ERROR") {
+        // Throw an error to trigger onError
+        throw new Error(response.message);
+      }
+      return response;
+    },
+    onError: (error) => {
+      const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
+      setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
+      setSuccessMessage("")
+    },
+    onSuccess: (data) => {
+      setErrorMessage("");
+      const apiSuccessMessage = "Public project successfully!";
+      setSuccessMessage(apiSuccessMessage)
+    },
+  });
+
+  const {isError, isSuccess} = mutationPublic
+
+  useEffect(() => {
+    if (isError) {
+      Alert.error("You don't have permission to public project!");
+    }
+    if (isSuccess) {
+      Alert.success(successMessage);
+    }
+  }, [isSuccess, isError, errorMessage, successMessage]);
+
+  const handlePublic = () => {
+    mutationPublic.mutate({projectId, ownerId})
+  }
+
   const toggleAddMember = () => {
     dispatch({ type: "TOGGLE_SHOW" });
   };
@@ -57,7 +100,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
 
   useEffect(() => {
     if (usersInRoom.length > 0) {
-      mutation.mutate({ usersInRoom });
+      mutation.mutate(projectId);
     }
   }, [usersInRoom]);
 
@@ -135,6 +178,12 @@ const WorkplaceHeader = ({ usersInRoom }) => {
           onClick={() => console.log("userInRoom", usersInRoom)}
           className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 border-black shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
           <span className='gradient'>Share</span>
+        </button>
+
+        <button
+          onClick={handlePublic}
+          className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
+          <span className='gradient'>Public</span>
         </button>
       </div>
     </div>
