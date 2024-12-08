@@ -2,10 +2,12 @@ const Message = require("../models/MessageModel");
 const User = require("../models/UserModel");
 const chatBot = require("../chatBot/chatbot");
 const sendMessage = async (newMessage) => {
-  const { content, sender, groupId } = newMessage;
+  const { content, sender, groupId, imageUrl } = newMessage;
 
-  if (!content || !sender || !groupId) {
-    throw new Error("All fields (content, sender, groupId) are required");
+  if (!sender || !groupId || (!content && !imageUrl)) {
+    throw new Error(
+      "All fields (sender, groupId, and either content or image) are required"
+    );
   }
 
   try {
@@ -13,9 +15,10 @@ const sendMessage = async (newMessage) => {
       content,
       sender,
       groupId,
+      imageUrl,
     });
-
     const savedMessage = await message.save();
+
     if (sender !== "SparkleBot") {
       const user = await User.findById(sender).select("image userName").lean();
 

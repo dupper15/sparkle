@@ -41,20 +41,22 @@ const ChatBox = ({ toggleChatBox }) => {
       socket.off("chatMessage", handleNewMessage);
     };
   }, [project?.id]);
-  const sendMessage = (text, isChatBot) => {
-    if (user?.id && project?.id && text) {
+  const sendMessage = async (text, imageUrl = null, isChatBot) => {
+    if (user?.id && project?.id && (text || imageUrl)) {
       socket.emit("chatMessage", {
         userId: user.id,
         roomId: project.id,
         text,
+        imageUrl,
       });
       if (isChatBot) {
-        mutation.mutate({ text });
+        mutation.mutate({ text, imageUrl });
       }
     } else {
       console.error("Message or user/project data is missing!");
     }
   };
+
   useEffect(() => {
     if (botAnswer && project.id) {
       socket.emit("botReply", {
