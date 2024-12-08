@@ -92,10 +92,8 @@ const WorkplaceCanvas = () => {
 
     const mutation = useMutation({
         mutationFn: (data) => {
-            console.log("data", data);
             return ProjectService.updateProject(data.id);
         }, onSuccess: (data) => {
-            dispatch(updateProject(data.data));
             handleGetDetailProject(data.data.id);
             console.log("Project updated successfully:", data);
         }, onError: (error) => {
@@ -104,12 +102,6 @@ const WorkplaceCanvas = () => {
     });
 
     const {data, isSuccess} = mutation;
-
-    useEffect(() => {
-        if (isSuccess) {
-            handleGetDetailProject(project?.id);
-        }
-    }, [isSuccess]);
 
     const scrollToCanvas = (index) => {
         if (index >= 0 && index < canvases.length) {
@@ -154,19 +146,14 @@ const WorkplaceCanvas = () => {
             // Cập nhật lại canvases (local state)
             setCanvases((prev) => {
                 const newCanvases = [...prev, project?.canvasArray]; // Thêm canvas mới vào list canvases
-                setCurrentCanvas(newCanvases[newCanvases.length - 1]?.id); // Chuyển đến trang mới
-
-                setTimeout(() => {
-                    canvasRef.current[newCanvases.length - 1]?.scrollIntoView({
-                        behavior: 'smooth', block: 'start',
-                    });
-                }, 0);
+                setCurrentCanvas(newCanvases[newCanvases.length]?.id); // Chuyển đến trang mới
 
                 return newCanvases;
             });
-
             // Hiển thị thông báo thành công
             Alert.success("Add canvas successfully!");
+
+            handleGetDetailProject(project?.id);
         } catch (error) {
             console.error("Failed to add canvas:", error.message);
             Alert.error("Failed to add canvas.");
@@ -175,7 +162,6 @@ const WorkplaceCanvas = () => {
 
     const removeCanvas = async (id) => {
         try {
-            console.log("id", id)
             if (project?.canvasArray?.length === 1) {
                 Alert.error("Can not delete canvas!");
                 return;
@@ -192,6 +178,8 @@ const WorkplaceCanvas = () => {
                 return newCanvases;
             });
             Alert.success("Delete canvas successfully!")
+
+            await handleGetDetailProject(project?.id)
         } catch (error) {
             console.error("Failed to delete canvas:", error.message);
             Alert.error("Failed to delete canvas.");

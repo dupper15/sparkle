@@ -44,7 +44,6 @@ import { useMutation } from '@tanstack/react-query';
             if(isSuccess){
                 Alert.success(successMessage)
                 closeForm();
-            //handleGetDetailUser(user?.id, user?.access_token)
             }
         },[isSuccess, successMessage, closeForm ])
 
@@ -59,7 +58,12 @@ import { useMutation } from '@tanstack/react-query';
         }
 
         const handleUpdatePassword = () => {
-            mutation.mutate ({ id: user?.id, passwordCurrent ,passwordNew, passwordConfirm, access_token: user?.access_token});
+            try {
+                mutation.mutate ({ id: user?.id, passwordCurrent ,passwordNew, passwordConfirm, access_token: user?.access_token});
+            } catch (error) {
+                Alert.error("Failed to change password")
+                console.error(error)
+            }
         }
 
         return (

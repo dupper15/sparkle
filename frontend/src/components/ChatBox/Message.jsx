@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDarkMode } from "../../contexts/DarkModeContext";
 import { useSelector } from "react-redux";
 import emptyAvatar from "../../assets/default-profile-icon.png";
-import chatbotAvatar from "../../assets/chatbot.jpg"; // Kiểm tra đúng đường dẫn đến ảnh
+import chatbotAvatar from "../../assets/chatbot.jpg";
+
 const Message = ({ message }) => {
   const { isDarkMode } = useDarkMode();
   const user = useSelector((state) => state.user);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState("");
+
+  const openModal = (imageUrl) => {
+    setCurrentImage(imageUrl);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setCurrentImage("");
+  };
 
   return (
     <div className='px-2 pb-4'>
@@ -37,15 +50,51 @@ const Message = ({ message }) => {
           {message.senderName || "Unknown"}
         </div>
         <div
-          className={`chat-bubble my-1 ${
+          className={`chat-bubble my-1 content-start ${
             isDarkMode ? "bg-black text-white" : "bg-white text-black"
           }`}>
-          {message.content}
+          {message.content && (
+            <div
+              className={`my-1 ${
+                isDarkMode ? "bg-black text-white" : "bg-white text-black"
+              } 
+              ${message.sender === user.id ? "text-right" : "text-left"}
+              `}>
+              {message.content}
+            </div>
+          )}
+          {message.imageUrl && (
+            <div
+              className={`my-1 ${
+                isDarkMode ? "bg-black text-white" : "bg-white text-black"
+              }`}>
+              <img
+                src={message.imageUrl}
+                alt='image'
+                style={{ maxWidth: "200px", cursor: "pointer" }}
+                onClick={() => openModal(message.imageUrl)}
+              />
+            </div>
+          )}
         </div>
+
         <div className='chat-footer text-black opacity-50'>
           {new Date(message.createdAt).toLocaleTimeString()}
         </div>
       </div>
+      {isModalOpen && (
+        <div
+          className='fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-[9999]'
+          onClick={closeModal}>
+          <div className='relative' onClick={(e) => e.stopPropagation()}>
+            <img
+              src={currentImage}
+              alt='Large'
+              className='max-w-4xl max-h-screen object-contain'
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

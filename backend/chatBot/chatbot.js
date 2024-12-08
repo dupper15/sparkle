@@ -3,6 +3,7 @@ const googleClientId = process.env.API_KEY;
 const genAI = new GoogleGenerativeAI(googleClientId);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 require("dotenv").config();
+
 async function generateText(prompt) {
   try {
     const result = await model.generateContent(prompt);
@@ -11,7 +12,6 @@ async function generateText(prompt) {
     console.error("Error generating content:", err);
   }
 }
-
 module.exports = {
   generateText,
 };
