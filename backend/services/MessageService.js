@@ -95,12 +95,19 @@ const deleteMessage = async (messageId) => {
     throw new Error(error.message);
   }
 };
-const sendChatBot = async (data) => {
+const sendChatBot = async (text, imageUrl) => {
   try {
-    if (!data) {
+    if (!text && !imageUrl) {
       throw new Error("Missing or empty message content.");
     }
-    const botReply = await chatBot.generateText(data);
+    let botReply;
+    if (text && !imageUrl) {
+      botReply = await chatBot.generateText(text);
+    } else if (!text && imageUrl) {
+      botReply = await chatBot.generateTextFromImage(imageUrl);
+    } else {
+      botReply = await chatBot.generateTextFromImage(imageUrl, text);
+    }
     return {
       status: "SUCCESS",
       data: {

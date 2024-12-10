@@ -6,6 +6,7 @@ import socket from "../../utils/socket";
 import { useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import * as ChatService from "../../services/ChatService";
+import { message } from "antd";
 
 const ChatBox = ({ toggleChatBox }) => {
   const [messages, setMessages] = useState([]);
@@ -15,7 +16,7 @@ const ChatBox = ({ toggleChatBox }) => {
   const [botAnswer, setBotAnswer] = useState("");
   const mutation = useMutation({
     mutationFn: (messageData) => {
-      return ChatService.sendChatBot(messageData.text);
+      return ChatService.sendChatBot(messageData.text, messageData.imageUrl);
     },
     onError: (error) => {
       console.log(error);
