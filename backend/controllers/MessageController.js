@@ -50,14 +50,14 @@ const deleteMessage = async (req, res) => {
 };
 const sendChatBot = async (req, res) => {
   try {
-    const { data } = req.body;
-    if (!data) {
+    const { text, imageUrl } = req.body;
+    if (!text && !imageUrl) {
       return res.status(400).json({
         status: "ERROR",
         message: "Missing message content1",
       });
     }
-    const response = await messageService.sendChatBot(data);
+    const response = await messageService.sendChatBot(text, imageUrl);
     return res.status(200).json(response);
   } catch (e) {
     console.error("Error in sendChatBot1:", e.message);

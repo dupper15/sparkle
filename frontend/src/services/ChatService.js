@@ -1,13 +1,11 @@
 import axios from "axios";
 
-export const sendChatBot = async (data) => {
+export const sendChatBot = async (text, imageUrl) => {
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_API_KEY}/message/send-chat-bot`,
-      { data }
+      { text, imageUrl }
     );
-
-    // Kiểm tra nếu API trả về dữ liệu hợp lệ
     if (response) {
       return response.data;
     } else {

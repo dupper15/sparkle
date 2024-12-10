@@ -10,7 +10,6 @@ const { Server } = require("socket.io");
 const { MongoClient } = require("mongodb");
 const { createAdapter } = require("@socket.io/mongo-adapter");
 const { sendMessage, getMessage } = require("./services/MessageService");
-
 dotenv.config();
 
 const app = express();
