@@ -6,14 +6,13 @@ import socket from "../../utils/socket";
 import { useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import * as ChatService from "../../services/ChatService";
-import { message } from "antd";
-
 const ChatBox = ({ toggleChatBox }) => {
   const [messages, setMessages] = useState([]);
   const project = useSelector((state) => state.project);
   const user = useSelector((state) => state.user);
   const messageEndRef = useRef(null);
   const [botAnswer, setBotAnswer] = useState("");
+  const [imageAnswer, setImageAnswer] = useState("");
   const mutation = useMutation({
     mutationFn: (messageData) => {
       return ChatService.sendChatBot(messageData.text, messageData.imageUrl);
@@ -23,6 +22,17 @@ const ChatBox = ({ toggleChatBox }) => {
     },
     onSuccess: (data) => {
       setBotAnswer(data.data.answer || "");
+    },
+  });
+  const mutation2 = useMutation({
+    mutationFn: (messageData) => {
+      return ChatService.sendImageBot(messageData.text);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: (data) => {
+      setImageAnswer(data || "");
     },
   });
   useEffect(() => {
@@ -42,7 +52,7 @@ const ChatBox = ({ toggleChatBox }) => {
       socket.off("chatMessage", handleNewMessage);
     };
   }, [project?.id]);
-  const sendMessage = async (text, imageUrl = null, isChatBot) => {
+  const sendMessage = async (text, imageUrl = null, isChatBot, isImageBot) => {
     if (user?.id && project?.id && (text || imageUrl)) {
       socket.emit("chatMessage", {
         userId: user.id,
@@ -53,11 +63,24 @@ const ChatBox = ({ toggleChatBox }) => {
       if (isChatBot) {
         mutation.mutate({ text, imageUrl });
       }
+      if (isImageBot) {
+        mutation2.mutate({ text });
+      }
     } else {
       console.error("Message or user/project data is missing!");
     }
   };
 
+  useEffect(() => {
+    if (imageAnswer && project.id) {
+      socket.emit("imageReply", {
+        imageAnswer,
+        roomId: project.id,
+      });
+      console.log(imageAnswer);
+    }
+    setImageAnswer("");
+  }, [imageAnswer, project.id]);
   useEffect(() => {
     if (botAnswer && project.id) {
       socket.emit("botReply", {
