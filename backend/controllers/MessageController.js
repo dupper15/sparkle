@@ -30,24 +30,6 @@ const getMessage = async (req, res) => {
   }
 };
 
-const deleteMessage = async (req, res) => {
-  try {
-    const messageId = req.prams.id;
-    const data = req.body;
-    if (!data) {
-      return res.status(400).json({
-        status: "ERROR",
-        message: "Something is wrong",
-      });
-    }
-    const response = await messageService.deleteMessage(messageId);
-    return res.status(200).json(response);
-  } catch (e) {
-    return res.status(400).json({
-      message: e,
-    });
-  }
-};
 const sendChatBot = async (req, res) => {
   try {
     const { text, imageUrl } = req.body;
@@ -60,6 +42,24 @@ const sendChatBot = async (req, res) => {
     const response = await messageService.sendChatBot(text, imageUrl);
     return res.status(200).json(response);
   } catch (e) {
+    return res.status(500).json({
+      status: "ERROR",
+      message: e.message || "Internal server error",
+    });
+  }
+};
+const sendImageBot = async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Missing message content1",
+      });
+    }
+    const response = await messageService.sendImageBot(text);
+    return res.status(200).json(response.data.answer);
+  } catch (e) {
     console.error("Error in sendChatBot1:", e.message);
     return res.status(500).json({
       status: "ERROR",
@@ -71,6 +71,6 @@ const sendChatBot = async (req, res) => {
 module.exports = {
   sendMessage,
   getMessage,
-  deleteMessage,
   sendChatBot,
+  sendImageBot,
 };

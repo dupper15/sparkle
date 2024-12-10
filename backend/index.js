@@ -10,6 +10,7 @@ const { Server } = require("socket.io");
 const { MongoClient } = require("mongodb");
 const { createAdapter } = require("@socket.io/mongo-adapter");
 const { sendMessage, getMessage } = require("./services/MessageService");
+const { textToImage } = require("./chatBot/textToImage");
 dotenv.config();
 
 const app = express();
@@ -88,6 +89,20 @@ io.on("connection", (socket) => {
       console.error("Error sending message:", error);
     }
   });
+  socket.on("imageReply", async (data) => {
+    const { imageAnswer, roomId } = data;
+    try {
+      const response = await sendMessage({
+        imageUrl: imageAnswer,
+        content: "Đây là hình theo yêu cầu của bạn",
+        sender: "SparkleBot",
+        groupId: roomId,
+      });
+      io.to(roomId).emit("chatMessage", response.data);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  });
   socket.on("chatMessage", async (data) => {
     const { userId, roomId, text, imageUrl } = data;
 
@@ -127,6 +142,6 @@ mongoose
     console.log(err);
   });
 
-server.listen(port, () => {
+server.listen(port, async () => {
   console.log(`Server is running on http://localhost:${port}`);
 });

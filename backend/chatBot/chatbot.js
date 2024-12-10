@@ -34,20 +34,3 @@ module.exports = {
   generateText,
   generateTextFromImage,
 };
-
-/*async function test(text = "Mô tả bức tranh này", imageUrl) {
-  const imageResp = await fetch(
-    `${imageUrl}`
-  ).then((response) => response.arrayBuffer());
-
-  const result = await model.generateContent([
-    {
-      inlineData: {
-        data: Buffer.from(imageResp).toString("base64"),
-        mimeType: "image/jpeg",
-      },
-    },
-    `${text}`,
-  ]);
-  console.log(result.response.text());
-}*/
