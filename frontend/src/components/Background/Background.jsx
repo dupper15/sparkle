@@ -82,7 +82,7 @@ const Background = ( {setBackground }) => {
             className="w-full h-[90px] rounded-md cursor-pointer"
             style={{
               backgroundImage: `url(${background.background_url})`,
-              backgroundSize: "cover",
+              backgroundSize: "100% 100%",
               backgroundColor: background.background_url ? "transparent" : "white",
             }}
             onClick={() => handleClickBackground(background.background_url)}

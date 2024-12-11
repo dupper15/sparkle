@@ -79,14 +79,19 @@ function CarouselTeamProject() {
             id={project?._id}
             onClick={() => handleClick(project._id)}
             className='cursor-pointer'>
-            <img
+            <div
               className='bg-cover h-[200px] w-[420px]'
-              src={
-                project.canvasArray?.[0]?.background === "#ffffff"
-                  ? testImage
-                  : project.canvasArray?.[0]?.background
-              }
-              alt={project.projectName || "Project Image"}
+              style={{
+                backgroundImage: project.canvasArray?.[0]?.background === '#ffffff' 
+                  ? 'none' // Không hiển thị hình ảnh nền
+                  : `url(${project.canvasArray?.[0]?.background})`,
+                backgroundColor: project.canvasArray?.[0]?.background === '#ffffff' 
+                  ? '#ffffff' // Hiển thị màu trắng
+                  : 'transparent', // Màu nền trong suốt nếu có hình ảnh nền
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+              }}
             />
             <span>{project.projectName || "Unnamed Project"}</span>
           </div>

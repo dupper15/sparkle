@@ -71,7 +71,13 @@ const getAllProject = (userId) => {
     try {
       const projects = await Project.find({
         owner: userId,
-      }).populate("canvasArray");
+      }).populate({
+        path: "canvasArray",
+        populate: {
+          path: "componentArray", // Trỏ tới mảng componentArray
+          model: "Component", // Tên model được tham chiếu
+        },
+      });
       if (!projects) {
         resolve({
           status: "ERROR",
@@ -101,7 +107,13 @@ const getAllTeamProject = (userId) => {
       const user = await User.findById(userId)
       const projects = await Project.find({
         editorArray: { $in: [user.email] }, 
-      }).populate("canvasArray");
+      }).populate({
+        path: "canvasArray",
+        populate: {
+          path: "componentArray", // Trỏ tới mảng componentArray
+          model: "Component", // Tên model được tham chiếu
+        },
+      });
       if (!projects) {
         resolve({
           status: "ERROR",
@@ -130,7 +142,13 @@ const getPublic = () => {
     try {
       const projects = await Project.find({
         isPublic: true,
-      }).populate("canvasArray");
+      }).populate({
+        path: "canvasArray",
+        populate: {
+          path: "componentArray", // Trỏ tới mảng componentArray
+          model: "Component", // Tên model được tham chiếu
+        },
+      });
       if (!projects) {
         resolve({
           status: "ERROR",
