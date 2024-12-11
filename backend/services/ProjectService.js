@@ -204,6 +204,46 @@ const updateProject = (projectId) => {
   });
 };
 
+const updatePublic = async (projectId, ownerId) => {
+  try {
+    const checkProject = await Project.findOne({ _id: projectId });
+    const checkUser = await User.findById(ownerId);
+
+    if (!checkProject) {
+      return {
+        status: "ERROR",
+        message: "Project is not defined!",
+      };
+    }
+    
+    if (!checkProject.owner.equals(checkUser._id)) {
+      return {
+        status: "ERROR",
+        message: "You don't have permission to post this project publicly!",
+      };
+    }
+
+    const updatedProject = await Project.findByIdAndUpdate(
+      projectId,
+      { isPublic: true },
+      { new: true }
+    );
+
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      data: updatedProject,
+    };
+  } catch (error) {
+    return {
+      status: "ERROR",
+      message: "Failed to update Project",
+      error: error.message,
+    };
+  }
+};
+
+
 const deleteProject = (projectId) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -275,6 +315,7 @@ module.exports = {
   getAllTeamProject,
   getPublic,
   updateProject,
+  updatePublic,
   deleteProject,
   addEditor,
 };

@@ -28,6 +28,7 @@ import socket from "../../utils/socket.js";
 import {createAndAddComponentToCanvas} from "../../services/utils/componentOrchestrator.js";
 import {extractIdFromOver} from "../../utils/utils.js";
 
+
 const WorkplaceCanvas = () => {
     const dispatch = useDispatch();
     const project = useSelector((state) => state.project);

@@ -191,7 +191,6 @@ const updateInfoUser = async (req, res) => {
     try {
         const userId = req.params.id
         const data = req.body
-        console.log('data', data)
         if (!userId){
             return res.status(400).json({
                 status: 'ERROR',

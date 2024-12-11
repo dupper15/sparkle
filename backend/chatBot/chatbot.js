@@ -12,6 +12,25 @@ async function generateText(prompt) {
     console.error("Error generating content:", err);
   }
 }
+async function generateTextFromImage(imageUrl, text = "Mô tả bức tranh này") {
+  try {
+    const imageResp = await fetch(`${imageUrl}`).then((response) =>
+      response.arrayBuffer()
+    );
+
+    const result = await model.generateContent([
+      {
+        inlineData: {
+          data: Buffer.from(imageResp).toString("base64"),
+          mimeType: "image/jpeg",
+        },
+      },
+      `${text}`,
+    ]);
+    return result.response.text();
+  } catch (e) {}
+}
 module.exports = {
   generateText,
+  generateTextFromImage,
 };
