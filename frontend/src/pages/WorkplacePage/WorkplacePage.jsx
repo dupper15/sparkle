@@ -354,9 +354,7 @@ const WorkplaceCanvas = () => {
                             className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${isDarkMode ? "bg-[#252627] text-slate-700" : "bg-white text-slate-300"}`}>
                             <MdKeyboardArrowLeft/>
                         </div>
-                        {state === "design" && (<div className="grid grid-cols-2 gap-2">
-                            <TemplateDesign/>
-                        </div>)}
+                        {state === "design" && <TemplateDesign/>}
                         {state === "shape" && (<Shape addNewShape={updateShapes} drag={setDraggingShape}/>)}
                         {state === "project" && <Project/>}
                         {state === "text" && <Text addNewText={add_text}/>}

@@ -79,7 +79,9 @@ const Canvas = React.forwardRef(({
                 border: isOver ? "2px solid blue" : "transparent",
                 backgroundColor: !bgLink ? "white" : "white",
                 backgroundImage: bgLink ? `url(${bgLink})` : "",
-                backgroundSize: "cover",
+                backgroundSize: "100% 100%",
+                backgroundPosition: "center",
+                backgroundRepeat: 'no-repeat',
                 overflow: "hidden",
                 zIndex: 0,
             }}
