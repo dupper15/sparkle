@@ -1,3 +1,4 @@
+const { fal } = require("@fal-ai/client");
 const Canvas = require("../models/CanvasModel");
 const Project = require("../models/ProjectModel");
 const User = require("../models/UserModel");
@@ -228,10 +229,9 @@ const updateProject = (projectId, data) => {
   });
 };
 
-const updatePublic = async (projectId, ownerId) => {
+const updatePublic = async (projectId, status) => {
   try {
     const checkProject = await Project.findOne({ _id: projectId });
-    const checkUser = await User.findById(ownerId);
 
     if (!checkProject) {
       return {
@@ -239,19 +239,22 @@ const updatePublic = async (projectId, ownerId) => {
         message: "Project is not defined!",
       };
     }
-    
-    if (!checkProject.owner.equals(checkUser._id)) {
-      return {
-        status: "ERROR",
-        message: "You don't have permission to post this project publicly!",
-      };
-    }
 
-    const updatedProject = await Project.findByIdAndUpdate(
-      projectId,
-      { isPublic: true },
-      { new: true }
-    );
+    let updatedProject = null
+
+    if (status === true){
+      updatedProject = await Project.findByIdAndUpdate(
+        projectId,
+        { isPublic: false },
+        { new: true }
+      );
+    } else {
+      updatedProject = await Project.findByIdAndUpdate(
+        projectId,
+        { isPublic: true },
+        { new: true }
+      );
+    }
 
     return {
       status: "OK",
