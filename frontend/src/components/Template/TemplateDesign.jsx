@@ -4,7 +4,7 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 import * as ProjectService from '../../services/ProjectService'
 import { useSelector } from "react-redux";
 
-const TemplateDesign = () => {
+const TemplateDesign = ({ addCanvasFromTemplate }) => {
 
     const user = useSelector((state) => state.user)
     const [projects, setProjects] = useState([])
@@ -32,6 +32,15 @@ const TemplateDesign = () => {
         handleCanvasPublic()
     }, [user])
 
+    const handleTemplateClick = (projectId, canvasIndex) => {
+        const selectedCanvas = projects
+            .find((project) => project._id === projectId)
+            ?.canvasArray[canvasIndex];
+        if (selectedCanvas) {
+            addCanvasFromTemplate(selectedCanvas);
+        }
+    };
+
     return(
         <div className="grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide">
     {
@@ -39,8 +48,8 @@ const TemplateDesign = () => {
             project.canvasArray?.map((canvas, canvasIndex) => (
                 <div
                     key={`${project?._id}-${canvasIndex}`}
-                    onClick={() => handleClick(project?._id, canvasIndex)}
-                    className="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105" // Tạo hiệu ứng cho từng canvas
+                    onClick={() => handleTemplateClick(project?._id, canvasIndex)}
+                    className="bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 cursor-pointer" // Tạo hiệu ứng cho từng canvas
                 >
                     <div
                         className="w-[140px] h-[100px] relative bg-cover overflow-hidden border"

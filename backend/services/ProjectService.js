@@ -172,7 +172,7 @@ const getPublic = () => {
   });
 };
 
-const updateProject = (projectId) => {
+const updateProject = (projectId, data) => {
   return new Promise(async (resolve, reject) => {
     try {
       const checkProject = await Project.findOne({
@@ -186,10 +186,16 @@ const updateProject = (projectId) => {
         return;
       }
 
-      const createdCanvas = await Canvas.create({
-        background: "#ffffff",
-        componentArray: [],
-      });
+      let createdCanvas = null
+
+      if(!data){
+          createdCanvas = await Canvas.create({
+          background: "#ffffff",
+          componentArray: [],
+        });
+      } else {
+        createdCanvas = data
+      }
 
       const canvasArray = [...checkProject.canvasArray, createdCanvas._id];
 
