@@ -119,9 +119,22 @@ const sendImageBot = async (text) => {
     throw new Error(error.message || "An unexpected error occurred.");
   }
 };
+const getUserName = async (userId) => {
+  if (!userId) {
+    return "";
+  }
+  try {
+    const user = await User.findById(userId);
+    return user.userName;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 module.exports = {
   sendMessage,
   getMessage,
   sendChatBot,
   sendImageBot,
+  getUserName,
 };
