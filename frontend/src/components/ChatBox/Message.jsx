@@ -10,7 +10,7 @@ const Message = ({ message }) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState("");
-
+  const [showTime, setShowTime] = useState(false);
   const openModal = (imageUrl) => {
     setCurrentImage(imageUrl);
     setIsModalOpen(true);
@@ -19,7 +19,9 @@ const Message = ({ message }) => {
     setIsModalOpen(false);
     setCurrentImage("");
   };
-
+  const handleShowTime = () => {
+    setShowTime((prev) => !prev);
+  };
   return (
     <div className='px-2 pb-4'>
       <div
@@ -55,6 +57,7 @@ const Message = ({ message }) => {
           }`}>
           {message.content && (
             <div
+              onMouseDown={handleShowTime}
               className={`my-1 ${
                 isDarkMode ? "bg-black text-white" : "bg-white text-black"
               } 
@@ -78,9 +81,22 @@ const Message = ({ message }) => {
           )}
         </div>
 
-        <div className='chat-footer text-black opacity-50'>
-          {new Date(message.createdAt).toLocaleTimeString()}
-        </div>
+        {showTime && message.createdAt && (
+          <div className='chat-footer text-black opacity-50'>
+            {new Date(message.createdAt).toLocaleDateString("vi-VN", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}{" "}
+            -
+            {new Date(message.createdAt).toLocaleTimeString("vi-VN", {
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            })}
+          </div>
+        )}
       </div>
       {isModalOpen && (
         <div
