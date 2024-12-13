@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import template from "../../assets/bg-dm.png";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import * as ProjectService from '../../services/ProjectService'
 import { useSelector } from "react-redux";
 
-const TemplateDesign = ({ addCanvasFromTemplate }) => {
+const TemplateDesign = ({ addCanvasFromTemplate, renderKey }) => {
 
-    const user = useSelector((state) => state.user)
     const [projects, setProjects] = useState([])
 
     const mutation = useMutationHooks(async () => {
@@ -24,13 +22,9 @@ const TemplateDesign = ({ addCanvasFromTemplate }) => {
         }
     });
 
-    const handleCanvasPublic= () => {
-        mutation.mutate()
-    }
-
     useEffect(() => {
-        handleCanvasPublic()
-    }, [user])
+        mutation.mutate();
+    }, [renderKey]);
 
     const handleTemplateClick = (projectId, canvasIndex) => {
         const selectedCanvas = projects

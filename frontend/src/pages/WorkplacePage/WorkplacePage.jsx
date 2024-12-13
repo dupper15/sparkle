@@ -43,6 +43,13 @@ const WorkplaceCanvas = () => {
 
     const [width, setWidth] = useState("");
     const [height, setHeight] = useState("");
+    const [renderKey, setRenderKey] = useState(0);
+
+    useEffect(() => {
+        if (state === "design") {
+            setRenderKey((prevKey) => prevKey + 1); // Tăng renderKey khi vào design
+        }
+    }, [state]); 
 
     useEffect(() => {
         setWidth(project?.width);
@@ -391,7 +398,7 @@ const WorkplaceCanvas = () => {
                             className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${isDarkMode ? "bg-[#252627] text-slate-700" : "bg-white text-slate-300"}`}>
                             <MdKeyboardArrowLeft/>
                         </div>
-                        {state === "design" && <TemplateDesign addCanvasFromTemplate={addTemplate} />}
+                        {state === "design" && <TemplateDesign key={renderKey} addCanvasFromTemplate={addTemplate} />}
                         {state === "shape" && (<Shape addNewShape={updateShapes} drag={setDraggingShape}/>)}
                         {state === "project" && <Project/>}
                         {state === "text" && <Text addNewText={add_text}/>}
