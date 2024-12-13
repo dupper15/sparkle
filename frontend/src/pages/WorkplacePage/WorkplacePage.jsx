@@ -186,7 +186,7 @@ const WorkplaceCanvas = () => {
             const newCanvas = {
                 background: templateCanvas?.background || '#ffffff',
                 componentArray: templateCanvas?.componentArray || [],
-                id: Date.now().toString(), // Tạo ID tạm thời
+                id: templateCanvas._id
             };
     
             // Cập nhật lại state của canvases
