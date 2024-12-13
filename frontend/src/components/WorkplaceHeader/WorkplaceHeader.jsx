@@ -61,8 +61,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   });
 
   const mutationPublic = useMutation({
-    mutationFn: async  ({projectId, status}) => {
-      const response = await ProjectService.updatePublic(projectId, status);
+    mutationFn: async  ({projectId}) => {
+      const response = await ProjectService.updatePublic(projectId);
       if (response.status === "ERROR") {
         // Throw an error to trigger onError
         throw new Error(response.message);
@@ -76,19 +76,35 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     },
     onSuccess: (data) => {
       setErrorMessage("");
-      console.log('data', data)
-      if (data.data.isPublic === false){
-        const apiSuccessMessage = "Private project successfully!";
-        setSuccessMessage(apiSuccessMessage)
-      } else {
-        const apiSuccessMessage = "Public project successfully!";
-        setSuccessMessage(apiSuccessMessage)
-      } 
+      const apiSuccessMessage = "Public project successfully!";
+      setSuccessMessage(apiSuccessMessage)
+    },
+  });
+
+  const mutationPrivate = useMutation({
+    mutationFn: async  ({projectId}) => {
+      const response = await ProjectService.updatePrivate(projectId);
+      if (response.status === "ERROR") {
+        // Throw an error to trigger onError
+        throw new Error(response.message);
+      }
+      return response;
+    },
+    onError: (error) => {
+      const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
+      setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
+      setSuccessMessage("")
+    },
+    onSuccess: (data) => {
+      setErrorMessage("");
+      const apiSuccessMessage = "Private project successfully!";
+      setSuccessMessage(apiSuccessMessage)
     },
   });
 
   const {isError, isSuccess} = mutationPublic
 
+ 
   useEffect(() => {
     if (isError) {
       Alert.error("You don't have permission to public project!");
@@ -99,7 +115,12 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   }, [isSuccess, isError, errorMessage, successMessage]);
 
   const handlePublic = () => {
-    mutationPublic.mutate({projectId, status})
+    mutationPublic.mutate({projectId})
+    setStatus(!status)
+  }
+
+  const handlePrivate = () => {
+    mutationPrivate.mutate({projectId})
     setStatus(!status)
   }
 
@@ -194,7 +215,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         </button>
         {(ownerId === project?.owner) &&
           <button
-            onClick={handlePublic}
+            onClick={status ? handlePrivate : handlePublic}
             className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
             <span className='gradient'>{status ? "Private" : "Public"}</span>
           </button>
