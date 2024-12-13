@@ -245,7 +245,7 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
                 height: size.height,
                 left: position.x,
                 top: position.y,
-                zIndex: 10,
+                zIndex: info.zIndex,
                 clipPath: info.clipPath,
                 transform: `rotate(${deg}deg)`, // Xoay shape
                 transformOrigin: "center", // Xác định gốc xoay tại trung tâm

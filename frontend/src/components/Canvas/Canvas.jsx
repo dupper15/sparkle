@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import CreateComponent from "../../components/CreateComponent";
-import ShapeToolBar from "../SharedComponents/ToolBars/ImageToolBar/ShapeToolBar.jsx";
+import ShapeToolBar from "../SharedComponents/ToolBars/ShapeToolBar/ShapeToolBar.jsx";
 import TextToolbar from "../SharedComponents/ToolBars/TextToolBar/TextToolBar.jsx";
 import useCanvasViewModel from "./CanvasViewModel.js";
 import socket from "../../utils/socket";

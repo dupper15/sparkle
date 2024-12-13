@@ -2,7 +2,7 @@ import React from 'react';
 import { FaCrop } from "react-icons/fa";
 import { RiFlipHorizontalFill, RiFlipVerticalFill } from "react-icons/ri";
 
-
+/* eslint react/prop-types: 0 */
 const ImageTransformationSection = ({
                                         isFlipMenuOpen,
                                         handleFlipClick,
@@ -46,7 +46,7 @@ const ImageTransformationSection = ({
 
 export default ImageTransformationSection;
 
-// eslint-disable-next-line react/prop-types
+ 
 const FlipMenu = ({ handleHorizontalFlipClick, handleVerticalFlipClick }) => {
     return (
         <div className="bg-white profile-dropdown box-border rounded-2xl text-sm text-gray-700 py-2">

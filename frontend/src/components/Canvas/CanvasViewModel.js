@@ -14,7 +14,7 @@ const useCanvasViewModel = (id, databaseId) => {
     const { isOver, setNodeRef } = useDroppable({ id });
     const { isDarkMode } = useDarkMode();
 
-    // Fetch components from the server
+    // Fetch components from the database
     useEffect(() => {
         const fetchComponents = async () => {
             try {
@@ -31,22 +31,17 @@ const useCanvasViewModel = (id, databaseId) => {
         };
     }, [databaseId, id]);
 
-    // Handle click outside the component
+    // Handle clicks outside the canvas
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (event.shiftKey) {
-                return; // Ignore clicks when the shift key is pressed
-            }
-
+            if (event.shiftKey) return;
             if (canvasRef.current) {
                 const isInsideComponent = selectedComponents.some((componentId) => {
                     const componentElement = document.getElementById(`${componentId}`);
                     return componentElement && componentElement.contains(event.target);
                 });
-
                 const toolbars = document.querySelectorAll(".toolbar, .color-picker-panel");
                 const isClickInsideToolbar = Array.from(toolbars).some(toolbar => toolbar.contains(event.target));
-
                 if (!isInsideComponent && !isClickInsideToolbar) {
                     setOpenImageToolBar(false);
                     setOpenTextToolBar(false);
@@ -54,27 +49,26 @@ const useCanvasViewModel = (id, databaseId) => {
                 }
             }
         };
-
         document.addEventListener("mousedown", handleClickOutside);
-
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [selectedComponents, canvasRef]);
 
-    useEffect(() => {
-        console.log("Selected components:", selectedComponents);
-    }, [selectedComponents]);
+    // Update component helper function
+    const updateComponent = (componentId, updateFn) => {
+        setShapes((prevShapes) =>
+            prevShapes.map((shape) =>
+                selectedComponents.includes(shape._id) ? updateFn(shape) : shape
+            )
+        );
+    };
 
     // Handle color change
     const handleColorChange = (color) => {
-        setShapes((prevShapes) =>
-            prevShapes.map((shape) =>
-                selectedComponents.includes(shape._id) ? { ...shape, color } : shape
-            )
-        );
-        selectedComponents.forEach(componentId => {
-            ComponentService.updateComponentColor("shape", color, componentId).then();
+        updateComponent(null, (shape) => {
+            ComponentService.updateComponentColor("shape", color, shape._id).then();
+            return { ...shape, color };
         });
     };
 
@@ -82,11 +76,7 @@ const useCanvasViewModel = (id, databaseId) => {
     const handleSelectComponent = (componentId, event) => {
         setSelectedComponents((prev) => {
             if (event.shiftKey) {
-                if (!prev.includes(componentId)) {
-                    return [...prev, componentId];
-                } else {
-                    return prev.filter(id => id !== componentId);
-                }
+                return prev.includes(componentId) ? prev.filter(id => id !== componentId) : [...prev, componentId];
             } else {
                 return [componentId];
             }
@@ -101,7 +91,7 @@ const useCanvasViewModel = (id, databaseId) => {
     };
 
     // Handle text click
-    const handleTextClick = (databaseId) => {
+    const handleTextClick = () => {
         setOpenTextToolBar(true);
         setOpenImageToolBar(false);
     };
@@ -110,29 +100,30 @@ const useCanvasViewModel = (id, databaseId) => {
     const removeComponent = async (componentId, componentType) => {
         try {
             await removeAndPopComponentFromCanvas(databaseId, componentType, componentId);
-            setShapes((prevShapes) => {
-                return prevShapes.filter((shape) => shape._id !== componentId);
-            });
+            setShapes((prevShapes) => prevShapes.filter((shape) => shape._id !== componentId));
         } catch (error) {
             console.error("Failed to remove component:", error);
         }
     };
 
-    // Placeholder functions for future implementation
-    const handleSendBackward = () => {
-        console.log("Send Backward");
+    // ZIndex helper functions
+    const getNewZIndex = (shape, change) => shape.zIndex + change;
+
+    const calculateNewZIndex = (shape, change) => {
+        if (change === 50 || change === 0) return change;
+        if ((shape.zIndex === 50 && change > 0) || (shape.zIndex === 0 && change < 0)) return shape.zIndex;
+        return getNewZIndex(shape, change);
     };
 
-    const handleSendToBack = () => {
-        console.log("Send To Back");
+    const updateShapeZIndex = (shape, change) => {
+        const newZIndex = calculateNewZIndex(shape, change);
+        ComponentService.updateComponentZIndex("shape", newZIndex, shape._id).then();
+        return { ...shape, zIndex: newZIndex };
     };
 
-    const handleSendForward = () => {
-        console.log("Send Forward");
-    };
-
-    const handleSendToFront = () => {
-        console.log("Send To Front");
+    // Handle ZIndex change
+    const handleChangeZIndex = (change) => {
+        updateComponent(null, (shape) => updateShapeZIndex(shape, change));
     };
 
     return {
@@ -148,10 +139,10 @@ const useCanvasViewModel = (id, databaseId) => {
         shapes,
         removeComponent,
         handleColorChange,
-        handleSendBackward,
-        handleSendToBack,
-        handleSendForward,
-        handleSendToFront
+        handleSendBackward: () => handleChangeZIndex(-1),
+        handleSendToBack: () => handleChangeZIndex(0),
+        handleSendForward: () => handleChangeZIndex(1),
+        handleSendToFront: () => handleChangeZIndex(50)
     };
 };
 
