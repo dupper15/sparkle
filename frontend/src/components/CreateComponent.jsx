@@ -67,7 +67,7 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
                 x: e.clientX - position.x, y: e.clientY - position.y,
             });
             setIsDragging(true);
-            setIsSelected(true);
+            // setIsSelected(true);
         }
     };
     const handleMouseMove = (e) => {
@@ -149,23 +149,23 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
         }
     };
 
-    const handleClickOutside = (e) => {
-        const toolbars = document.querySelectorAll(".toolbar, .color-picker-panel");
-        const isClickInsideToolbar = Array.from(toolbars).some(toolbar => toolbar.contains(e.target));
-
-        if (componentRef.current && !componentRef.current.contains(e.target) && !isClickInsideToolbar) {
-            setIsSelected(false);
-        }
-    };
-
-    useEffect(() => {
-        console.log("Is Selected changed", info._id, isSelected);
-    }, [info._id, isSelected]);
-
-    useEffect(() => {
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    // const handleClickOutside = (e) => {
+    //     const toolbars = document.querySelectorAll(".toolbar, .color-picker-panel");
+    //     const isClickInsideToolbar = Array.from(toolbars).some(toolbar => toolbar.contains(e.target));
+    //
+    //     if (componentRef.current && !componentRef.current.contains(e.target) && !isClickInsideToolbar) {
+    //         setIsSelected(false);
+    //     }
+    // };
+    //
+    // useEffect(() => {
+    //     console.log("Is Selected changed", info._id, isSelected);
+    // }, [info._id, isSelected]);
+    //
+    // useEffect(() => {
+    //     document.addEventListener("mousedown", handleClickOutside);
+    //     return () => document.removeEventListener("mousedown", handleClickOutside);
+    // }, []);
     useEffect(() => {
         if (isDragging || isResizing || isTransforming) {
             document.addEventListener("mousemove", handleMouseMove);

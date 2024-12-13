@@ -95,7 +95,6 @@ const Canvas = React.forwardRef(
           {isImageToolBarOpen && (
             <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
               <ShapeToolBar
-                selectedComponentId={selectedComponentId}
                 handleColorChange={handleColorChange}
                 handleSendBackward={handleSendBackward}
                 handleSendToBack={handleSendToBack}
