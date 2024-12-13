@@ -5,19 +5,20 @@ import _ from "lodash";
 import ShapeService from "../services/ShapeService.js";
 
 /* eslint react/prop-types: 0 */
-const CreateComponent = ({info, removeComponent, onClick}) => {
+const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) => {
     const [isDragging, setIsDragging] = useState(false);
     const [dragOffset, setDragOffset] = useState({x: 0, y: 0});
     const [position, setPosition] = useState({x: info.x, y: info.y});
     const [size, setSize] = useState({width: info.width, height: info.height});
     const [isResizing, setIsResizing] = useState(false);
     const [resizeDirection, setResizeDirection] = useState(null);
-    const [isSelected, setIsSelected] = useState(false);
     const [resizeStartPosition, setResizeStartPosition] = useState({x: 0, y: 0});
     const [isTransforming, setIsTransforming] = useState(false);
     const startTransformRef = useRef({x: 0, y: 0, width: 90, height: 90, rotate: 0});
     const [deg, setDeg] = useState(0);
+    const componentRef = useRef(null);
 
+    const isSelected = selectedComponents.includes(info._id);
 
     const updateShapeInDatabase = useRef(_.debounce((updatedData) => {
             ShapeService.updateShape(info._id, updatedData)
@@ -147,11 +148,19 @@ const CreateComponent = ({info, removeComponent, onClick}) => {
             updateShapeInDatabase({x: newX, y: newY, width: newWidth, height: newHeight});
         }
     };
+
     const handleClickOutside = (e) => {
-        if (!e.target.closest(".resizable-component")) {
+        const toolbars = document.querySelectorAll(".toolbar, .color-picker-panel");
+        const isClickInsideToolbar = Array.from(toolbars).some(toolbar => toolbar.contains(e.target));
+
+        if (componentRef.current && !componentRef.current.contains(e.target) && !isClickInsideToolbar) {
             setIsSelected(false);
         }
     };
+
+    useEffect(() => {
+        console.log("Is Selected changed", info._id, isSelected);
+    }, [info._id, isSelected]);
 
     useEffect(() => {
         document.addEventListener("mousedown", handleClickOutside);
@@ -184,7 +193,6 @@ const CreateComponent = ({info, removeComponent, onClick}) => {
 
     useEffect(() => {
         const handleKeyDown = (e) => {
-            console.log(e)
             if (e.key === "Delete" && isSelected) {
                 removeComponent(info._id, "Shape");
             }
@@ -201,12 +209,8 @@ const CreateComponent = ({info, removeComponent, onClick}) => {
 
     const getShapeStyle = (info) => {
         const baseStyle = {
-            width: `${size.width}px`,
-            height: "100%",
-            backgroundColor: info.color ? info.color : "#e5e5e5", // backgroundColor: info.link ? "#e5e5e5" : "#e5e5e5",
-            backgroundImage: info.link ? `url(${info.link})` : null,
-            backgroundSize: "cover",
-            clipPath: info.clipPath,
+            width: `${size.width}px`, height: "100%", backgroundColor: info.color ? info.color : "#e5e5e5", // backgroundColor: info.link ? "#e5e5e5" : "#e5e5e5",
+            backgroundImage: info.link ? `url(${info.link})` : null, backgroundSize: "cover", clipPath: info.clipPath,
         };
 
         const shapeStyles = {
@@ -233,6 +237,7 @@ const CreateComponent = ({info, removeComponent, onClick}) => {
     };
 
     return (<div
+            ref={componentRef}
             className="wrapperDiv"
             style={{
                 position: "absolute",
@@ -384,8 +389,7 @@ const CreateComponent = ({info, removeComponent, onClick}) => {
 
             {/* Nội dung của shape */}
             <div
-                onClick={() => onClick(info)}
-                //onClick={() => info.setCurrentComponent(info)}
+                onClick={(event) => onClick(info, event)}
                 style={getShapeStyle(info)}
                 className="resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative"
             >

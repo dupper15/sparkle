@@ -421,7 +421,8 @@ const WorkplaceCanvas = () => {
                                 removeButton={() => removeCanvas(canvasData.id)}
                                 upButton={() => scrollToCanvas(index - 1)}
                                 downButton={() => scrollToCanvas(index + 1)}
-                                ref={(el) => (canvasRef.current[index] = el)}
+                                ref={(el) => (canvasRef.current[index] = el)} // Callback function
+                                // ref={(el) => (canvasRef.current[index] = el)}
                             />
                         </div>))}
                         <div>

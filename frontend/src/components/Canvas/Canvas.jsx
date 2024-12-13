@@ -28,21 +28,22 @@ const Canvas = React.forwardRef(
     ref
   ) => {
     const {
-      selectedComponentId,
-      isImageToolBarOpen,
-      isTextToolBarOpen,
-      isOver,
-      setNodeRef,
-      isDarkMode,
-      handleImageClick,
-      handleTextClick,
-      removeComponent,
-      shapes,
-      handleColorChange,
-      handleSendBackward,
-      handleSendToBack,
-      handleSendForward,
-      handleSendToFront,
+      selectedComponents,
+        isImageToolBarOpen,
+        isTextToolBarOpen,
+        canvasRef,
+        isOver,
+        setNodeRef,
+        isDarkMode,
+        handleShapeClick,
+        handleTextClick,
+        shapes,
+        removeComponent,
+        handleColorChange,
+        handleSendBackward,
+        handleSendToBack,
+        handleSendForward,
+        handleSendToFront
     } = useCanvasViewModel(id, databaseId);
 
     const [cursors, setCursors] = useState({});
@@ -86,7 +87,7 @@ const Canvas = React.forwardRef(
 
     return (
       <div
-        ref={ref}
+        ref={canvasRef}
         className='flex flex-col gap-4'
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}>
@@ -109,6 +110,7 @@ const Canvas = React.forwardRef(
             </div>
           )}
         </div>
+        <div><p>ref: {ref}</p></div>
         <div
           className={`flex justify-between items-center ${
             isDarkMode ? "text-white" : "text-black"
@@ -172,10 +174,9 @@ const Canvas = React.forwardRef(
                 current_canvas={current_canvas}
                 removeComponent={removeComponent}
                 updateShapePosition={updateShapePosition}
-                onClick={() => handleImageClick(info._id)}
-              />
-            )
-          )}
+                onClick={(info, event) => handleShapeClick(info._id, event)}
+                selectedComponents={selectedComponents}
+            />))}
           {Object.entries(cursors).map(([userId, position]) =>
             position.x !== null && position.y !== null ? (
               <div key={userId} className='absolute'>
