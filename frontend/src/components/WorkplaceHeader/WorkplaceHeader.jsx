@@ -35,8 +35,14 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   const projectId = localStorage.getItem("projectId")
   const user = useSelector((state) => state.user)
   const ownerId = user?.id
+  const project = useSelector((state) => state.project)
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [status, setStatus] = useState("")
+
+  useEffect(() => {
+    setStatus(project?.isPublic)
+  }, [project?.isPublic])
 
   const mutation = useMutation({
     mutationFn: (data) => {
@@ -55,8 +61,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   });
 
   const mutationPublic = useMutation({
-    mutationFn: async  ({projectId, ownerId}) => {
-      const response = await ProjectService.updatePublic(projectId, ownerId);
+    mutationFn: async  ({projectId, status}) => {
+      const response = await ProjectService.updatePublic(projectId, status);
       if (response.status === "ERROR") {
         // Throw an error to trigger onError
         throw new Error(response.message);
@@ -70,8 +76,14 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     },
     onSuccess: (data) => {
       setErrorMessage("");
-      const apiSuccessMessage = "Public project successfully!";
-      setSuccessMessage(apiSuccessMessage)
+      console.log('data', data)
+      if (data.data.isPublic === false){
+        const apiSuccessMessage = "Private project successfully!";
+        setSuccessMessage(apiSuccessMessage)
+      } else {
+        const apiSuccessMessage = "Public project successfully!";
+        setSuccessMessage(apiSuccessMessage)
+      } 
     },
   });
 
@@ -87,7 +99,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   }, [isSuccess, isError, errorMessage, successMessage]);
 
   const handlePublic = () => {
-    mutationPublic.mutate({projectId, ownerId})
+    mutationPublic.mutate({projectId, status})
+    setStatus(!status)
   }
 
   const toggleAddMember = () => {
@@ -179,12 +192,13 @@ const WorkplaceHeader = ({ usersInRoom }) => {
           className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 border-black shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
           <span className='gradient'>Share</span>
         </button>
-
-        <button
-          onClick={handlePublic}
-          className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
-          <span className='gradient'>Public</span>
-        </button>
+        {(ownerId === project?.owner) &&
+          <button
+            onClick={handlePublic}
+            className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
+            <span className='gradient'>{status ? "Private" : "Public"}</span>
+          </button>
+         }
       </div>
     </div>
   );

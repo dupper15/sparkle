@@ -102,6 +102,17 @@ const WorkplaceCanvas = () => {
         },
     });
 
+    const mutationTemplate = useMutation({
+        mutationFn: (data) => {
+            return ProjectService.updateProject(data.id, data.canvas);
+        }, onSuccess: (data) => {
+            handleGetDetailProject(data.data.id);
+            console.log("Project updated successfully:", data);
+        }, onError: (error) => {
+            console.error("Failed to update project:", error);
+        },
+    });
+
     const {data, isSuccess} = mutation;
 
     const scrollToCanvas = (index) => {
@@ -154,6 +165,32 @@ const WorkplaceCanvas = () => {
             // Hiển thị thông báo thành công
             Alert.success("Add canvas successfully!");
 
+            handleGetDetailProject(project?.id);
+        } catch (error) {
+            console.error("Failed to add canvas:", error.message);
+            Alert.error("Failed to add canvas.");
+        }
+    };
+
+    const addTemplate = async (templateCanvas) => {
+        try {
+            await mutationTemplate.mutateAsync({ id: project?.id, canvas: templateCanvas });
+
+            const newCanvas = {
+                background: templateCanvas?.background || '#ffffff',
+                componentArray: templateCanvas?.componentArray || [],
+                id: Date.now().toString(), // Tạo ID tạm thời
+            };
+    
+            // Cập nhật lại state của canvases
+            setCanvases((prev) => {
+                const updatedCanvases = [...prev, newCanvas];
+                setCurrentCanvas(newCanvas.id); // Chuyển đến canvas mới
+                return updatedCanvases;
+            });
+    
+            Alert.success("Template added successfully!");
+    
             handleGetDetailProject(project?.id);
         } catch (error) {
             console.error("Failed to add canvas:", error.message);
@@ -354,9 +391,7 @@ const WorkplaceCanvas = () => {
                             className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${isDarkMode ? "bg-[#252627] text-slate-700" : "bg-white text-slate-300"}`}>
                             <MdKeyboardArrowLeft/>
                         </div>
-                        {state === "design" && (<div className="grid grid-cols-2 gap-2">
-                            <TemplateDesign/>
-                        </div>)}
+                        {state === "design" && <TemplateDesign addCanvasFromTemplate={addTemplate} />}
                         {state === "shape" && (<Shape addNewShape={updateShapes} drag={setDraggingShape}/>)}
                         {state === "project" && <Project/>}
                         {state === "text" && <Text addNewText={add_text}/>}

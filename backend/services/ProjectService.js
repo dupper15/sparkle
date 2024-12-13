@@ -1,3 +1,4 @@
+const { fal } = require("@fal-ai/client");
 const Canvas = require("../models/CanvasModel");
 const Project = require("../models/ProjectModel");
 const User = require("../models/UserModel");
@@ -71,7 +72,13 @@ const getAllProject = (userId) => {
     try {
       const projects = await Project.find({
         owner: userId,
-      }).populate("canvasArray");
+      }).populate({
+        path: "canvasArray",
+        populate: {
+          path: "componentArray", // Trỏ tới mảng componentArray
+          model: "Component", // Tên model được tham chiếu
+        },
+      });
       if (!projects) {
         resolve({
           status: "ERROR",
@@ -101,7 +108,13 @@ const getAllTeamProject = (userId) => {
       const user = await User.findById(userId)
       const projects = await Project.find({
         editorArray: { $in: [user.email] }, 
-      }).populate("canvasArray");
+      }).populate({
+        path: "canvasArray",
+        populate: {
+          path: "componentArray", // Trỏ tới mảng componentArray
+          model: "Component", // Tên model được tham chiếu
+        },
+      });
       if (!projects) {
         resolve({
           status: "ERROR",
@@ -130,7 +143,13 @@ const getPublic = () => {
     try {
       const projects = await Project.find({
         isPublic: true,
-      }).populate("canvasArray");
+      }).populate({
+        path: "canvasArray",
+        populate: {
+          path: "componentArray", // Trỏ tới mảng componentArray
+          model: "Component", // Tên model được tham chiếu
+        },
+      });
       if (!projects) {
         resolve({
           status: "ERROR",
@@ -154,7 +173,7 @@ const getPublic = () => {
   });
 };
 
-const updateProject = (projectId) => {
+const updateProject = (projectId, data) => {
   return new Promise(async (resolve, reject) => {
     try {
       const checkProject = await Project.findOne({
@@ -168,10 +187,16 @@ const updateProject = (projectId) => {
         return;
       }
 
-      const createdCanvas = await Canvas.create({
-        background: "#ffffff",
-        componentArray: [],
-      });
+      let createdCanvas = null
+
+      if(!data){
+          createdCanvas = await Canvas.create({
+          background: "#ffffff",
+          componentArray: [],
+        });
+      } else {
+        createdCanvas = data
+      }
 
       const canvasArray = [...checkProject.canvasArray, createdCanvas._id];
 
@@ -204,10 +229,9 @@ const updateProject = (projectId) => {
   });
 };
 
-const updatePublic = async (projectId, ownerId) => {
+const updatePublic = async (projectId, status) => {
   try {
     const checkProject = await Project.findOne({ _id: projectId });
-    const checkUser = await User.findById(ownerId);
 
     if (!checkProject) {
       return {
@@ -215,19 +239,22 @@ const updatePublic = async (projectId, ownerId) => {
         message: "Project is not defined!",
       };
     }
-    
-    if (!checkProject.owner.equals(checkUser._id)) {
-      return {
-        status: "ERROR",
-        message: "You don't have permission to post this project publicly!",
-      };
-    }
 
-    const updatedProject = await Project.findByIdAndUpdate(
-      projectId,
-      { isPublic: true },
-      { new: true }
-    );
+    let updatedProject = null
+
+    if (status === true){
+      updatedProject = await Project.findByIdAndUpdate(
+        projectId,
+        { isPublic: false },
+        { new: true }
+      );
+    } else {
+      updatedProject = await Project.findByIdAndUpdate(
+        projectId,
+        { isPublic: true },
+        { new: true }
+      );
+    }
 
     return {
       status: "OK",

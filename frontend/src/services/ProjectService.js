@@ -68,10 +68,10 @@ export const updateProject = async (id, data) => {
   }
 };
 
-export const updatePublic = async (id, ownerId) => {
+export const updatePublic = async (id, status) => {
   try {
     const response = await axios.put(
-      `${import.meta.env.VITE_API_KEY}/project/update-public/${id}`, {data: ownerId}
+      `${import.meta.env.VITE_API_KEY}/project/update-public/${id}`, {data: status}
     );
     return response.data;
   } catch (error) {
