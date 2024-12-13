@@ -22,16 +22,17 @@ const Canvas = React.forwardRef(({
                                      updateShapePosition,
                                  }, ref) => {
     const {
-        selectedComponentId,
+        selectedComponents,
         isImageToolBarOpen,
         isTextToolBarOpen,
+        canvasRef,
         isOver,
         setNodeRef,
         isDarkMode,
-        handleImageClick,
+        handleShapeClick,
         handleTextClick,
-        removeComponent,
         shapes,
+        removeComponent,
         handleColorChange,
         handleSendBackward,
         handleSendToBack,
@@ -39,10 +40,10 @@ const Canvas = React.forwardRef(({
         handleSendToFront
     } = useCanvasViewModel(id, databaseId);
 
-    return (<div ref={ref} className="flex flex-col gap-4">
+    return (<div ref={canvasRef} className="flex flex-col gap-4">
         <div className={"z-50"}>
             {isImageToolBarOpen && (<div className="fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20">
-                <ShapeToolBar selectedComponentId={selectedComponentId} handleColorChange={handleColorChange}
+                <ShapeToolBar selectedComponentId="1" handleColorChange={handleColorChange}
                               handleSendBackward={handleSendBackward} handleSendToBack={handleSendToBack}
                               handleSendToFront={handleSendToFront} handleSendForward={handleSendForward}
                 />
@@ -51,6 +52,7 @@ const Canvas = React.forwardRef(({
                 <TextToolbar/>
             </div>)}
         </div>
+        <div><p>ref: {ref}</p></div>
         <div
             className={`flex justify-between items-center ${isDarkMode ? "text-white" : "text-black"}`}>
             <div className="text-2xl font-bold">Canvas {title}</div>
@@ -106,7 +108,8 @@ const Canvas = React.forwardRef(({
                 current_canvas={current_canvas}
                 removeComponent={removeComponent}
                 updateShapePosition={updateShapePosition}
-                onClick={() => handleImageClick(info._id)}
+                onClick={(info, event) => handleShapeClick(info._id, event)}
+                selectedComponents={selectedComponents}
             />))}
         </div>
     </div>);

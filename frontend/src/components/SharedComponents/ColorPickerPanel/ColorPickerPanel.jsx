@@ -40,7 +40,7 @@ const ColorPickerPanel = ({ colorPanelCloseRequest, activeColor, setActiveColor,
     };
 
     return (
-        <div className="w-80 bg-white rounded-lg shadow-lg p-4 font-sans">
+        <div className="color-picker-panel w-80 bg-white rounded-lg shadow-lg p-4 font-sans">
             <div className="flex justify-between items-center">
                 <h2 className="text-lg font-medium">Colour</h2>
                 <button
