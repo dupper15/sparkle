@@ -10,7 +10,7 @@ const createComponent = (newComponent) => {
                 width: newComponent.width,
                 type: newComponent.type,
                 opacity: newComponent.opacity,
-                z_index: newComponent.z_index,
+                zIndex: newComponent.zIndex,
                 rotate: newComponent.rotate,
                 image: newComponent.image,
                 type_shape: newComponent.type_shape,
