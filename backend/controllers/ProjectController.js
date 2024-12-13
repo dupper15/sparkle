@@ -95,7 +95,6 @@ const updateProject = async (req, res) => {
   try {
     const projectId = req.params.id;
     const data = req.body;
-    console.log("data", data)
     if (!projectId) {
       return res.status(400).json({
         status: "ERROR",

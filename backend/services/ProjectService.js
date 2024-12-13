@@ -208,24 +208,27 @@ const updateProject = (projectId, data) => {
         return;
       }
 
+      const updatedCanvasCopy = JSON.parse(JSON.stringify(data));
+      delete updatedCanvasCopy._id
+
+      updatedCanvasCopy.componentArray = await Promise.all(
+        (updatedCanvasCopy.componentArray || []).map(async (component) => {
+          const newComponent = { ...component };
+          delete newComponent._id;
+      
+          // Lưu component mới vào database
+          const savedComponent = await Component.create(newComponent);
+          return savedComponent; // Trả về toàn bộ thông tin hoặc chỉ `_id`
+        })
+      );
+      
+      // Lưu canvas copy mới vào database
+      const savedCanvasCopy = await Canvas.create(updatedCanvasCopy);      
+
       let createdCanvas = null
 
       if (data && Object.keys(data).length > 0) {
-
-        const newComponentArray = data.componentArray.map((item) => {
-          // Tạo _id mới
-          const newId = generateId();
-          
-          // Trả về object mới với _id mới và các thuộc tính còn lại
-          const { _id, ...rest } = item;
-          return { _id: newId, ...rest };
-        });
-        console.log('data canvas', newComponentArray )
-
-        createdCanvas = await Canvas.create({
-          background: data.background,
-          componentArray: newComponentArray
-        })
+        createdCanvas = savedCanvasCopy
       } else {
         createdCanvas = await Canvas.create({
           background: "#ffffff",
