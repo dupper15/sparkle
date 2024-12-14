@@ -9,6 +9,7 @@ const useCanvasViewModel = (id, databaseId) => {
     const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
     const [isTextToolBarOpen, setOpenTextToolBar] = useState(false);
     const [shapes, setShapes] = useState([]);
+    const [text, setText] = useState([]);
     const [selectedComponents, setSelectedComponents] = useState([]);
     const canvasRef = useRef(null);
     const { isOver, setNodeRef } = useDroppable({ id });
@@ -56,19 +57,24 @@ const useCanvasViewModel = (id, databaseId) => {
     }, [selectedComponents, canvasRef]);
 
     // Update component helper function
-    const updateComponent = (componentId, updateFn) => {
+    const updateComponent = (updateFn) => {
         setShapes((prevShapes) =>
             prevShapes.map((shape) =>
                 selectedComponents.includes(shape._id) ? updateFn(shape) : shape
+            )
+        );
+        setText((prevText) =>
+            prevText.map((text) =>
+                selectedComponents.includes(text._id) ? updateFn(text) : text
             )
         );
     };
 
     // Handle color change
     const handleColorChange = (color) => {
-        updateComponent(null, (shape) => {
-            ComponentService.updateComponentColor("shape", color, shape._id).then();
-            return { ...shape, color };
+        updateComponent((component) => {
+            ComponentService.updateComponentColor(component.type, color, component._id).then();
+            return { ...component, color };
         });
     };
 
@@ -91,7 +97,8 @@ const useCanvasViewModel = (id, databaseId) => {
     };
 
     // Handle text click
-    const handleTextClick = () => {
+    const handleTextClick = (textId, event) => {
+        handleSelectComponent(textId, event);
         setOpenTextToolBar(true);
         setOpenImageToolBar(false);
     };
@@ -101,29 +108,30 @@ const useCanvasViewModel = (id, databaseId) => {
         try {
             await removeAndPopComponentFromCanvas(databaseId, componentType, componentId);
             setShapes((prevShapes) => prevShapes.filter((shape) => shape._id !== componentId));
+            setText((prevText) => prevText.filter((text) => text._id !== componentId));
         } catch (error) {
             console.error("Failed to remove component:", error);
         }
     };
 
     // ZIndex helper functions
-    const getNewZIndex = (shape, change) => shape.zIndex + change;
+    const getNewZIndex = (component, change) => component.zIndex + change;
 
-    const calculateNewZIndex = (shape, change) => {
+    const calculateNewZIndex = (component, change) => {
         if (change === 50 || change === 0) return change;
-        if ((shape.zIndex === 50 && change > 0) || (shape.zIndex === 0 && change < 0)) return shape.zIndex;
-        return getNewZIndex(shape, change);
+        if ((component.zIndex === 50 && change > 0) || (component.zIndex === 0 && change < 0)) return component.zIndex;
+        return getNewZIndex(component, change);
     };
 
-    const updateShapeZIndex = (shape, change) => {
-        const newZIndex = calculateNewZIndex(shape, change);
-        ComponentService.updateComponentZIndex("shape", newZIndex, shape._id).then();
-        return { ...shape, zIndex: newZIndex };
+    const updateComponentZIndex = (component, change) => {
+        const newZIndex = calculateNewZIndex(component, change);
+        ComponentService.updateComponentZIndex(component.type, newZIndex, component._id).then();
+        return { ...component, zIndex: newZIndex };
     };
 
     // Handle ZIndex change
     const handleChangeZIndex = (change) => {
-        updateComponent(null, (shape) => updateShapeZIndex(shape, change));
+        updateComponent((component) => updateComponentZIndex(component, change));
     };
 
     return {
@@ -137,6 +145,7 @@ const useCanvasViewModel = (id, databaseId) => {
         handleShapeClick,
         handleTextClick,
         shapes,
+        text,
         removeComponent,
         handleColorChange,
         handleSendBackward: () => handleChangeZIndex(-1),

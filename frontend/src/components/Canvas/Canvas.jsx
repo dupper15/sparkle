@@ -38,6 +38,7 @@ const Canvas = React.forwardRef(
         handleShapeClick,
         handleTextClick,
         shapes,
+        text,
         removeComponent,
         handleColorChange,
         handleSendBackward,
@@ -164,6 +165,7 @@ const Canvas = React.forwardRef(
                 }}
                 onClick={() => handleTextClick(info.id)}>
                 {info.title}
+              <p>{info.type}</p>
               </div>
             ) : (
               <CreateComponent
