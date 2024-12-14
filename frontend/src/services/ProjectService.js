@@ -68,6 +68,18 @@ export const updateProject = async (id, data) => {
   }
 };
 
+export const addProject = async (id, data) => {
+  try {
+    const response = await axios.put(
+      `${import.meta.env.VITE_API_KEY}/project/add-project/${id}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};
+
 export const updatePublic = async (id) => {
   try {
     const response = await axios.put(

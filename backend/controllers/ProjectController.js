@@ -110,6 +110,25 @@ const updateProject = async (req, res) => {
   }
 };
 
+const addProject = async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const data = req.body;
+    if (!projectId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Id is not defined",
+      });
+    }
+    const response = await ProjectService.addProject(projectId, data);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const updatePublic = async (req, res) => {
   try {
     const projectId = req.params.id;
@@ -242,6 +261,7 @@ module.exports = {
   getAllTeamProject,
   getPublic,
   updateProject,
+  addProject,
   updatePublic,
   updatePrivate,
   deleteProject,

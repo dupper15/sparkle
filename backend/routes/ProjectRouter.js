@@ -8,6 +8,7 @@ router.get("/getAll/:id", projectController.getAllProject);
 router.get("/get-teamProject/:id", projectController.getAllTeamProject);
 router.get("/get-projectPublic", projectController.getPublic);
 router.put("/update/:id", projectController.updateProject);
+router.put("/add-project/:id", projectController.addProject);
 router.put("/update-public/:id", projectController.updatePublic);
 router.put("/update-private/:id", projectController.updatePrivate);
 router.delete("/delete/:id", projectController.deleteProject);

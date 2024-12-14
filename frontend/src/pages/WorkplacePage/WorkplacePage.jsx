@@ -120,6 +120,17 @@ const WorkplaceCanvas = () => {
         },
     });
 
+    const mutationProject = useMutation({
+        mutationFn: (data) => {
+            return ProjectService.addProject(data.id, data);
+        }, onSuccess: (data) => {
+            handleGetDetailProject(data.data.id);
+            console.log("Project updated successfully:", data);
+        }, onError: (error) => {
+            console.error("Failed to update project:", error);
+        },
+    });
+
     const {data, isSuccess} = mutation;
 
     const scrollToCanvas = (index) => {
@@ -196,6 +207,34 @@ const WorkplaceCanvas = () => {
                 return updatedCanvases;
             });
     
+            Alert.success("Template added successfully!");
+    
+            handleGetDetailProject(project?.id);
+        } catch (error) {
+            console.error("Failed to add canvas:", error.message);
+            Alert.error("Failed to add canvas.");
+        }
+    };
+
+    const addProject = async (projectAdd) => {
+        try {
+            await mutationProject.mutateAsync({ id: project?.id, canvasArray: projectAdd.canvasArray });
+
+            project.canvasArray.map((canvas) => {
+                const newCanvas = {
+                    background: canvas?.background || '#ffffff',
+                    componentArray: canvas?.componentArray || [],
+                    id: canvas._id,
+                };
+    
+                // Cập nhật state của canvases
+                setCanvases((prev) => {
+                    const updatedCanvases = [...prev, newCanvas];
+                    setCurrentCanvas(newCanvas.id); // Chuyển đến canvas vừa thêm
+                    return updatedCanvases;
+                });
+            })
+                
             Alert.success("Template added successfully!");
     
             handleGetDetailProject(project?.id);
@@ -400,7 +439,7 @@ const WorkplaceCanvas = () => {
                         </div>
                         {state === "design" && <TemplateDesign key={renderKey} addCanvasFromTemplate={addTemplate} />}
                         {state === "shape" && (<Shape addNewShape={updateShapes} drag={setDraggingShape}/>)}
-                        {state === "project" && <Project/>}
+                        {state === "project" && <Project addProjectFromWorkplace={addProject}/>}
                         {state === "text" && <Text addNewText={add_text}/>}
                         {state === "image" && <Image drag={setDraggingShape}/>}
                         {state === "background" && (<Background setBackground={setBackground}/>)}
