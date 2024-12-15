@@ -11,7 +11,7 @@ const textSchema = new mongoose.Schema(
         // z_index: {type: Number, default:1},
         // rotate: {type: Number, default:0},
         content: {type: String, default: "Add a text"},
-        color: {type: String, default: "#000000"},
+        color: {type: String, default: "#e5e5e5"},
         fontSize: {type: Number, default: 16},
         fontFamily: {type: String, default: "Times new Roman"},
         fontStyle: {type: String, default: null},

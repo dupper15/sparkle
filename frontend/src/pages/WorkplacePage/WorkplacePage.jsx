@@ -288,6 +288,7 @@ const WorkplaceCanvas = () => {
                 const response = await createAndAddComponentToCanvas(extractIdFromOver(over.id), draggingComponent.type, newComponent);
                 newComponent.id = response.data._id;
 
+                console.log(`update-${draggingComponent.type.toLowerCase()}s-${over.id}`)
                 // Notify the specific canvas to update its components
                 document.dispatchEvent(new CustomEvent(`update-${draggingComponent.type.toLowerCase()}s-${over.id}`, {
                     detail: newComponent,

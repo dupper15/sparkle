@@ -39,7 +39,7 @@ const TextService = {
         return response.data;
     },
     async updateText(id, updatedData) {
-        return axios.put(`${import.meta.env.VITE_API_KEY}/text/${id}`, updatedData)
+        return axios.put(`${import.meta.env.VITE_API_KEY}/text/update/${id}`, updatedData)
             .then((response) => response.data)
             .catch((error) => {
                 console.error("Error updating text:", error);
@@ -47,7 +47,7 @@ const TextService = {
             });
     },
     async deleteText(id) {
-        return axios.delete(`${import.meta.env.VITE_API_KEY}/text/${id}`)
+        return axios.delete(`${import.meta.env.VITE_API_KEY}/text/delete/${id}`)
             .then((response) => response.data)
             .catch((error) => {
                 console.error("Error deleting text:", error);
