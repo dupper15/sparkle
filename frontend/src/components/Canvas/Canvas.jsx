@@ -97,7 +97,13 @@ const Canvas = React.forwardRef(({
                 />
             </div>)}
             {isTextToolBarOpen && (<div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
-                <TextToolbar/>
+                <TextToolbar
+                    handleColorChange={handleColorChange}
+                    handleSendBackward={handleSendBackward}
+                    handleSendToBack={handleSendToBack}
+                    handleSendToFront={handleSendToFront}
+                    handleSendForward={handleSendForward}
+                />
             </div>)}
         </div>
         <div><p>ref: {ref}</p></div>

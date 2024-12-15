@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import {updateTextColor, updateTextTransformation, uploadText} from "../../../../services/TextService.js";
+import { updateTextColor, updateTextTransformation, uploadText } from "../../../../services/TextService.js";
 
 const useTextToolbarViewModel = (selectedComponentId) => {
     const [openColorPickerPanel, setOpenPickerPanel] = useState(false);
@@ -12,8 +12,16 @@ const useTextToolbarViewModel = (selectedComponentId) => {
     };
 
     const handleColorChange = useCallback((color) => {
+        console.log("handleColorChange called with color:", color);
         setActiveColor(color);
-        updateTextColor(selectedComponentId, color).then(r => console.log(r));
+        console.log("activeColor set to:", color);
+        updateTextColor(selectedComponentId, color)
+            .then(response => {
+                console.log("updateTextColor response:", response);
+            })
+            .catch(error => {
+                console.error("updateTextColor error:", error);
+            });
     }, [selectedComponentId]);
 
     const handleBoldClick = () => {
