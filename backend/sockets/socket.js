@@ -32,10 +32,8 @@ const initializeSocket = async (server, mongoUri) => {
 
   const rooms = {};
   const activeUsers = {};
-
+  const selectComponent = {};
   io.on("connection", (socket) => {
-    console.log("A user connected", socket.id);
-
     socket.on("setUserId", (userId) => {
       socket.userId = userId;
     });
@@ -148,12 +146,49 @@ const initializeSocket = async (server, mongoUri) => {
       if (!socket.userId || !databaseId) return;
 
       socket.leave(databaseId);
+
       if (activeUsers[databaseId]?.[socket.userId]) {
         delete activeUsers[databaseId][socket.userId];
         socket.to(databaseId).emit("remove-cursor", { userId: socket.userId });
       }
     });
+    socket.on("select-component", async ({ id, userId1, roomId }) => {
+      socket.join(roomId);
+      const userName = await getUserName(userId1);
+      console.log("User selected component:", { id, userId1, userName });
+      // Initialize selection array if it doesn't exist
+      if (!selectComponent[id]) {
+        selectComponent[id] = [];
+      }
 
+      // Add user to selection if not already present
+      if (!selectComponent[id].find((user) => user.userId === userId1)) {
+        selectComponent[id].push({ userId1, userName });
+      }
+      console.log("Updated selectComponent:", selectComponent);
+      io.to(roomId).emit("update-select-component", selectComponent);
+    });
+
+    // Handle component deselection
+    socket.on("deselect-component", ({ id, userId, roomId }) => {
+      if (selectComponent[id]) {
+        // Remove user from selection
+        selectComponent[id] = selectComponent[id].filter(
+          (user) => user.userId !== userId
+        );
+
+        // Remove the component if no users are selecting it
+        if (selectComponent[id].length === 0) {
+          delete selectComponent[id];
+        }
+      }
+
+      console.log(
+        "Updated selectComponent after deselection:",
+        selectComponent
+      );
+      io.to(roomId).emit("update-select-component", selectComponent);
+    });
     socket.on("disconnect", () => {
       for (const roomId in rooms) {
         const index = rooms[roomId]?.indexOf(socket.userId);
