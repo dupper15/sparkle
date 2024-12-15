@@ -149,23 +149,6 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
         }
     };
 
-    // const handleClickOutside = (e) => {
-    //     const toolbars = document.querySelectorAll(".toolbar, .color-picker-panel");
-    //     const isClickInsideToolbar = Array.from(toolbars).some(toolbar => toolbar.contains(e.target));
-    //
-    //     if (componentRef.current && !componentRef.current.contains(e.target) && !isClickInsideToolbar) {
-    //         setIsSelected(false);
-    //     }
-    // };
-    //
-    // useEffect(() => {
-    //     console.log("Is Selected changed", info._id, isSelected);
-    // }, [info._id, isSelected]);
-    //
-    // useEffect(() => {
-    //     document.addEventListener("mousedown", handleClickOutside);
-    //     return () => document.removeEventListener("mousedown", handleClickOutside);
-    // }, []);
     useEffect(() => {
         if (isDragging || isResizing || isTransforming) {
             document.addEventListener("mousemove", handleMouseMove);
@@ -252,6 +235,7 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
             }}
             onMouseDown={handleMouseDown}
         >
+            <p>type: {info.type}</p>
             {/* Nút xoay (icon) */}
             {isSelected && (<MdOutlineChangeCircle
                 size={20}
@@ -389,7 +373,10 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
 
             {/* Nội dung của shape */}
             <div
-                onClick={(event) => onClick(info, event)}
+                onClick={(event) => {
+                    console.log("Click shape", info._id);
+                    onClick(info, event)
+                }}
                 style={getShapeStyle(info)}
                 className="resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative"
             >
