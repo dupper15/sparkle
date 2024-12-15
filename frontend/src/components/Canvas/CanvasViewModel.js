@@ -89,9 +89,15 @@ const useCanvasViewModel = (id, databaseId) => {
 
     // Handle component selection
     const handleSelectComponent = (componentId, event) => {
+        const componentType = components.find(component => component._id === componentId)?.type;
         setSelectedComponents((prev) => {
             if (event.shiftKey) {
-                return prev.includes(componentId) ? prev.filter(id => id !== componentId) : [...prev, componentId];
+                const allSameType = prev.every(id => components.find(component => component._id === id)?.type === componentType);
+                if (allSameType) {
+                    return prev.includes(componentId) ? prev.filter(id => id !== componentId) : [...prev, componentId];
+                } else {
+                    return prev;
+                }
             } else {
                 return [componentId];
             }

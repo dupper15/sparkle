@@ -7,8 +7,15 @@ import TextFormatSection from "../SubComponents/TextFormatSection/TextFormatSect
 import PositionEditSection from "../SubComponents/PositionEditSection/PositionEditSection.jsx";
 import useTextToolbarViewModel from "./TextToolbarViewModel";
 
-/* eslint react/prop-types: 0*/
-const TextToolbar = ({ selectedComponentId }) => {
+/* eslint react/prop-types: 0 */
+const TextToolbar = ({
+                         selectedComponentId,
+                         handleColorChange,
+                         handleSendBackward,
+                         handleSendToBack,
+                         handleSendForward,
+                         handleSendToFront
+                     }) => {
     const {
         openColorPickerPanel,
         handleColorClick,
@@ -19,7 +26,6 @@ const TextToolbar = ({ selectedComponentId }) => {
         isItalic,
         handleBoldClick,
         handleItalicClick,
-        handleColorChange,
         uploadProperties,
     } = useTextToolbarViewModel(selectedComponentId);
 
@@ -36,10 +42,14 @@ const TextToolbar = ({ selectedComponentId }) => {
                 isBold={isBold}
                 isItalic={isItalic}
                 openColorPickerPanel={openColorPickerPanel}
+                setOpenPickerPanel={setOpenPickerPanel}
+                activeColor={activeColor}
+                setActiveColor={setActiveColor}
                 handleBoldClick={handleBoldClick}
                 handleItalicClick={handleItalicClick}
                 handleColorClick={handleColorClick}
                 handleColorPanelCloseRequest={setOpenPickerPanel}
+                handleColorChange={handleColorChange}
             ></TextFormatSection>
 
             <RxDividerVertical />
@@ -49,7 +59,13 @@ const TextToolbar = ({ selectedComponentId }) => {
 
             <RxDividerVertical />
 
-            <PositionEditSection></PositionEditSection>
+            {/* Position Edit Section */}
+            <PositionEditSection
+                handleSendBackward={handleSendBackward}
+                handleSendToBack={handleSendToBack}
+                handleSendForward={handleSendForward}
+                handleSendToFront={handleSendToFront}
+            />
         </div>
     );
 };
