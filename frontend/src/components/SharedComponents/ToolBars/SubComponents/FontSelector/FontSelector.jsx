@@ -2,7 +2,7 @@ import React, {useMemo} from 'react';
 import useFontSelectorViewModel, {FontList} from './FontSelectorViewModel';
 
 // eslint-disable-next-line react/prop-types
-const FontSelector = ({handleFontFamilyChange, currentFont: currentFontFamily}) => {
+const FontSelector = ({handleFontFamilyChange, currentFontFamily}) => {
     const {onFontFamilyChange} = useFontSelectorViewModel(handleFontFamilyChange, currentFontFamily);
 
     const fontOptions = useMemo(() => {

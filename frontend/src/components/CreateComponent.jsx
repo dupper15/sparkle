@@ -374,7 +374,6 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
             {/* Nội dung của shape */}
             <div
                 onClick={(event) => {
-                    console.log("Click shape", info._id);
                     onClick(info, event)
                 }}
                 style={getShapeStyle(info)}

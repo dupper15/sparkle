@@ -1,13 +1,9 @@
-import {useState} from 'react';
-
 const useFontSelectorViewModel = (handleFontFamilyChange) => {
-    const [currentFont, setCurrentFont] = useState('Arial');
 
     const onFontFamilyChange = (event) => {
         try {
             const newFont = event.target.value;
             if (FontList.includes(newFont)) {
-                setCurrentFont(newFont);
                 handleFontFamilyChange(newFont);
             } else {
                 throw new Error("Selected font is not in the font list.");
@@ -18,7 +14,7 @@ const useFontSelectorViewModel = (handleFontFamilyChange) => {
     };
 
     return {
-        currentFont, onFontFamilyChange,
+        onFontFamilyChange,
     };
 };
 

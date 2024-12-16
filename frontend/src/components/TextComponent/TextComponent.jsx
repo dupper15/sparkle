@@ -32,7 +32,6 @@ const TextComponent = ({info, onClick, removeComponent, selectedComponents}) => 
             display: "flex",
             alignItems: "center",
             justifyContent: info.justifyContent || "center",
-            fontFamily: info.fontFamily,
             cursor: "pointer",
         }}
         onClick={(event) => {
@@ -40,7 +39,14 @@ const TextComponent = ({info, onClick, removeComponent, selectedComponents}) => 
         }}
         onMouseDown={(event) => handleMouseDown(event)}
     >
-        <h2 style={{color: info.color}}>{info.content}</h2>
+        <h2 style={{
+            color: info.color,
+            fontFamily: info.fontFamily,
+            fontSize: info.fontSize,
+            fontStyle: info.fontStyle,
+            fontWeight: info.fontWeight,
+            textDecorationLine: info.textDecorationLine,
+        }}>{info.content}</h2>
         {isSelected && (<MdOutlineChangeCircle
             size={20}
             className="resize-handle transform-icon"

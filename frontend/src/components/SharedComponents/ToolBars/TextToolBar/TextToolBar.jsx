@@ -9,48 +9,57 @@ import useTextToolbarViewModel from "./TextToolbarViewModel";
 
 /* eslint react/prop-types: 0 */
 const TextToolbar = ({
+                         selectedTextFontSize,
                          selectedTextFontFamily,
+                         selectedTextFontWeight,
+                         selectedTextFontStyle,
+                         selectedTextDecorationLine,
                          handleColorChange,
                          handleSendBackward,
                          handleSendToBack,
                          handleSendForward,
                          handleSendToFront,
-                         handleFontFamilyChange
+                         handleFontFamilyChange,
+                         handleFontSizeChange,
+                         handleFontWeightChange,
+                         handleFontStyleChange,
+                         handleTextDecorationLineChange,
                      }) => {
     const {
         openColorPickerPanel,
-        handleColorClick,
         setOpenPickerPanel,
         activeColor,
         setActiveColor,
         isBold,
         isItalic,
-        handleBoldClick,
-        handleItalicClick,
-    } = useTextToolbarViewModel();
-
+        isUnderlined,
+    } = useTextToolbarViewModel(selectedTextFontWeight, selectedTextFontStyle, selectedTextDecorationLine);
     return (
         <div className="toolbar h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
             {/* Font */}
-            <FontSelector currentFontFamily={selectedTextFontFamily} handleFontFamilyChange={handleFontFamilyChange}></FontSelector>
+            <FontSelector currentFontFamily={selectedTextFontFamily}
+                          handleFontFamilyChange={handleFontFamilyChange}></FontSelector>
 
             {/* Font Size */}
-            <FontSizeField></FontSizeField>
+            <FontSizeField currentFontSize={selectedTextFontSize}
+                           handleFontSizeChange={handleFontSizeChange}
+            ></FontSizeField>
 
             {/* Text Formatting */}
             <TextFormatSection
                 isBold={isBold}
                 isItalic={isItalic}
+                isUnderlined={isUnderlined}
                 openColorPickerPanel={openColorPickerPanel}
                 setOpenPickerPanel={setOpenPickerPanel}
                 activeColor={activeColor}
                 setActiveColor={setActiveColor}
-                handleBoldClick={handleBoldClick}
-                handleItalicClick={handleItalicClick}
-                handleColorClick={handleColorClick}
                 handleColorPanelCloseRequest={setOpenPickerPanel}
                 handleColorChange={handleColorChange}
-            ></TextFormatSection>
+                handleFontWeightChange={handleFontWeightChange}
+                handleFontStyleChange={handleFontStyleChange}
+                handleTextDecorationLineChange={handleTextDecorationLineChange}
+            />
 
             <RxDividerVertical/>
 
