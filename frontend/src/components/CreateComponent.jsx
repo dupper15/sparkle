@@ -11,6 +11,7 @@ const CreateComponent = ({
   onClick,
   selectedComponents,
   isFocused,
+  userNames,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
@@ -291,12 +292,13 @@ const CreateComponent = ({
       className='wrapperDiv'
       style={{
         position: "absolute",
-        width: size.width,
-        height: size.height,
+        width: size.width + 20,
+        height: size.height + 20,
         left: position.x,
         top: position.y,
+        padding: "10px",
         zIndex: 10,
-        border: isFocused ? "2px solid red" : "none",
+        border: isFocused ? "2px solid blue" : "none",
         clipPath: info.clipPath,
         transform: `rotate(${deg}deg)`, // Xoay shape
         transformOrigin: "center", // Xác định gốc xoay tại trung tâm
@@ -446,6 +448,26 @@ const CreateComponent = ({
         onClick={(event) => onClick(info, event)}
         style={getShapeStyle(info)}
         className='resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative'></div>
+      <div>
+        {Object.entries(userNames).map(([index, value]) => (
+          <div
+            key={index}
+            style={{
+              position: "absolute",
+              right: 0,
+              top: `${index * 20}px`,
+              zIndex: 50,
+            }}>
+            <span
+              className='block text-xs bg-blue-400 text-white rounded-lg py-0.5 px-1 text-center cursor-not-allowed'
+              style={{
+                display: "inline-block",
+              }}>
+              {value}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
