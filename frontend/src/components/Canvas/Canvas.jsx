@@ -25,22 +25,32 @@ const Canvas = React.forwardRef(({
                                      updateShapePosition,
                                  }, ref) => {
     const {
+        components,
         selectedComponents,
+        selectedTextFontFamily,
+        selectedTextFontSize,
+        selectedTextFontWeight,
+        selectedTextFontStyle,
+        selectedTextDecorationLine,
         isImageToolBarOpen,
         isTextToolBarOpen,
-        canvasRef,
-        isOver,
-        setNodeRef,
         isDarkMode,
+        isOver,
+        canvasRef,
+        setNodeRef,
         handleShapeClick,
         handleTextClick,
-        components,
-        removeComponent,
         handleColorChange,
+        handleFontFamilyChange,
+        handleFontSizeChange,
+        handleFontWeightChange,
+        handleFontStyleChange,
+        handleTextDecorationLineChange,
         handleSendBackward,
         handleSendToBack,
         handleSendForward,
-        handleSendToFront
+        handleSendToFront,
+        removeComponent,
     } = useCanvasViewModel(id, databaseId);
 
     const [cursors, setCursors] = useState({});
@@ -98,11 +108,21 @@ const Canvas = React.forwardRef(({
             </div>)}
             {isTextToolBarOpen && (<div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
                 <TextToolbar
+                    selectedTextFontFamily={selectedTextFontFamily}
+                    selectedTextFontSize={selectedTextFontSize}
+                    selectedTextFontWeight={selectedTextFontWeight}
+                    selectedTextFontStyle={selectedTextFontStyle}
+                    selectedTextDecorationLine={selectedTextDecorationLine}
                     handleColorChange={handleColorChange}
                     handleSendBackward={handleSendBackward}
                     handleSendToBack={handleSendToBack}
                     handleSendToFront={handleSendToFront}
                     handleSendForward={handleSendForward}
+                    handleFontFamilyChange={handleFontFamilyChange}
+                    handleFontSizeChange={handleFontSizeChange}
+                    handleFontWeightChange={handleFontWeightChange}
+                    handleFontStyleChange={handleFontStyleChange}
+                    handleTextDecorationLineChange={handleTextDecorationLineChange}
                 />
             </div>)}
         </div>

@@ -14,7 +14,10 @@ const textSchema = new mongoose.Schema(
         color: {type: String, default: "#e5e5e5"},
         fontSize: {type: Number, default: 16},
         fontFamily: {type: String, default: "Times new Roman"},
-        fontStyle: {type: String, default: null},
+        fontStyle: {type: String, default: "normal"},
+        fontWeight: {type: String, default: "normal"},
+        textDecorationLine: {type: String, default: "none"},
+        justifyContent: {type: String, default: "center"},
     },
 )
 

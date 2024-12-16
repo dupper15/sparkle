@@ -1,38 +1,5 @@
 import axios from "axios";
 
-export const uploadText = async (textId, properties) => {
-    try {
-        const response = await axios.post(`http://localhost:5001/api/text/${textId}/upload`, properties);
-        // console.log(`Notice: Text ID ${textId} properties would be uploaded`, properties);
-        return response.data;
-    } catch (error) {
-        console.error('Failed to upload text properties:', error);
-        throw error;
-    }
-};
-
-export const updateTextColor = async (textId, color) => {
-    try {
-        //const response = await axios.put(`http://localhost:3001/api/text/${textId}/color`, { color });
-        console.log(`Notice: Text ID ${textId} color would be updated to ${color}`);
-        //return response.data;
-    } catch (error) {
-        console.error('Failed to update text color:', error);
-        throw error;
-    }
-};
-
-export const updateTextTransformation = async (textId, transformationType, value) => {
-    try {
-        //const response = await axios.put(`http://localhost:3001/api/text/${textId}/transformation`, { transformationType, value });
-        console.log(`Notice: Text ID ${textId} would be transformed with ${transformationType}: ${value}`);
-        //return response.data;
-    } catch (error) {
-        console.error('Failed to update text transformation:', error);
-        throw error;
-    }
-};
-
 const TextService = {
     async createText(textData) {
         const response = await axios.post(`${import.meta.env.VITE_API_KEY}/text/create`, textData);
@@ -43,7 +10,7 @@ const TextService = {
             .then((response) => response.data)
             .catch((error) => {
                 console.error("Error updating text:", error);
-                throw error; // Re-throw the error to handle it in the component if needed
+                throw error; // Re-throw the error to handle it in the text if needed
             });
     },
     async deleteText(id) {
@@ -51,9 +18,54 @@ const TextService = {
             .then((response) => response.data)
             .catch((error) => {
                 console.error("Error deleting text:", error);
-                throw error; // Re-throw the error to handle it in the component if needed
+                throw error; // Re-throw the error to handle it in the text if needed
             });
     },
+    async updateTextFontFamily(fontFamily, textId) {
+        try {
+            const response = await axios.put(`${import.meta.env.VITE_API_KEY}/text/update/${textId}`, { fontFamily });
+            return response.data;
+        } catch (error) {
+            console.error('Failed to update text font family:', error);
+            throw error;
+        }
+    },
+    async updateTextFontSize(fontSize, textId) {
+        try {
+            const response = await axios.put(`${import.meta.env.VITE_API_KEY}/text/update/${textId}`, { fontSize });
+            return response.data;
+        } catch (error) {
+            console.error('Failed to update text font size:', error);
+            throw error;
+        }
+    },
+    async updateTextFontWeight(fontWeight, textId) {
+        try {
+            const response = await axios.put(`${import.meta.env.VITE_API_KEY}/text/update/${textId}`, { fontWeight });
+            return response.data;
+        } catch (error) {
+            console.error('Failed to update text font weight:', error);
+            throw error;
+        }
+    },
+    async updateTextFontStyle( fontStyle, textId) {
+        try {
+            const response = await axios.put(`${import.meta.env.VITE_API_KEY}/text/update/${textId}`, { fontStyle });
+            return response.data;
+        } catch (error) {
+            console.error('Failed to update text font style:', error);
+            throw error;
+        }
+    },
+    async updateTextDecorationLine(textDecorationLine, textId) {
+        try {
+            const response = await axios.put(`${import.meta.env.VITE_API_KEY}/text/update/${textId}`, { textDecorationLine });
+            return response.data;
+        } catch (error) {
+            console.error('Failed to update text decoration line:', error);
+            throw error;
+        }
+    }
 };
 
 export default TextService;
