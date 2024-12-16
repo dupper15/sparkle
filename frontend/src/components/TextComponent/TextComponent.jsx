@@ -31,7 +31,6 @@ const TextComponent = ({info, onClick, removeComponent, selectedComponents}) => 
             backgroundColor: info.backgroundColor || "#ffffff",
             display: "flex",
             alignItems: "center",
-            justifyContent: info.justifyContent || "center",
             cursor: "pointer",
         }}
         onClick={(event) => {
@@ -40,7 +39,9 @@ const TextComponent = ({info, onClick, removeComponent, selectedComponents}) => 
         onMouseDown={(event) => handleMouseDown(event)}
     >
         <h2 style={{
+            width: "100%",
             color: info.color,
+            textAlign: info.textAlign,
             fontFamily: info.fontFamily,
             fontSize: info.fontSize,
             fontStyle: info.fontStyle,

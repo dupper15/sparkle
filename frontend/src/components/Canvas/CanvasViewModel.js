@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { useDroppable } from "@dnd-kit/core";
-import { useDarkMode } from "../../contexts/DarkModeContext";
+import {useEffect, useRef, useState} from "react";
+import {useDroppable} from "@dnd-kit/core";
+import {useDarkMode} from "../../contexts/DarkModeContext";
 import axios from "axios";
-import { removeAndPopComponentFromCanvas } from "../../services/utils/componentOrchestrator.js";
+import {removeAndPopComponentFromCanvas} from "../../services/utils/componentOrchestrator.js";
 import ComponentService from "../../services/ComponentService.js";
 import TextService from "../../services/TextService.js";
 
@@ -12,13 +12,15 @@ const useCanvasViewModel = (id, databaseId) => {
     const [components, setComponents] = useState([]);
     const [selectedComponents, setSelectedComponents] = useState([]);
     const canvasRef = useRef(null);
-    const { isOver, setNodeRef } = useDroppable({ id });
-    const { isDarkMode } = useDarkMode();
+    const {isOver, setNodeRef} = useDroppable({id});
+    const {isDarkMode} = useDarkMode();
+    const [selectedComponentColor, setSelectedComponentColor] = useState("#000000");
     const [selectedTextFontFamily, setSelectedTextFontFamily] = useState("");
     const [selectedTextFontSize, setSelectedTextFontSize] = useState(16);
     const [selectedTextFontWeight, setSelectedTextFontWeight] = useState("normal");
     const [selectedTextFontStyle, setSelectedTextFontStyle] = useState("normal");
     const [selectedTextDecorationLine, setSelectedTextDecorationLine] = useState("none");
+    const [selectedTextTextAlign, setSelectedTextTextAlign] = useState("left");
 
     // Fetch components from the database
     useEffect(() => {
@@ -70,6 +72,20 @@ const useCanvasViewModel = (id, databaseId) => {
     }, [selectedComponents, canvasRef]);
 
     useEffect(() => {
+        const updateSelectedComponentProperty = (property, setState) => {
+            const selectedGeneralComponents = components.filter(component => selectedComponents.includes(component._id));
+            if (selectedGeneralComponents.length === 0) {
+                setState("");
+                return;
+            }
+            const values = selectedGeneralComponents.map(component => component[property]);
+            const uniqueValues = [...new Set(values)];
+            setState(uniqueValues.length === 1 ? uniqueValues[0] : "");
+        };
+        updateSelectedComponentProperty("color", setSelectedComponentColor);
+    }, [components, selectedComponents]);
+
+    useEffect(() => {
         const updateSelectedTextProperty = (property, setState) => {
             const selectedTextComponents = components.filter(component => selectedComponents.includes(component._id) && component.type.toLowerCase() === "text");
             if (selectedTextComponents.length === 0) {
@@ -86,6 +102,7 @@ const useCanvasViewModel = (id, databaseId) => {
         updateSelectedTextProperty("fontWeight", setSelectedTextFontWeight);
         updateSelectedTextProperty("fontStyle", setSelectedTextFontStyle);
         updateSelectedTextProperty("textDecorationLine", setSelectedTextDecorationLine);
+        updateSelectedTextProperty("textAlign", setSelectedTextTextAlign);
     }, [components, selectedComponents]);
 
     // Update component helper function
@@ -128,44 +145,51 @@ const useCanvasViewModel = (id, databaseId) => {
     const handleColorChange = (color) => {
         updateComponent((component) => {
             ComponentService.updateComponentColor(component.type, color, component._id).then();
-            return { ...component, color };
+            return {...component, color};
         });
     };
 
     const handleFontFamilyChange = (fontFamily) => {
         updateComponent((component) => {
             TextService.updateTextFontFamily(fontFamily, component._id).then();
-            return { ...component, fontFamily };
+            return {...component, fontFamily};
         });
     };
 
     const handleFontSizeChange = (fontSize) => {
         updateComponent((component) => {
             TextService.updateTextFontSize(fontSize, component._id).then();
-            return { ...component, fontSize };
+            return {...component, fontSize};
         });
     };
 
     const handleFontWeightChange = (fontWeight) => {
         updateComponent((component) => {
             TextService.updateTextFontWeight(fontWeight, component._id).then();
-            return { ...component, fontWeight };
+            return {...component, fontWeight};
         });
     };
 
     const handleFontStyleChange = (fontStyle) => {
         updateComponent((component) => {
             TextService.updateTextFontStyle(fontStyle, component._id).then();
-            return { ...component, fontStyle };
+            return {...component, fontStyle};
         });
     };
 
     const handleTextDecorationLineChange = (textDecorationLine) => {
         updateComponent((component) => {
             TextService.updateTextDecorationLine(textDecorationLine, component._id).then();
-            return { ...component, textDecorationLine };
+            return {...component, textDecorationLine};
         });
     };
+
+    const handleTextAlignChange = (textAlign) => {
+        updateComponent((component) => {
+            TextService.updateTextTextAlign(textAlign, component._id).then();
+            return {...component, textAlign};
+        });
+    }
 
     // Remove component
     const removeComponent = async (componentId, componentType) => {
@@ -189,7 +213,7 @@ const useCanvasViewModel = (id, databaseId) => {
     const updateComponentZIndex = (component, change) => {
         const newZIndex = calculateNewZIndex(component, change);
         ComponentService.updateComponentZIndex(component.type, newZIndex, component._id).then();
-        return { ...component, zIndex: newZIndex };
+        return {...component, zIndex: newZIndex};
     };
 
     // Handle ZIndex change
@@ -198,11 +222,13 @@ const useCanvasViewModel = (id, databaseId) => {
     };
 
     return {
+        selectedComponentColor,
         selectedTextFontFamily,
         selectedTextFontSize,
         selectedTextFontWeight,
         selectedTextFontStyle,
         selectedTextDecorationLine,
+        selectedTextTextAlign,
         selectedComponents,
         components,
         isImageToolBarOpen,
@@ -220,6 +246,7 @@ const useCanvasViewModel = (id, databaseId) => {
         handleFontWeightChange,
         handleFontStyleChange,
         handleTextDecorationLineChange,
+        handleTextAlignChange,
         handleSendBackward: () => handleChangeZIndex(-1),
         handleSendToBack: () => handleChangeZIndex(0),
         handleSendForward: () => handleChangeZIndex(1),

@@ -27,11 +27,13 @@ const Canvas = React.forwardRef(({
     const {
         components,
         selectedComponents,
+        selectedComponentColor,
         selectedTextFontFamily,
         selectedTextFontSize,
         selectedTextFontWeight,
         selectedTextFontStyle,
         selectedTextDecorationLine,
+        selectedTextTextAlign,
         isImageToolBarOpen,
         isTextToolBarOpen,
         isDarkMode,
@@ -46,6 +48,7 @@ const Canvas = React.forwardRef(({
         handleFontWeightChange,
         handleFontStyleChange,
         handleTextDecorationLineChange,
+        handleTextAlignChange,
         handleSendBackward,
         handleSendToBack,
         handleSendForward,
@@ -99,6 +102,7 @@ const Canvas = React.forwardRef(({
         <div className={"z-50"}>
             {isImageToolBarOpen && (<div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
                 <ShapeToolBar
+                    selectedComponentColor={selectedComponentColor}
                     handleColorChange={handleColorChange}
                     handleSendBackward={handleSendBackward}
                     handleSendToBack={handleSendToBack}
@@ -108,11 +112,13 @@ const Canvas = React.forwardRef(({
             </div>)}
             {isTextToolBarOpen && (<div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
                 <TextToolbar
+                    selectedComponentColor={selectedComponentColor}
                     selectedTextFontFamily={selectedTextFontFamily}
                     selectedTextFontSize={selectedTextFontSize}
                     selectedTextFontWeight={selectedTextFontWeight}
                     selectedTextFontStyle={selectedTextFontStyle}
                     selectedTextDecorationLine={selectedTextDecorationLine}
+                    selectedTextTextAlign={selectedTextTextAlign}
                     handleColorChange={handleColorChange}
                     handleSendBackward={handleSendBackward}
                     handleSendToBack={handleSendToBack}
@@ -123,6 +129,7 @@ const Canvas = React.forwardRef(({
                     handleFontWeightChange={handleFontWeightChange}
                     handleFontStyleChange={handleFontStyleChange}
                     handleTextDecorationLineChange={handleTextDecorationLineChange}
+                    handleTextAlignChange={handleTextAlignChange}
                 />
             </div>)}
         </div>

@@ -65,6 +65,15 @@ const TextService = {
             console.error('Failed to update text decoration line:', error);
             throw error;
         }
+    },
+    async updateTextTextAlign(textAlign, textId) {
+        try {
+            const response = await axios.put(`${import.meta.env.VITE_API_KEY}/text/update/${textId}`, { textAlign });
+            return response.data;
+        } catch (error) {
+            console.error('Failed to update text text align:', error);
+            throw error;
+        }
     }
 };
 

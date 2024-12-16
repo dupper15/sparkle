@@ -15,8 +15,8 @@ const ImageStylesEditSection = ({
     return (
         <div>
             <div className="h-8 toolbar flex">
-                <button className="text-xl text-amber-950 pl-1 pr-1 mr-1" onClick={handleColorClick}>
-                    <FaCircle />
+                <button style={{color: activeColor}} className={`text-xl pl-1 pr-1 mr-1`} onClick={handleColorClick}>
+                    <FaCircle/>
                 </button>
             </div>
             <div className={'fixed top-1/2 left-1/2 translate-x-[120%] '}>
