@@ -5,10 +5,8 @@ import CreateComponent from "../../components/CreateComponent";
 import ShapeToolBar from "../SharedComponents/ToolBars/ShapeToolBar/ShapeToolBar.jsx";
 import TextToolbar from "../SharedComponents/ToolBars/TextToolBar/TextToolBar.jsx";
 import useCanvasViewModel from "./CanvasViewModel.js";
-import socket from "../../utils/socket";
 import { FaMousePointer } from "react-icons/fa";
-
-/* eslint react/prop-types: 0 */
+import TextComponent from "../TextComponent/TextComponent.jsx";
 const Canvas = React.forwardRef(
   (
     {
@@ -28,69 +26,57 @@ const Canvas = React.forwardRef(
     ref
   ) => {
     const {
+      components,
       selectedComponents,
-        isImageToolBarOpen,
-        isTextToolBarOpen,
-        canvasRef,
-        isOver,
-        setNodeRef,
-        isDarkMode,
-        handleShapeClick,
-        handleTextClick,
-        shapes,
-        removeComponent,
-        handleColorChange,
-        handleSendBackward,
-        handleSendToBack,
-        handleSendForward,
-        handleSendToFront
+      selectedTextFontFamily,
+      selectedTextFontSize,
+      selectedTextFontWeight,
+      selectedTextFontStyle,
+      selectedTextDecorationLine,
+      isImageToolBarOpen,
+      isTextToolBarOpen,
+      isDarkMode,
+      isOver,
+      canvasRef,
+      setNodeRef,
+      handleShapeClick,
+      handleTextClick,
+      handleColorChange,
+      handleFontFamilyChange,
+      handleFontSizeChange,
+      handleFontWeightChange,
+      handleFontStyleChange,
+      handleTextDecorationLineChange,
+      handleSendBackward,
+      handleSendToBack,
+      handleSendForward,
+      handleSendToFront,
+      removeComponent,
+      handleMouseMove,
+      handleMouseLeave,
+      cursors,
+      focuses,
     } = useCanvasViewModel(id, databaseId);
 
-    const [cursors, setCursors] = useState({});
     const [cursorSize, setCursorSize] = useState(16);
     useEffect(() => {
-      socket.emit("join-page", databaseId);
+      const handleGlobalMouseLeave = (event) => {
+        if (
+          canvasRef.current &&
+          !canvasRef.current.contains(event.relatedTarget)
+        ) {
+          handleMouseLeave();
+        }
+      };
 
-      socket.on("update-cursor", ({ userId, x, y, userName }) => {
-        setCursors((prev) => ({
-          ...prev,
-          [userId]: { x, y, userName },
-        }));
-      });
-
-      socket.on("remove-cursor", ({ userId }) => {
-        setCursors((prev) => {
-          const newCursors = { ...prev };
-          delete newCursors[userId];
-          return newCursors;
-        });
-      });
+      document.addEventListener("mouseleave", handleGlobalMouseLeave);
 
       return () => {
-        socket.emit("leave-page", databaseId);
-        socket.off("update-cursor");
-        socket.off("remove-cursor");
+        document.removeEventListener("mouseleave", handleGlobalMouseLeave);
       };
-    });
-
-    const handleMouseMove = (e) => {
-      const rect = document.getElementById(id).getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      socket.emit("mousemove", { databaseId, x, y });
-    };
-
-    const handleMouseLeave = () => {
-      socket.emit("mousemove", { databaseId, x: null, y: null });
-    };
-
+    }, [canvasRef, handleMouseLeave]);
     return (
-      <div
-        ref={canvasRef}
-        className='flex flex-col gap-4'
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}>
+      <div ref={canvasRef} className='flex flex-col gap-4'>
         <div className={"z-50"}>
           {isImageToolBarOpen && (
             <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
@@ -105,11 +91,29 @@ const Canvas = React.forwardRef(
           )}
           {isTextToolBarOpen && (
             <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
-              <TextToolbar />
+              <TextToolbar
+                selectedTextFontFamily={selectedTextFontFamily}
+                selectedTextFontSize={selectedTextFontSize}
+                selectedTextFontWeight={selectedTextFontWeight}
+                selectedTextFontStyle={selectedTextFontStyle}
+                selectedTextDecorationLine={selectedTextDecorationLine}
+                handleColorChange={handleColorChange}
+                handleSendBackward={handleSendBackward}
+                handleSendToBack={handleSendToBack}
+                handleSendToFront={handleSendToFront}
+                handleSendForward={handleSendForward}
+                handleFontFamilyChange={handleFontFamilyChange}
+                handleFontSizeChange={handleFontSizeChange}
+                handleFontWeightChange={handleFontWeightChange}
+                handleFontStyleChange={handleFontStyleChange}
+                handleTextDecorationLineChange={handleTextDecorationLineChange}
+              />
             </div>
           )}
         </div>
-        <div><p>ref: {ref}</p></div>
+        <div>
+          <p>ref: {ref}</p>
+        </div>
         <div
           className={`flex justify-between items-center ${
             isDarkMode ? "text-white" : "text-black"
@@ -134,6 +138,8 @@ const Canvas = React.forwardRef(
           id={id}
           ref={setNodeRef}
           onDrag={onDragEnd}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
           style={{
             width: `${width}px`,
             height: `${height}px`,
@@ -147,24 +153,15 @@ const Canvas = React.forwardRef(
             zIndex: 0,
           }}
           className='bg-white border relative'>
-          {shapes.map((info) =>
-            info.type === "text" ? (
-              <div
+          {components.map((info) =>
+            info.type.toLowerCase() === "text" ? (
+              <TextComponent
                 key={info._id}
-                id={`text-${info.id}`}
-                contentEditable={true}
-                suppressContentEditableWarning={true}
-                style={{
-                  position: "absolute",
-                  left: info.x,
-                  top: info.y,
-                  fontSize: `${info.font || 16}px`,
-                  color: info.color || "#000",
-                  padding: "5px",
-                }}
-                onClick={() => handleTextClick(info.id)}>
-                {info.title}
-              </div>
+                info={info}
+                onClick={(info, event) => handleTextClick(info._id, event)}
+                removeComponent={removeComponent}
+                selectedComponents={selectedComponents}
+              />
             ) : (
               <CreateComponent
                 key={info._id}
@@ -175,9 +172,22 @@ const Canvas = React.forwardRef(
                 updateShapePosition={updateShapePosition}
                 onClick={(info, event) => handleShapeClick(info._id, event)}
                 selectedComponents={selectedComponents}
-            />))}
+                isFocused={
+                  Array.isArray(focuses[info._id]) &&
+                  focuses[info._id].length > 0
+                }
+                userNames={
+                  Array.isArray(focuses[info._id])
+                    ? focuses[info._id].map((user) => user.userName)
+                    : []
+                }
+              />
+            )
+          )}
           {Object.entries(cursors).map(([userId, position]) =>
-            position.x !== null && position.y !== null ? (
+            position.x !== null &&
+            position.y !== null &&
+            position.databaseId === databaseId ? (
               <div key={userId} className='absolute'>
                 <FaMousePointer
                   className='cursor-indicator text-blue-800 absolute pointer-events-none z-[999]'
@@ -197,7 +207,7 @@ const Canvas = React.forwardRef(
                     zIndex: 50,
                   }}>
                   <span
-                    className='block text-xs bg-blue-400 text-white rounded-lg py-0.5 px-1 text-center cursor-not-allowed'
+                    className='block text-xs bg-blue-800 text-white rounded-lg py-0.5 px-1 text-center cursor-not-allowed'
                     style={{
                       display: "inline-block",
                     }}>

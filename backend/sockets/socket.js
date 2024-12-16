@@ -32,10 +32,7 @@ const initializeSocket = async (server, mongoUri) => {
 
   const rooms = {};
   const activeUsers = {};
-
   io.on("connection", (socket) => {
-    console.log("A user connected", socket.id);
-
     socket.on("setUserId", (userId) => {
       socket.userId = userId;
     });
@@ -111,49 +108,39 @@ const initializeSocket = async (server, mongoUri) => {
 
     socket.on("mousemove", async ({ x, y, databaseId }) => {
       if (!socket.userId || !databaseId) return;
-
-      activeUsers[databaseId] = activeUsers[databaseId] || {};
-
-      if (x === null || y === null) {
-        if (activeUsers[databaseId][socket.userId]) {
-          delete activeUsers[databaseId][socket.userId];
-          socket
-            .to(databaseId)
-            .emit("remove-cursor", { userId: socket.userId });
-        }
-      } else {
-        const userName = await getUserName(socket.userId);
-        activeUsers[databaseId][socket.userId] = { x, y, userName };
-        socket.to(databaseId).emit("update-cursor", {
-          userId: socket.userId,
-          x,
-          y,
-          userName,
-        });
-      }
+      const userName = await getUserName(socket.userId);
+      socket.to(databaseId).emit("update-cursor", {
+        userId: socket.userId,
+        x,
+        y,
+        userName,
+        databaseId,
+      });
     });
 
     socket.on("join-page", (databaseId) => {
       if (!socket.userId || !databaseId) return;
-
       socket.join(databaseId);
-      activeUsers[databaseId] = activeUsers[databaseId] || {};
-
-      Object.entries(activeUsers[databaseId]).forEach(([userId, position]) => {
-        socket.emit("update-cursor", { userId, ...position });
-      });
     });
 
-    socket.on("leave-page", (databaseId) => {
-      if (!socket.userId || !databaseId) return;
-
-      socket.leave(databaseId);
-      if (activeUsers[databaseId]?.[socket.userId]) {
-        delete activeUsers[databaseId][socket.userId];
-        socket.to(databaseId).emit("remove-cursor", { userId: socket.userId });
-      }
+    socket.on("leave-page", ({ databaseId }) => {
+      if (!databaseId) return;
+      const userId = socket.userId;
+      socket.to(databaseId).emit("remove-cursor", { userId });
     });
 
+    socket.on("select-component", async ({ id, userId1, roomId }) => {
+      socket.join(roomId);
+      const userName = await getUserName(userId1);
+      socket
+        .to(roomId)
+        .emit("update-select-component", { id, userId1, userName });
+    });
+    socket.on("deselect-component", ({ componentId, userId, roomId }) => {
+      socket
+        .to(roomId)
+        .emit("update-deselect-component", { componentId, userId });
+    });
     socket.on("disconnect", () => {
       for (const roomId in rooms) {
         const index = rooms[roomId]?.indexOf(socket.userId);

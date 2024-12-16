@@ -1,5 +1,5 @@
 import React from "react";
-import { RxDividerVertical } from "react-icons/rx";
+import {RxDividerVertical} from "react-icons/rx";
 import FontSelector from "../SubComponents/FontSelector/FontSelector.jsx";
 import FontSizeField from "../SubComponents/FontSizeField/FontSizeField.jsx";
 import ParagraphFormatSection from "../SubComponents/ParagraphFormatSection/ParagraphFormatSection.jsx";
@@ -7,51 +7,75 @@ import TextFormatSection from "../SubComponents/TextFormatSection/TextFormatSect
 import PositionEditSection from "../SubComponents/PositionEditSection/PositionEditSection.jsx";
 import useTextToolbarViewModel from "./TextToolbarViewModel";
 
-/* eslint react/prop-types: 0*/
-const TextToolbar = ({ selectedComponentId }) => {
+/* eslint react/prop-types: 0 */
+const TextToolbar = ({
+                         selectedTextFontSize,
+                         selectedTextFontFamily,
+                         selectedTextFontWeight,
+                         selectedTextFontStyle,
+                         selectedTextDecorationLine,
+                         handleColorChange,
+                         handleSendBackward,
+                         handleSendToBack,
+                         handleSendForward,
+                         handleSendToFront,
+                         handleFontFamilyChange,
+                         handleFontSizeChange,
+                         handleFontWeightChange,
+                         handleFontStyleChange,
+                         handleTextDecorationLineChange,
+                     }) => {
     const {
         openColorPickerPanel,
-        handleColorClick,
         setOpenPickerPanel,
         activeColor,
         setActiveColor,
         isBold,
         isItalic,
-        handleBoldClick,
-        handleItalicClick,
-        handleColorChange,
-        uploadProperties,
-    } = useTextToolbarViewModel(selectedComponentId);
-
+        isUnderlined,
+    } = useTextToolbarViewModel(selectedTextFontWeight, selectedTextFontStyle, selectedTextDecorationLine);
     return (
-        <div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
+        <div className="toolbar h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
             {/* Font */}
-            <FontSelector fontName="Ariel"></FontSelector>
+            <FontSelector currentFontFamily={selectedTextFontFamily}
+                          handleFontFamilyChange={handleFontFamilyChange}></FontSelector>
 
             {/* Font Size */}
-            <FontSizeField></FontSizeField>
+            <FontSizeField currentFontSize={selectedTextFontSize}
+                           handleFontSizeChange={handleFontSizeChange}
+            ></FontSizeField>
 
             {/* Text Formatting */}
             <TextFormatSection
                 isBold={isBold}
                 isItalic={isItalic}
+                isUnderlined={isUnderlined}
                 openColorPickerPanel={openColorPickerPanel}
-                handleBoldClick={handleBoldClick}
-                handleItalicClick={handleItalicClick}
-                handleColorClick={handleColorClick}
+                setOpenPickerPanel={setOpenPickerPanel}
+                activeColor={activeColor}
+                setActiveColor={setActiveColor}
                 handleColorPanelCloseRequest={setOpenPickerPanel}
-            ></TextFormatSection>
+                handleColorChange={handleColorChange}
+                handleFontWeightChange={handleFontWeightChange}
+                handleFontStyleChange={handleFontStyleChange}
+                handleTextDecorationLineChange={handleTextDecorationLineChange}
+            />
 
-            <RxDividerVertical />
+            <RxDividerVertical/>
 
             {/* Paragraph Formatting */}
             <ParagraphFormatSection></ParagraphFormatSection>
 
-            <RxDividerVertical />
+            <RxDividerVertical/>
 
-            <PositionEditSection></PositionEditSection>
-        </div>
-    );
+            {/* Position Edit Section */}
+            <PositionEditSection
+                handleSendBackward={handleSendBackward}
+                handleSendToBack={handleSendToBack}
+                handleSendForward={handleSendForward}
+                handleSendToFront={handleSendToFront}
+            />
+        </div>);
 };
 
 export default TextToolbar;
