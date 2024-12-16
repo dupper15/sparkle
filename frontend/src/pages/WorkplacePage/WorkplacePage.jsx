@@ -43,6 +43,13 @@ const WorkplaceCanvas = () => {
 
     const [width, setWidth] = useState("");
     const [height, setHeight] = useState("");
+    const [renderKey, setRenderKey] = useState(0);
+
+    useEffect(() => {
+        if (state === "design") {
+            setRenderKey((prevKey) => prevKey + 1); // Tăng renderKey khi vào design
+        }
+    }, [state]); 
 
     useEffect(() => {
         setWidth(project?.width);
@@ -105,6 +112,17 @@ const WorkplaceCanvas = () => {
     const mutationTemplate = useMutation({
         mutationFn: (data) => {
             return ProjectService.updateProject(data.id, data.canvas);
+        }, onSuccess: (data) => {
+            handleGetDetailProject(data.data.id);
+            console.log("Project updated successfully:", data);
+        }, onError: (error) => {
+            console.error("Failed to update project:", error);
+        },
+    });
+
+    const mutationProject = useMutation({
+        mutationFn: (data) => {
+            return ProjectService.addProject(data.id, data);
         }, onSuccess: (data) => {
             handleGetDetailProject(data.data.id);
             console.log("Project updated successfully:", data);
@@ -179,7 +197,7 @@ const WorkplaceCanvas = () => {
             const newCanvas = {
                 background: templateCanvas?.background || '#ffffff',
                 componentArray: templateCanvas?.componentArray || [],
-                id: Date.now().toString(), // Tạo ID tạm thời
+                id: templateCanvas._id
             };
     
             // Cập nhật lại state của canvases
@@ -189,6 +207,34 @@ const WorkplaceCanvas = () => {
                 return updatedCanvases;
             });
     
+            Alert.success("Template added successfully!");
+    
+            handleGetDetailProject(project?.id);
+        } catch (error) {
+            console.error("Failed to add canvas:", error.message);
+            Alert.error("Failed to add canvas.");
+        }
+    };
+
+    const addProject = async (projectAdd) => {
+        try {
+            await mutationProject.mutateAsync({ id: project?.id, canvasArray: projectAdd.canvasArray });
+
+            project.canvasArray.map((canvas) => {
+                const newCanvas = {
+                    background: canvas?.background || '#ffffff',
+                    componentArray: canvas?.componentArray || [],
+                    id: canvas._id,
+                };
+    
+                // Cập nhật state của canvases
+                setCanvases((prev) => {
+                    const updatedCanvases = [...prev, newCanvas];
+                    setCurrentCanvas(newCanvas.id); // Chuyển đến canvas vừa thêm
+                    return updatedCanvases;
+                });
+            })
+                
             Alert.success("Template added successfully!");
     
             handleGetDetailProject(project?.id);
@@ -259,70 +305,38 @@ const WorkplaceCanvas = () => {
             }
         }
     };
-
-    console.log('current canvas', current_canvas)
-
-    const add_text = () => {
-        if (current_canvas === null) {
-            console.log("ko");
-            return;
-        }
-
-        const newItem = {
-            id: Date.now(),
-            nameProject: state.nameProject,
-            name: "Sample Text",
-            type: "text",
-            x: 10,
-            y: 10,
-            font: 22,
-            title: "Add Your Text",
-            color: "#3c3c3d",
-            testId: `drop-area-${current_canvas}`,
-        };
-
-        setShapes((prevShapes) => [...prevShapes, {...newItem}]);
-    };
-    const [draggingShape, setDraggingShape] = useState(null);
-    const [shapes, setShapes] = useState([]);
-
-    const updateShapes = (newShape, testId) => {
-        setShapes((prevShapes) => [...prevShapes, {...newShape, testId}]);
-    };
+    const [draggingComponent, setDraggingComponent] = useState(null);
     const handleDragEnd = async (event) => {
-        const {over, active} = event;
+        const { over, active } = event;
         if (!over) return;
-        const shapeRect = active.rect.current.translated;
-        const dropAreaRect = document
-            .getElementById(over.id)
-            .getBoundingClientRect();
 
-        if (over && draggingShape) {
-            const relativeX = shapeRect.left - dropAreaRect.left;
-            const relativeY = shapeRect.top - dropAreaRect.top;
+        const componentRectangle = active.rect.current.translated;
+        const dropAreaRect = document.getElementById(over.id).getBoundingClientRect();
 
-            const newShape = {
-                shapeType: draggingShape.shapeType,
-                link: draggingShape.backgroundImage ? draggingShape.backgroundImage : "",
+        if (over && draggingComponent) {
+            const relativeX = componentRectangle.left - dropAreaRect.left;
+            const relativeY = componentRectangle.top - dropAreaRect.top;
+
+            const newComponent = {
+                ...draggingComponent,
                 x: relativeX,
                 y: relativeY,
-                width: 90,
-                height: 90,
             };
 
             try {
-                const response = await createAndAddComponentToCanvas(extractIdFromOver(over.id), "Shape", newShape);
-                newShape.id = response.data._id;
+                const response = await createAndAddComponentToCanvas(extractIdFromOver(over.id), draggingComponent.type, newComponent);
+                newComponent.id = response.data._id;
 
-                // Notify the specific canvas to update its shapes
-                document.dispatchEvent(new CustomEvent(`update-shapes-${over.id}`, {
-                    detail: newShape,
+                console.log(`update-${draggingComponent.type.toLowerCase()}s-${over.id}`)
+                // Notify the specific canvas to update its components
+                document.dispatchEvent(new CustomEvent(`update-${draggingComponent.type.toLowerCase()}s-${over.id}`, {
+                    detail: newComponent,
                 }));
             } catch (error) {
-                console.error("Failed to upload shape:", error);
+                console.error(`Failed to upload ${draggingComponent.type.toLowerCase()}:`, error);
             }
         }
-    }
+    };
 
     const [show, setShow] = useState({
         status: true,
@@ -335,14 +349,6 @@ const WorkplaceCanvas = () => {
             status: false, name,
         });
     };
-
-    const removeElement = (id) => {
-        setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
-        setCanvases((prevCanvases) => prevCanvases.map((canvas) => canvas.id === current_canvas ? {
-            ...canvas, components: canvas.components.filter((c) => c.id !== id),
-        } : canvas));
-    };
-
     const [showChatBox, setShowChatBox] = useState(false);
 
     const toggleChatBox = () => {
@@ -361,6 +367,7 @@ const WorkplaceCanvas = () => {
             };
         }
     }, [project?.id, user?.id]);
+
     return (<DndContext onDragEnd={handleDragEnd}>
         <div
             className={`w-screen h-screen bg-no-repeat bg-cover flex flex-col scrollbar-hide overflow-hidden ${isDarkMode ? "bg-[#151318]" : "bg-slate-300"}`}>
@@ -391,11 +398,11 @@ const WorkplaceCanvas = () => {
                             className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${isDarkMode ? "bg-[#252627] text-slate-700" : "bg-white text-slate-300"}`}>
                             <MdKeyboardArrowLeft/>
                         </div>
-                        {state === "design" && <TemplateDesign addCanvasFromTemplate={addTemplate} />}
-                        {state === "shape" && (<Shape addNewShape={updateShapes} drag={setDraggingShape}/>)}
+                        {state === "design" && <TemplateDesign key={renderKey} addCanvasFromTemplate={addTemplate} />}
+                        {state === "shape" && (<Shape drag={setDraggingComponent}/>)}
                         {state === "project" && <Project/>}
-                        {state === "text" && <Text addNewText={add_text}/>}
-                        {state === "image" && <Image drag={setDraggingShape}/>}
+                        {state === "text" && <Text drag={setDraggingComponent} />}
+                        {state === "image" && <Image drag={setDraggingComponent}/>}
                         {state === "background" && (<Background setBackground={setBackground}/>)}
                     </div>
                     <div
@@ -415,9 +422,7 @@ const WorkplaceCanvas = () => {
                                 width={width}
                                 height={height}
                                 name={canvasData.name}
-                                shapes={shapes.filter((shape) => shape.testId === `drop-area-${canvasData.id}`)}
                                 bgLink={backgrounds[canvasData.id] || canvasData.background}
-                                removeElement={removeElement}
                                 removeButton={() => removeCanvas(canvasData.id)}
                                 upButton={() => scrollToCanvas(index - 1)}
                                 downButton={() => scrollToCanvas(index + 1)}

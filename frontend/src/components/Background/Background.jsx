@@ -75,7 +75,7 @@ const Background = ( {setBackground }) => {
       </div>
       
       {/* Grid hiển thị backgrounds */}
-       <div className='grid grid-cols-2 gap-2 mt-5 w-full'>
+       <div className='grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide'>
         {backgrounds.map((background, i) => (
           <div
             key={i}

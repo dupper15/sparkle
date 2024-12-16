@@ -137,8 +137,6 @@ const deleteCanvas = (canvasId, projectId) => {
                 })
                 return;
             }
-            await Canvas.findByIdAndDelete(canvasId)
-
             const project = await Project.findById(projectId);
             if (!project) {
                 resolve({
@@ -146,9 +144,9 @@ const deleteCanvas = (canvasId, projectId) => {
                 });
                 return;
             }
-            project.canvasArray = project.canvasArray.filter((canvasItem) => canvasItem.toString() !== canvasId);
-            await project.save();
+            await Project.findOneAndDelete({canvasArray: { $in: [projectId]}})
 
+            await Canvas.findByIdAndDelete(canvasId)
             resolve({
                 status: "OK", message: "Delete success",
             })

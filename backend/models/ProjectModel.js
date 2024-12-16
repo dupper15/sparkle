@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { string } = require("prop-types");
 
 const projectSchema = new mongoose.Schema(
   {
@@ -19,6 +20,7 @@ const projectSchema = new mongoose.Schema(
     isPublic: { type: Boolean, default: false },
     height: { type: Number, required: true },
     width: { type: Number, required: true },
+    copy: { type: String}
   },
   {
     timestamps: true,

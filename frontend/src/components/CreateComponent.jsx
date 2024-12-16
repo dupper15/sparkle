@@ -236,15 +236,46 @@ const CreateComponent = ({
     };
   }, [isSelected, info.id, removeComponent]);
 
-  const getShapeStyle = (info) => {
-    const baseStyle = {
-      width: `${size.width}px`,
-      height: "100%",
-      backgroundColor: info.color ? info.color : "#e5e5e5", // backgroundColor: info.link ? "#e5e5e5" : "#e5e5e5",
-      backgroundImage: info.link ? `url(${info.link})` : null,
-      backgroundSize: "cover",
-      clipPath: info.clipPath,
-    };
+    useEffect(() => {
+        if (isDragging || isResizing || isTransforming) {
+            document.addEventListener("mousemove", handleMouseMove);
+            document.addEventListener("mouseup", handleMouseUp);
+        }
+        return () => {
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
+        };
+    }, [isDragging, isResizing, isTransforming]);
+
+    useEffect(() => {
+        if (isTransforming) {
+            document.addEventListener("mousemove", handleTransformMouseMove);
+            document.addEventListener("mouseup", handleTransformMouseUp);
+        } else {
+            document.removeEventListener("mousemove", handleTransformMouseMove);
+            document.removeEventListener("mouseup", handleTransformMouseUp);
+        }
+        return () => {
+            document.removeEventListener("mousemove", handleTransformMouseMove);
+            document.removeEventListener("mouseup", handleTransformMouseUp);
+        };
+    }, [isTransforming]);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Delete" && isSelected) {
+                removeComponent(info._id, "Shape");
+            }
+        };
+        // Add event listener when component is selected
+        if (isSelected) {
+            document.addEventListener("keydown", handleKeyDown);
+        }
+        // Clean up event listener when component is deselected or unmounted
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isSelected, info.id, removeComponent]);
 
     const shapeStyles = {
       rect: {},
@@ -328,120 +359,164 @@ const CreateComponent = ({
           <div
             onMouseDown={(e) => handleResizeMouseDown(e, "top-left")}
             style={{
-              position: "absolute",
-              top: "-10px",
-              left: "-10px",
-              width: "10px",
-              height: "10px",
-              cursor: "nwse-resize",
-              backgroundColor: "blue",
-              zIndex: 10,
+                position: "absolute",
+                width: size.width,
+                height: size.height,
+                left: position.x,
+                top: position.y,
+                zIndex: info.zIndex,
+                clipPath: info.clipPath,
+                transform: `rotate(${deg}deg)`, // Xoay shape
+                transformOrigin: "center", // Xác định gốc xoay tại trung tâm
             }}
-          />
-          {/* Top */}
-          <div
-            onMouseDown={(e) => handleResizeMouseDown(e, "top")}
-            style={{
-              position: "absolute",
-              top: "-10px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "10px",
-              height: "10px",
-              cursor: "ns-resize",
-              backgroundColor: "blue",
-              zIndex: 10,
-            }}
-          />
-          {/* Top-Right */}
-          <div
-            onMouseDown={(e) => handleResizeMouseDown(e, "top-right")}
-            style={{
-              position: "absolute",
-              top: "-10px",
-              right: "-10px",
-              width: "10px",
-              height: "10px",
-              cursor: "nesw-resize",
-              backgroundColor: "blue",
-              zIndex: 10,
-            }}
-          />
-          {/* Right */}
-          <div
-            onMouseDown={(e) => handleResizeMouseDown(e, "right")}
-            style={{
-              position: "absolute",
-              top: "50%",
-              right: "-10px",
-              transform: "translateY(-50%)",
-              width: "10px",
-              height: "10px",
-              cursor: "ew-resize",
-              backgroundColor: "blue",
-              zIndex: 10,
-            }}
-          />
-          {/* Bottom-Right */}
-          <div
-            onMouseDown={(e) => handleResizeMouseDown(e, "bottom-right")}
-            style={{
-              position: "absolute",
-              bottom: "-10px",
-              right: "-10px",
-              width: "10px",
-              height: "10px",
-              cursor: "nwse-resize",
-              backgroundColor: "blue",
-              zIndex: 10,
-            }}
-          />
-          {/* Bottom */}
-          <div
-            onMouseDown={(e) => handleResizeMouseDown(e, "bottom")}
-            style={{
-              position: "absolute",
-              bottom: "-10px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "10px",
-              height: "10px",
-              cursor: "ns-resize",
-              backgroundColor: "blue",
-              zIndex: 10,
-            }}
-          />
-          {/* Bottom-Left */}
-          <div
-            onMouseDown={(e) => handleResizeMouseDown(e, "bottom-left")}
-            style={{
-              position: "absolute",
-              bottom: "-10px",
-              left: "-10px",
-              width: "10px",
-              height: "10px",
-              cursor: "nesw-resize",
-              backgroundColor: "blue",
-              zIndex: 10,
-            }}
-          />
-          {/* Left */}
-          <div
-            onMouseDown={(e) => handleResizeMouseDown(e, "left")}
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "-10px",
-              transform: "translateY(-50%)",
-              width: "10px",
-              height: "10px",
-              cursor: "ew-resize",
-              backgroundColor: "blue",
-              zIndex: 10,
-            }}
-          />
-        </>
-      )}
+            onMouseDown={handleMouseDown}
+        >
+            <p>type: {info.type}</p>
+            {/* Nút xoay (icon) */}
+            {isSelected && (<MdOutlineChangeCircle
+                size={20}
+                className="resize-handle transform-icon"
+                style={{
+                    position: "absolute",
+                    left: "50%",
+                    bottom: "-30px",
+                    transform: "translateX(-50%)",
+                    cursor: "pointer",
+                    zIndex: 10,
+                }}
+                onMouseDown={handleTransformMouseDown}
+            />)}
+
+            {/* Nút resize 8 hướng */}
+            {isSelected && (<>
+                {/* Top-Left */}
+                <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, "top-left")}
+                    style={{
+                        position: "absolute",
+                        top: "-10px",
+                        left: "-10px",
+                        width: "10px",
+                        height: "10px",
+                        cursor: "nwse-resize",
+                        backgroundColor: "blue",
+                        zIndex: 10,
+                    }}
+                />
+                {/* Top */}
+                <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, "top")}
+                    style={{
+                        position: "absolute",
+                        top: "-10px",
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        width: "10px",
+                        height: "10px",
+                        cursor: "ns-resize",
+                        backgroundColor: "blue",
+                        zIndex: 10,
+                    }}
+                />
+                {/* Top-Right */}
+                <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, "top-right")}
+                    style={{
+                        position: "absolute",
+                        top: "-10px",
+                        right: "-10px",
+                        width: "10px",
+                        height: "10px",
+                        cursor: "nesw-resize",
+                        backgroundColor: "blue",
+                        zIndex: 10,
+                    }}
+                />
+                {/* Right */}
+                <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, "right")}
+                    style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "-10px",
+                        transform: "translateY(-50%)",
+                        width: "10px",
+                        height: "10px",
+                        cursor: "ew-resize",
+                        backgroundColor: "blue",
+                        zIndex: 10,
+                    }}
+                />
+                {/* Bottom-Right */}
+                <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, "bottom-right")}
+                    style={{
+                        position: "absolute",
+                        bottom: "-10px",
+                        right: "-10px",
+                        width: "10px",
+                        height: "10px",
+                        cursor: "nwse-resize",
+                        backgroundColor: "blue",
+                        zIndex: 10,
+                    }}
+                />
+                {/* Bottom */}
+                <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, "bottom")}
+                    style={{
+                        position: "absolute",
+                        bottom: "-10px",
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        width: "10px",
+                        height: "10px",
+                        cursor: "ns-resize",
+                        backgroundColor: "blue",
+                        zIndex: 10,
+                    }}
+                />
+                {/* Bottom-Left */}
+                <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, "bottom-left")}
+                    style={{
+                        position: "absolute",
+                        bottom: "-10px",
+                        left: "-10px",
+                        width: "10px",
+                        height: "10px",
+                        cursor: "nesw-resize",
+                        backgroundColor: "blue",
+                        zIndex: 10,
+                    }}
+                />
+                {/* Left */}
+                <div
+                    onMouseDown={(e) => handleResizeMouseDown(e, "left")}
+                    style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "-10px",
+                        transform: "translateY(-50%)",
+                        width: "10px",
+                        height: "10px",
+                        cursor: "ew-resize",
+                        backgroundColor: "blue",
+                        zIndex: 10,
+                    }}
+                />
+            </>)}
+
+            {/* Nội dung của shape */}
+            <div
+                onClick={(event) => {
+                    onClick(info, event)
+                }}
+                style={getShapeStyle(info)}
+                className="resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative"
+            >
+            </div>
+        </div>
 
       {/* Nội dung của shape */}
       <div

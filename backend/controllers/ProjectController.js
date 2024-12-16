@@ -95,7 +95,6 @@ const updateProject = async (req, res) => {
   try {
     const projectId = req.params.id;
     const data = req.body;
-    console.log("data", data)
     if (!projectId) {
       return res.status(400).json({
         status: "ERROR",
@@ -111,17 +110,53 @@ const updateProject = async (req, res) => {
   }
 };
 
-const updatePublic = async (req, res) => {
+const addProject = async (req, res) => {
   try {
     const projectId = req.params.id;
-    const status = req.body
+    const data = req.body;
     if (!projectId) {
       return res.status(400).json({
         status: "ERROR",
         message: "Id is not defined",
       });
     }
-    const response = await ProjectService.updatePublic(projectId, status.data);
+    const response = await ProjectService.addProject(projectId, data);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const updatePublic = async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    if (!projectId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Id is not defined",
+      });
+    }
+    const response = await ProjectService.updatePublic(projectId);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const updatePrivate = async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    if (!projectId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Id is not defined",
+      });
+    }
+    const response = await ProjectService.updatePrivate(projectId);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({
@@ -226,7 +261,9 @@ module.exports = {
   getAllTeamProject,
   getPublic,
   updateProject,
+  addProject,
   updatePublic,
+  updatePrivate,
   deleteProject,
   addEditor,
   getAvatar,
