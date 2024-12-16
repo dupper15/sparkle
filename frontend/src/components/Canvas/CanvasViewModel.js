@@ -15,7 +15,8 @@ const useCanvasViewModel = (id, databaseId) => {
     const canvasRef = useRef(null);
     const {isOver, setNodeRef} = useDroppable({id});
     const {isDarkMode} = useDarkMode();
-    const [selectedTextFont, setSelectedTextFont] = useState("Verdana");
+    const [selectedTextFontFamily, setSelectedTextFontFamily] = useState("");
+
 
     // Fetch components from the database
     useEffect(() => {
@@ -69,18 +70,14 @@ const useCanvasViewModel = (id, databaseId) => {
     useEffect(() => {
         const selectedTextComponents = components.filter(component => selectedComponents.includes(component._id) && component.type.toLowerCase() === "text");
         if (selectedTextComponents.length === 0) {
-            setSelectedTextFont("");
+            setSelectedTextFontFamily("");
             return;
         }
         const fonts = selectedTextComponents.map(component => component.fontFamily);
         const uniqueFonts = [...new Set(fonts)];
-        setSelectedTextFont(uniqueFonts.length === 1 ? uniqueFonts[0] : "");
+        setSelectedTextFontFamily(uniqueFonts.length === 1 ? uniqueFonts[0] : "");
 
     }, [components, selectedComponents]);
-
-    useEffect(() => {
-        console.log("Selected font changed:", selectedTextFont);
-    }, [selectedTextFont]);
 
     // Update component helper function
     const updateComponent = (updateFn) => {
@@ -98,7 +95,7 @@ const useCanvasViewModel = (id, databaseId) => {
     const handleFontFamilyChange = (fontFamily) => {
         updateComponent((component) => {
             TextService.updateTextFontFamily(fontFamily, component._id).then();
-            return { ...component, fontFamily };
+            return {...component, fontFamily};
         });
     };
 
@@ -164,7 +161,7 @@ const useCanvasViewModel = (id, databaseId) => {
     };
 
     return {
-        selectedTextFont,
+        selectedTextFontFamily,
         selectedComponents,
         isImageToolBarOpen,
         isTextToolBarOpen,

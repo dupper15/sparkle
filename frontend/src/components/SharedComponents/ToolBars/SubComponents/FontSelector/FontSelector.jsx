@@ -2,8 +2,8 @@ import React, {useMemo} from 'react';
 import useFontSelectorViewModel, {FontList} from './FontSelectorViewModel';
 
 // eslint-disable-next-line react/prop-types
-const FontSelector = ({handleFontFamilyChange, currentFont}) => {
-    const {onFontFamilyChange} = useFontSelectorViewModel(handleFontFamilyChange, currentFont);
+const FontSelector = ({handleFontFamilyChange, currentFont: currentFontFamily}) => {
+    const {onFontFamilyChange} = useFontSelectorViewModel(handleFontFamilyChange, currentFontFamily);
 
     const fontOptions = useMemo(() => {
         return FontList.map((font) => (<option
@@ -18,9 +18,9 @@ const FontSelector = ({handleFontFamilyChange, currentFont}) => {
 
     return (<div className="font-dropdown relative">
         <select
-            value={currentFont}
+            value={currentFontFamily}
             onChange={onFontFamilyChange}
-            style={{fontFamily: currentFont}}
+            style={{fontFamily: currentFontFamily}}
             className="text-gray-700 border-2 rounded px-2 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm h-8 w-[160px]"
             aria-label="Select font"
         >

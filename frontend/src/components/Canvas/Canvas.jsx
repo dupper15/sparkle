@@ -25,7 +25,7 @@ const Canvas = React.forwardRef(({
                                      updateShapePosition,
                                  }, ref) => {
     const {
-        selectedTextFont,
+        selectedTextFontFamily,
         selectedComponents,
         isImageToolBarOpen,
         isTextToolBarOpen,
@@ -100,7 +100,7 @@ const Canvas = React.forwardRef(({
             </div>)}
             {isTextToolBarOpen && (<div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
                 <TextToolbar
-                    selectedTextFont={selectedTextFont}
+                    selectedTextFontFamily={selectedTextFontFamily}
                     handleColorChange={handleColorChange}
                     handleSendBackward={handleSendBackward}
                     handleSendToBack={handleSendToBack}

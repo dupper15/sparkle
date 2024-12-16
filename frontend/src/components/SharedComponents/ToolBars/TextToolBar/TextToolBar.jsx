@@ -9,7 +9,7 @@ import useTextToolbarViewModel from "./TextToolbarViewModel";
 
 /* eslint react/prop-types: 0 */
 const TextToolbar = ({
-                         selectedTextFont,
+                         selectedTextFontFamily,
                          handleColorChange,
                          handleSendBackward,
                          handleSendToBack,
@@ -32,7 +32,7 @@ const TextToolbar = ({
     return (
         <div className="toolbar h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
             {/* Font */}
-            <FontSelector currentFont={selectedTextFont} handleFontFamilyChange={handleFontFamilyChange}></FontSelector>
+            <FontSelector currentFontFamily={selectedTextFontFamily} handleFontFamilyChange={handleFontFamilyChange}></FontSelector>
 
             {/* Font Size */}
             <FontSizeField></FontSizeField>
