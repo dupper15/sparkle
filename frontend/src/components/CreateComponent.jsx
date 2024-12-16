@@ -54,7 +54,7 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
     };
 
     const handleTransformMouseMove = (e) => {
-        if (isTransforming) {
+if (isTransforming) {
             const newDeg = calculateTransform(e);
             setDeg(newDeg);
         }
@@ -131,7 +131,7 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
                 case "bottom":
                     newHeight = size.height + deltaY;
                     break;
-                case "left":
+                    case "left":
                     newWidth = size.width - deltaX;
                     newX = position.x + deltaX;
                     break;
@@ -199,7 +199,7 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
         };
         // Add event listener when component is selected
         if (isSelected) {
-            document.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("keydown", handleKeyDown);
         }
         // Clean up event listener when component is deselected or unmounted
         return () => {
@@ -234,7 +234,7 @@ const CreateComponent = ({info, removeComponent, onClick, selectedComponents}) =
         };
 
         return {...baseStyle, ...shapeStyles[info.shapeType]};
-    };
+    };  
 
     return (<div
             ref={componentRef}
