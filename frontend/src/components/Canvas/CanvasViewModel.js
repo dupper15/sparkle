@@ -1,10 +1,11 @@
 // frontend/src/components/Canvas/CanvasViewModel.js
-import { useEffect, useRef, useState } from "react";
-import { useDroppable } from "@dnd-kit/core";
-import { useDarkMode } from "../../contexts/DarkModeContext";
+import {useEffect, useRef, useState} from "react";
+import {useDroppable} from "@dnd-kit/core";
+import {useDarkMode} from "../../contexts/DarkModeContext";
 import axios from "axios";
-import { removeAndPopComponentFromCanvas } from "../../services/utils/componentOrchestrator.js";
+import {removeAndPopComponentFromCanvas} from "../../services/utils/componentOrchestrator.js";
 import ComponentService from "../../services/ComponentService.js";
+import TextService from "../../services/TextService.js";
 
 const useCanvasViewModel = (id, databaseId) => {
     const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
@@ -12,8 +13,9 @@ const useCanvasViewModel = (id, databaseId) => {
     const [components, setComponents] = useState([]);
     const [selectedComponents, setSelectedComponents] = useState([]);
     const canvasRef = useRef(null);
-    const { isOver, setNodeRef } = useDroppable({ id });
-    const { isDarkMode } = useDarkMode();
+    const {isOver, setNodeRef} = useDroppable({id});
+    const {isDarkMode} = useDarkMode();
+    const [selectedTextFont, setSelectedTextFont] = useState("Verdana");
 
     // Fetch components from the database
     useEffect(() => {
@@ -49,7 +51,7 @@ const useCanvasViewModel = (id, databaseId) => {
                     const componentElement = document.getElementById(`${componentId}`);
                     return componentElement && componentElement.contains(event.target);
                 });
-                const toolbars = document.querySelectorAll(".toolbar, .color-picker-panel");
+                const toolbars = document.querySelectorAll(".toolbar, .color-picker-panel, .toolbar-item");
                 const isClickInsideToolbar = Array.from(toolbars).some(toolbar => toolbar.contains(event.target));
                 if (!isInsideComponent && !isClickInsideToolbar) {
                     setOpenImageToolBar(false);
@@ -64,20 +66,39 @@ const useCanvasViewModel = (id, databaseId) => {
         };
     }, [selectedComponents, canvasRef]);
 
+    useEffect(() => {
+        const selectedTextComponents = components.filter(component => selectedComponents.includes(component._id) && component.type.toLowerCase() === "text");
+        if (selectedTextComponents.length === 0) {
+            setSelectedTextFont("");
+            return;
+        }
+        const fonts = selectedTextComponents.map(component => component.fontFamily);
+        const uniqueFonts = [...new Set(fonts)];
+        setSelectedTextFont(uniqueFonts.length === 1 ? uniqueFonts[0] : "");
+
+    }, [components, selectedComponents]);
+
+    useEffect(() => {
+        console.log("Selected font changed:", selectedTextFont);
+    }, [selectedTextFont]);
+
     // Update component helper function
     const updateComponent = (updateFn) => {
-        setComponents((prevComponents) =>
-            prevComponents.map((component) =>
-                selectedComponents.includes(component._id) ? updateFn(component) : component
-            )
-        );
+        setComponents((prevComponents) => prevComponents.map((component) => selectedComponents.includes(component._id) ? updateFn(component) : component));
     };
 
     // Handle color change
     const handleColorChange = (color) => {
         updateComponent((component) => {
             ComponentService.updateComponentColor(component.type, color, component._id).then();
-            return { ...component, color };
+            return {...component, color};
+        });
+    };
+
+    const handleFontFamilyChange = (fontFamily) => {
+        updateComponent((component) => {
+            TextService.updateTextFontFamily(fontFamily, component._id).then();
+            return { ...component, fontFamily };
         });
     };
 
@@ -134,7 +155,7 @@ const useCanvasViewModel = (id, databaseId) => {
     const updateComponentZIndex = (component, change) => {
         const newZIndex = calculateNewZIndex(component, change);
         ComponentService.updateComponentZIndex(component.type, newZIndex, component._id).then();
-        return { ...component, zIndex: newZIndex };
+        return {...component, zIndex: newZIndex};
     };
 
     // Handle ZIndex change
@@ -143,6 +164,7 @@ const useCanvasViewModel = (id, databaseId) => {
     };
 
     return {
+        selectedTextFont,
         selectedComponents,
         isImageToolBarOpen,
         isTextToolBarOpen,
@@ -155,6 +177,7 @@ const useCanvasViewModel = (id, databaseId) => {
         components,
         removeComponent,
         handleColorChange,
+        handleFontFamilyChange,
         handleSendBackward: () => handleChangeZIndex(-1),
         handleSendToBack: () => handleChangeZIndex(0),
         handleSendForward: () => handleChangeZIndex(1),

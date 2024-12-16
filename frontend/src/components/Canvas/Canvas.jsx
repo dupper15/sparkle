@@ -25,6 +25,7 @@ const Canvas = React.forwardRef(({
                                      updateShapePosition,
                                  }, ref) => {
     const {
+        selectedTextFont,
         selectedComponents,
         isImageToolBarOpen,
         isTextToolBarOpen,
@@ -40,7 +41,8 @@ const Canvas = React.forwardRef(({
         handleSendBackward,
         handleSendToBack,
         handleSendForward,
-        handleSendToFront
+        handleSendToFront,
+        handleFontFamilyChange
     } = useCanvasViewModel(id, databaseId);
 
     const [cursors, setCursors] = useState({});
@@ -98,11 +100,13 @@ const Canvas = React.forwardRef(({
             </div>)}
             {isTextToolBarOpen && (<div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
                 <TextToolbar
+                    selectedTextFont={selectedTextFont}
                     handleColorChange={handleColorChange}
                     handleSendBackward={handleSendBackward}
                     handleSendToBack={handleSendToBack}
                     handleSendToFront={handleSendToFront}
                     handleSendForward={handleSendForward}
+                    handleFontFamilyChange={handleFontFamilyChange}
                 />
             </div>)}
         </div>

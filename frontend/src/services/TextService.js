@@ -43,7 +43,7 @@ const TextService = {
             .then((response) => response.data)
             .catch((error) => {
                 console.error("Error updating text:", error);
-                throw error; // Re-throw the error to handle it in the component if needed
+                throw error; // Re-throw the error to handle it in the text if needed
             });
     },
     async deleteText(id) {
@@ -51,8 +51,13 @@ const TextService = {
             .then((response) => response.data)
             .catch((error) => {
                 console.error("Error deleting text:", error);
-                throw error; // Re-throw the error to handle it in the component if needed
+                throw error; // Re-throw the error to handle it in the text if needed
             });
+    },
+
+    async updateTextFontFamily(fontFamily, textId) {
+        const response = await axios.put(`${import.meta.env.VITE_API_KEY}/text/update/${textId}`, {fontFamily: fontFamily});
+        return response.data;
     },
 };
 
