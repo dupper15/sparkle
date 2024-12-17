@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { FaAlignLeft, FaAlignCenter, FaAlignRight, FaAlignJustify, FaListOl, FaListUl } from 'react-icons/fa';
 import {PiPlaceholderThin} from "react-icons/pi";
 
-const ParagraphFormatSection = () => {
-    const [alignmentType, setAlignmentType] = useState('left'); // Initial state
+// eslint-disable-next-line react/prop-types
+const ParagraphFormatSection = ({currentTextAlign, handleTextAlignChange}) => {
 
     const handleAlignmentClick = () => {
-        const newFormatType = getNextAlignmentType(alignmentType);
-        setAlignmentType(newFormatType);
+        const newFormatType = getNextAlignmentType(currentTextAlign);
+        handleTextAlignChange(newFormatType);
     };
 
     const [listType, setListType] = useState('list-none'); // Initial state
@@ -75,10 +75,10 @@ const ParagraphFormatSection = () => {
     return (
         <div className="h-8 toolbar flex">
             <button
-                className={`text-gray-700 text-xl pr-2 mr-1 ${alignmentType !== 'none' ? 'active' : ''}`}
+                className={`text-gray-700 text-xl pr-2 mr-1 ${currentTextAlign !== 'none' ? 'active' : ''}`}
                 onClick={handleAlignmentClick}
             >
-                {getAlignmentIcon(alignmentType)}
+                {getAlignmentIcon(currentTextAlign)}
             </button>
             <button
                 className={`text-gray-700 text-xl pr-2 ${listType !== 'none' ? 'active' : ''}`}

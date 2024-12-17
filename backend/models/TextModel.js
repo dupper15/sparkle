@@ -7,9 +7,6 @@ const textSchema = new mongoose.Schema(
         y: {type: Number, required: true},
         height: {type: Number, default: 40},
         width: {type: Number, default: 90},
-        // opacity: {type: Number, default:1},
-        // z_index: {type: Number, default:1},
-        // rotate: {type: Number, default:0},
         content: {type: String, default: "Add a text"},
         color: {type: String, default: "#e5e5e5"},
         fontSize: {type: Number, default: 16},
@@ -17,7 +14,7 @@ const textSchema = new mongoose.Schema(
         fontStyle: {type: String, default: "normal"},
         fontWeight: {type: String, default: "normal"},
         textDecorationLine: {type: String, default: "none"},
-        justifyContent: {type: String, default: "center"},
+        textAlign: {type: String, default: "left"},
     },
 )
 

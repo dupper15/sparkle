@@ -48,7 +48,7 @@ const PositionMenu = ({ onSendBackward, onSendToBack, onSendForward, onSendToFro
             <div className="flex flex-col space-y-2 pr-4 py-1">
                 <button className="flex items-center rounded-md hover:bg-gray-100" onClick={onSendForward}>
                     <RiBringForward className="h-6 w-8 mr-2" />
-                    <span>Bring Forward</span>
+                    <span>Send Forward</span>
                 </button>
                 <button className="flex items-center rounded-md hover:bg-gray-100" onClick={onSendToFront}>
                     <RiBringToFront className="h-6 w-8 mr-2" />

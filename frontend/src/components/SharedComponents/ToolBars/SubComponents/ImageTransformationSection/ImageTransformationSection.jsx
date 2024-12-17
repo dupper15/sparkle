@@ -7,8 +7,6 @@ const ImageTransformationSection = ({
                                         isFlipMenuOpen,
                                         handleFlipClick,
                                         handleCropClick,
-                                        setIsFlipMenuOpen,
-                                        setOpenCropMode,
                                         handleHorizontalFlipClick,
                                         handleVerticalFlipClick,
                                     }) => {
