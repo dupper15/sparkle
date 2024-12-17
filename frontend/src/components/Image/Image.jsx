@@ -115,7 +115,6 @@ const Image = ({ drag }) => {
 };
 
 const DraggableImage = ({ img, onDragStart }) => {
-  console.log("img", img);
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: img._id || img.id || img.url,
   });
