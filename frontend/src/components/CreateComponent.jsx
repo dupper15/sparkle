@@ -287,7 +287,6 @@ const CreateComponent = ({
         transformOrigin: "center", // Xác định gốc xoay tại trung tâm
       }}
       onMouseDown={handleMouseDown}>
-      <p>type: {info.type}</p>
       {/* Nút xoay (icon) */}
       {isSelected && (
         <MdOutlineChangeCircle
