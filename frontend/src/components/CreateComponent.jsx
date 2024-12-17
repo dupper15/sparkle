@@ -444,7 +444,7 @@ const CreateComponent = ({
           onClick(info, event);
         }}
         style={info.type.toLowerCase() === "shape" ? getShapeStyle(info) : getImageStyle(info)}
-        className='resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative'></div>
+        className='resizable-component group hover:border-[2px] hover:border-indigo-500 relative'></div>
       {Object.entries(userNames).map(([index, value]) => (
         <div
           key={index}
