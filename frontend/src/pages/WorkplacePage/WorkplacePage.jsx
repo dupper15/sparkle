@@ -174,9 +174,33 @@ const WorkplaceCanvas = () => {
         return newCanvases;
       });
     });
+    socket.on("updateBackground", ({ canvasId, background }) => {
+      try {
+        // Cập nhật trạng thái nền cho một canvas cụ thể
+        setBackgrounds((prev) => ({
+          ...prev,
+          [canvasId]: background || "white",
+        }));
+      } catch (error) {
+        console.error("Failed to update background via socket:", error.message);
+      }
+    });
+    socket.on("componentAdded", ({ canvasId, component }) => {
+      console.log("kora", canvasId, component);
+      const eventName = `update-${component.type.toLowerCase()}s-${canvasId}`;
+      console.log("Dispatching event:", eventName, "with data:", component);
+      document.dispatchEvent(
+        new CustomEvent(eventName, {
+          detail: component,
+        })
+      );
+    });
+
     return () => {
       socket.off("addCanvas");
       socket.off("removeCanvas");
+      socket.off("updateBackground");
+      socket.off("componentAdded");
     };
   }, []);
   useEffect(() => {
@@ -328,11 +352,14 @@ const WorkplaceCanvas = () => {
         }
 
         await CanvasService.updateCanvas(canvasId, data);
-
+        socket.emit("updateBackground", {
+          roomId: project?.id,
+          canvasId: current_canvas,
+          background: bgLink || "white",
+        });
         const updatedProject = await ProjectService.getDetailProject(
           project?.id
         );
-
         if (updatedProject) {
           // Cập nhật lại backgrounds từ updatedProject
           const updatedBackgrounds = updatedProject.canvasArray.reduce(
@@ -375,7 +402,8 @@ const WorkplaceCanvas = () => {
         const response = await createAndAddComponentToCanvas(
           extractIdFromOver(over.id),
           draggingComponent.type,
-          newComponent
+          newComponent,
+          project?.id
         );
         newComponent.id = response.data._id;
         // Notify the specific canvas to update its components
@@ -387,6 +415,11 @@ const WorkplaceCanvas = () => {
             }
           )
         );
+        socket.emit("componentAdded", {
+          roomId: project?.id,
+          canvasId: over.id,
+          component: newComponent,
+        });
       } catch (error) {
         console.error(
           `Failed to upload ${draggingComponent.type.toLowerCase()}:`,

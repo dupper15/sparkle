@@ -3,7 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { MdOutlineChangeCircle } from "react-icons/md";
 import _ from "lodash";
 import ShapeService from "../services/ShapeService.js";
-
+import { useSelector } from "react-redux";
+import socket from "../utils/socket.js";
 /* eslint react/prop-types: 0 */
 const CreateComponent = ({
   info,
@@ -13,6 +14,8 @@ const CreateComponent = ({
   isFocused,
   userNames,
 }) => {
+  const project = useSelector((state) => state.project);
+  const roomId = project.id;
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [position, setPosition] = useState({ x: info.x, y: info.y });
@@ -33,11 +36,28 @@ const CreateComponent = ({
   });
   const [deg, setDeg] = useState(0);
   const componentRef = useRef(null);
-
+  useEffect(() => {
+    socket.on("shapeUpdated", (data) => {
+      const { shapeId, x, y, width, height } = data;
+      if (shapeId === info._id) {
+        setPosition({ x, y });
+        setSize({ width, height });
+      }
+    });
+    return () => {
+      socket.off("shapeUpdated");
+    };
+  });
   const isSelected = selectedComponents.includes(info._id);
 
   const updateShapeInDatabase = useRef(
     _.debounce((updatedData) => {
+      socket.emit("updateShape", {
+        roomId,
+        shapeId: info._id,
+        ...updatedData,
+      });
+
       ShapeService.updateShape(info._id, updatedData)
         .then(() => {})
         .catch((error) => {
@@ -205,7 +225,7 @@ const CreateComponent = ({
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.key === "Delete" || e.key === "Backspace") && isSelected) {
+      if (e.key === "Delete" && isSelected) {
         removeComponent(info._id, "Shape");
       }
     };

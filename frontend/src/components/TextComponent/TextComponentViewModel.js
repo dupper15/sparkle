@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import _ from "lodash";
 import TextService from "../../services/TextService.js";
+import socket from "../../utils/socket";
+import { useSelector } from "react-redux";
 
 const useTextComponentViewModel = (
   info,
@@ -24,9 +26,28 @@ const useTextComponentViewModel = (
   const [isEditing, setIsEditing] = useState(false);
   const isSelected = selectedComponents.includes(info._id);
   const inputRef = useRef(null);
+  const project = useSelector((state) => state.project);
+  const roomId = project.id;
   useRef(null);
+  useEffect(() => {
+    socket.on("updateText", (data) => {
+      const { textId, x, y, width, height } = data;
+      if (textId === info._id) {
+        setPosition({ x, y });
+        setSize({ width, height });
+      }
+    });
+    return () => {
+      socket.off("shapeUpdated");
+    };
+  });
   const updateTextInDatabase = useRef(
     _.debounce((updatedData) => {
+      socket.emit("updateText", {
+        roomId,
+        textId: info._id,
+        ...updatedData,
+      });
       TextService.updateText(info._id, updatedData)
         .then(() => {})
         .catch((error) => {
@@ -201,7 +222,7 @@ const useTextComponentViewModel = (
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.key === "Backspace" || e.key === "Delete") && isSelected) {
+      if (e.key === "Delete" && isSelected) {
         removeComponent(info._id, "Text");
       }
     };

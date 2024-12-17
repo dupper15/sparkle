@@ -59,7 +59,7 @@ const useCanvasViewModel = (id, databaseId) => {
         document.removeEventListener(`update-${type}-${id}`, fetchComponents);
       });
     };
-  }, [databaseId, id]);
+  }, []);
 
   // Handle clicks outside the canvas
   useEffect(() => {
@@ -320,7 +320,6 @@ const useCanvasViewModel = (id, databaseId) => {
       delete newCursors[userId];
       return newCursors;
     });
-    console.log("ok");
   });
   useEffect(() => {
     socket.emit("join-page", databaseId);
@@ -344,7 +343,6 @@ const useCanvasViewModel = (id, databaseId) => {
     socket.emit("mousemove", { databaseId, x, y });
   }, 100);
   const handleMouseLeave = () => {
-    console.log("ok 1");
     socket.emit("leave-page", { databaseId });
   };
 

@@ -44,5 +44,31 @@ const WorkSocket = (socket, io) => {
   socket.on("removeCanvas", ({ roomId, canvasId }) => {
     socket.to(roomId).emit("removeCanvas", { canvasId });
   });
+  socket.on("updateBackground", ({ roomId, canvasId, background }) => {
+    socket.to(roomId).emit("updateBackground", { canvasId, background });
+  });
+  socket.on("componentAdded", ({ roomId, canvasId, component }) => {
+    socket.to(roomId).emit("componentAdded", { canvasId, component });
+  });
+  socket.on("updateShape", (data) => {
+    const { roomId, shapeId, x, y, width, height } = data;
+    socket.to(roomId).emit("shapeUpdated", {
+      shapeId,
+      x,
+      y,
+      width,
+      height,
+    });
+  });
+  socket.on("updateText", (data) => {
+    const { roomId, textId, x, y, width, height } = data;
+    socket.to(roomId).emit("updateText", {
+      textId,
+      x,
+      y,
+      width,
+      height,
+    });
+  });
 };
 module.exports = WorkSocket;
