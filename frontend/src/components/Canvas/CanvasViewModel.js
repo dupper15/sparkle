@@ -6,8 +6,9 @@ import {removeAndPopComponentFromCanvas} from "../../services/utils/componentOrc
 import ComponentService from "../../services/ComponentService.js";
 import TextService from "../../services/TextService.js";
 import socket from "../../utils/socket";
-import { useSelector } from "react-redux";
-import { throttle } from "lodash";
+import {useSelector} from "react-redux";
+import {throttle} from "lodash";
+import debounce from "lodash.debounce";
 
 const useCanvasViewModel = (id, databaseId) => {
     const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
@@ -118,22 +119,22 @@ const useCanvasViewModel = (id, databaseId) => {
         updateSelectedTextProperty("textAlign", setSelectedTextTextAlign);
     }, [components, selectedComponents]);
     useEffect(() => {
-        const handleSelectUpdate = ({ id, userId1, userName }) => {
+        const handleSelectUpdate = ({id, userId1, userName}) => {
             setFocuses((prev) => {
-                const newState = { ...prev };
+                const newState = {...prev};
                 if (!newState[id]) {
                     newState[id] = [];
                 }
                 if (!newState[id].find((user) => user.userId1 === userId1)) {
-                    newState[id].push({ userId1, userName });
+                    newState[id].push({userId1, userName});
                 }
                 return newState;
             });
         };
 
-        const handleDeselectUpdate = ({ componentId, userId }) => {
+        const handleDeselectUpdate = ({componentId, userId}) => {
             setFocuses((prev) => {
-                const newState = { ...prev };
+                const newState = {...prev};
                 if (newState[componentId]) {
                     const filteredUsers = newState[componentId].filter(
                         (user) => user.userId1 !== userId
@@ -151,85 +152,85 @@ const useCanvasViewModel = (id, databaseId) => {
         socket.on("update-select-component", handleSelectUpdate);
         socket.on("update-deselect-component", handleDeselectUpdate);
 
-    return () => {
-      socket.off("update-select-component", handleSelectUpdate);
-      socket.off("update-deselect-component", handleDeselectUpdate);
-    };
-  }, []);
+        return () => {
+            socket.off("update-select-component", handleSelectUpdate);
+            socket.off("update-deselect-component", handleDeselectUpdate);
+        };
+    }, []);
 
-  // Update component helper function
-  const updateComponent = (updateFn) => {
-    setComponents((prevComponents) =>
-      prevComponents.map((component) =>
-        selectedComponents.includes(component._id)
-          ? updateFn(component)
-          : component
-      )
-    );
-  };
-
-  // Handle component selection
-  const handleSelectComponent = (componentId, event) => {
-    const componentType = components.find(
-      (component) => component._id === componentId
-    )?.type;
-    setSelectedComponents((prev) => {
-      if (event.shiftKey) {
-        const allSameType = prev.every(
-          (id) =>
-            components.find((component) => component._id === id)?.type ===
-            componentType
+    // Update component helper function
+    const updateComponent = (updateFn) => {
+        setComponents((prevComponents) =>
+            prevComponents.map((component) =>
+                selectedComponents.includes(component._id)
+                    ? updateFn(component)
+                    : component
+            )
         );
-        if (allSameType) {
-          return prev.includes(componentId)
-            ? prev.filter((id) => id !== componentId)
-            : [...prev, componentId];
-        } else {
-          return prev;
-        }
-      } else {
-        return [componentId];
-      }
-    });
-    socket.emit("select-component", {
-      id: componentId,
-      userId1: userId,
-      roomId: databaseId,
-    });
-  };
-  socket.on("remove-cursor", ({ userId }) => {
-    setCursors((prev) => {
-      const newCursors = { ...prev };
-      delete newCursors[userId];
-      return newCursors;
-    });
-    console.log("ok");
-  });
-  useEffect(() => {
-    socket.emit("join-page", databaseId);
-
-    socket.on("update-cursor", ({ userId, x, y, userName, databaseId }) => {
-      setCursors((prev) => ({
-        ...prev,
-        [userId]: { x, y, userName, databaseId },
-      }));
-    });
-
-    return () => {
-      socket.emit("leave-page", { databaseId });
-      socket.off("update-cursor");
     };
-  }, [databaseId]);
-  const handleMouseMove = throttle((e) => {
-    const rect = document.getElementById(id).getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    socket.emit("mousemove", { databaseId, x, y });
-  }, 100);
-  const handleMouseLeave = () => {
-    console.log("ok 1");
-    socket.emit("leave-page", { databaseId });
-  };
+
+    // Handle component selection
+    const handleSelectComponent = (componentId, event) => {
+        const componentType = components.find(
+            (component) => component._id === componentId
+        )?.type;
+        setSelectedComponents((prev) => {
+            if (event.shiftKey) {
+                const allSameType = prev.every(
+                    (id) =>
+                        components.find((component) => component._id === id)?.type ===
+                        componentType
+                );
+                if (allSameType) {
+                    return prev.includes(componentId)
+                        ? prev.filter((id) => id !== componentId)
+                        : [...prev, componentId];
+                } else {
+                    return prev;
+                }
+            } else {
+                return [componentId];
+            }
+        });
+        socket.emit("select-component", {
+            id: componentId,
+            userId1: userId,
+            roomId: databaseId,
+        });
+    };
+    socket.on("remove-cursor", ({userId}) => {
+        setCursors((prev) => {
+            const newCursors = {...prev};
+            delete newCursors[userId];
+            return newCursors;
+        });
+        console.log("ok");
+    });
+    useEffect(() => {
+        socket.emit("join-page", databaseId);
+
+        socket.on("update-cursor", ({userId, x, y, userName, databaseId}) => {
+            setCursors((prev) => ({
+                ...prev,
+                [userId]: {x, y, userName, databaseId},
+            }));
+        });
+
+        return () => {
+            socket.emit("leave-page", {databaseId});
+            socket.off("update-cursor");
+        };
+    }, [databaseId]);
+    const handleMouseMove = throttle((e) => {
+        const rect = document.getElementById(id).getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        socket.emit("mousemove", {databaseId, x, y});
+    }, 100);
+    const handleMouseLeave = () => {
+        console.log("ok 1");
+        socket.emit("leave-page", {databaseId});
+    };
 
     // Handle shape click
     const handleShapeClick = (shapeId, event) => {
@@ -292,6 +293,13 @@ const useCanvasViewModel = (id, databaseId) => {
         updateComponent((component) => {
             TextService.updateTextTextAlign(textAlign, component._id).then();
             return {...component, textAlign};
+        });
+    }
+
+    const handleTextContentChange = (content) => {
+        updateComponent((component) => {
+            TextService.updateTextContent(content, component._id).then();
+            return {...component, content};
         });
     }
 
@@ -359,6 +367,7 @@ const useCanvasViewModel = (id, databaseId) => {
         handleMouseLeave,
         cursors,
         focuses,
+        handleTextContentChange,
     };
 };
 

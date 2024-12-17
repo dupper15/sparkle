@@ -23,7 +23,7 @@ const Text = ({ drag }) => {
                     style={{
                         width: "240px",
                         height: "40px",
-                        backgroundColor: "#e5e5e5",
+                        backgroundColor: "transparent",
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",

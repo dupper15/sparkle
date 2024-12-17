@@ -1,23 +1,23 @@
-// frontend/src/components/TextComponent/TextComponentViewModel.js
-import {useState, useRef, useEffect} from "react";
+import { useState, useRef, useEffect } from "react";
 import _ from "lodash";
 import TextService from "../../services/TextService.js";
 
 const useTextComponentViewModel = (info, removeComponent, selectedComponents) => {
     const [isDragging, setIsDragging] = useState(false);
-    const [dragOffset, setDragOffset] = useState({x: 0, y: 0});
-    const [position, setPosition] = useState({x: info.x, y: info.y});
-    const [size, setSize] = useState({width: info.width, height: info.height});
+    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+    const [position, setPosition] = useState({ x: info.x, y: info.y });
+    const [size, setSize] = useState({ width: info.width, height: info.height });
     const [isResizing, setIsResizing] = useState(false);
     const [resizeDirection, setResizeDirection] = useState(null);
-    const [resizeStartPosition, setResizeStartPosition] = useState({x: 0, y: 0});
+    const [resizeStartPosition, setResizeStartPosition] = useState({ x: 0, y: 0 });
     const [isTransforming, setIsTransforming] = useState(false);
-    const startTransformRef = useRef({x: 0, y: 0, rotate: 0});
+    const startTransformRef = useRef({ x: 0, y: 0, rotate: 0 });
     const [deg, setDeg] = useState(0);
     const componentRef = useRef(null);
-
+    const [isEditing, setIsEditing] = useState(false);
     const isSelected = selectedComponents.includes(info._id);
-
+    const inputRef = useRef(null);
+    useRef(null);
     const updateTextInDatabase = useRef(_.debounce((updatedData) => {
         TextService.updateText(info._id, updatedData)
             .then(() => {
@@ -47,7 +47,7 @@ const useTextComponentViewModel = (info, removeComponent, selectedComponents) =>
 
     const handleTransformMouseUp = () => {
         setIsTransforming(false);
-        updateTextInDatabase({rotate: deg});
+        updateTextInDatabase({ rotate: deg });
     };
 
     const handleTransformMouseMove = (e) => {
@@ -58,6 +58,7 @@ const useTextComponentViewModel = (info, removeComponent, selectedComponents) =>
     };
 
     const handleMouseDown = (e) => {
+        if (isEditing) return; // Prevent dragging when editing
         e.preventDefault();
         if (!isResizing) {
             setDragOffset({
@@ -71,8 +72,8 @@ const useTextComponentViewModel = (info, removeComponent, selectedComponents) =>
         if (isDragging) {
             const newX = e.clientX - dragOffset.x;
             const newY = e.clientY - dragOffset.y;
-            setPosition({x: newX, y: newY});
-            updateTextInDatabase({x: newX, y: newY});
+            setPosition({ x: newX, y: newY });
+            updateTextInDatabase({ x: newX, y: newY });
         } else if (isResizing) {
             handleResizeMouseMove(e);
         } else if (isTransforming) {
@@ -92,7 +93,7 @@ const useTextComponentViewModel = (info, removeComponent, selectedComponents) =>
         e.stopPropagation();
         setIsResizing(true);
         setResizeDirection(direction);
-        setResizeStartPosition({x: e.clientX, y: e.clientY});
+        setResizeStartPosition({ x: e.clientX, y: e.clientY });
     };
 
     const handleResizeMouseMove = (e) => {
@@ -143,10 +144,18 @@ const useTextComponentViewModel = (info, removeComponent, selectedComponents) =>
             }
             newWidth = Math.max(10, newWidth);
             newHeight = Math.max(10, newHeight);
-            setSize({width: newWidth, height: newHeight});
-            setPosition({x: newX, y: newY});
-            updateTextInDatabase({x: newX, y: newY, width: newWidth, height: newHeight});
+            setSize({ width: newWidth, height: newHeight });
+            setPosition({ x: newX, y: newY });
+            updateTextInDatabase({ x: newX, y: newY, width: newWidth, height: newHeight });
         }
+    };
+
+    const handleDoubleClick = () => {
+        setIsEditing(true);
+    };
+
+    const handleBlur = () => {
+        setIsEditing(false);
     };
 
     useEffect(() => {
@@ -188,7 +197,26 @@ const useTextComponentViewModel = (info, removeComponent, selectedComponents) =>
         };
     }, [isSelected, info._id, removeComponent]);
 
-    const getShapeStyle = (info) => {
+    useEffect(() => {
+        if (isEditing && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isEditing]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (componentRef.current && !componentRef.current.contains(event.target)) {
+                setIsEditing(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [componentRef, setIsEditing]);
+
+    const getShapeStyle = () => {
         return {
             position: "absolute",
             top: `${position.y}px`,
@@ -210,6 +238,11 @@ const useTextComponentViewModel = (info, removeComponent, selectedComponents) =>
         componentRef,
         isSelected,
         deg,
+        inputRef,
+        handleDoubleClick,
+        isEditing,
+        handleBlur,
+        setIsEditing, // Expose setIsEditing to be used in the component
     };
 };
 

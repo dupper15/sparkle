@@ -74,6 +74,15 @@ const TextService = {
             console.error('Failed to update text text align:', error);
             throw error;
         }
+    },
+    async updateTextContent(content, textId) {
+        try {
+            const response = await axios.put(`${import.meta.env.VITE_API_KEY}/text/update/${textId}`, { content });
+            return response.data;
+        } catch (error) {
+            console.error('Failed to update text content:', error);
+            throw error;
+        }
     }
 };
 

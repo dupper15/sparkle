@@ -271,6 +271,7 @@ const CreateComponent = ({
 
   return (
     <div
+        id={info._id}
       ref={componentRef}
       className='wrapperDiv'
       style={{
