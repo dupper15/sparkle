@@ -1,29 +1,29 @@
-import { useEffect, useState } from "react";
-import { DragOverlay, useDraggable } from "@dnd-kit/core";
+import React, { useState, useEffect } from "react";
+import { useDraggable, DragOverlay } from "@dnd-kit/core";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import { useSelector } from "react-redux";
 import { createImageUpload, getAllImage } from "../../services/ImageService";
-import * as Alert from "../Alert/Alert"
+import * as Alert from "../Alert/Alert";
 
+/* eslint react/prop-types: 0 */
 const Image = ({ drag }) => {
   const [draggingImage, setDraggingImage] = useState(null);
   const [images, setImages] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
-  const user = useSelector((state) => state.user)
-  
+  const user = useSelector((state) => state.user);
+
   const handleDragStart = (img) => {
-    const imgObject = { backgroundImage: img.image , id: img._id };
+    const imgObject = { ...img, type: "Image" };
     setDraggingImage(imgObject);
     drag(imgObject);
   };
 
-
   const fetchImages = async () => {
     try {
       const data = await getAllImage(user?.id);
-      setImages(Array.isArray(data.data) ? data.data : []); // Gán dữ liệu background
+      setImages(Array.isArray(data.data) ? data.data : []);
     } catch (error) {
-      console.error("Failed to fetch backgrounds:", error);
+      console.error("Failed to fetch images:", error);
     }
   };
 
@@ -39,7 +39,7 @@ const Image = ({ drag }) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    setIsUploading(true); 
+    setIsUploading(true);
     try {
       const uploadPreset = "afh5sfc";
       const formData = new FormData();
@@ -58,70 +58,78 @@ const Image = ({ drag }) => {
         image: result.secure_url,
       });
 
-      
       setImages((prevImages) => [...prevImages, result.secure_url]);
       await fetchImages();
-      
-      Alert.success("Upload background success")
+
+      Alert.success("Upload image success");
     } catch (error) {
-      Alert.error("Failed to upload image. Please try again.")
+      Alert.error("Failed to upload image. Please try again.");
       console.error(error);
     } finally {
-      setIsUploading(false); 
+      setIsUploading(false);
     }
   };
 
+  const ImagePalette = ({ onDragStart }) => {
+    return (
+        <div className="grid grid-cols-3 gap-2 w-full">
+          {images.map((img, i) => (
+              <DraggableImage
+                  key={img._id || i}
+                  img={img}
+                  onDragStart={onDragStart}
+              />
+          ))}
+        </div>
+    );
+  };
+
   return (
-    <div>
-      <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
-        <label className='text-center cursor-pointer' htmlFor='uploadImage'>
-          Upload Image
-        </label>
-        <input
-          type='file'
-          id='uploadImage'
-          className='hidden'
-          onChange={handleUpload}></input>
-      </div>
-      <div className='grid grid-cols-3 gap-2 w-full'>
-        {images.map((img, i) => (
-          <DraggableImage
-            key={img._id || i}
-            img={img}
-            onDragStart={handleDragStart}
+      <div>
+        <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
+          <label className='text-center cursor-pointer' htmlFor='uploadImage'>
+            Upload Image
+          </label>
+          <input
+              type='file'
+              id='uploadImage'
+              className='hidden'
+              onChange={handleUpload}
           />
-        ))}
+        </div>
+        <ImagePalette onDragStart={handleDragStart} />
+        <DragOverlay>
+          {draggingImage ? (
+              <div
+                  style={{
+                    width: "90px",
+                    height: "90px",
+                    backgroundImage: `url(${draggingImage.image})`,
+                    backgroundSize: "cover",
+                  }}
+              />
+          ) : null}
+        </DragOverlay>
       </div>
-      <DragOverlay>
-        {draggingImage ? (
-          <div
-            style={{
-              width: "90px",
-              height: "90px",
-              backgroundImage: draggingImage.image,
-              backgroundSize: "cover",
-            }}
-          />
-        ) : null}
-      </DragOverlay>
-    </div>
   );
 };
 
 const DraggableImage = ({ img, onDragStart }) => {
+  console.log("img", img);
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: img._id || img.id || img.url,
   });
 
   return (
-    <div
-      ref={setNodeRef}
-      className='w-full h-[90px] overflow-hidden rounded-md cursor-pointer'
-      {...listeners}
-      {...attributes}
-      onMouseDown={() => onDragStart(img)}>
-      <img className='w-full h-full' src={img.image} alt='' />
-    </div>
+      <div
+          ref={setNodeRef}
+          className='w-full h-[90px] overflow-hidden rounded-md cursor-pointer'
+          {...listeners}
+          {...attributes}
+          onMouseDown={() => onDragStart(img)}
+      >
+        <img className='w-full h-full' src={img.image} alt='' />
+      </div>
   );
 };
 
