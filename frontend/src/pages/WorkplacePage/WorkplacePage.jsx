@@ -138,8 +138,6 @@ const WorkplaceCanvas = () => {
     },
   });
 
-  const { data, isSuccess } = mutation;
-
   const scrollToCanvas = (index) => {
     if (index >= 0 && index < canvases.length) {
       if (canvasRef.current[index]) {
@@ -306,7 +304,6 @@ const WorkplaceCanvas = () => {
       Alert.error("Failed to add canvas.");
     }
   };
-
   const removeCanvas = async (id) => {
     try {
       if (project?.canvasArray?.length === 1) {
@@ -325,7 +322,6 @@ const WorkplaceCanvas = () => {
         setCurrentCanvas(newCanvases[nextCanvasIndex]?.id || null);
         return newCanvases;
       });
-      socket.emit("removeCanvas", { roomId: project?.id, canvasId: id });
       Alert.success("Delete canvas successfully!");
 
       await handleGetDetailProject(project?.id);

@@ -289,6 +289,17 @@ const CreateComponent = ({
     return { ...baseStyle, ...shapeStyles[info.shapeType] };
   };
 
+  const getImageStyle = (info) => {
+    return {
+      width: `${size.width}px`,
+      height: `${size.height}px`,
+      backgroundImage: `url(${info.image})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    };
+  };
+
+
   return (
     <div
       id={info._id}
@@ -452,8 +463,8 @@ const CreateComponent = ({
         onClick={(event) => {
           onClick(info, event);
         }}
-        style={getShapeStyle(info)}
-        className='resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative'></div>
+        style={info.type.toLowerCase() === "shape" ? getShapeStyle(info) : getImageStyle(info)}
+        className='resizable-component group hover:border-[2px] hover:border-indigo-500 relative'></div>
       {Object.entries(userNames).map(([index, value]) => (
         <div
           key={index}

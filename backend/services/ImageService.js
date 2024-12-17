@@ -29,10 +29,10 @@ const createImageUpload = (data) => {
 
 const createImage = (newImage) => {
     return new Promise(async (resolve, reject) => {
-        const {x, y, height, width} = newImage;
+        const {x, y, height, width, image} = newImage;
         try {
             const createdImage = await Image.create({
-                x, y, height, width, // image: newImage.image,
+                x, y, height, width, image // image: newImage.image,
             })
 
             if (createdImage) {
