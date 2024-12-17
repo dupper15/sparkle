@@ -32,5 +32,11 @@ const WorkSocket = (socket, io) => {
   socket.on("textContentChanged", ({ componentId, content, roomId }) => {
     socket.to(roomId).emit("textContentChanged", { componentId, content });
   });
+  socket.on("remove-component", ({ componentId, roomId }) => {
+    socket.to(roomId).emit("remove-component", { componentId });
+  });
+  socket.on("componentZIndexChanged", ({ componentId, zIndex, roomId }) => {
+    socket.to(roomId).emit("componentZIndexChanged", { componentId, zIndex });
+  });
 };
 module.exports = WorkSocket;
