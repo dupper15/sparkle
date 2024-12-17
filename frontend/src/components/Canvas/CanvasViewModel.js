@@ -244,6 +244,20 @@ const useCanvasViewModel = (id, databaseId) => {
         )
       );
     });
+
+    socket.on("remove-component", ({ componentId }) => {
+      setComponents((prevComponents) =>
+        prevComponents.filter((component) => component._id !== componentId)
+      );
+    });
+
+    socket.on("componentZIndexChanged", ({ componentId, zIndex }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId ? { ...component, zIndex } : component
+        )
+      );
+    });
     return () => {
       socket.off("update-select-component", handleSelectUpdate);
       socket.off("update-deselect-component", handleDeselectUpdate);
@@ -255,6 +269,8 @@ const useCanvasViewModel = (id, databaseId) => {
       socket.off("textDecorationLineChanged");
       socket.off("textAlignChanged");
       socket.off("textContentChanged");
+      socket.off("remove-component");
+      socket.off("componentZIndexChanged");
     };
   }, []);
 
@@ -466,6 +482,7 @@ const useCanvasViewModel = (id, databaseId) => {
         componentType,
         componentId
       );
+      socket.emit("remove-component", { componentId, roomId });
       setComponents((prevComponents) =>
         prevComponents.filter((component) => component._id !== componentId)
       );
@@ -493,7 +510,13 @@ const useCanvasViewModel = (id, databaseId) => {
       component.type,
       newZIndex,
       component._id
-    ).then();
+    ).then(() => {
+      socket.emit("componentZIndexChanged", {
+        componentId: component._id,
+        zIndex: newZIndex,
+        roomId,
+      });
+    });
     return { ...component, zIndex: newZIndex };
   };
 
