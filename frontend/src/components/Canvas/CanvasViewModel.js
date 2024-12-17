@@ -182,10 +182,79 @@ const useCanvasViewModel = (id, databaseId) => {
         )
       );
     });
+    socket.on("textFontFamilyChanged", ({ componentId, fontFamily }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId
+            ? { ...component, fontFamily }
+            : component
+        )
+      );
+    });
+    socket.on("textFontWeightChanged", ({ componentId, fontWeight }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId
+            ? { ...component, fontWeight }
+            : component
+        )
+      );
+    });
+    socket.on("textFontSizeChanged", ({ componentId, fontSize }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId ? { ...component, fontSize } : component
+        )
+      );
+    });
+    socket.on("textFontStyleChanged", ({ componentId, fontStyle }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId
+            ? { ...component, fontStyle }
+            : component
+        )
+      );
+    });
+    socket.on(
+      "textDecorationLineChanged",
+      ({ componentId, textDecorationLine }) => {
+        setComponents((prevComponents) =>
+          prevComponents.map((component) =>
+            component._id === componentId
+              ? { ...component, textDecorationLine }
+              : component
+          )
+        );
+      }
+    );
+    socket.on("textAlignChanged", ({ componentId, textAlign }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId
+            ? { ...component, textAlign }
+            : component
+        )
+      );
+    });
+    socket.on("textContentChanged", ({ componentId, content }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId ? { ...component, content } : component
+        )
+      );
+    });
     return () => {
       socket.off("update-select-component", handleSelectUpdate);
       socket.off("update-deselect-component", handleDeselectUpdate);
       socket.off("componentColorChanged");
+      socket.off("textFontFamilyChanged");
+      socket.off("textFontSizeChanged");
+      socket.off("textFontWeightChanged");
+      socket.off("textFontStyleChanged");
+      socket.off("textDecorationLineChanged");
+      socket.off("textAlignChanged");
+      socket.off("textContentChanged");
     };
   }, []);
 
@@ -297,28 +366,52 @@ const useCanvasViewModel = (id, databaseId) => {
 
   const handleFontFamilyChange = (fontFamily) => {
     updateComponent((component) => {
-      TextService.updateTextFontFamily(fontFamily, component._id).then();
+      TextService.updateTextFontFamily(fontFamily, component._id).then(() => {
+        socket.emit("textFontFamilyChanged", {
+          componentId: component._id,
+          fontFamily,
+          roomId,
+        });
+      });
       return { ...component, fontFamily };
     });
   };
 
   const handleFontSizeChange = (fontSize) => {
     updateComponent((component) => {
-      TextService.updateTextFontSize(fontSize, component._id).then();
+      TextService.updateTextFontSize(fontSize, component._id).then(() => {
+        socket.emit("textFontSizeChanged", {
+          componentId: component._id,
+          fontSize,
+          roomId,
+        });
+      });
       return { ...component, fontSize };
     });
   };
 
   const handleFontWeightChange = (fontWeight) => {
     updateComponent((component) => {
-      TextService.updateTextFontWeight(fontWeight, component._id).then();
+      TextService.updateTextFontWeight(fontWeight, component._id).then(() => {
+        socket.emit("textFontWeightChanged", {
+          componentId: component._id,
+          fontWeight,
+          roomId,
+        });
+      });
       return { ...component, fontWeight };
     });
   };
 
   const handleFontStyleChange = (fontStyle) => {
     updateComponent((component) => {
-      TextService.updateTextFontStyle(fontStyle, component._id).then();
+      TextService.updateTextFontStyle(fontStyle, component._id).then(() => {
+        socket.emit("textFontStyleChanged", {
+          componentId: component._id,
+          fontStyle,
+          roomId,
+        });
+      });
       return { ...component, fontStyle };
     });
   };
@@ -328,21 +421,39 @@ const useCanvasViewModel = (id, databaseId) => {
       TextService.updateTextDecorationLine(
         textDecorationLine,
         component._id
-      ).then();
+      ).then(() => {
+        socket.emit("textDecorationLineChanged", {
+          componentId: component._id,
+          textDecorationLine,
+          roomId,
+        });
+      });
       return { ...component, textDecorationLine };
     });
   };
 
   const handleTextAlignChange = (textAlign) => {
     updateComponent((component) => {
-      TextService.updateTextTextAlign(textAlign, component._id).then();
+      TextService.updateTextTextAlign(textAlign, component._id).then(() => {
+        socket.emit("textAlignChanged", {
+          componentId: component._id,
+          textAlign,
+          roomId,
+        });
+      });
       return { ...component, textAlign };
     });
   };
 
   const handleTextContentChange = (content) => {
     updateComponent((component) => {
-      TextService.updateTextContent(content, component._id).then();
+      TextService.updateTextContent(content, component._id).then(() => {
+        socket.emit("textContentChanged", {
+          componentId: component._id,
+          content,
+          roomId,
+        });
+      });
       return { ...component, content };
     });
   };
