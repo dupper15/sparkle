@@ -5,11 +5,10 @@ const imageSchema = new mongoose.Schema(
     {
         x: {type: Number, required: true},
         y: {type: Number, required: true},
-        height: {type: Number, required: true},
-        width: {type: Number, required: true},
+        height: {type: Number, default: 100},
+        width: {type: Number, default: 100},
         image: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "ImageUpload",
+            type: String,
             required: true
         }
     },
