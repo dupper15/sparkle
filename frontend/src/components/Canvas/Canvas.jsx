@@ -58,6 +58,7 @@ const Canvas = React.forwardRef(({
         handleMouseLeave,
         cursors,
         focuses,
+        handleTextContentChange,
     } = useCanvasViewModel(id, databaseId);
 
     const [cursorSize, setCursorSize] = useState(16);
@@ -156,6 +157,7 @@ const Canvas = React.forwardRef(({
                 onClick={(info, event) => handleTextClick(info._id, event)}
                 removeComponent={removeComponent}
                 selectedComponents={selectedComponents}
+                handleTextContentChange={handleTextContentChange}
             />) : (<CreateComponent
                 key={info._id}
                 info={info}
