@@ -113,7 +113,6 @@ const Canvas = React.forwardRef(({
                 />
             </div>)}
         </div>
-        <div><p>ref: {ref}</p></div>
         <div
             className={`flex justify-between items-center ${isDarkMode ? "text-white" : "text-black"}`}>
             <div className='text-2xl font-bold'>Canvas {title}</div>
