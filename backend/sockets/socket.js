@@ -6,7 +6,7 @@ const {
   getMessage,
   getUserName,
 } = require("../services/MessageService");
-
+const WorkSocket = require("./WorkSocket");
 const DB_NAME = "sparkle_db";
 const COLLECTION_NAME = "socket.io-adapter-events";
 
@@ -57,7 +57,7 @@ const initializeSocket = async (server, mongoUri) => {
         console.error("Error loading messages:", error);
       }
     });
-
+    WorkSocket(socket, io);
     socket.on("chatMessage", async (data) => {
       const { userId, roomId, text, imageUrl } = data;
       if (!userId || !roomId || (!text && !imageUrl)) return;

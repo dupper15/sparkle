@@ -205,7 +205,7 @@ const CreateComponent = ({
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Delete" && isSelected) {
+      if ((e.key === "Delete" || e.key === "Backspace") && isSelected) {
         removeComponent(info._id, "Shape");
       }
     };
@@ -282,7 +282,7 @@ const CreateComponent = ({
 
   return (
     <div
-        id={info._id}
+      id={info._id}
       ref={componentRef}
       className='wrapperDiv'
       style={{
