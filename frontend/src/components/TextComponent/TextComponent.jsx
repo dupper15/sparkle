@@ -16,6 +16,7 @@ const TextComponent = ({ info, onClick, removeComponent, selectedComponents, han
         handleDoubleClick,
         isEditing,
         handleBlur,
+        isTransformButtonPressed,
     } = useTextComponentViewModel(info, removeComponent, selectedComponents);
 
     return (
@@ -87,6 +88,7 @@ const TextComponent = ({ info, onClick, removeComponent, selectedComponents, han
                     transform: "translateX(-50%)",
                     cursor: "pointer",
                     zIndex: 10,
+                    color: isTransformButtonPressed ? "red" : "inherit", // Change color when pressed
                 }}
                 onMouseDown={handleTransformMouseDown}
             />)}
