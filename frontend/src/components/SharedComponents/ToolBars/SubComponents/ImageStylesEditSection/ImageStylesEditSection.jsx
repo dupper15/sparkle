@@ -19,7 +19,7 @@ const ImageStylesEditSection = ({
                     <FaCircle/>
                 </button>
             </div>
-            <div className={'fixed top-1/2 left-1/2 translate-x-[120%] '}>
+            <div className={'fixed top-1/2 left-1/2 translate-x-[0%] translate-y-[10%] '}>
                 {openColorPickerPanel && (
                     <ColorPickerPanel
                         colorPanelCloseRequest={setOpenPickerPanel}

@@ -16,6 +16,10 @@ const ComponentService = {
     async updateComponentZIndex(componentType, propertyValue, componentId) {
         const response = await axios.put(`${import.meta.env.VITE_API_KEY}/${componentType}/update/${componentId}`, {zIndex : propertyValue});
         return response.data;
+    },
+    async updateComponentOpacity(componentType, propertyValue, componentId) {
+        const response = await axios.put(`${import.meta.env.VITE_API_KEY}/${componentType}/update/${componentId}`, {opacity : propertyValue});
+        return response.data;
     }
 };
 

@@ -28,6 +28,7 @@ const useCanvasViewModel = (id, databaseId) => {
   const [selectedTextDecorationLine, setSelectedTextDecorationLine] =
     useState("none");
   const [selectedTextTextAlign, setSelectedTextTextAlign] = useState("left");
+  const [selectedComponentOpacity, setSelectedComponentOpacity] = useState(1);
   const user = useSelector((state) => state.user);
   const userId = user.id;
   const room = useSelector((state) => state.project);
@@ -112,6 +113,7 @@ const useCanvasViewModel = (id, databaseId) => {
       setState(uniqueValues.length === 1 ? uniqueValues[0] : "");
     };
     updateSelectedComponentProperty("color", setSelectedComponentColor);
+    updateSelectedComponentProperty("opacity", setSelectedComponentOpacity);
   }, [components, selectedComponents]);
 
   useEffect(() => {
@@ -270,7 +272,7 @@ const useCanvasViewModel = (id, databaseId) => {
       socket.off("textAlignChanged");
       socket.off("textContentChanged");
       socket.off("remove-component");
-      socket.off("componentZIndexChanged");
+      socket.off("componentZIndexChanged")
     };
   }, []);
 
@@ -523,6 +525,23 @@ const useCanvasViewModel = (id, databaseId) => {
     updateComponent((component) => updateComponentZIndex(component, change));
   };
 
+  const handleComponentOpacityChange = (opacity) => {
+    updateComponent((component) => {
+      ComponentService.updateComponentOpacity(
+        component.type,
+        opacity,
+        component._id
+      ).then(() => {
+        socket.emit("componentOpacityChanged", {
+          componentId: component._id,
+          opacity,
+          roomId,
+        });
+      });
+      return { ...component, opacity };
+    });
+  }
+
   return {
     selectedComponentColor,
     selectedTextFontFamily,
@@ -531,6 +550,7 @@ const useCanvasViewModel = (id, databaseId) => {
     selectedTextFontStyle,
     selectedTextDecorationLine,
     selectedTextTextAlign,
+    selectedComponentOpacity,
     selectedComponents,
     components,
     isImageToolBarOpen,
@@ -558,6 +578,7 @@ const useCanvasViewModel = (id, databaseId) => {
     cursors,
     focuses,
     handleTextContentChange,
+    handleComponentOpacityChange,
   };
 };
 

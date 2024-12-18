@@ -14,9 +14,9 @@ const ImageTransformationSection = ({
         <div className={'relative'}>
             <div className="h-8 toolbar flex">
                 {/* Crop */}
-                <button className="text-xl text-gray-700 pl-1 pr-1 mr-1" onClick={handleCropClick}>
-                    <FaCrop />
-                </button>
+                {/*<button className="text-xl text-gray-700 pl-1 pr-1 mr-1" onClick={handleCropClick}>*/}
+                {/*    <FaCrop />*/}
+                {/*</button>*/}
 
                 {/* Flip */}
                 <button className='text-gray-700 text-xl' onClick={handleFlipClick}>
