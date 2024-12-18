@@ -125,3 +125,15 @@ export const getAvatar = async (usersInRoom) => {
     throw new Error(e.response?.data?.message || "API call failed");
   }
 };
+
+export const downloadProject = async (id, data) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_KEY}/project/download/${id}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState, forwardRef} from "react";
 import {useLocation} from "react-router-dom";
 import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
 import {LuFolder, LuImage, LuLayoutTemplate, LuShapes,} from "react-icons/lu";
@@ -29,7 +29,7 @@ import {createAndAddComponentToCanvas} from "../../services/utils/componentOrche
 import {extractIdFromOver} from "../../utils/utils.js";
 
 
-const WorkplaceCanvas = () => {
+const WorkplaceCanvas = forwardRef((props, ref) => {
     const dispatch = useDispatch();
     const project = useSelector((state) => state.project);
     const user = useSelector((state) => state.user);
@@ -405,8 +405,8 @@ const WorkplaceCanvas = () => {
                         {state === "image" && <Image drag={setDraggingComponent}/>}
                         {state === "background" && (<Background setBackground={setBackground}/>)}
                     </div>
-                    <div
-                        className="flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
+                    <div 
+                        className="canvas-container flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
                         {canvases.map((canvasData, index) => (<div
                             key={canvasData.id}
                             onClick={() => {
@@ -414,21 +414,23 @@ const WorkplaceCanvas = () => {
                                     setCurrentCanvas(canvasData.id);
                                 }
                             }}>
-                            <Canvas
-                                key={canvasData.id}
-                                databaseId={canvasData._id}
-                                id={`drop-area-${canvasData.id}`}
-                                title={`${index + 1}`}
-                                width={width}
-                                height={height}
-                                name={canvasData.name}
-                                bgLink={backgrounds[canvasData.id] || canvasData.background}
-                                removeButton={() => removeCanvas(canvasData.id)}
-                                upButton={() => scrollToCanvas(index - 1)}
-                                downButton={() => scrollToCanvas(index + 1)}
-                                ref={(el) => (canvasRef.current[index] = el)} // Callback function
-                                // ref={(el) => (canvasRef.current[index] = el)}
-                            />
+                            <div ref={ref}>
+                                <Canvas 
+                                    key={canvasData.id}
+                                    databaseId={canvasData._id}
+                                    id={`drop-area-${canvasData.id}`}
+                                    title={`${index + 1}`}
+                                    width={width}
+                                    height={height}
+                                    name={canvasData.name}
+                                    bgLink={backgrounds[canvasData.id] || canvasData.background}
+                                    removeButton={() => removeCanvas(canvasData.id)}
+                                    upButton={() => scrollToCanvas(index - 1)}
+                                    downButton={() => scrollToCanvas(index + 1)}
+                                    ref={(el) => (canvasRef.current[index] = el)} // Callback function
+                                    // ref={(el) => (canvasRef.current[index] = el)}
+                                />
+                            </div>
                         </div>))}
                         <div>
                             <AddCanvasButton addCanvas={addCanvas}/>
@@ -443,6 +445,6 @@ const WorkplaceCanvas = () => {
             </div>
         </div>
     </DndContext>);
-};
+});
 
 export default WorkplaceCanvas;
