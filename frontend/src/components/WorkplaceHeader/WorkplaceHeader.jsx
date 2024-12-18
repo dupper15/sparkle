@@ -520,15 +520,45 @@ const WorkplaceHeader = ({ usersInRoom }) => {
                   position: "absolute",
                   top: component.y,
                   left: component.x,
-                  // width: component.width,
-                  // height: component.height,
+                  width: component.width,
+                  height: component.height,
+                  transform: `rotate(${component.rotate}deg)`, // Xoay hình ảnh
+                  transformOrigin: "center", // Tâm xoay nằm ở giữa
                 }}
               >
-                {getShapeSVG(
-                  component.shapeType,
-                  component.width + 10,
-                  component.height + 10,
-                  component.color
+              {component.type === "Text" ? (
+              <div
+                style={{
+                  color: component.color,
+                  fontSize: component.fontSize,
+                  fontFamily: component.fontFamily,
+                  fontStyle: component.fontStyle,
+                  fontWeight: component.fontWeight,
+                  textDecoration: component.textDecorationLine,
+                  textAlign: component.textAlign,
+                  whiteSpace: "pre-wrap", // Để xuống dòng nếu có nhiều dòng
+                }}
+              >
+                {component.content}
+              </div>
+               ) : component.type === "Image" ? (
+                <img
+                  src={component.image}
+                  alt=""
+                  style={{
+                    width: "100%", // Đảm bảo hình ảnh chiếm toàn bộ chiều rộng container
+                    height: "100%", // Đảm bảo hình ảnh chiếm toàn bộ chiều cao container
+                    opacity: component.opacity, // Áp dụng độ mờ
+                    objectFit: "contain", // Đảm bảo hình ảnh không bị méo
+                  }}
+                />
+                ) : (
+                  getShapeSVG(
+                    component.shapeType,
+                    component.width + 10,
+                    component.height + 10,
+                    component.color
+                  )
                 )}
               </div>
             ))}
