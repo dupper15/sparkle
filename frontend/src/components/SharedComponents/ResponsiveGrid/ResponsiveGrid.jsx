@@ -143,18 +143,71 @@ const ResponsiveGrid = () => {
                             const leftComponent = component.x * scaleX;
                         
                             return (
-                            <div
-                                key={index}
-                                style={{
-                                position: 'absolute', 
-                                top: topComponent,
-                                left: leftComponent,
-                                width: widthComponent,
-                                height: heightComponent,
-                                backgroundColor: component.color || 'transparent',
-                                ...shapeStyle,  // Áp dụng kiểu dáng cho hình
-                                }}
-                            />
+                                <>
+                                    {/* Xử lý Text */}
+                                    {component.type === 'Text' && component.content && (
+                                        <div
+                                            key={index}
+                                            style={{
+                                                position: 'absolute',
+                                                top: topComponent,
+                                                left: leftComponent,
+                                                width: Math.max(widthComponent, 50),
+                                                height: Math.max(heightComponent, 20),
+                                                transform: `rotate(${component.rotate || 0}deg)`,
+                                                transformOrigin: 'center',
+                                                color: component.color || 'black',
+                                                fontSize: Math.max(component.fontSize * scaleY, 12),
+                                                fontFamily: component.fontFamily || 'Arial',
+                                                fontStyle: component.fontStyle || 'normal',
+                                                fontWeight: component.fontWeight || 'normal',
+                                                textDecoration: component.textDecorationLine || 'none',
+                                                textAlign: component.textAlign || 'left',
+                                                whiteSpace: 'pre-wrap',
+                                            }}
+                                        >
+                                            {component.content}
+                                        </div>
+                                    )}
+                            
+                                    {/* Xử lý Image */}
+                                    {component.type === 'Image' && component.image && (
+                                        <img
+                                            key={index}
+                                            src={component.image}
+                                            alt=""
+                                            style={{
+                                                position: 'absolute',
+                                                top: topComponent,
+                                                left: leftComponent,
+                                                width: widthComponent,
+                                                height: heightComponent,
+                                                transform: `rotate(${component.rotate || 0}deg)`,
+                                                transformOrigin: 'center',
+                                                opacity: component.opacity || 1,
+                                                objectFit: 'contain',
+                                            }}
+                                        />
+                                    )}
+                            
+                                    {/* Xử lý Shape */}
+                                    {component.type === 'Shape' && (
+                                        <div
+                                            key={index}
+                                            style={{
+                                                position: 'absolute',
+                                                top: topComponent,
+                                                left: leftComponent,
+                                                width: widthComponent,
+                                                height: heightComponent,
+                                                transform: `rotate(${component.rotate || 0}deg)`,
+                                                transformOrigin: 'center',
+                                                backgroundColor: component.color || 'transparent',
+                                                ...shapeStyle
+                                            }}
+                                        ></div>
+                                    )}
+                                </>
                             );
                         })}
                         </div>
