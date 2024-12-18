@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, {useEffect, useRef, useState, forwardRef} from "react";
+import {useLocation} from "react-router-dom";
 import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
 import { LuFolder, LuImage, LuLayoutTemplate, LuShapes } from "react-icons/lu";
 import { RiText } from "react-icons/ri";
@@ -163,7 +163,6 @@ const WorkplaceCanvas = () => {
     socket.on("removeCanvas", ({ canvasId }) => {
       setCanvases((prev) => {
         const newCanvases = prev.filter((canvas) => canvas.id !== canvasId);
-
         const canvasIndex = prev.findIndex((canvas) => canvas.id === canvasId);
         const nextCanvasIndex =
           canvasIndex < newCanvases.length ? canvasIndex : canvasIndex - 1;

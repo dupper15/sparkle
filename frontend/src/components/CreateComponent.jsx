@@ -102,6 +102,7 @@ const CreateComponent = ({
     useEffect(() => {
         console.log(isTransforming);
     })
+
     const handleTransformMouseMove = (e) => {
         if (isTransforming) {
             const newDeg = calculateTransform(e);
@@ -215,16 +216,122 @@ const CreateComponent = ({
         }
     };
 
-  useEffect(() => {
-    if (isDragging || isResizing || isTransforming) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-    }
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+    const handleMouseDown = (e) => {
+        e.preventDefault();
+        if (!isResizing) {
+            setDragOffset({
+                x: e.clientX - position.x, y: e.clientY - position.y,
+            });
+            setIsDragging(true);
+            // setIsSelected(true);
+        }
     };
-  }, [isDragging, isResizing, isTransforming]);
+    const handleMouseMove = (e) => {
+        if (isDragging) {
+            const newX = e.clientX - dragOffset.x;
+            const newY = e.clientY - dragOffset.y;
+            setPosition({x: newX, y: newY});
+            updateShapeInDatabase({x: newX, y: newY, width: size.width, height: size.height});
+        } else if (isResizing) {
+            handleResizeMouseMove(e);
+        } else if (isTransforming) {
+            handleTransformMouseMove(e);
+        }
+    };
+    const handleMouseUp = () => {
+        setIsDragging(false);
+        setIsResizing(false);
+        setIsTransforming(false);
+        setResizeDirection(null);
+    };
+    const handleResizeMouseDown = (e, direction) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsResizing(true);
+        setResizeDirection(direction);
+        setResizeStartPosition({x: e.clientX, y: e.clientY});
+    };
+    const handleResizeMouseMove = (e) => {
+        if (isResizing && resizeDirection) {
+            const deltaX = e.clientX - resizeStartPosition.x;
+            const deltaY = e.clientY - resizeStartPosition.y;
+            let newWidth = size.width;
+            let newHeight = size.height;
+            let newX = position.x;
+            let newY = position.y;
+            switch (resizeDirection) {
+                case "top-left":
+                    newWidth = size.width - deltaX;
+                    newHeight = size.height - deltaY;
+                    newX = position.x + deltaX;
+                    newY = position.y + deltaY;
+                    break;
+                case "top-right":
+                    newWidth = size.width + deltaX;
+                    newHeight = size.height - deltaY;
+                    newY = position.y + deltaY;
+                    break;
+                case "bottom-left":
+                    newWidth = size.width - deltaX;
+                    newHeight = size.height + deltaY;
+                    newX = position.x + deltaX;
+                    break;
+                case "bottom-right":
+                    newWidth = size.width + deltaX;
+                    newHeight = size.height + deltaY;
+                    break;
+                case "top":
+                    newHeight = size.height - deltaY;
+                    newY = position.y + deltaY;
+                    break;
+                case "bottom":
+                    newHeight = size.height + deltaY;
+                    break;
+                case "left":
+                    newWidth = size.width - deltaX;
+                    newX = position.x + deltaX;
+                    break;
+                case "right":
+                    newWidth = size.width + deltaX;
+                    break;
+                default:
+                    break;
+            }
+            newWidth = Math.max(10, newWidth);
+            newHeight = Math.max(10, newHeight);
+            setSize({width: newWidth, height: newHeight});
+            setPosition({x: newX, y: newY});
+            updateShapeInDatabase({x: newX, y: newY, width: newWidth, height: newHeight});
+        }
+    };
+
+    // const handleClickOutside = (e) => {
+    //     const toolbars = document.querySelectorAll(".toolbar, .color-picker-panel");
+    //     const isClickInsideToolbar = Array.from(toolbars).some(toolbar => toolbar.contains(e.target));
+    //
+    //     if (componentRef.current && !componentRef.current.contains(e.target) && !isClickInsideToolbar) {
+    //         setIsSelected(false);
+    //     }
+    // };
+    //
+    // useEffect(() => {
+    //     console.log("Is Selected changed", info._id, isSelected);
+    // }, [info._id, isSelected]);
+    //
+    // useEffect(() => {
+    //     document.addEventListener("mousedown", handleClickOutside);
+    //     return () => document.removeEventListener("mousedown", handleClickOutside);
+    // }, []);
+    useEffect(() => {
+        if (isDragging || isResizing || isTransforming) {
+            document.addEventListener("mousemove", handleMouseMove);
+            document.addEventListener("mouseup", handleMouseUp);
+        }
+        return () => {
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
+        };
+    }, [isDragging, isResizing, isTransforming]);
 
   useEffect(() => {
     if (isTransforming) {
@@ -240,21 +347,21 @@ const CreateComponent = ({
     };
   }, [isTransforming]);
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Delete" && isSelected) {
-        removeComponent(info._id, "Shape");
-      }
-    };
-    // Add event listener when component is selected
-    if (isSelected) {
-      document.addEventListener("keydown", handleKeyDown);
-    }
-    // Clean up event listener when component is deselected or unmounted
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isSelected, info.id, removeComponent]);
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === "Delete" && isSelected) {
+                removeComponent(info._id, "Shape");
+            }
+        };
+        // Add event listener when component is selected
+        if (isSelected) {
+            document.addEventListener("keydown", handleKeyDown);
+        }
+        // Clean up event listener when component is deselected or unmounted
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isSelected, info.id, removeComponent]);
 
     const getShapeStyle = (info) => {
         const baseStyle = {
@@ -304,8 +411,8 @@ const CreateComponent = ({
       },
     };
 
-    return { ...baseStyle, ...shapeStyles[info.shapeType] };
-  };
+        return {...baseStyle, ...shapeStyles[info.shapeType]};
+    };
 
   const getImageStyle = (info) => {
     return {
