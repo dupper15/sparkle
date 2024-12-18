@@ -21,26 +21,28 @@ const useTextComponentViewModel = (
   });
   const [isTransforming, setIsTransforming] = useState(false);
   const startTransformRef = useRef({ x: 0, y: 0, rotate: 0 });
-  const [deg, setDeg] = useState(0);
+  const [deg, setDeg] = useState(info.rotate || 0);
   const componentRef = useRef(null);
   const [isEditing, setIsEditing] = useState(false);
   const isSelected = selectedComponents.includes(info._id);
   const inputRef = useRef(null);
   const project = useSelector((state) => state.project);
   const roomId = project.id;
+  const [isTransformButtonPressed, setIsTransformButtonPressed] = useState(false);
   useRef(null);
   useEffect(() => {
     socket.on("updateText", (data) => {
-      const { textId, x, y, width, height } = data;
+      const { textId, x, y, width, height, rotate } = data;
       if (textId === info._id) {
         setPosition({ x, y });
         setSize({ width, height });
+        setDeg(rotate);
       }
     });
     return () => {
       socket.off("shapeUpdated");
     };
-  });
+  }, [info._id]);
   const updateTextInDatabase = useRef(
     _.debounce((updatedData) => {
       socket.emit("updateText", {
@@ -56,9 +58,12 @@ const useTextComponentViewModel = (
     }, 500)
   ).current;
 
-  const calculateTransform = (e) => {
-    const dx = e.clientX - startTransformRef.current.x;
-    const dy = e.clientY - startTransformRef.current.y;
+  const calculateTransform = (e, componentRef) => {
+    const rect = componentRef.current.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const dx = e.clientX - centerX;
+    const dy = e.clientY - centerY;
     const angle = Math.atan2(dy, dx) * (180 / Math.PI);
     return angle < 0 ? angle + 360 : angle;
   };
@@ -68,23 +73,33 @@ const useTextComponentViewModel = (
     e.stopPropagation();
     if (!isResizing) {
       setIsTransforming(true);
+      setIsTransformButtonPressed(true);
+      const initialAngle = calculateTransform(e, componentRef);
       startTransformRef.current = {
         x: e.clientX,
         y: e.clientY,
-        rotate: deg,
+        rotate: deg - initialAngle,
       };
     }
   };
 
   const handleTransformMouseUp = () => {
     setIsTransforming(false);
-    updateTextInDatabase({ rotate: deg });
+    setIsTransformButtonPressed(false);
   };
 
   const handleTransformMouseMove = (e) => {
     if (isTransforming) {
-      const newDeg = calculateTransform(e);
+      const angle = calculateTransform(e, componentRef);
+      const newDeg = startTransformRef.current.rotate + angle;
       setDeg(newDeg);
+      updateTextInDatabase({
+        x: position.x,
+        y: position.y,
+        width: size.width,
+        height: size.height,
+        rotate: newDeg,
+      });
     }
   };
 
@@ -118,6 +133,7 @@ const useTextComponentViewModel = (
     setIsResizing(false);
     setIsTransforming(false);
     setResizeDirection(null);
+    setIsTransformButtonPressed(false);
   };
 
   const handleResizeMouseDown = (e, direction) => {
@@ -199,10 +215,12 @@ const useTextComponentViewModel = (
     if (isDragging || isResizing || isTransforming) {
       document.addEventListener("mousemove", handleMouseMove);
       document.addEventListener("mouseup", handleMouseUp);
+      document.addEventListener("mouseleave", handleMouseUp);
     }
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mouseleave", handleMouseUp);
     };
   }, [isDragging, isResizing, isTransforming]);
 
@@ -210,13 +228,16 @@ const useTextComponentViewModel = (
     if (isTransforming) {
       document.addEventListener("mousemove", handleTransformMouseMove);
       document.addEventListener("mouseup", handleTransformMouseUp);
+      document.addEventListener("mouseleave", handleMouseUp);
     } else {
       document.removeEventListener("mousemove", handleTransformMouseMove);
       document.removeEventListener("mouseup", handleTransformMouseUp);
+      document.removeEventListener("mouseleave", handleMouseUp);
     }
     return () => {
       document.removeEventListener("mousemove", handleTransformMouseMove);
       document.removeEventListener("mouseup", handleTransformMouseUp);
+      document.removeEventListener("mouseleave", handleMouseUp);
     };
   }, [isTransforming]);
 
@@ -256,25 +277,12 @@ const useTextComponentViewModel = (
     };
   }, [componentRef, setIsEditing]);
 
-  const getShapeStyle = () => {
-    return {
-      position: "absolute",
-      top: `${position.y}px`,
-      left: `${position.x}px`,
-      width: `${size.width}px`,
-      height: `${size.height}px`,
-      transform: `rotate(${deg}deg)`,
-      backgroundColor: "transparent",
-    };
-  };
-
   return {
     localPosition: position,
     localSize: size,
     handleMouseDown,
     handleTransformMouseDown,
     handleResizeMouseDown,
-    getShapeStyle,
     componentRef,
     isSelected,
     deg,
@@ -282,7 +290,8 @@ const useTextComponentViewModel = (
     handleDoubleClick,
     isEditing,
     handleBlur,
-    setIsEditing, // Expose setIsEditing to be used in the component
+    setIsEditing, // Expose setIsEditing to be used in the component,
+    isTransformButtonPressed,
   };
 };
 

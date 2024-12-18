@@ -49,7 +49,7 @@ const useCanvasViewModel = (id, databaseId) => {
 
     fetchComponents().then();
 
-    const eventTypes = ["shapes", "texts"];
+    const eventTypes = ["shapes", "texts", "images"];
     eventTypes.forEach((type) => {
       document.addEventListener(`update-${type}-${id}`, fetchComponents);
     });
