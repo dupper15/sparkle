@@ -278,6 +278,7 @@ const CreateComponent = ({
             backgroundImage: info.link ? `url(${info.link})` : null,
             backgroundSize: "cover",
             clipPath: info.clipPath,
+            opacity: info.opacity || 1,
         };
 
         const shapeStyles = {
@@ -327,6 +328,7 @@ const CreateComponent = ({
             backgroundImage: `url(${info.image})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
+            opacity: info.opacity || 1,
         };
     };
 

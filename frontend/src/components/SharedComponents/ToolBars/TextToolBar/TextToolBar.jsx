@@ -6,6 +6,7 @@ import ParagraphFormatSection from "../SubComponents/ParagraphFormatSection/Para
 import TextFormatSection from "../SubComponents/TextFormatSection/TextFormatSection.jsx";
 import PositionEditSection from "../SubComponents/PositionEditSection/PositionEditSection.jsx";
 import useTextToolbarViewModel from "./TextToolbarViewModel";
+import OpacitySlider from "../SubComponents/OpacitySlider/OpacitySlider.jsx";
 
 /* eslint react/prop-types: 0 */
 const TextToolbar = ({
@@ -16,6 +17,7 @@ const TextToolbar = ({
                          selectedTextFontStyle,
                          selectedTextDecorationLine,
                          selectedTextTextAlign,
+                         selectedComponentOpacity,
                          handleColorChange,
                          handleSendBackward,
                          handleSendToBack,
@@ -27,6 +29,7 @@ const TextToolbar = ({
                          handleFontStyleChange,
                          handleTextDecorationLineChange,
                          handleTextAlignChange,
+                         handleComponentOpacityChange
                      }) => {
     const {
         openColorPickerPanel,
@@ -64,6 +67,10 @@ const TextToolbar = ({
                 handleTextDecorationLineChange={handleTextDecorationLineChange}
                 handleColorClick={handleColorClick}
             />
+
+            <RxDividerVertical/>
+
+            <OpacitySlider currentOpacity={selectedComponentOpacity} handleComponentOpacityChange={handleComponentOpacityChange}></OpacitySlider>
 
             <RxDividerVertical/>
 

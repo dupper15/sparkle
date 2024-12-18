@@ -76,6 +76,7 @@ const TextComponent = ({ info, onClick, removeComponent, selectedComponents, han
                     fontStyle: info.fontStyle,
                     fontWeight: info.fontWeight,
                     textDecorationLine: info.textDecorationLine,
+                    opacity: info.opacity || 1,
                 }}>{info.content}</h2>
             )}
             {isSelected && (<MdOutlineChangeCircle

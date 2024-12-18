@@ -34,6 +34,7 @@ const Canvas = React.forwardRef(({
         selectedTextFontStyle,
         selectedTextDecorationLine,
         selectedTextTextAlign,
+        selectedComponentOpacity,
         isImageToolBarOpen,
         isTextToolBarOpen,
         isDarkMode,
@@ -53,6 +54,7 @@ const Canvas = React.forwardRef(({
         handleSendToBack,
         handleSendForward,
         handleSendToFront,
+        handleComponentOpacityChange,
         removeComponent,
         handleMouseMove,
         handleMouseLeave,
@@ -84,11 +86,13 @@ const Canvas = React.forwardRef(({
             {isImageToolBarOpen && (<div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
                 <ShapeToolBar
                     selectedComponentColor={selectedComponentColor}
+                    selectedComponentOpacity={selectedComponentOpacity}
                     handleColorChange={handleColorChange}
                     handleSendBackward={handleSendBackward}
                     handleSendToBack={handleSendToBack}
                     handleSendToFront={handleSendToFront}
                     handleSendForward={handleSendForward}
+                    handleComponentOpacityChange={handleComponentOpacityChange}
                 />
             </div>)}
             {isTextToolBarOpen && (<div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
@@ -100,6 +104,7 @@ const Canvas = React.forwardRef(({
                     selectedTextFontStyle={selectedTextFontStyle}
                     selectedTextDecorationLine={selectedTextDecorationLine}
                     selectedTextTextAlign={selectedTextTextAlign}
+                    selectedComponentOpacity={selectedComponentOpacity}
                     handleColorChange={handleColorChange}
                     handleSendBackward={handleSendBackward}
                     handleSendToBack={handleSendToBack}
@@ -111,6 +116,7 @@ const Canvas = React.forwardRef(({
                     handleFontStyleChange={handleFontStyleChange}
                     handleTextDecorationLineChange={handleTextDecorationLineChange}
                     handleTextAlignChange={handleTextAlignChange}
+                    handleComponentOpacityChange={handleComponentOpacityChange}
                 />
             </div>)}
         </div>
