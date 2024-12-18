@@ -8,9 +8,10 @@ import { useMutation } from "@tanstack/react-query";
 import * as ProjectService from "../../services/ProjectService";
 import * as Alert from "../Alert/Alert"
 import { useSelector } from "react-redux";
-import { useReactToPrint } from "react-to-print";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 const initialState = {
   isShow: false,
@@ -47,73 +48,181 @@ const WorkplaceHeader = ({ usersInRoom }) => {
 
   const [canvases, setCanvases] = useState("")
 
-  useEffect(() => {
-    setCanvases(project?.canvasArray)
-  }, [project?.canvasArray])
-
-  console.log("project", project)
   const canvasRefs = useRef([]);
 
   const handleDownloadPDF = async () => {
-    const pdfWidth = 900
-    const pdfHeight = 300
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "px",
-      format: [pdfWidth, pdfHeight], // Kích thước PDF khớp với canvas
-    });
+    const pdfWidth = project?.width;
+    const pdfHeight = project?.height;
 
+    let pdf = null
+
+    const ratio = pdfWidth/ pdfHeight;
+    if (ratio> 1){
+      pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "px",
+        format: [pdfWidth, pdfHeight],
+      });
+    } else {
+      pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: "px",
+        format: [pdfWidth, pdfHeight],
+      });
+    }
     for (let i = 0; i < canvasRefs.current.length; i++) {
       const element = canvasRefs.current[i];
       if (!element) continue;
 
-    
       const page = await html2canvas(element, {
         useCORS: true, // Hỗ trợ tải ảnh từ các nguồn khác
-        scale: 2, // Tăng chất lượng ảnh chụp
+        scale: 3, // Tăng chất lượng ảnh chụp
       });
+
       const data = page.toDataURL("image/png");
 
       if (i > 0) {
         pdf.addPage();
       }
+      const imgProps = pdf.getImageProperties(data)
+      console.log("imgProps", imgProps)
 
       pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
     }
-
-    pdf.save("all_canvases.pdf");
+    pdf.save(`${project?.projectName}.pdf`);
   };
-
-  // const handleDownloadPDF = useReactToPrint({
-  //   contentRef: contentRef,
-  //   documentTitle: "workplace",
-  //   onPrintError: (error) => console.error("Print error:", error),
-  //   pageStyle: `
-  //     @page {
-  //       size: ${project.width}px ${project.height}px;
-  //       margin: 0;
-  //     }
-  //     @media print {
-  //       .canvas-container {
-  //         page-break-before: always;
-  //         display: block !important;
-  //       }
-  //     }
-  //   `,
-  //   // Customize the print behavior to handle multiple pages
-  //   onAfterPrint: () => console.log("Printing completed"),
-  // });
-
   // Handle PNG download using html2canvas
   const handleDownloadPNG = async () => {
-    const canvas = canvasesRefs.current; // Lấy Canvas đầu tiên (hoặc tùy chọn)
-    if (canvas) {
-      const canvasImage = await html2canvas(canvas);
-      const dataUrl = canvasImage.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.href = dataUrl;
-      link.download = "workplace.png";
-      link.click();
+    if (!canvasRefs.current.length) {
+      console.error("No canvases available to download.");
+      return;
+    }
+  
+    try {
+        // Trường hợp nhiều canvas, nén vào file ZIP
+        const zip = new JSZip(); // Tạo một đối tượng ZIP
+        const folder = zip.folder("canvases"); // Tạo thư mục bên trong file ZIP
+        if (!folder) {
+          console.error("Failed to create folder in ZIP.");
+          return;
+        }
+  
+        for (let i = 0; i < canvasRefs.current.length; i++) {
+          const element = canvasRefs.current[i];
+          if (!element) continue;
+  
+          // Chụp canvas thành ảnh
+          const canvasImage = await html2canvas(element, { useCORS: true, scale: 3 });
+          const dataUrl = canvasImage.toDataURL("image/png");
+  
+          // Chuyển base64 sang binary để thêm vào ZIP
+          const base64Data = dataUrl.split(",")[1];
+          folder.file(`canvas_${i + 1}.png`, base64Data, { base64: true });
+        }
+  
+        // Lưu file ZIP
+        const content = await zip.generateAsync({ type: "blob" });
+        saveAs(content, `${project?.projectName}.zip`);
+    } catch (error) {
+      console.error("Error processing canvases:", error);
+    }
+  };
+  
+  const getShapeSVG = (shapeType, width, height, color) => {
+    switch (shapeType) {
+      case "circle":
+        return (
+          <svg width={width} height={height}>
+            <circle cx="50%" cy="50%" r="50%" fill={color || "transparent"} />
+          </svg>
+        );
+      case "triangle":
+        return (
+          <svg width={width} height={height}>
+            <polygon points="50,0 100,100 0,100" fill={color || "transparent"} />
+          </svg>
+        );
+      case "invertedTriangle":
+        return (
+          <svg width={width} height={height}>
+            <polygon points="50,100 0,0 100,0" fill={color || "transparent"} />
+          </svg>
+        );
+      case "rect":
+        return (
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+              backgroundColor: color || "transparent",
+            }}
+          ></div>
+        );
+      case "pentagon":
+        return (
+          <svg width={width} height={height}>
+            <polygon
+              points="50,0 100,38 82,100 18,100 0,38"
+              fill={color || "transparent"}
+            />
+          </svg>
+        );
+      case "hexagon":
+        return (
+          <svg width={width} height={height}>
+            <polygon
+              points="50,0 100,25 100,75 50,100 0,75 0,25"
+              fill={color || "transparent"}
+            />
+          </svg>
+        );
+      case "octagon":
+        return (
+          <svg width={width} height={height}>
+            <polygon
+              points="30,0 70,0 100,30 100,70 70,100 30,100 0,70 0,30"
+              fill={color || "transparent"}
+            />
+          </svg>
+        );
+      case "arrowUp":
+        return (
+          <svg width={width} height={height}>
+            <polygon
+              points="50,0 100,50 75,50 75,100 25,100 25,50 0,50"
+              fill={color || "transparent"}
+            />
+          </svg>
+        );
+      case "arrowDown":
+        return (
+          <svg width={width} height={height}>
+            <polygon
+              points="50,100 100,50 75,50 75,0 25,0 25,50 0,50"
+              fill={color || "transparent"}
+            />
+          </svg>
+        );
+      case "arrowRight":
+        return (
+          <svg width={width} height={height}>
+            <polygon
+              points="0,50 50,0 50,25 100,25 100,75 50,75 50,100"
+              fill={color || "transparent"}
+            />
+          </svg>
+        );
+      case "arrowLeft":
+        return (
+          <svg width={width} height={height}>
+            <polygon
+              points="100,50 50,0 50,25 0,25 0,75 50,75 50,100"
+              fill={color || "transparent"}
+            />
+          </svg>
+        );
+      default:
+        return null; // Không render gì nếu không khớp
     }
   };
 
@@ -123,14 +232,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     } else if (downloadType === "png") {
       handleDownloadPNG();
     }
-  };
-
-  const renderCanvases = () => {
-    return canvasList.map((canvas, index) => (
-      <div key={index} ref={canvasRefs} style={{ pageBreakAfter: 'always' }}>
-        
-      </div>
-    ));
+    setDownload(!download)
   };
 
   useEffect(() => {
@@ -216,9 +318,22 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     setStatus(!status)
   }
 
-  const handleClickDownload = () => {
-    setDownload(!download)
-  }
+  const handleClickDownload = async () => {
+    try {
+      const result = await ProjectService.getDetailProject(projectId);
+  
+      if (result?.data?.canvasArray) {
+        // Cập nhật state canvases
+        setCanvases([...result.data.canvasArray]); // Tạo một array mới để trigger render
+        setDownload(!download); // Thay đổi trạng thái download nếu cần
+      } else {
+        console.error("Canvas array not found in response.");
+      }
+    } catch (error) {
+      console.error("Error fetching project details:", error);
+    }
+  };
+  
 
   const toggleAddMember = () => {
     dispatch({ type: "TOGGLE_SHOW" });
@@ -239,6 +354,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       className={`flex items-center justify-between w-full h-[50px] px-5 py-8 ${
         isDarkMode ? "bg-[#18191B]" : "bg-gray-200"
       }`}>
+      {/* Logo và tên ứng dụng */}
       <div className='flex items-center gap-2'>
         <div className="w-[40px] h-[40px] bg-[url('./assets/logo.png')] bg-cover bg-center" />
         <div
@@ -249,7 +365,10 @@ const WorkplaceHeader = ({ usersInRoom }) => {
           Sparkle
         </div>
       </div>
-      <div className='flex items-center gap-5 '>
+  
+      {/* Các chức năng ở góc phải */}
+      <div className='flex items-center gap-5'>
+        {/* Hiển thị avatar */}
         <div className='hidden md:flex md:items-center relative mr-6'>
           <div className='flex flex-row-reverse'>
             {state.avatars.map((value, index) => (
@@ -257,8 +376,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
                 key={index}
                 className='w-[40px] h-[40px] rounded-full overflow-hidden border-2 border-white'
                 style={{
-                  marginLeft:
-                    index !== state.avatars.length - 1 ? "-15px" : "0",
+                  marginLeft: index !== state.avatars.length - 1 ? "-15px" : "0",
                   zIndex: state.avatars.length - index,
                 }}>
                 <img
@@ -269,7 +387,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
               </div>
             ))}
           </div>
-
+          {/* Nút thêm thành viên */}
           <button
             onClick={toggleAddMember}
             className='w-[40px] h-[40px] bg-white font-semibold rounded-full
@@ -285,7 +403,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
             <FaPlus className='w-[30px] h-[30px]' />
           </button>
         </div>
-
+  
+        {/* Form thêm thành viên */}
         {state.isShow && (
           <>
             <div
@@ -299,178 +418,143 @@ const WorkplaceHeader = ({ usersInRoom }) => {
             </div>
           </>
         )}
-
-        <button onClick={handleClickDownload} className='w-[100px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2'>
+  
+        {/* Nút tải xuống */}
+        <button
+          onClick={handleClickDownload}
+          className='w-[100px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2'>
           <span className='text-white'>Download</span>
         </button>
+  
+        {/* Dropdown lựa chọn tải xuống */}
         {download && (
-          <div className="absolute top-[4rem] right-[12rem] padding-[15px]">
-            <div
-              className={`profile-dropdown w-[200px] box-border pb-2 shadow-lg rounded-2xl ${
-                isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
-              }`}
-            >
-              {/* Header */}
-              <div className="text-center py-2 border-b">
-                <span className="font-semibold text-lg">Download Options</span>
-              </div>
-
-              {/* Options */}
-              <div className="flex flex-col px-4 py-2">
-                {/* Radio Option for PDF */}
-                <label className="flex items-center cursor-pointer py-2">
-                  <input
-                    type="radio"
-                    name="downloadType"
-                    value="pdf"
-                    checked={downloadType === "pdf"}
-                    onChange={() => setDownloadType("pdf")}
-                    className="mr-2"
-                  />
-                  <span className="w-full text-left hover:text-[#4335DE]">Download PDF</span>
-                </label>
-
-                {/* Radio Option for PNG */}
-                <label className="flex items-center cursor-pointer py-2">
-                  <input
-                    type="radio"
-                    name="downloadType"
-                    value="png"
-                    checked={downloadType === "png"}
-                    onChange={() => setDownloadType("png")}
-                    className="mr-2"
-                  />
-                  <span className="w-full text-left hover:text-[#4335DE]">Download PNG</span>
-                </label>
-              </div>
-
-              {/* Download Button */}
-              <div className="flex justify-center mt-4">
-                <button
-                  onClick={handleDownload}
-                  className="px-4 py-2 bg-[#4335DE] text-white rounded-lg hover:bg-[#372fc9] transition z-99"
-                >
-                  Download
-                </button>
-              </div>
-              {/* WorkplaceCanvas (ẩn trong giao diện chính) */}
-                {
-                  canvases.slice().map((canvas, index) => (
-                    <div 
-                        key={canvas?._id}
-                        id={canvas?._id}
-                        className="canvas-container bg-white"
-                    >
-                            <div  
-                                ref={(el) => (canvasRefs.current[index] = el)} // Lưu tham chiếu canvas
-                                className={`canvas-background w-[${project.width}px] h-[${project.height}px] relative bg-cover `}
-                                style={{
-                                  backgroundImage:
-                                  canvas.background === "#ffffff"
-                                    ? "none"
-                                    : `url(${canvas.background})`,
-                                  backgroundColor:
-                                    canvas.background === "#ffffff" ? "#ffffff" : "transparent",
-                                  backgroundSize: "100% 100%",
-                                  backgroundPosition: "center",
-                                  backgroundRepeat: "no-repeat",
-                              }}
-                            >
-                            {canvas.componentArray?.map((component, index) => {
-                                const getShapeStyle = (shapeType) => {
-                                switch (shapeType) {
-                                    case 'circle':
-                                    return {
-                                        borderRadius: '50%',  // Tạo hình tròn
-                                    };
-                                    case 'triangle':
-                                    return {
-                                        clipPath: 'polygon(50% 0, 100% 100%, 0 100%)',  // Hình tam giác
-                                    };
-                                    case 'invertedTriangle':
-                                    return {
-                                        clipPath: 'polygon(50% 100%, 0 0, 100% 0)',  // Hình tam giác ngược
-                                    };
-                                    case 'pentagon':
-                                    return {
-                                        clipPath: 'polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)',  // Hình ngũ giác
-                                    };
-                                    case 'hexagon':
-                                    return {
-                                        clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',  // Hình lục giác
-                                    };
-                                    case "octagon":
-                                        return {
-                                        clipPath:
-                                            "polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%)",
-                                        }; // Hình bát giác
-                                    case "arrowUp":
-                                        return {
-                                        clipPath:
-                                            "polygon(50% 0%, 100% 50%, 75% 50%, 75% 100%, 25% 100%, 25% 50%, 0% 50%)",
-                                        }; // Mũi tên hướng lên
-                                    case "arrowDown":
-                                        return {
-                                        clipPath:
-                                            "polygon(50% 100%, 100% 50%, 75% 50%, 75% 0%, 25% 0%, 25% 50%, 0% 50%)",
-                                        }; // Mũi tên hướng xuống
-                                    case "arrowRight":
-                                        return {
-                                        clipPath:
-                                            "polygon(0% 50%, 50% 0%, 50% 25%, 100% 25%, 100% 75%, 50% 75%, 50% 100%)",
-                                        }; // Mũi tên hướng phải
-                                    case "arrowLeft":
-                                        return {
-                                        clipPath:
-                                            "polygon(100% 50%, 50% 0%, 50% 25%, 0% 25%, 0% 75%, 50% 75%, 50% 100%)",
-                                        }; // Mũi tên hướng trái
-                                    case 'rect':
-                                    return {};  // Hình chữ nhật (mặc định không cần clipPath)
-                                    default:
-                                    return {};
-                                }
-                                };
-                            
-                                const shapeStyle = getShapeStyle(component.shapeType);
-                 
-                                return (
-                                <div className="canvas-component"
-                                    key={index}
-                                    style={{
-                                    position: 'absolute', 
-                                    top: component.y,
-                                    left: component.x,
-                                    width: component.width,
-                                    height: component.height,
-                                    backgroundColor: component.color || 'transparent',
-                                    ...shapeStyle,  // Áp dụng kiểu dáng cho hình
-                                    }}
-                                />
-                                );
-                            })}
-                            </div>
-                    </div>
-                ))
-                }
-                </div>
-              </div>
+          <div
+            className={`profile-dropdown absolute w-[200px] top-[4rem] right-[15rem] box-border pb-2 shadow-lg rounded-2xl ${
+              isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+            }`}>
+            {/* Header */}
+            <div className="text-center py-2 border-b">
+              <span className="font-semibold text-lg">Download Options</span>
+            </div>
+  
+            {/* Options */}
+            <div className="flex flex-col px-4 py-2">
+              {/* Radio Option for PDF */}
+              <label className="flex items-center cursor-pointer py-2">
+                <input
+                  type="radio"
+                  name="downloadType"
+                  value="pdf"
+                  checked={downloadType === "pdf"}
+                  onChange={() => setDownloadType("pdf")}
+                  className="mr-2"
+                />
+                <span className="w-full text-left hover:text-[#4335DE]">
+                  Download PDF
+                </span>
+              </label>
+  
+              {/* Radio Option for PNG */}
+              <label className="flex items-center cursor-pointer py-2">
+                <input
+                  type="radio"
+                  name="downloadType"
+                  value="png"
+                  checked={downloadType === "png"}
+                  onChange={() => setDownloadType("png")}
+                  className="mr-2"
+                />
+                <span className="w-full text-left hover:text-[#4335DE]">
+                  Download PNG
+                </span>
+              </label>
+            </div>
+  
+            {/* Download Button */}
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={handleDownload}
+                className="px-4 py-2 bg-[#4335DE] text-white rounded-lg hover:bg-[#372fc9] transition z-99">
+                Download
+              </button>
+            </div>
+          </div>
+          
         )}
-
+       <div
+       style={{
+        position: "absolute",
+        transform: "translate(-9999px, -9999px)", // Di chuyển canvas ra ngoài khung nhìn
+        opacity: 0, // Làm cho canvas trong suốt
+        pointerEvents: "none", // Ngăn người dùng tương tác
+      }}
+        >
+       {Array.isArray(canvases) && canvases.map((canvas, index) => (
+        <div
+          key={canvas?._id}
+          id={canvas?._id}
+          className="canvas-container bg-white"
+        >
+          <div
+            ref={(el) => (canvasRefs.current[index] = el)}
+            className="canvas-background"
+            style={{
+              width: `${project.width}px`,
+              height: `${project.height}px`,
+              backgroundImage:
+                canvas.background === "#ffffff"
+                  ? "none"
+                  : `url(${canvas.background})`,
+              backgroundColor:
+                canvas.background === "#ffffff" ? "#ffffff" : "transparent",
+              backgroundSize: "100% 100%",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              position: "relative",
+            }}
+          >
+            {canvas.componentArray?.map((component, idx) => (
+              <div
+                key={idx}
+                style={{
+                  position: "absolute",
+                  top: component.y,
+                  left: component.x,
+                  // width: component.width,
+                  // height: component.height,
+                }}
+              >
+                {getShapeSVG(
+                  component.shapeType,
+                  component.width + 10,
+                  component.height + 10,
+                  component.color
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+       </div>
+        
+        {/* Nút chia sẻ */}
         <button
           onClick={() => console.log("userInRoom", usersInRoom)}
           className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 border-black shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
           <span className='gradient'>Share</span>
         </button>
-        {(ownerId === project?.owner) &&
+  
+        {/* Nút trạng thái Private/Public */}
+        {ownerId === project?.owner && (
           <button
             onClick={status ? handlePrivate : handlePublic}
             className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
             <span className='gradient'>{status ? "Private" : "Public"}</span>
           </button>
-         }
+        )}
       </div>
     </div>
-  );
+  );  
 };
 
 export default WorkplaceHeader;
