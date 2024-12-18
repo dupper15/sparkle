@@ -1,4 +1,4 @@
-const useFontSelectorViewModel = (handleFontFamilyChange) => {
+const useFontSelectorViewModel = (handleFontFamilyChange, currentFontFamily) => {
 
     const onFontFamilyChange = (event) => {
         try {

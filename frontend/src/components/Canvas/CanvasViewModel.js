@@ -8,6 +8,7 @@ import TextService from "../../services/TextService.js";
 import socket from "../../utils/socket";
 import { useSelector } from "react-redux";
 import { throttle } from "lodash";
+import debounce from "lodash.debounce";
 
 const useCanvasViewModel = (id, databaseId) => {
   const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
@@ -17,6 +18,8 @@ const useCanvasViewModel = (id, databaseId) => {
   const canvasRef = useRef(null);
   const { isOver, setNodeRef } = useDroppable({ id });
   const { isDarkMode } = useDarkMode();
+  const [selectedComponentColor, setSelectedComponentColor] =
+    useState("#000000");
   const [selectedTextFontFamily, setSelectedTextFontFamily] = useState("");
   const [selectedTextFontSize, setSelectedTextFontSize] = useState(16);
   const [selectedTextFontWeight, setSelectedTextFontWeight] =
@@ -24,8 +27,11 @@ const useCanvasViewModel = (id, databaseId) => {
   const [selectedTextFontStyle, setSelectedTextFontStyle] = useState("normal");
   const [selectedTextDecorationLine, setSelectedTextDecorationLine] =
     useState("none");
+  const [selectedTextTextAlign, setSelectedTextTextAlign] = useState("left");
   const user = useSelector((state) => state.user);
   const userId = user.id;
+  const room = useSelector((state) => state.project);
+  const roomId = room.id;
   const [focuses, setFocuses] = useState({});
   const [cursors, setCursors] = useState({});
   // Fetch components from the database
@@ -53,7 +59,7 @@ const useCanvasViewModel = (id, databaseId) => {
         document.removeEventListener(`update-${type}-${id}`, fetchComponents);
       });
     };
-  }, [databaseId, id]);
+  }, []);
 
   // Handle clicks outside the canvas
   useEffect(() => {
@@ -91,6 +97,24 @@ const useCanvasViewModel = (id, databaseId) => {
   }, [selectedComponents, canvasRef]);
 
   useEffect(() => {
+    const updateSelectedComponentProperty = (property, setState) => {
+      const selectedGeneralComponents = components.filter((component) =>
+        selectedComponents.includes(component._id)
+      );
+      if (selectedGeneralComponents.length === 0) {
+        setState("");
+        return;
+      }
+      const values = selectedGeneralComponents.map(
+        (component) => component[property]
+      );
+      const uniqueValues = [...new Set(values)];
+      setState(uniqueValues.length === 1 ? uniqueValues[0] : "");
+    };
+    updateSelectedComponentProperty("color", setSelectedComponentColor);
+  }, [components, selectedComponents]);
+
+  useEffect(() => {
     const updateSelectedTextProperty = (property, setState) => {
       const selectedTextComponents = components.filter(
         (component) =>
@@ -116,6 +140,7 @@ const useCanvasViewModel = (id, databaseId) => {
       "textDecorationLine",
       setSelectedTextDecorationLine
     );
+    updateSelectedTextProperty("textAlign", setSelectedTextTextAlign);
   }, [components, selectedComponents]);
   useEffect(() => {
     const handleSelectUpdate = ({ id, userId1, userName }) => {
@@ -150,10 +175,102 @@ const useCanvasViewModel = (id, databaseId) => {
 
     socket.on("update-select-component", handleSelectUpdate);
     socket.on("update-deselect-component", handleDeselectUpdate);
+    socket.on("componentColorChanged", ({ componentId, color }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId ? { ...component, color } : component
+        )
+      );
+    });
+    socket.on("textFontFamilyChanged", ({ componentId, fontFamily }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId
+            ? { ...component, fontFamily }
+            : component
+        )
+      );
+    });
+    socket.on("textFontWeightChanged", ({ componentId, fontWeight }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId
+            ? { ...component, fontWeight }
+            : component
+        )
+      );
+    });
+    socket.on("textFontSizeChanged", ({ componentId, fontSize }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId ? { ...component, fontSize } : component
+        )
+      );
+    });
+    socket.on("textFontStyleChanged", ({ componentId, fontStyle }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId
+            ? { ...component, fontStyle }
+            : component
+        )
+      );
+    });
+    socket.on(
+      "textDecorationLineChanged",
+      ({ componentId, textDecorationLine }) => {
+        setComponents((prevComponents) =>
+          prevComponents.map((component) =>
+            component._id === componentId
+              ? { ...component, textDecorationLine }
+              : component
+          )
+        );
+      }
+    );
+    socket.on("textAlignChanged", ({ componentId, textAlign }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId
+            ? { ...component, textAlign }
+            : component
+        )
+      );
+    });
+    socket.on("textContentChanged", ({ componentId, content }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId ? { ...component, content } : component
+        )
+      );
+    });
 
+    socket.on("remove-component", ({ componentId }) => {
+      setComponents((prevComponents) =>
+        prevComponents.filter((component) => component._id !== componentId)
+      );
+    });
+
+    socket.on("componentZIndexChanged", ({ componentId, zIndex }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId ? { ...component, zIndex } : component
+        )
+      );
+    });
     return () => {
       socket.off("update-select-component", handleSelectUpdate);
       socket.off("update-deselect-component", handleDeselectUpdate);
+      socket.off("componentColorChanged");
+      socket.off("textFontFamilyChanged");
+      socket.off("textFontSizeChanged");
+      socket.off("textFontWeightChanged");
+      socket.off("textFontStyleChanged");
+      socket.off("textDecorationLineChanged");
+      socket.off("textAlignChanged");
+      socket.off("textContentChanged");
+      socket.off("remove-component");
+      socket.off("componentZIndexChanged");
     };
   }, []);
 
@@ -203,7 +320,6 @@ const useCanvasViewModel = (id, databaseId) => {
       delete newCursors[userId];
       return newCursors;
     });
-    console.log("ok");
   });
   useEffect(() => {
     socket.emit("join-page", databaseId);
@@ -227,7 +343,6 @@ const useCanvasViewModel = (id, databaseId) => {
     socket.emit("mousemove", { databaseId, x, y });
   }, 100);
   const handleMouseLeave = () => {
-    console.log("ok 1");
     socket.emit("leave-page", { databaseId });
   };
 
@@ -252,35 +367,65 @@ const useCanvasViewModel = (id, databaseId) => {
         component.type,
         color,
         component._id
-      ).then();
+      ).then(() => {
+        socket.emit("componentColorChanged", {
+          componentId: component._id,
+          color,
+          roomId,
+        });
+      });
       return { ...component, color };
     });
   };
 
   const handleFontFamilyChange = (fontFamily) => {
     updateComponent((component) => {
-      TextService.updateTextFontFamily(fontFamily, component._id).then();
+      TextService.updateTextFontFamily(fontFamily, component._id).then(() => {
+        socket.emit("textFontFamilyChanged", {
+          componentId: component._id,
+          fontFamily,
+          roomId,
+        });
+      });
       return { ...component, fontFamily };
     });
   };
 
   const handleFontSizeChange = (fontSize) => {
     updateComponent((component) => {
-      TextService.updateTextFontSize(fontSize, component._id).then();
+      TextService.updateTextFontSize(fontSize, component._id).then(() => {
+        socket.emit("textFontSizeChanged", {
+          componentId: component._id,
+          fontSize,
+          roomId,
+        });
+      });
       return { ...component, fontSize };
     });
   };
 
   const handleFontWeightChange = (fontWeight) => {
     updateComponent((component) => {
-      TextService.updateTextFontWeight(fontWeight, component._id).then();
+      TextService.updateTextFontWeight(fontWeight, component._id).then(() => {
+        socket.emit("textFontWeightChanged", {
+          componentId: component._id,
+          fontWeight,
+          roomId,
+        });
+      });
       return { ...component, fontWeight };
     });
   };
 
   const handleFontStyleChange = (fontStyle) => {
     updateComponent((component) => {
-      TextService.updateTextFontStyle(fontStyle, component._id).then();
+      TextService.updateTextFontStyle(fontStyle, component._id).then(() => {
+        socket.emit("textFontStyleChanged", {
+          componentId: component._id,
+          fontStyle,
+          roomId,
+        });
+      });
       return { ...component, fontStyle };
     });
   };
@@ -290,8 +435,40 @@ const useCanvasViewModel = (id, databaseId) => {
       TextService.updateTextDecorationLine(
         textDecorationLine,
         component._id
-      ).then();
+      ).then(() => {
+        socket.emit("textDecorationLineChanged", {
+          componentId: component._id,
+          textDecorationLine,
+          roomId,
+        });
+      });
       return { ...component, textDecorationLine };
+    });
+  };
+
+  const handleTextAlignChange = (textAlign) => {
+    updateComponent((component) => {
+      TextService.updateTextTextAlign(textAlign, component._id).then(() => {
+        socket.emit("textAlignChanged", {
+          componentId: component._id,
+          textAlign,
+          roomId,
+        });
+      });
+      return { ...component, textAlign };
+    });
+  };
+
+  const handleTextContentChange = (content) => {
+    updateComponent((component) => {
+      TextService.updateTextContent(content, component._id).then(() => {
+        socket.emit("textContentChanged", {
+          componentId: component._id,
+          content,
+          roomId,
+        });
+      });
+      return { ...component, content };
     });
   };
 
@@ -303,6 +480,7 @@ const useCanvasViewModel = (id, databaseId) => {
         componentType,
         componentId
       );
+      socket.emit("remove-component", { componentId, roomId });
       setComponents((prevComponents) =>
         prevComponents.filter((component) => component._id !== componentId)
       );
@@ -330,7 +508,13 @@ const useCanvasViewModel = (id, databaseId) => {
       component.type,
       newZIndex,
       component._id
-    ).then();
+    ).then(() => {
+      socket.emit("componentZIndexChanged", {
+        componentId: component._id,
+        zIndex: newZIndex,
+        roomId,
+      });
+    });
     return { ...component, zIndex: newZIndex };
   };
 
@@ -340,11 +524,13 @@ const useCanvasViewModel = (id, databaseId) => {
   };
 
   return {
+    selectedComponentColor,
     selectedTextFontFamily,
     selectedTextFontSize,
     selectedTextFontWeight,
     selectedTextFontStyle,
     selectedTextDecorationLine,
+    selectedTextTextAlign,
     selectedComponents,
     components,
     isImageToolBarOpen,
@@ -362,6 +548,7 @@ const useCanvasViewModel = (id, databaseId) => {
     handleFontWeightChange,
     handleFontStyleChange,
     handleTextDecorationLineChange,
+    handleTextAlignChange,
     handleSendBackward: () => handleChangeZIndex(-1),
     handleSendToBack: () => handleChangeZIndex(0),
     handleSendForward: () => handleChangeZIndex(1),
@@ -370,6 +557,7 @@ const useCanvasViewModel = (id, databaseId) => {
     handleMouseLeave,
     cursors,
     focuses,
+    handleTextContentChange,
   };
 };
 

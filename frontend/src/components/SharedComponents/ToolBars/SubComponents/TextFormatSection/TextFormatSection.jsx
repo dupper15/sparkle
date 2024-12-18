@@ -23,7 +23,7 @@ const TextFormatSection = ({
             <div className="h-8 toolbar flex">
                 {/* Color Selector */}
                 <div className="h-8 toolbar flex">
-                    <button className="text-xl text-amber-950 pl-1 pr-1 mr-1" onClick={handleColorClick}>
+                    <button style={{color: activeColor}} className={`text-xl pl-1 pr-1 mr-1`} onClick={handleColorClick}>
                         <FaCircle />
                     </button>
                 </div>

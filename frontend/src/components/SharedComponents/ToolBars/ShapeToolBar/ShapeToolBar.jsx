@@ -7,7 +7,7 @@ import useShapeToolbarViewModel from "./ShapeToolBarViewModel.js";
 
 /* eslint react/prop-types: 0 */
 const ShapeToolBar = ({
-                          selectedComponentId,
+                          selectedComponentColor,
                           handleColorChange,
                           handleSendBackward,
                           handleSendToBack,
@@ -18,7 +18,6 @@ const ShapeToolBar = ({
         openColorPickerPanel,
         handleColorClick,
         setOpenPickerPanel,
-        activeColor,
         setActiveColor,
         isFlipMenuOpen,
         isCropModeOpen,
@@ -26,16 +25,14 @@ const ShapeToolBar = ({
         handleCropClick,
         setIsFlipMenuOpen,
         setOpenCropMode,
-        handleHorizontalFlipClick,
-        handleVerticalFlipClick,
-    } = useShapeToolbarViewModel(selectedComponentId);
+    } = useShapeToolbarViewModel();
 
     return (<div className="h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md">
         <ImageStylesEditSection
             openColorPickerPanel={openColorPickerPanel}
             handleColorClick={handleColorClick}
             setOpenPickerPanel={setOpenPickerPanel}
-            activeColor={activeColor}
+            activeColor={selectedComponentColor}
             setActiveColor={setActiveColor}
             handleColorChange={handleColorChange}
         />
@@ -49,8 +46,6 @@ const ShapeToolBar = ({
             handleCropClick={handleCropClick}
             setIsFlipMenuOpen={setIsFlipMenuOpen}
             setOpenCropMode={setOpenCropMode}
-            handleHorizontalFlipClick={handleHorizontalFlipClick}
-            handleVerticalFlipClick={handleVerticalFlipClick}
         />
 
         <RxDividerVertical/>

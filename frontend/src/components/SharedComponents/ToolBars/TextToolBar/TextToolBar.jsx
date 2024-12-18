@@ -9,11 +9,13 @@ import useTextToolbarViewModel from "./TextToolbarViewModel";
 
 /* eslint react/prop-types: 0 */
 const TextToolbar = ({
+                         selectedComponentColor,
                          selectedTextFontSize,
                          selectedTextFontFamily,
                          selectedTextFontWeight,
                          selectedTextFontStyle,
                          selectedTextDecorationLine,
+                         selectedTextTextAlign,
                          handleColorChange,
                          handleSendBackward,
                          handleSendToBack,
@@ -24,15 +26,16 @@ const TextToolbar = ({
                          handleFontWeightChange,
                          handleFontStyleChange,
                          handleTextDecorationLineChange,
+                         handleTextAlignChange,
                      }) => {
     const {
         openColorPickerPanel,
         setOpenPickerPanel,
-        activeColor,
         setActiveColor,
         isBold,
         isItalic,
         isUnderlined,
+        handleColorClick
     } = useTextToolbarViewModel(selectedTextFontWeight, selectedTextFontStyle, selectedTextDecorationLine);
     return (
         <div className="toolbar h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
@@ -52,19 +55,21 @@ const TextToolbar = ({
                 isUnderlined={isUnderlined}
                 openColorPickerPanel={openColorPickerPanel}
                 setOpenPickerPanel={setOpenPickerPanel}
-                activeColor={activeColor}
+                activeColor={selectedComponentColor}
                 setActiveColor={setActiveColor}
                 handleColorPanelCloseRequest={setOpenPickerPanel}
                 handleColorChange={handleColorChange}
                 handleFontWeightChange={handleFontWeightChange}
                 handleFontStyleChange={handleFontStyleChange}
                 handleTextDecorationLineChange={handleTextDecorationLineChange}
+                handleColorClick={handleColorClick}
             />
 
             <RxDividerVertical/>
 
             {/* Paragraph Formatting */}
-            <ParagraphFormatSection></ParagraphFormatSection>
+            <ParagraphFormatSection currentTextAlign={selectedTextTextAlign}
+                                    handleTextAlignChange={handleTextAlignChange}></ParagraphFormatSection>
 
             <RxDividerVertical/>
 

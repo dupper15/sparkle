@@ -1,8 +1,11 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useRef, useState } from "react";
-import { MdOutlineChangeCircle } from "react-icons/md";
+import React, {useEffect, useRef, useState} from "react";
+import {MdOutlineChangeCircle} from "react-icons/md";
 import _ from "lodash";
 import ShapeService from "../services/ShapeService.js";
+import socket from "../utils/socket.js";
+import ImageService from "../services/ImageService.js";
+import {useSelector} from "react-redux";
 
 /* eslint react/prop-types: 0 */
 const CreateComponent = ({
@@ -13,6 +16,8 @@ const CreateComponent = ({
   isFocused,
   userNames,
 }) => {
+    const project = useSelector((state) => state.project);
+    const roomId = project.id;
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [position, setPosition] = useState({ x: info.x, y: info.y });
@@ -33,26 +38,50 @@ const CreateComponent = ({
   });
   const [deg, setDeg] = useState(0);
   const componentRef = useRef(null);
-
+    useEffect(() => {
+        socket.on("shapeUpdated", (data) => {
+            const { shapeId, x, y, width, height } = data;
+            if (shapeId === info._id) {
+                setPosition({ x, y });
+                setSize({ width, height });
+            }
+        });
+        return () => {
+            socket.off("shapeUpdated");
+        };
+    });
   const isSelected = selectedComponents.includes(info._id);
 
-  const updateShapeInDatabase = useRef(
+  const updateComponentInDatabase = useRef(
     _.debounce((updatedData) => {
-      ShapeService.updateShape(info._id, updatedData)
-        .then(() => {})
-        .catch((error) => {
-          console.error("Failed to update shape", error);
+        socket.emit("updateShape", {
+            roomId,
+            shapeId: info._id,
+            ...updatedData,
         });
+        if (info.type.toLowerCase() === "shape") {
+            ShapeService.updateShape(info._id, updatedData)
+                .then(() => {})
+                .catch((error) => {
+                    console.error("Failed to update shape", error);
+                });
+        } else if (info.type.toLowerCase() === "image") {
+            ImageService.updateImage(info._id, updatedData)
+                .then(() => {})
+                .catch((error) => {
+                    console.error("Failed to update image", error);
+                });
+        }
     }, 500) // Adjust debounce time as needed
   ).current;
 
-  const calculateTransform = (e) => {
-    const dx = e.clientX - startTransformRef.current.x;
-    const dy = e.clientY - startTransformRef.current.y;
-    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-    // Tính toán góc xoay
-    return angle < 0 ? angle + 360 : angle;
-  };
+    const calculateTransform = (e) => {
+        const dx = e.clientX - startTransformRef.current.x;
+        const dy = e.clientY - startTransformRef.current.y;
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+        // Tính toán góc xoay
+        return angle < 0 ? angle + 360 : angle;
+    };
 
   const handleTransformMouseDown = (e) => {
     e.preventDefault();
@@ -67,16 +96,125 @@ const CreateComponent = ({
     }
   };
 
-  const handleTransformMouseUp = () => {
-    setIsTransforming(false);
-  };
+    const handleTransformMouseUp = () => {
+        setIsTransforming(false);
+    };
+    useEffect(() => {
+        console.log(isTransforming);
+    })
 
     const handleTransformMouseMove = (e) => {
         if (isTransforming) {
             const newDeg = calculateTransform(e);
             setDeg(newDeg);
+            updateComponentInDatabase({
+                x: position.x,
+                y: position.y,
+                width: size.width,
+                height: size.height,
+                rotate: newDeg,
+            });
         }
-    }; 
+    };
+
+    const handleMouseDown = (e) => {
+        e.preventDefault();
+        if (!isResizing) {
+            setDragOffset({
+                x: e.clientX - position.x,
+                y: e.clientY - position.y,
+            });
+            setIsDragging(true);
+        }
+    };
+    const handleMouseMove = (e) => {
+        if (isDragging) {
+            const newX = e.clientX - dragOffset.x;
+            const newY = e.clientY - dragOffset.y;
+            setPosition({x: newX, y: newY});
+            updateComponentInDatabase({
+                x: newX,
+                y: newY,
+                width: size.width,
+                height: size.height,
+            });
+        } else if (isResizing) {
+            handleResizeMouseMove(e);
+        } else if (isTransforming) {
+            handleTransformMouseMove(e);
+        }
+    };
+    const handleMouseUp = () => {
+        setIsDragging(false);
+        setIsResizing(false);
+        setIsTransforming(false);
+        setResizeDirection(null);
+    };
+    const handleResizeMouseDown = (e, direction) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsResizing(true);
+        setResizeDirection(direction);
+        setResizeStartPosition({x: e.clientX, y: e.clientY});
+    };
+    const handleResizeMouseMove = (e) => {
+        if (isResizing && resizeDirection) {
+            const deltaX = e.clientX - resizeStartPosition.x;
+            const deltaY = e.clientY - resizeStartPosition.y;
+            let newWidth = size.width;
+            let newHeight = size.height;
+            let newX = position.x;
+            let newY = position.y;
+            switch (resizeDirection) {
+                case "top-left":
+                    newWidth = size.width - deltaX;
+                    newHeight = size.height - deltaY;
+                    newX = position.x + deltaX;
+                    newY = position.y + deltaY;
+                    break;
+                case "top-right":
+                    newWidth = size.width + deltaX;
+                    newHeight = size.height - deltaY;
+                    newY = position.y + deltaY;
+                    break;
+                case "bottom-left":
+                    newWidth = size.width - deltaX;
+                    newHeight = size.height + deltaY;
+                    newX = position.x + deltaX;
+                    break;
+                case "bottom-right":
+                    newWidth = size.width + deltaX;
+                    newHeight = size.height + deltaY;
+                    break;
+                case "top":
+                    newHeight = size.height - deltaY;
+                    newY = position.y + deltaY;
+                    break;
+                case "bottom":
+                    newHeight = size.height + deltaY;
+                    break;
+                case "left":
+                    newWidth = size.width - deltaX;
+                    newX = position.x + deltaX;
+                    break;
+                case "right":
+                    newWidth = size.width + deltaX;
+                    break;
+                default:
+                    break;
+            }
+            newWidth = Math.max(10, newWidth);
+            newHeight = Math.max(10, newHeight);
+            setSize({width: newWidth, height: newHeight});
+            setPosition({x: newX, y: newY});
+            updateComponentInDatabase({
+                x: newX,
+                y: newY,
+                width: newWidth,
+                height: newHeight,
+            });
+        }
+    };
 
     const handleMouseDown = (e) => {
         e.preventDefault();
@@ -225,15 +363,16 @@ const CreateComponent = ({
         };
     }, [isSelected, info.id, removeComponent]);
 
-  const getShapeStyle = (info) => {
-    const baseStyle = {
-      width: `${size.width}px`,
-      height: "100%",
-      backgroundColor: info.color ? info.color : "#e5e5e5", // backgroundColor: info.link ? "#e5e5e5" : "#e5e5e5",
-      backgroundImage: info.link ? `url(${info.link})` : null,
-      backgroundSize: "cover",
-      clipPath: info.clipPath,
-    };
+    const getShapeStyle = (info) => {
+        const baseStyle = {
+            width: `${size.width}px`,
+            height: "100%",
+            backgroundColor: info.color ? info.color : "#e5e5e5", // backgroundColor: info.link ? "#e5e5e5" : "#e5e5e5",
+            backgroundImage: info.link ? `url(${info.link})` : null,
+            backgroundSize: "cover",
+            clipPath: info.clipPath,
+            transform: `rotate(${info.rotate}deg)`,
+        };
 
     const shapeStyles = {
       rect: {},
@@ -275,8 +414,20 @@ const CreateComponent = ({
         return {...baseStyle, ...shapeStyles[info.shapeType]};
     };
 
+  const getImageStyle = (info) => {
+    return {
+      width: `${size.width}px`,
+      height: `${size.height}px`,
+      backgroundImage: `url(${info.image})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    };
+  };
+
+
   return (
     <div
+      id={info._id}
       ref={componentRef}
       className='wrapperDiv'
       style={{
@@ -293,7 +444,6 @@ const CreateComponent = ({
         transformOrigin: "center", // Xác định gốc xoay tại trung tâm
       }}
       onMouseDown={handleMouseDown}>
-      <p>type: {info.type}</p>
       {/* Nút xoay (icon) */}
       {isSelected && (
         <MdOutlineChangeCircle
@@ -438,8 +588,8 @@ const CreateComponent = ({
         onClick={(event) => {
           onClick(info, event);
         }}
-        style={getShapeStyle(info)}
-        className='resizable-component group hover:border-[2px] hover:border-indigo-500 shadow-md relative'></div>
+        style={info.type.toLowerCase() === "shape" ? getShapeStyle(info) : getImageStyle(info)}
+        className='resizable-component group hover:border-[2px] hover:border-indigo-500 relative'></div>
       {Object.entries(userNames).map(([index, value]) => (
         <div
           key={index}
