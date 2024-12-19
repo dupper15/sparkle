@@ -35,6 +35,8 @@ const Canvas = React.forwardRef(({
         selectedTextDecorationLine,
         selectedTextTextAlign,
         selectedComponentOpacity,
+        selectedComponentHorizontalFlip,
+        selectedComponentVerticalFlip,
         isImageToolBarOpen,
         isTextToolBarOpen,
         isDarkMode,
@@ -61,6 +63,8 @@ const Canvas = React.forwardRef(({
         cursors,
         focuses,
         handleTextContentChange,
+        handleComponentHorizontalFlip,
+        handleComponentVerticalFlip,
     } = useCanvasViewModel(id, databaseId);
 
     const [cursorSize, setCursorSize] = useState(16);
@@ -87,12 +91,16 @@ const Canvas = React.forwardRef(({
                 <ShapeToolBar
                     selectedComponentColor={selectedComponentColor}
                     selectedComponentOpacity={selectedComponentOpacity}
+                    selectedComponentHorizontalFlip={selectedComponentHorizontalFlip}
+                    selectedComponentVerticalFlip={selectedComponentVerticalFlip}
                     handleColorChange={handleColorChange}
                     handleSendBackward={handleSendBackward}
                     handleSendToBack={handleSendToBack}
                     handleSendToFront={handleSendToFront}
                     handleSendForward={handleSendForward}
                     handleComponentOpacityChange={handleComponentOpacityChange}
+                    handleComponentHorizontalFlip={handleComponentHorizontalFlip}
+                    handleComponentVerticalFlip={handleComponentVerticalFlip}
                 />
             </div>)}
             {isTextToolBarOpen && (<div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
