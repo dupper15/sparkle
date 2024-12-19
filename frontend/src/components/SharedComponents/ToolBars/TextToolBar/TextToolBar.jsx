@@ -38,17 +38,23 @@ const TextToolbar = ({
         isBold,
         isItalic,
         isUnderlined,
-        handleColorClick
+        handleColorClick,
+        activeTab,
+        setActiveTab
     } = useTextToolbarViewModel(selectedTextFontWeight, selectedTextFontStyle, selectedTextDecorationLine);
     return (
         <div className="toolbar h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border">
             {/* Font */}
             <FontSelector currentFontFamily={selectedTextFontFamily}
-                          handleFontFamilyChange={handleFontFamilyChange}></FontSelector>
+                          handleFontFamilyChange={handleFontFamilyChange}
+                          activeTab={activeTab}
+                          setActiveTab={setActiveTab}></FontSelector>
 
             {/* Font Size */}
             <FontSizeField currentFontSize={selectedTextFontSize}
                            handleFontSizeChange={handleFontSizeChange}
+                           activeTab={activeTab}
+                           setActiveTab={setActiveTab}
             ></FontSizeField>
 
             {/* Text Formatting */}
@@ -66,17 +72,24 @@ const TextToolbar = ({
                 handleFontStyleChange={handleFontStyleChange}
                 handleTextDecorationLineChange={handleTextDecorationLineChange}
                 handleColorClick={handleColorClick}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
             />
 
             <RxDividerVertical/>
 
-            <OpacitySlider currentOpacity={selectedComponentOpacity} handleComponentOpacityChange={handleComponentOpacityChange}></OpacitySlider>
+            <OpacitySlider currentOpacity={selectedComponentOpacity}
+                           handleComponentOpacityChange={handleComponentOpacityChange}
+                           activeTab={activeTab}
+                           setActiveTab={setActiveTab}/>
 
             <RxDividerVertical/>
 
             {/* Paragraph Formatting */}
             <ParagraphFormatSection currentTextAlign={selectedTextTextAlign}
-                                    handleTextAlignChange={handleTextAlignChange}></ParagraphFormatSection>
+                                    handleTextAlignChange={handleTextAlignChange}
+                                    activeTab={activeTab}
+                                    setActiveTab={setActiveTab}></ParagraphFormatSection>
 
             <RxDividerVertical/>
 
@@ -86,6 +99,8 @@ const TextToolbar = ({
                 handleSendToBack={handleSendToBack}
                 handleSendForward={handleSendForward}
                 handleSendToFront={handleSendToFront}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
             />
         </div>);
 };

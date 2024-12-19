@@ -22,46 +22,42 @@ const ShapeToolBar = ({
                           handleComponentVerticalFlip
                       }) => {
     const {
-        openColorPickerPanel,
-        handleColorClick,
         setOpenPickerPanel,
         setActiveColor,
-        isFlipMenuOpen,
-        isCropModeOpen,
-        handleFlipClick,
-        handleCropClick,
         setIsFlipMenuOpen,
         setOpenCropMode,
+        activeTab,
+        setActiveTab
     } = useShapeToolbarViewModel();
 
     return (<div className="toolbar h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md">
         <ImageStylesEditSection
-            openColorPickerPanel={openColorPickerPanel}
-            handleColorClick={handleColorClick}
             setOpenPickerPanel={setOpenPickerPanel}
             activeColor={selectedComponentColor}
             setActiveColor={setActiveColor}
             handleColorChange={handleColorChange}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
         />
 
         <RxDividerVertical/>
 
         <OpacitySlider currentOpacity={selectedComponentOpacity}
-                       handleComponentOpacityChange={handleComponentOpacityChange}/>
+                       handleComponentOpacityChange={handleComponentOpacityChange}
+                       activeTab={activeTab}
+                       setActiveTab={setActiveTab}/>
 
         <RxDividerVertical/>
 
         <ImageTransformationSection
-            isFlipMenuOpen={isFlipMenuOpen}
-            isCropModeOpen={isCropModeOpen}
             selectedComponentHorizontalFlip={selectedComponentHorizontalFlip}
             selectedComponentVerticalFlip={selectedComponentVerticalFlip}
-            handleFlipClick={handleFlipClick}
-            handleCropClick={handleCropClick}
             setIsFlipMenuOpen={setIsFlipMenuOpen}
             setOpenCropMode={setOpenCropMode}
             handleHorizontalFlipClick={handleComponentHorizontalFlip}
             handleVerticalFlipClick={handleComponentVerticalFlip}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
         />
 
         <RxDividerVertical/>
@@ -71,6 +67,8 @@ const ShapeToolBar = ({
             handleSendToBack={handleSendToBack}
             handleSendForward={handleSendForward}
             handleSendToFront={handleSendToFront}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
         />
     </div>);
 };

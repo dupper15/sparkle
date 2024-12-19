@@ -1,4 +1,4 @@
-import { FaBold, FaCircle, FaItalic, FaUnderline } from "react-icons/fa";
+import {FaBold, FaCircle, FaItalic, FaUnderline} from "react-icons/fa";
 import ColorPickerPanel from "../../../ColorPickerPanel/ColorPickerPanel.jsx";
 // eslint-disable-next-line no-unused-vars
 import React from "react";
@@ -8,27 +8,33 @@ const TextFormatSection = ({
                                isBold,
                                isItalic,
                                isUnderlined,
-                               openColorPickerPanel,
                                setOpenPickerPanel,
                                activeColor,
                                setActiveColor,
-                               handleColorClick,
                                handleColorChange,
                                handleFontWeightChange,
                                handleFontStyleChange,
                                handleTextDecorationLineChange,
+                               activeTab,
+                               setActiveTab
                            }) => {
     return (
         <div>
             <div className="h-8 toolbar flex">
                 {/* Color Selector */}
                 <div className="h-8 toolbar flex">
-                    <button style={{color: activeColor}} className={`text-xl pl-1 pr-1 mr-1`} onClick={handleColorClick}>
-                        <FaCircle />
+                    <button
+                        style={{color: activeColor}}
+                        className={`text-xl rounded text-gray-700 pl-1 pr-1 mr-1 ${activeTab === 'color' ? 'bg-purple-200 text-purple-700' : ''}`}
+                        onClick={() => {
+                            setActiveTab(activeTab === 'color' ? '' : 'color');
+                        }}
+                    >
+                        <FaCircle/>
                     </button>
                 </div>
-                <div className={'fixed top-1/2 left-1/2 translate-x-[100%] '}>
-                    {openColorPickerPanel && (
+                <div className={'fixed top-1/2 left-1/2 translate-x-[0%] translate-y-[10%] '}>
+                    {activeTab === 'color' && (
                         <ColorPickerPanel
                             colorPanelCloseRequest={setOpenPickerPanel}
                             activeColor={activeColor}
@@ -40,21 +46,30 @@ const TextFormatSection = ({
 
                 <button
                     className={`rounded text-gray-700 pl-1 pr-1 mr-1 ${isBold ? 'bg-purple-200 text-purple-700' : ''}`}
-                    onClick={() => handleFontWeightChange(isBold ? 'normal' : 'bold')}
+                    onClick={() => {
+                        setActiveTab('');
+                        handleFontWeightChange(isBold ? 'normal' : 'bold')
+                    }}
                 >
-                    <FaBold />
+                    <FaBold/>
                 </button>
                 <button
                     className={`rounded text-gray-700 pl-1 pr-1 mr-1 ${isItalic ? 'bg-purple-200 text-purple-700' : ''}`}
-                    onClick={() => handleFontStyleChange(isItalic ? 'normal' : 'italic')}
+                    onClick={() => {
+                        setActiveTab('');
+                        handleFontStyleChange(isItalic ? 'normal' : 'italic')
+                    }}
                 >
-                    <FaItalic />
+                    <FaItalic/>
                 </button>
                 <button
                     className={`rounded text-gray-700 pl-1 pr-1 mr-1 ${isUnderlined ? 'bg-purple-200 text-purple-700' : ''}`}
-                    onClick={() => handleTextDecorationLineChange(isUnderlined ? 'none' : 'underline')}
+                    onClick={() => {
+                        setActiveTab('');
+                        handleTextDecorationLineChange(isUnderlined ? 'none' : 'underline')
+                    }}
                 >
-                    <FaUnderline />
+                    <FaUnderline/>
                 </button>
             </div>
         </div>
