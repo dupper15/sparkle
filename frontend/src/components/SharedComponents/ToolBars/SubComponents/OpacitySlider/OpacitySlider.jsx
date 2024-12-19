@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { FaAdjust } from 'react-icons/fa';
 
-const OpacitySlider = ({ currentOpacity, handleComponentOpacityChange }) => {
+// eslint-disable-next-line react/prop-types
+const OpacitySlider = ({ currentOpacity, handleComponentOpacityChange, activeTab, setActiveTab }) => {
     const [openOpacitySlider, setOpenOpacitySlider] = useState(false);
 
     const handleIconClick = () => {
@@ -22,12 +22,18 @@ const OpacitySlider = ({ currentOpacity, handleComponentOpacityChange }) => {
 
     return (
         <div className="relative">
-            <button className="text-xl p-2 text-gray-700" onClick={handleIconClick}>
+            <button
+                className={`text-xl rounded text-gray-700 p-2 ${activeTab === 'opacity' ? 'bg-purple-200 text-purple-700' : ''}`}
+                onClick={() => {
+                    handleIconClick();
+                    setActiveTab(activeTab === 'opacity' ? '' : 'opacity');
+                }}
+            >
                 <FaAdjust />
             </button>
-            {openOpacitySlider && (
+            {activeTab === 'opacity' && (
                 <div className="absolute top-full translate-x-[-40%] translate-y-[0%] mt-2 p-2 bg-white border rounded shadow-lg">
-                    <div className="flex flex-col items-center">
+                    <div className="flex flex-col">
                         <label htmlFor="opacity-range" className="text-gray-700 mb-2">
                             Opacity:
                         </label>
@@ -41,6 +47,13 @@ const OpacitySlider = ({ currentOpacity, handleComponentOpacityChange }) => {
                                 value={currentOpacity}
                                 onChange={(e) => handleComponentOpacityChange(e.target.value)}
                                 className="flex-grow mr-2"
+                                style={{
+                                    appearance: 'none',
+                                    WebkitAppearance: 'none',
+                                    height: '4px',
+                                    borderRadius: '4px',
+                                    background: `linear-gradient(to right, #6b46c1 ${currentOpacity * 100}%, #d3d3d3 ${currentOpacity * 100}%)`
+                                }}
                             />
                             <input
                                 type="text"
@@ -48,6 +61,10 @@ const OpacitySlider = ({ currentOpacity, handleComponentOpacityChange }) => {
                                 onChange={handleInputChange}
                                 className="w-16 text-center"
                                 style={{
+                                    backgroundColor: 'transparent',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '4px',
+                                    color: '#000',
                                     appearance: 'textfield',
                                     MozAppearance: 'textfield',
                                     WebkitAppearance: 'none'
@@ -64,11 +81,6 @@ const OpacitySlider = ({ currentOpacity, handleComponentOpacityChange }) => {
             )}
         </div>
     );
-};
-
-OpacitySlider.propTypes = {
-    currentOpacity: PropTypes.number.isRequired,
-    handleComponentOpacityChange: PropTypes.func.isRequired,
 };
 
 export default OpacitySlider;

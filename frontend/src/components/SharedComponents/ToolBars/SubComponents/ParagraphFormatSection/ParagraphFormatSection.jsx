@@ -3,7 +3,7 @@ import {FaAlignLeft, FaAlignCenter, FaAlignRight, FaAlignJustify, FaListOl, FaLi
 import {PiPlaceholderThin} from "react-icons/pi";
 
 // eslint-disable-next-line react/prop-types
-const ParagraphFormatSection = ({currentTextAlign, handleTextAlignChange}) => {
+const ParagraphFormatSection = ({currentTextAlign, handleTextAlignChange, setActiveTab, activeTab}) => {
 
     const handleAlignmentClick = () => {
         const newFormatType = getNextAlignmentType(currentTextAlign);
@@ -43,7 +43,10 @@ const ParagraphFormatSection = ({currentTextAlign, handleTextAlignChange}) => {
     return (<div className="h-8 toolbar flex">
         <button
             className={`text-gray-700 text-xl pr-2 mr-1 ${currentTextAlign !== 'none' ? 'active' : ''}`}
-            onClick={handleAlignmentClick}
+            onClick={() => {
+                handleAlignmentClick();
+                setActiveTab(activeTab === 'none');
+            }}
         >
             {getAlignmentIcon(currentTextAlign)}
         </button>

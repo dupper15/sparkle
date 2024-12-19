@@ -3,7 +3,14 @@ import { FaLayerGroup } from 'react-icons/fa';
 import { RiBringForward, RiBringToFront, RiSendBackward, RiSendToBack } from "react-icons/ri";
 
 /* eslint react/prop-types: 0 */
-const PositionEditSection = ({ handleSendBackward, handleSendToBack, handleSendForward, handleSendToFront }) => {
+const PositionEditSection = ({
+                                 handleSendBackward,
+                                 handleSendToBack,
+                                 handleSendForward,
+                                 handleSendToFront,
+                                 activeTab,
+                                 setActiveTab
+                             }) => {
     const [isPositionMenuOpen, setIsPositionMenuOpen] = useState(false);
 
     const handleLayerClick = () => {
@@ -13,12 +20,15 @@ const PositionEditSection = ({ handleSendBackward, handleSendToBack, handleSendF
     return (
         <div className="relative toolbar flex h-8">
             <button
-                className="text-gray-700 text-xl pr-2 mr-1"
-                onClick={handleLayerClick}
+                className={`text-xl rounded text-gray-700 pr-2 pl-2 mr-1 ${activeTab === 'layer'? 'bg-purple-200 text-purple-700' : ''}`}
+                onClick={() => {
+                    handleLayerClick();
+                    setActiveTab(activeTab === 'layer' ? '' : 'layer');
+                }}
             >
                 <FaLayerGroup />
             </button>
-            {isPositionMenuOpen && (
+            {activeTab === 'layer' && (
                 <div className="absolute top-[6rem] right-[1rem] translate-x-[50%] translate-y-[-55%] shadow">
                     <PositionMenu
                         onSendBackward={handleSendBackward}
@@ -52,7 +62,7 @@ const PositionMenu = ({ onSendBackward, onSendToBack, onSendForward, onSendToFro
                 </button>
                 <button className="flex items-center rounded-md hover:bg-gray-100" onClick={onSendToFront}>
                     <RiBringToFront className="h-6 w-8 mr-2" />
-                    <span>Send To Front</span>
+                    <span>Send to Front</span>
                 </button>
             </div>
         </div>

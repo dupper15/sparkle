@@ -6,6 +6,7 @@ const useTextToolbarViewModel = (selectedTextFontWeight, selectedTextFontStyle, 
     const [isBold, setIsBold] = useState(false);
     const [isItalic, setIsItalic] = useState(false);
     const [isUnderlined, setIsUnderlined] = useState(false);
+    const [activeTab, setActiveTab] = useState('');
 
     useEffect(() => {
         setIsBold(selectedTextFontWeight === "bold");
@@ -13,19 +14,16 @@ const useTextToolbarViewModel = (selectedTextFontWeight, selectedTextFontStyle, 
         setIsUnderlined(selectedTextDecorationLine === "underline");
     }, [selectedTextFontWeight, selectedTextFontStyle, selectedTextDecorationLine]);
 
-    const handleColorClick = () => {
-        setOpenPickerPanel(!openColorPickerPanel);
-    };
-
     return {
         openColorPickerPanel,
-        handleColorClick,
         setOpenPickerPanel,
         activeColor,
         setActiveColor,
         isBold,
         isItalic,
         isUnderlined,
+        activeTab,
+        setActiveTab,
     };
 };
 
