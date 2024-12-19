@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { MdOutlineChangeCircle } from "react-icons/md";
+import React, {useEffect, useRef, useState} from "react";
+import {MdOutlineChangeCircle} from "react-icons/md";
 import _ from "lodash";
 import ShapeService from "../services/ShapeService.js";
 import ImageService from "../services/ImageService.js";
 import socket from "../utils/socket.js";
-import { useSelector } from "react-redux";
+import {useSelector} from "react-redux";
 
 /* eslint react/prop-types: 0 */
 const CreateComponent = ({
@@ -18,9 +18,9 @@ const CreateComponent = ({
     const project = useSelector((state) => state.project);
     const roomId = project.id;
     const [isDragging, setIsDragging] = useState(false);
-    const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-    const [position, setPosition] = useState({ x: info.x, y: info.y });
-    const [size, setSize] = useState({ width: info.width, height: info.height });
+    const [dragOffset, setDragOffset] = useState({x: 0, y: 0});
+    const [position, setPosition] = useState({x: info.x, y: info.y});
+    const [size, setSize] = useState({width: info.width, height: info.height});
     const [isResizing, setIsResizing] = useState(false);
     const [resizeDirection, setResizeDirection] = useState(null);
     const [resizeStartPosition, setResizeStartPosition] = useState({
@@ -38,13 +38,15 @@ const CreateComponent = ({
     });
     const [deg, setDeg] = useState(info.rotate || 0);
     const componentRef = useRef(null);
+    const flipStyle = `${info.horizontalFlip ? 'scaleX(-1)' : ''} ${info.verticalFlip ? 'scaleY(-1)' : ''}`.trim()
+
 
     useEffect(() => {
         socket.on("shapeUpdated", (data) => {
-            const { shapeId, x, y, width, height, rotate } = data;
+            const {shapeId, x, y, width, height, rotate} = data;
             if (shapeId === info._id) {
-                setPosition({ x, y });
-                setSize({ width, height });
+                setPosition({x, y});
+                setSize({width, height});
                 setDeg(rotate);
             }
         });
@@ -64,13 +66,15 @@ const CreateComponent = ({
             });
             if (info.type.toLowerCase() === "shape") {
                 ShapeService.updateShape(info._id, updatedData)
-                    .then(() => {})
+                    .then(() => {
+                    })
                     .catch((error) => {
                         console.error("Failed to update shape", error);
                     });
             } else if (info.type.toLowerCase() === "image") {
                 ImageService.updateImage(info._id, updatedData)
-                    .then(() => {})
+                    .then(() => {
+                    })
                     .catch((error) => {
                         console.error("Failed to update image", error);
                     });
@@ -137,7 +141,7 @@ const CreateComponent = ({
         if (isDragging) {
             const newX = e.clientX - dragOffset.x;
             const newY = e.clientY - dragOffset.y;
-            setPosition({ x: newX, y: newY });
+            setPosition({x: newX, y: newY});
             updateComponentInDatabase({
                 x: newX,
                 y: newY,
@@ -164,7 +168,7 @@ const CreateComponent = ({
         e.stopPropagation();
         setIsResizing(true);
         setResizeDirection(direction);
-        setResizeStartPosition({ x: e.clientX, y: e.clientY });
+        setResizeStartPosition({x: e.clientX, y: e.clientY});
     };
 
     const handleResizeMouseMove = (e) => {
@@ -215,8 +219,8 @@ const CreateComponent = ({
             }
             newWidth = Math.max(10, newWidth);
             newHeight = Math.max(10, newHeight);
-            setSize({ width: newWidth, height: newHeight });
-            setPosition({ x: newX, y: newY });
+            setSize({width: newWidth, height: newHeight});
+            setPosition({x: newX, y: newY});
             updateComponentInDatabase({
                 x: newX,
                 y: newY,
@@ -283,12 +287,12 @@ const CreateComponent = ({
 
         const shapeStyles = {
             rect: {},
-            circle: { borderRadius: "50%" },
+            circle: {borderRadius: "50%"},
             triangle: {
                 clipPath: "polygon(50% 0, 100% 100%, 0 100%)",
                 position: "relative",
             },
-            invertedTriangle: { clipPath: "polygon(50% 100%, 0 0, 100% 0)" },
+            invertedTriangle: {clipPath: "polygon(50% 100%, 0 0, 100% 0)"},
             pentagon: {
                 clipPath: "polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)",
             },
@@ -318,7 +322,7 @@ const CreateComponent = ({
             },
         };
 
-        return { ...baseStyle, ...shapeStyles[info.shapeType] };
+        return {...baseStyle, ...shapeStyles[info.shapeType]};
     };
 
     const getImageStyle = (info) => {
@@ -347,7 +351,7 @@ const CreateComponent = ({
                 padding: "10px 10px 30px 10px",
                 border: isFocused ? "2px solid #60a5fa" : "none",
                 clipPath: info.clipPath,
-                transform: `rotate(${deg}deg)`,
+                transform: `rotate(${deg}deg) ${flipStyle}`,
                 transformOrigin: "center",
             }}
             onMouseDown={handleMouseDown}>
