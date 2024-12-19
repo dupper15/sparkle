@@ -49,7 +49,7 @@ const FlipMenu = ({
                       handleVerticalFlipClick
                   }) => {
     return (
-        <div className="bg-white profile-dropdown box-border rounded-2xl text-sm text-gray-700 py-2">
+        <div className="bg-white p-2 profile-dropdown box-border rounded-xl text-sm text-gray-700">
             <button
                 className={`flex items-center rounded-md hover:bg-gray-200 px-2 py-2 w-40 mb-1 ${selectedComponentHorizontalFlip ? 'bg-gray-300' : ''}`}
                 onClick={handleHorizontalFlipClick}
