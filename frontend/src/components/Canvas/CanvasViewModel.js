@@ -35,6 +35,8 @@ const useCanvasViewModel = (id, databaseId) => {
   const roomId = room.id;
   const [focuses, setFocuses] = useState({});
   const [cursors, setCursors] = useState({});
+  const [selectedComponentHorizontalFlip, setSelectedComponentHorizontalFlip] = useState(false);
+  const [selectedComponentVerticalFlip, setSelectedComponentVerticalFlip] = useState(false);
   // Fetch components from the database
   useEffect(() => {
     const fetchComponents = async () => {
@@ -114,6 +116,8 @@ const useCanvasViewModel = (id, databaseId) => {
     };
     updateSelectedComponentProperty("color", setSelectedComponentColor);
     updateSelectedComponentProperty("opacity", setSelectedComponentOpacity);
+    updateSelectedComponentProperty("horizontalFlip", setSelectedComponentHorizontalFlip);
+    updateSelectedComponentProperty("verticalFlip", setSelectedComponentVerticalFlip);
   }, [components, selectedComponents]);
 
   useEffect(() => {
@@ -542,6 +546,38 @@ const useCanvasViewModel = (id, databaseId) => {
     });
   }
 
+  const handleComponentHorizontalFlip = (horizontalFlip) => {
+    updateComponent((component) => {
+      ComponentService.updateComponentHorizontalFlip(
+        component.type,
+        horizontalFlip,
+        component._id
+      ).then(() => {
+        socket.emit("componentHorizontalFlipChanged", {
+          componentId: component._id,
+          roomId,
+        });
+      });
+      return { ...component, horizontalFlip: !component.horizontalFlip };
+    });
+  }
+
+    const handleComponentVerticalFlip = (verticalFlip) => {
+      updateComponent((component) => {
+        ComponentService.updateComponentVerticalFlip(
+            component.type,
+            verticalFlip,
+            component._id
+        ).then(() => {
+          socket.emit("componentVerticalFlipChanged", {
+            componentId: component._id,
+            roomId,
+          });
+        });
+        return {...component, verticalFlip: !component.verticalFlip};
+      });
+    }
+
   return {
     selectedComponentColor,
     selectedTextFontFamily,
@@ -551,6 +587,8 @@ const useCanvasViewModel = (id, databaseId) => {
     selectedTextDecorationLine,
     selectedTextTextAlign,
     selectedComponentOpacity,
+    selectedComponentHorizontalFlip,
+    selectedComponentVerticalFlip,
     selectedComponents,
     components,
     isImageToolBarOpen,
@@ -579,6 +617,8 @@ const useCanvasViewModel = (id, databaseId) => {
     focuses,
     handleTextContentChange,
     handleComponentOpacityChange,
+    handleComponentHorizontalFlip,
+    handleComponentVerticalFlip,
   };
 };
 

@@ -20,7 +20,15 @@ const ComponentService = {
     async updateComponentOpacity(componentType, propertyValue, componentId) {
         const response = await axios.put(`${import.meta.env.VITE_API_KEY}/${componentType}/update/${componentId}`, {opacity : propertyValue});
         return response.data;
-    }
+    },
+    async updateComponentHorizontalFlip(componentType, propertyValue, componentId) {
+        const response = await axios.put(`${import.meta.env.VITE_API_KEY}/${componentType}/update/${componentId}`, {horizontalFlip : propertyValue});
+        return response.data;
+    },
+    async updateComponentVerticalFlip(componentType, propertyValue, componentId) {
+        const response = await axios.put(`${import.meta.env.VITE_API_KEY}/${componentType}/update/${componentId}`, {verticalFlip : propertyValue});
+        return response.data;
+    },
 };
 
 export default ComponentService;

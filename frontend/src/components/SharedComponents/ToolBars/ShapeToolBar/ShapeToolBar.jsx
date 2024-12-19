@@ -10,12 +10,16 @@ import OpacitySlider from "../SubComponents/OpacitySlider/OpacitySlider.jsx";
 const ShapeToolBar = ({
                           selectedComponentColor,
                           selectedComponentOpacity,
+                          selectedComponentHorizontalFlip,
+                          selectedComponentVerticalFlip,
                           handleColorChange,
                           handleSendBackward,
                           handleSendToBack,
                           handleSendForward,
                           handleSendToFront,
-                          handleComponentOpacityChange
+                          handleComponentOpacityChange,
+                          handleComponentHorizontalFlip,
+                          handleComponentVerticalFlip
                       }) => {
     const {
         openColorPickerPanel,
@@ -42,17 +46,22 @@ const ShapeToolBar = ({
 
         <RxDividerVertical/>
 
-        <OpacitySlider currentOpacity={selectedComponentOpacity} handleComponentOpacityChange={handleComponentOpacityChange}/>
+        <OpacitySlider currentOpacity={selectedComponentOpacity}
+                       handleComponentOpacityChange={handleComponentOpacityChange}/>
 
         <RxDividerVertical/>
 
         <ImageTransformationSection
             isFlipMenuOpen={isFlipMenuOpen}
             isCropModeOpen={isCropModeOpen}
+            selectedComponentHorizontalFlip={selectedComponentHorizontalFlip}
+            selectedComponentVerticalFlip={selectedComponentVerticalFlip}
             handleFlipClick={handleFlipClick}
             handleCropClick={handleCropClick}
             setIsFlipMenuOpen={setIsFlipMenuOpen}
             setOpenCropMode={setOpenCropMode}
+            handleHorizontalFlipClick={handleComponentHorizontalFlip}
+            handleVerticalFlipClick={handleComponentVerticalFlip}
         />
 
         <RxDividerVertical/>
