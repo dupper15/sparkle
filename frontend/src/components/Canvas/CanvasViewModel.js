@@ -546,11 +546,11 @@ const useCanvasViewModel = (id, databaseId) => {
         });
     }
 
-    const handleComponentHorizontalFlip = (horizontalFlip) => {
+    const handleComponentHorizontalFlip = () => {
         updateComponent((component) => {
             ComponentService.updateComponentHorizontalFlip(
                 component.type,
-                horizontalFlip,
+                !component.horizontalFlip,
                 component._id
             ).then(() => {
                 socket.emit("componentHorizontalFlipChanged", {
@@ -562,11 +562,11 @@ const useCanvasViewModel = (id, databaseId) => {
         });
     }
 
-    const handleComponentVerticalFlip = (verticalFlip) => {
+    const handleComponentVerticalFlip = () => {
         updateComponent((component) => {
             ComponentService.updateComponentVerticalFlip(
                 component.type,
-                verticalFlip,
+                !component.verticalFlip,
                 component._id
             ).then(() => {
                 socket.emit("componentVerticalFlipChanged", {
