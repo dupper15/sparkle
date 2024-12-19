@@ -5,7 +5,7 @@ import ShapeService from "../services/ShapeService.js";
 import ImageService from "../services/ImageService.js";
 import socket from "../utils/socket.js";
 import { useSelector } from "react-redux";
-
+import { current } from "@reduxjs/toolkit";
 /* eslint react/prop-types: 0 */
 const CreateComponent = ({
                              info,
@@ -263,7 +263,7 @@ const CreateComponent = ({
             }
         };
         if (isSelected) {
-            document.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("keydown", handleKeyDown);
         }
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
