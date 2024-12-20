@@ -42,14 +42,7 @@ const WorkplaceCanvas = () => {
 
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
-  const [renderKey, setRenderKey] = useState(0);
-
-  useEffect(() => {
-    if (state === "design") {
-      setRenderKey((prevKey) => prevKey + 1); // Tăng renderKey khi vào design
-    }
-  }, [state]);
-
+ 
   useEffect(() => {
     setWidth(project?.width);
     setHeight(project?.height);
@@ -521,12 +514,11 @@ const WorkplaceCanvas = () => {
               </div>
               {state === "design" && (
                 <TemplateDesign
-                  key={renderKey}
                   addCanvasFromTemplate={addTemplate}
                 />
               )}
               {state === "shape" && <Shape drag={setDraggingComponent} />}
-              {state === "project" && <Project />}
+              {state === "project" && <Project addProjectFromWorkplace={addProject}/>}
               {state === "text" && <Text drag={setDraggingComponent} />}
               {state === "image" && <Image drag={setDraggingComponent} />}
               {state === "background" && (
