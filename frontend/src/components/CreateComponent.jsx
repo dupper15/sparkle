@@ -263,7 +263,7 @@ const CreateComponent = ({
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === "Delete" && isSelected) {
-                removeComponent(info._id, "Shape");
+                removeComponent(info._id, info.type);
             }
         };
         if (isSelected) {
@@ -272,7 +272,7 @@ const CreateComponent = ({
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [isSelected, info.id, removeComponent]);
+    }, [isSelected, info._id, info.type, removeComponent]);
 
     const getShapeStyle = (info) => {
         const baseStyle = {
