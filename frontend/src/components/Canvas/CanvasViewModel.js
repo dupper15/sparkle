@@ -279,7 +279,6 @@ const useCanvasViewModel = (id, databaseId) => {
             socket.off("componentZIndexChanged")
         };
     }, []);
-
     // Update component helper function
     const updateComponent = (updateFn) => {
         setComponents((prevComponents) =>
@@ -295,7 +294,7 @@ const useCanvasViewModel = (id, databaseId) => {
     const handleSelectComponent = (componentId, event) => {
         const componentType = components.find(
             (component) => component._id === componentId
-        )?.type;
+        )?.type;    
         setSelectedComponents((prev) => {
             if (event.shiftKey) {
                 const allSameType = prev.every(
@@ -308,7 +307,9 @@ const useCanvasViewModel = (id, databaseId) => {
                         ? prev.filter((id) => id !== componentId)
                         : [...prev, componentId];
                 } else {
-                    return prev;
+                    setOpenImageToolBar(false);
+                    setOpenTextToolBar(false);
+                    return [componentId];
                 }
             } else {
                 return [componentId];
@@ -487,9 +488,19 @@ const useCanvasViewModel = (id, databaseId) => {
                 componentId
             );
             socket.emit("remove-component", {componentId, roomId});
-            setComponents((prevComponents) =>
-                prevComponents.filter((component) => component._id !== componentId)
-            );
+            setComponents((prevComponents) => {
+                const updatedComponents = prevComponents.filter((component) => component._id !== componentId);
+                const updatedSelectedComponents = selectedComponents.filter((id) => id !== componentId);
+
+                setSelectedComponents(updatedSelectedComponents);
+
+                if (updatedSelectedComponents.length === 0) {
+                    setOpenImageToolBar(false);
+                    setOpenTextToolBar(false);
+                }
+
+                return updatedComponents;
+            });
         } catch (error) {
             console.error("Failed to remove component:", error);
         }
