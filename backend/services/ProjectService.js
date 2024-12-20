@@ -451,14 +451,16 @@ const updatePrivate = async (projectId) => {
   }
 };
 
-
-
 const deleteProject = (projectId) => {
   return new Promise(async (resolve, reject) => {
     try {
       const project = await Project.findOne({
         _id: projectId,
       });
+      const projectCopy = await Project.findOne({
+        copy: projectId,
+      });
+      console.log(project)
       if (!project) {
         resolve({
           status: "ERROR",
@@ -467,6 +469,7 @@ const deleteProject = (projectId) => {
         return;
       }
       await Project.findByIdAndDelete(projectId);
+      await Project.findByIdAndDelete(projectCopy._id);
 
       resolve({
         status: "OK",
@@ -517,6 +520,34 @@ const addEditor = async (projectId, email) => {
   }
 };
 
+const renameProject = async (projectId, projectName) => {
+  try {
+    const project = await Project.findById(projectId);
+    if (!project) {
+      return {
+        status: "ERROR",
+        message: "Project not found!",
+      };
+    }
+
+    project.projectName = projectName.projectName;
+
+    const updatedProject = await project.save();
+
+    return {
+      status: "OK",
+      message: "SUCCESS",
+      data: updatedProject,
+    };
+  } catch (error) {
+    return {
+      status: "ERROR",
+      message: "Failed to update Project",
+      error: error.stack,
+    };
+  }
+}
+
 module.exports = {
   createProject,
   getDetailProject,
@@ -529,4 +560,5 @@ module.exports = {
   updatePrivate,
   deleteProject,
   addEditor,
+  renameProject,
 };

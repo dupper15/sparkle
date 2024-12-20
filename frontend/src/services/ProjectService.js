@@ -137,3 +137,25 @@ export const downloadProject = async (id, data) => {
     throw new Error(error.response?.data?.message || "API call failed");
   }
 };
+
+export const renameProject = async (id, projectName) => {
+  try {
+    const response = await axios.put(
+      `${import.meta.env.VITE_API_KEY}/project/rename-project/${id}`, {projectName}
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};
+
+export const deleteProject = async (id) => {
+  try {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_API_KEY}/project/delete/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};

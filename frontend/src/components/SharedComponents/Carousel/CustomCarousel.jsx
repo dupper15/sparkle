@@ -5,8 +5,9 @@ import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutationHooks } from "../../../hooks/useMutationHook";
 import * as ProjectService from '../../../services/ProjectService'
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { SlOptionsVertical } from "react-icons/sl";
 
 const responsive = {
   superLargeDesktop: {
@@ -34,6 +35,12 @@ function CustomCarousel() {
 
   const [projects, setProjects] = useState([])
 
+  const [hoveredProjectId, setHoveredProjectId] = useState(null);
+  const [option, setOption] = useState(false);
+  const [renameId, setRenameId] = useState(null);
+  const [newProjectName, setNewProjectName] = useState("");
+  const inputRef = useRef(null);
+
   const mutation = useMutationHooks(async (data) => {
     try {
       const project_arr = await ProjectService.getAllProject(data); 
@@ -43,9 +50,32 @@ function CustomCarousel() {
     }
   });
 
+  const mutationRename = useMutationHooks(async (data) => {
+    try {
+      const id = data.projectId;
+      const projectName = data.newProjectName;
+      console.log(id, projectName);
+      const result = await ProjectService.renameProject(id, projectName);
+      return result; // Trả về kết quả từ API
+    } catch (error) {
+      console.error("Error renaming project:", error);
+      throw error; // Quăng lỗi để mutation xử lý
+    }
+  });
+
+  const mutationDelete = useMutationHooks(async (data) => {
+    const id = data.projectId;
+    await ProjectService.deleteProject(id);
+  }, {
+    onSuccess: () => {
+      handleGetAllProject(); // Gọi lại API để cập nhật danh sách sau khi xóa
+    },
+  });
+  
+
   useEffect(() => {
     handleGetAllProject()
-  }, [user])
+  }, [user, projects])
 
   const handleGetAllProject = () => {
     mutation.mutate(user?.id)
@@ -55,6 +85,44 @@ function CustomCarousel() {
     localStorage.setItem('projectId', id)
     navigate(`/${id}/edit`)
   }
+
+  const handleRename = (id) => {
+    const project = projects.find((p) => p._id === id);
+    setRenameId(id);
+    setNewProjectName(project?.projectName || "");
+    setTimeout(() => {
+      inputRef.current?.focus(); // Focus vào ô input sau khi render
+    }, 0);
+  };
+
+  const handleSaveRename = async (projectId) => {
+    try {
+      mutationRename.mutate({
+        projectId,
+        newProjectName
+      });
+      // Cập nhật danh sách project sau khi gọi API thành công
+      const updatedProjects = projects.map((project) =>
+        project._id === projectId ? { ...project, projectName: newProjectName } : project
+      );
+      setProjects(updatedProjects);
+      setRenameId(null); // Đóng chế độ rename
+    } catch (error) {
+      console.error("Error saving renamed project:", error);
+      // Bạn có thể thêm logic hiển thị thông báo lỗi ở đây
+    }
+  };
+
+  const handleDelete = async (projectId) => {
+    try {
+      mutationDelete.mutateAsync({
+        projectId,
+      });      
+    } catch (error) {
+      console.error("Error saving renamed project:", error);
+      // Bạn có thể thêm logic hiển thị thông báo lỗi ở đây
+    }
+  };
 
   return (
     <Carousel
@@ -75,9 +143,27 @@ function CustomCarousel() {
             </div>
         ) : (
         projects.slice().reverse().map((project, index) => (
-          <div key={project._id} id={project?._id} onClick={() => handleClick(project._id)} className="cursor-pointer" >
+          <div 
+            key={project._id} 
+            id={project?._id} 
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClick(project._id)
+            }} 
+            onMouseEnter={(e) => {
+              e.stopPropagation();
+              setHoveredProjectId(project._id);
+            }}
+            onMouseLeave={(e) => {
+              e.stopPropagation();
+              if (option) {
+                setOption(false);
+              }
+              setHoveredProjectId(null);
+            }}
+            className="cursor-pointer group" >
             <div
-              className="relative bg-cover h-[200px] w-[420px] overflow-hidden border " // Div chứa background và các component
+              className="relative bg-cover h-[200px] w-[420px] overflow-hidden border transition-transform transform hover:scale-105" // Div chứa background và các component
               style={{
                 backgroundImage: project.canvasArray?.[0]?.background === '#ffffff' 
                   ? 'none' // Không hiển thị hình ảnh nền
@@ -224,7 +310,58 @@ function CustomCarousel() {
               );
               })}
             </div>
-            <span>{project.projectName || 'Unnamed Project'}</span>
+            <div onClick={(e) => {
+                  e.stopPropagation();
+                  setOption(!option);
+                }} 
+                className="absolute top-6 right-6 hidden group-hover:flex justify-between border p-1 bg-white rounded shadow">
+              <SlOptionsVertical />
+            </div>
+            {(option) && (hoveredProjectId === project._id) && (
+              <div className="absolute top-0 right-0 bg-white p-2 rounded shadow">
+               <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRename(project._id)
+                  }} 
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Rename
+                </button>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(project._id)
+                  }} 
+                  className="block px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+            
+            {renameId === project._id ? (
+            <div className="p-2 flex flex-row">
+              <input
+                type="text"
+                ref={inputRef} // Gán input với useRef
+                value={newProjectName}
+                onChange={(e) => {
+                  e.stopPropagation();
+                  setNewProjectName(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.stopPropagation();
+                    handleSaveRename(project._id); // Gọi hàm rename khi nhấn Enter
+                  }
+                }}
+                className="border rounded w-full px-2 py-1"
+              />
+            </div>
+          ) : (
+            <span>{project.projectName || "Unnamed Project"}</span>
+          )}
           </div>
           ))
         )}
