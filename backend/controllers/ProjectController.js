@@ -254,6 +254,26 @@ const getAvatar = async (req, res) => {
   }
 };
 
+const renameProject = async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const projectName = req.body;
+    console.log(projectId, projectName);
+    if (!projectId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Id is not defined",
+      });
+    }
+    const response = await ProjectService.renameProject(projectId, projectName);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+}
+
 module.exports = {
   createProject,
   getDetailProject,
@@ -267,4 +287,5 @@ module.exports = {
   deleteProject,
   addEditor,
   getAvatar,
+  renameProject,
 };
