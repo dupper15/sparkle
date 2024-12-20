@@ -2,10 +2,6 @@ const Canvas = require("../models/CanvasModel");
 const Project = require("../models/ProjectModel");
 const User = require("../models/UserModel");
 const Component = require("../models/ComponentModel");
-const ejs = require("ejs");
-const path = require("path");
-const pdf = require("html-pdf")
-
 
 const createProject = (newProject) => {
   return new Promise(async (resolve, reject) => {

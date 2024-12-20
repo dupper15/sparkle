@@ -267,7 +267,7 @@ const CreateComponent = ({
             }
         };
         if (isSelected) {
-            document.addEventListener("keydown", handleKeyDown);
+        document.addEventListener("keydown", handleKeyDown);
         }
         return () => {
             document.removeEventListener("keydown", handleKeyDown);

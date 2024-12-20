@@ -3,15 +3,18 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 import * as ProjectService from '../../services/ProjectService'
 import { useSelector } from "react-redux";
 
-const TemplateDesign = ({ addCanvasFromTemplate, renderKey }) => {
+const TemplateDesign = ({ addCanvasFromTemplate }) => {
 
     const [projects, setProjects] = useState([])
+    const project = useSelector((state) => state.project)
+    const [renderKey, setRenderKey] = useState(0);
 
     const mutation = useMutationHooks(async () => {
         try {
             const response = await ProjectService.getPublic();
             if (response?.status === "OK" && Array.isArray(response.data)) {
                 setProjects(response.data); // Đặt vào projects
+                setRenderKey((prev) => prev + 1);
                 console.log('Projects fetched successfully:', response.data);
             } else {
                 setProjects([]); // Nếu không phải mảng, đặt mảng rỗng
@@ -21,6 +24,17 @@ const TemplateDesign = ({ addCanvasFromTemplate, renderKey }) => {
             console.error("Error fetching projects:", error);
         }
     });
+
+    const handleGetAllProject = () => {
+        mutation.mutate()
+    }
+
+    useEffect(() => {
+        if (project?.id) {
+          setRenderKey((prev) => prev + 1)
+          handleGetAllProject();
+        }
+      }, [project.id]);
 
     useEffect(() => {
         mutation.mutate();
@@ -35,8 +49,14 @@ const TemplateDesign = ({ addCanvasFromTemplate, renderKey }) => {
         }
     };
 
+    useEffect(() => {
+        if (project?.id) {
+          handleGetAllProject();
+        }
+      }, [project]);
+
     return(
-        <div className="grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide">
+        <div key={renderKey} className="grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide">
     {
         projects.slice().reverse().flatMap((project, projectIndex) => (
             project.canvasArray?.map((canvas, canvasIndex) => (
@@ -60,7 +80,7 @@ const TemplateDesign = ({ addCanvasFromTemplate, renderKey }) => {
                         }}
                     >
                         {/* Hiển thị tất cả các component trên canvas */}
-                        {canvas.componentArray?.map((component, componentIndex) => {
+                        {canvas.componentArray?.map((component, index) => {
                             const getShapeStyle = (shapeType) => {
                                 switch (shapeType) {
                                     case 'circle':
@@ -126,18 +146,71 @@ const TemplateDesign = ({ addCanvasFromTemplate, renderKey }) => {
                             const leftComponent = component.x * scaleX;
 
                             return (
-                                <div
-                                    key={componentIndex}
-                                    style={{
-                                        position: 'absolute',
-                                        top: topComponent,
-                                        left: leftComponent,
-                                        width: widthComponent,
-                                        height: heightComponent,
-                                        backgroundColor: component.color || 'transparent',
-                                        ...shapeStyle,
-                                    }}
-                                />
+                                <>
+                                    {/* Xử lý Text */}
+                                    {component.type === 'Text' && component.content && (
+                                        <div
+                                            key={index}
+                                            style={{
+                                                position: 'absolute',
+                                                top: topComponent,
+                                                left: leftComponent,
+                                                width: widthComponent,
+                                                height: heightComponent,
+                                                transform: `rotate(${component.rotate || 0}deg)`,
+                                                transformOrigin: 'center',
+                                                color: component.color || 'black',
+                                                fontSize: Math.max(component.fontSize * scaleY, 12),
+                                                fontFamily: component.fontFamily || 'Arial',
+                                                fontStyle: component.fontStyle || 'normal',
+                                                fontWeight: component.fontWeight || 'normal',
+                                                textDecoration: component.textDecorationLine || 'none',
+                                                textAlign: component.textAlign || 'left',
+                                                whiteSpace: 'pre-wrap',
+                                            }}
+                                        >
+                                            {component.content}
+                                        </div>
+                                    )}
+                            
+                                    {/* Xử lý Image */}
+                                    {component.type === 'Image' && component.image && (
+                                        <img
+                                            key={index}
+                                            src={component.image}
+                                            alt=""
+                                            style={{
+                                                position: 'absolute',
+                                                top: topComponent,
+                                                left: leftComponent,
+                                                width: widthComponent,
+                                                height: heightComponent,
+                                                transform: `rotate(${component.rotate || 0}deg)`,
+                                                transformOrigin: 'center',
+                                                opacity: component.opacity || 1,
+                                                objectFit: 'contain',
+                                            }}
+                                        />
+                                    )}
+                            
+                                    {/* Xử lý Shape */}
+                                    {component.type === 'Shape' && (
+                                        <div
+                                            key={index}
+                                            style={{
+                                                position: 'absolute',
+                                                top: topComponent,
+                                                left: leftComponent,
+                                                width: widthComponent,
+                                                height: heightComponent,
+                                                transform: `rotate(${component.rotate || 0}deg)`,
+                                                transformOrigin: 'center',
+                                                backgroundColor: component.color || 'transparent',
+                                                ...shapeStyle
+                                            }}
+                                        ></div>
+                                    )}
+                                </>
                             );
                         })}
                     </div>
