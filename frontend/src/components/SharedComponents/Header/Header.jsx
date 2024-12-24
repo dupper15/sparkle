@@ -9,14 +9,15 @@ import { useSelector } from "react-redux";
 
 const Header = () => {
   const { isDarkMode } = useDarkMode();
-  const [image, setImage] = useState('')
+  const [image, setImage] = useState("");
   const [openProfile, setOpenProfile] = useState(false);
-  const [openCustomizeSizeDialogue, setOpenCustomizeSizeDialogue] = useState(false);
-  const user = useSelector((state) => state.user)
+  const [openCustomizeSizeDialogue, setOpenCustomizeSizeDialogue] =
+    useState(false);
+  const user = useSelector((state) => state.user);
 
-  useEffect(()=> {
-    setImage(user?.image || profileIcon)
-  }, [user?.image])
+  useEffect(() => {
+    setImage(user?.image || profileIcon);
+  }, [user?.image]);
 
   const navigate = useNavigate();
 
@@ -33,7 +34,7 @@ const Header = () => {
       className={`flex items-center justify-between w-full h-[50px] px-5 py-8 transition-colors duration-500 ${
         isDarkMode ? "bg-[#18191B]" : "bg-gray-200"
       }`}>
-      <div className="flex items-center justify-items-start gap-2">
+      <div className='flex items-center justify-items-start gap-2'>
         <div className="w-[40px] h-[40px] bg-[url('./assets/logo.png')] bg-cover bg-center" />
         <div
           onClick={goHome}
@@ -44,31 +45,31 @@ const Header = () => {
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-5 px-3 py-10">
+      <div className='flex items-center justify-center gap-5 px-3 py-10'>
         <button
-          className="w-[160px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2"
+          className='w-[160px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2'
           onClick={() => setOpenCustomizeSizeDialogue((prev) => !prev)}>
-          <span className=" text-white"> Create a design</span>
+          <span className=' text-white'> Create a design</span>
         </button>
         {openCustomizeSizeDialogue && (
-          <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]">
+          <div className='fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]'>
             <CustomizeSizeDialogue
               childCloseFormRequest={() => setOpenCustomizeSizeDialogue(false)}
               onCreate={(data) => handleCreate(data)}
             />
           </div>
         )}
-        <div className="rounded-full p-2 h-[64px] w-[64px]">
+        <div className='rounded-full p-2 h-[64px] w-[64px]'>
           <input
-            type="image"
-            className="object-cover w-full h-full rounded-full"
+            type='image'
+            className='object-cover w-full h-full rounded-full'
             src={image}
-            alt="Profile Image"
+            alt='Profile Image'
             onClick={() => setOpenProfile((prev) => !prev)}
           />
         </div>
         {openProfile && (
-          <div className="absolute top-[4rem] right-[1.5rem] padding-[15px]">
+          <div className='absolute top-[4rem] right-[1.5rem] padding-[15px]'>
             <UserProfileMenu />
           </div>
         )}

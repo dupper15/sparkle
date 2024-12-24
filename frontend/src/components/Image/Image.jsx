@@ -46,10 +46,13 @@ const Image = ({ drag }) => {
       formData.append("file", file);
       formData.append("upload_preset", uploadPreset);
 
-      const response = await fetch("https://api.cloudinary.com/v1_1/ddcjjegzf/image/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/ddcjjegzf/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const result = await response.json();
 
@@ -72,45 +75,45 @@ const Image = ({ drag }) => {
 
   const ImagePalette = ({ onDragStart }) => {
     return (
-        <div className="grid grid-cols-3 gap-2 w-full">
-          {images.map((img, i) => (
-              <DraggableImage
-                  key={img._id || i}
-                  img={img}
-                  onDragStart={onDragStart}
-              />
-          ))}
-        </div>
+      <div className='grid grid-cols-3 gap-2 w-full'>
+        {images.map((img, i) => (
+          <DraggableImage
+            key={img._id || i}
+            img={img}
+            onDragStart={onDragStart}
+          />
+        ))}
+      </div>
     );
   };
 
   return (
-      <div>
-        <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
-          <label className='text-center cursor-pointer' htmlFor='uploadImage'>
-            Upload Image
-          </label>
-          <input
-              type='file'
-              id='uploadImage'
-              className='hidden'
-              onChange={handleUpload}
-          />
-        </div>
-        <ImagePalette onDragStart={handleDragStart} />
-        <DragOverlay>
-          {draggingImage ? (
-              <div
-                  style={{
-                    width: "90px",
-                    height: "90px",
-                    backgroundImage: `url(${draggingImage.image})`,
-                    backgroundSize: "cover",
-                  }}
-              />
-          ) : null}
-        </DragOverlay>
+    <div>
+      <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
+        <label className='text-center cursor-pointer' htmlFor='uploadImage'>
+          Upload Image
+        </label>
+        <input
+          type='file'
+          id='uploadImage'
+          className='hidden'
+          onChange={handleUpload}
+        />
       </div>
+      <ImagePalette onDragStart={handleDragStart} />
+      <DragOverlay>
+        {draggingImage ? (
+          <div
+            style={{
+              width: "90px",
+              height: "90px",
+              backgroundImage: `url(${draggingImage.image})`,
+              backgroundSize: "cover",
+            }}
+          />
+        ) : null}
+      </DragOverlay>
+    </div>
   );
 };
 
@@ -120,15 +123,14 @@ const DraggableImage = ({ img, onDragStart }) => {
   });
 
   return (
-      <div
-          ref={setNodeRef}
-          className='w-full h-[90px] overflow-hidden rounded-md cursor-pointer'
-          {...listeners}
-          {...attributes}
-          onMouseDown={() => onDragStart(img)}
-      >
-        <img className='w-full h-full' src={img.image} alt='' />
-      </div>
+    <div
+      ref={setNodeRef}
+      className='w-full h-[90px] overflow-hidden rounded-md cursor-pointer'
+      {...listeners}
+      {...attributes}
+      onMouseDown={() => onDragStart(img)}>
+      <img className='w-full h-full' src={img.image} alt='' />
+    </div>
   );
 };
 

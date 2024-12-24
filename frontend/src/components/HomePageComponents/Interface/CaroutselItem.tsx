@@ -1,4 +1,4 @@
 interface CarouselItem {
-    image: string | undefined;
-    title: string | undefined;
+  image: string | undefined;
+  title: string | undefined;
 }

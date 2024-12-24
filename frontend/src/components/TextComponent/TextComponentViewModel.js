@@ -28,7 +28,8 @@ const useTextComponentViewModel = (
   const inputRef = useRef(null);
   const project = useSelector((state) => state.project);
   const roomId = project.id;
-  const [isTransformButtonPressed, setIsTransformButtonPressed] = useState(false);
+  const [isTransformButtonPressed, setIsTransformButtonPressed] =
+    useState(false);
   useRef(null);
   useEffect(() => {
     socket.on("updateText", (data) => {

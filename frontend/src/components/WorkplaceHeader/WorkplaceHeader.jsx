@@ -6,7 +6,7 @@ import { useEffect, useReducer, useRef, useState } from "react";
 import AddEditorForm from "../AddEditorForm/AddEditorForm";
 import { useMutation } from "@tanstack/react-query";
 import * as ProjectService from "../../services/ProjectService";
-import * as Alert from "../Alert/Alert"
+import * as Alert from "../Alert/Alert";
 import { useSelector } from "react-redux";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
@@ -36,17 +36,17 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   const { isDarkMode } = useDarkMode();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const projectId = localStorage.getItem("projectId")
-  const user = useSelector((state) => state.user)
-  const ownerId = user?.id
-  const project = useSelector((state) => state.project)
+  const projectId = localStorage.getItem("projectId");
+  const user = useSelector((state) => state.user);
+  const ownerId = user?.id;
+  const project = useSelector((state) => state.project);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [status, setStatus] = useState("")
-  const [download, setDownload] = useState(false)
+  const [status, setStatus] = useState("");
+  const [download, setDownload] = useState(false);
   const [downloadType, setDownloadType] = useState("pdf");
 
-  const [canvases, setCanvases] = useState("")
+  const [canvases, setCanvases] = useState("");
 
   const canvasRefs = useRef([]);
 
@@ -54,10 +54,10 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     const pdfWidth = project?.width;
     const pdfHeight = project?.height;
 
-    let pdf = null
+    let pdf = null;
 
-    const ratio = pdfWidth/ pdfHeight;
-    if (ratio> 1){
+    const ratio = pdfWidth / pdfHeight;
+    if (ratio > 1) {
       pdf = new jsPDF({
         orientation: "landscape",
         unit: "px",
@@ -65,7 +65,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       });
     } else {
       pdf = new jsPDF({
-        orientation: 'portrait',
+        orientation: "portrait",
         unit: "px",
         format: [pdfWidth, pdfHeight],
       });
@@ -84,8 +84,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       if (i > 0) {
         pdf.addPage();
       }
-      const imgProps = pdf.getImageProperties(data)
-      console.log("imgProps", imgProps)
+      const imgProps = pdf.getImageProperties(data);
+      console.log("imgProps", imgProps);
 
       pdf.addImage(data, "PNG", 0, 0, pdfWidth, pdfHeight);
     }
@@ -97,55 +97,61 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       console.error("No canvases available to download.");
       return;
     }
-  
+
     try {
-        // Trường hợp nhiều canvas, nén vào file ZIP
-        const zip = new JSZip(); // Tạo một đối tượng ZIP
-        const folder = zip.folder("canvases"); // Tạo thư mục bên trong file ZIP
-        if (!folder) {
-          console.error("Failed to create folder in ZIP.");
-          return;
-        }
-  
-        for (let i = 0; i < canvasRefs.current.length; i++) {
-          const element = canvasRefs.current[i];
-          if (!element) continue;
-  
-          // Chụp canvas thành ảnh
-          const canvasImage = await html2canvas(element, { useCORS: true, scale: 3 });
-          const dataUrl = canvasImage.toDataURL("image/png");
-  
-          // Chuyển base64 sang binary để thêm vào ZIP
-          const base64Data = dataUrl.split(",")[1];
-          folder.file(`canvas_${i + 1}.png`, base64Data, { base64: true });
-        }
-  
-        // Lưu file ZIP
-        const content = await zip.generateAsync({ type: "blob" });
-        saveAs(content, `${project?.projectName}.zip`);
+      // Trường hợp nhiều canvas, nén vào file ZIP
+      const zip = new JSZip(); // Tạo một đối tượng ZIP
+      const folder = zip.folder("canvases"); // Tạo thư mục bên trong file ZIP
+      if (!folder) {
+        console.error("Failed to create folder in ZIP.");
+        return;
+      }
+
+      for (let i = 0; i < canvasRefs.current.length; i++) {
+        const element = canvasRefs.current[i];
+        if (!element) continue;
+
+        // Chụp canvas thành ảnh
+        const canvasImage = await html2canvas(element, {
+          useCORS: true,
+          scale: 3,
+        });
+        const dataUrl = canvasImage.toDataURL("image/png");
+
+        // Chuyển base64 sang binary để thêm vào ZIP
+        const base64Data = dataUrl.split(",")[1];
+        folder.file(`canvas_${i + 1}.png`, base64Data, { base64: true });
+      }
+
+      // Lưu file ZIP
+      const content = await zip.generateAsync({ type: "blob" });
+      saveAs(content, `${project?.projectName}.zip`);
     } catch (error) {
       console.error("Error processing canvases:", error);
     }
   };
-  
+
   const getShapeSVG = (shapeType, width, height, color) => {
     switch (shapeType) {
       case "circle":
         return (
           <svg width={width} height={height}>
-            <circle cx="50%" cy="50%" r="50%" fill={color || "transparent"} />
+            <circle cx='50%' cy='50%' r='50%' fill={color || "transparent"} />
           </svg>
         );
       case "triangle":
         return (
           <svg width={width} height={height}>
-            <polygon points="50,0 100,100 0,100" fill={color || "transparent"} />
+            <polygon
+              points='50,0 100,100 0,100'
+              fill={color || "transparent"}
+            />
           </svg>
         );
       case "invertedTriangle":
         return (
           <svg width={width} height={height}>
-            <polygon points="50,100 0,0 100,0" fill={color || "transparent"} />
+            <polygon points='50,100 0,0 100,0' fill={color || "transparent"} />
           </svg>
         );
       case "rect":
@@ -155,14 +161,13 @@ const WorkplaceHeader = ({ usersInRoom }) => {
               width: "100%",
               height: "100%",
               backgroundColor: color || "transparent",
-            }}
-          ></div>
+            }}></div>
         );
       case "pentagon":
         return (
           <svg width={width} height={height}>
             <polygon
-              points="50,0 100,38 82,100 18,100 0,38"
+              points='50,0 100,38 82,100 18,100 0,38'
               fill={color || "transparent"}
             />
           </svg>
@@ -171,7 +176,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points="50,0 100,25 100,75 50,100 0,75 0,25"
+              points='50,0 100,25 100,75 50,100 0,75 0,25'
               fill={color || "transparent"}
             />
           </svg>
@@ -180,7 +185,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points="30,0 70,0 100,30 100,70 70,100 30,100 0,70 0,30"
+              points='30,0 70,0 100,30 100,70 70,100 30,100 0,70 0,30'
               fill={color || "transparent"}
             />
           </svg>
@@ -189,7 +194,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points="50,0 100,50 75,50 75,100 25,100 25,50 0,50"
+              points='50,0 100,50 75,50 75,100 25,100 25,50 0,50'
               fill={color || "transparent"}
             />
           </svg>
@@ -198,7 +203,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points="50,100 100,50 75,50 75,0 25,0 25,50 0,50"
+              points='50,100 100,50 75,50 75,0 25,0 25,50 0,50'
               fill={color || "transparent"}
             />
           </svg>
@@ -207,7 +212,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points="0,50 50,0 50,25 100,25 100,75 50,75 50,100"
+              points='0,50 50,0 50,25 100,25 100,75 50,75 50,100'
               fill={color || "transparent"}
             />
           </svg>
@@ -216,7 +221,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points="100,50 50,0 50,25 0,25 0,75 50,75 50,100"
+              points='100,50 50,0 50,25 0,25 0,75 50,75 50,100'
               fill={color || "transparent"}
             />
           </svg>
@@ -232,12 +237,12 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     } else if (downloadType === "png") {
       handleDownloadPNG();
     }
-    setDownload(!download)
+    setDownload(!download);
   };
 
   useEffect(() => {
-    setStatus(project?.isPublic)
-  }, [project?.isPublic])
+    setStatus(project?.isPublic);
+  }, [project?.isPublic]);
 
   const mutation = useMutation({
     mutationFn: (data) => {
@@ -256,7 +261,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   });
 
   const mutationPublic = useMutation({
-    mutationFn: async  ({projectId}) => {
+    mutationFn: async ({ projectId }) => {
       const response = await ProjectService.updatePublic(projectId);
       if (response.status === "ERROR") {
         // Throw an error to trigger onError
@@ -265,19 +270,24 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       return response;
     },
     onError: (error) => {
-      const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
-      setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
-      setSuccessMessage("")
+      const apiErrorMessage =
+        error.response?.data?.message || "An unexpected error occurred.";
+      setErrorMessage(
+        apiErrorMessage.message === undefined
+          ? apiErrorMessage
+          : apiErrorMessage.message
+      );
+      setSuccessMessage("");
     },
     onSuccess: (data) => {
       setErrorMessage("");
       const apiSuccessMessage = "Public project successfully!";
-      setSuccessMessage(apiSuccessMessage)
+      setSuccessMessage(apiSuccessMessage);
     },
   });
 
   const mutationPrivate = useMutation({
-    mutationFn: async  ({projectId}) => {
+    mutationFn: async ({ projectId }) => {
       const response = await ProjectService.updatePrivate(projectId);
       if (response.status === "ERROR") {
         // Throw an error to trigger onError
@@ -286,19 +296,24 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       return response;
     },
     onError: (error) => {
-      const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
-      setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
-      setSuccessMessage("")
+      const apiErrorMessage =
+        error.response?.data?.message || "An unexpected error occurred.";
+      setErrorMessage(
+        apiErrorMessage.message === undefined
+          ? apiErrorMessage
+          : apiErrorMessage.message
+      );
+      setSuccessMessage("");
     },
     onSuccess: (data) => {
       setErrorMessage("");
       const apiSuccessMessage = "Private project successfully!";
-      setSuccessMessage(apiSuccessMessage)
+      setSuccessMessage(apiSuccessMessage);
     },
   });
 
-  const {isError, isSuccess} = mutationPublic
- 
+  const { isError, isSuccess } = mutationPublic;
+
   useEffect(() => {
     if (isError) {
       Alert.error("You don't have permission to public project!");
@@ -309,19 +324,19 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   }, [isSuccess, isError, errorMessage, successMessage]);
 
   const handlePublic = () => {
-    mutationPublic.mutate({projectId})
-    setStatus(!status)
-  }
+    mutationPublic.mutate({ projectId });
+    setStatus(!status);
+  };
 
   const handlePrivate = () => {
-    mutationPrivate.mutate({projectId})
-    setStatus(!status)
-  }
+    mutationPrivate.mutate({ projectId });
+    setStatus(!status);
+  };
 
   const handleClickDownload = async () => {
     try {
       const result = await ProjectService.getDetailProject(projectId);
-  
+
       if (result?.data?.canvasArray) {
         // Cập nhật state canvases
         setCanvases([...result.data.canvasArray]); // Tạo một array mới để trigger render
@@ -333,7 +348,6 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       console.error("Error fetching project details:", error);
     }
   };
-  
 
   const toggleAddMember = () => {
     dispatch({ type: "TOGGLE_SHOW" });
@@ -365,7 +379,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
           Sparkle
         </div>
       </div>
-  
+
       {/* Các chức năng ở góc phải */}
       <div className='flex items-center gap-5'>
         {/* Hiển thị avatar */}
@@ -376,7 +390,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
                 key={index}
                 className='w-[40px] h-[40px] rounded-full overflow-hidden border-2 border-white'
                 style={{
-                  marginLeft: index !== state.avatars.length - 1 ? "-15px" : "0",
+                  marginLeft:
+                    index !== state.avatars.length - 1 ? "-15px" : "0",
                   zIndex: state.avatars.length - index,
                 }}>
                 <img
@@ -403,7 +418,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
             <FaPlus className='w-[30px] h-[30px]' />
           </button>
         </div>
-  
+
         {/* Form thêm thành viên */}
         {state.isShow && (
           <>
@@ -418,14 +433,14 @@ const WorkplaceHeader = ({ usersInRoom }) => {
             </div>
           </>
         )}
-  
+
         {/* Nút tải xuống */}
         <button
           onClick={handleClickDownload}
           className='w-[100px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2'>
           <span className='text-white'>Download</span>
         </button>
-  
+
         {/* Dropdown lựa chọn tải xuống */}
         {download && (
           <div
@@ -433,147 +448,144 @@ const WorkplaceHeader = ({ usersInRoom }) => {
               isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
             }`}>
             {/* Header */}
-            <div className="text-center py-2 border-b">
-              <span className="font-semibold text-lg">Download Options</span>
+            <div className='text-center py-2 border-b'>
+              <span className='font-semibold text-lg'>Download Options</span>
             </div>
-  
+
             {/* Options */}
-            <div className="flex flex-col px-4 py-2">
+            <div className='flex flex-col px-4 py-2'>
               {/* Radio Option for PDF */}
-              <label className="flex items-center cursor-pointer py-2">
+              <label className='flex items-center cursor-pointer py-2'>
                 <input
-                  type="radio"
-                  name="downloadType"
-                  value="pdf"
+                  type='radio'
+                  name='downloadType'
+                  value='pdf'
                   checked={downloadType === "pdf"}
                   onChange={() => setDownloadType("pdf")}
-                  className="mr-2"
+                  className='mr-2'
                 />
-                <span className="w-full text-left hover:text-[#4335DE]">
+                <span className='w-full text-left hover:text-[#4335DE]'>
                   Download PDF
                 </span>
               </label>
-  
+
               {/* Radio Option for PNG */}
-              <label className="flex items-center cursor-pointer py-2">
+              <label className='flex items-center cursor-pointer py-2'>
                 <input
-                  type="radio"
-                  name="downloadType"
-                  value="png"
+                  type='radio'
+                  name='downloadType'
+                  value='png'
                   checked={downloadType === "png"}
                   onChange={() => setDownloadType("png")}
-                  className="mr-2"
+                  className='mr-2'
                 />
-                <span className="w-full text-left hover:text-[#4335DE]">
+                <span className='w-full text-left hover:text-[#4335DE]'>
                   Download PNG
                 </span>
               </label>
             </div>
-  
+
             {/* Download Button */}
-            <div className="flex justify-center mt-4">
+            <div className='flex justify-center mt-4'>
               <button
                 onClick={handleDownload}
-                className="px-4 py-2 bg-[#4335DE] text-white rounded-lg hover:bg-[#372fc9] transition z-99">
+                className='px-4 py-2 bg-[#4335DE] text-white rounded-lg hover:bg-[#372fc9] transition z-99'>
                 Download
               </button>
             </div>
           </div>
-          
         )}
-       <div
-       style={{
-        position: "absolute",
-        transform: "translate(-9999px, -9999px)", // Di chuyển canvas ra ngoài khung nhìn
-        opacity: 0, // Làm cho canvas trong suốt
-        pointerEvents: "none", // Ngăn người dùng tương tác
-      }}
-        >
-       {Array.isArray(canvases) && canvases.map((canvas, index) => (
         <div
-          key={canvas?._id}
-          id={canvas?._id}
-          className="canvas-container bg-white"
-        >
-          <div
-            ref={(el) => (canvasRefs.current[index] = el)}
-            className="canvas-background"
-            style={{
-              width: `${project.width}px`,
-              height: `${project.height}px`,
-              backgroundImage:
-                canvas.background === "#ffffff"
-                  ? "none"
-                  : `url(${canvas.background})`,
-              backgroundColor:
-                canvas.background === "#ffffff" ? "#ffffff" : "transparent",
-              backgroundSize: "100% 100%",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              position: "relative",
-            }}
-          >
-            {canvas.componentArray?.map((component, idx) => (
+          style={{
+            position: "absolute",
+            transform: "translate(-9999px, -9999px)", // Di chuyển canvas ra ngoài khung nhìn
+            opacity: 0, // Làm cho canvas trong suốt
+            pointerEvents: "none", // Ngăn người dùng tương tác
+          }}>
+          {Array.isArray(canvases) &&
+            canvases.map((canvas, index) => (
               <div
-                key={idx}
-                style={{
-                  position: "absolute",
-                  top: component.y,
-                  left: component.x,
-                  width: component.width,
-                  height: component.height,
-                  transform: `rotate(${component.rotate}deg)`, // Xoay hình ảnh
-                  transformOrigin: "center", // Tâm xoay nằm ở giữa
-                }}
-              >
-              {component.type === "Text" ? (
-              <div
-                style={{
-                  color: component.color,
-                  fontSize: component.fontSize,
-                  fontFamily: component.fontFamily,
-                  fontStyle: component.fontStyle,
-                  fontWeight: component.fontWeight,
-                  textDecoration: component.textDecorationLine,
-                  textAlign: component.textAlign,
-                  whiteSpace: "pre-wrap", // Để xuống dòng nếu có nhiều dòng
-                }}
-              >
-                {component.content}
-              </div>
-               ) : component.type === "Image" ? (
-                <img
-                  src={component.image}
-                  alt=""
+                key={canvas?._id}
+                id={canvas?._id}
+                className='canvas-container bg-white'>
+                <div
+                  ref={(el) => (canvasRefs.current[index] = el)}
+                  className='canvas-background'
                   style={{
-                    width: "100%", // Đảm bảo hình ảnh chiếm toàn bộ chiều rộng container
-                    height: "100%", // Đảm bảo hình ảnh chiếm toàn bộ chiều cao container
-                    opacity: component.opacity, // Áp dụng độ mờ
-                    objectFit: "contain", // Đảm bảo hình ảnh không bị méo
-                  }}
-                />
-                ) : (
-                  getShapeSVG(
-                    component.shapeType,
-                    component.width + 10,
-                    component.height + 10,
-                    component.color
-                  )
-                )}
+                    width: `${project.width}px`,
+                    height: `${project.height}px`,
+                    backgroundImage:
+                      canvas.background === "#ffffff"
+                        ? "none"
+                        : `url(${canvas.background})`,
+                    backgroundColor:
+                      canvas.background === "#ffffff"
+                        ? "#ffffff"
+                        : "transparent",
+                    backgroundSize: "100% 100%",
+                    backgroundPosition: "center",
+                    backgroundRepeat: "no-repeat",
+                    position: "relative",
+                  }}>
+                  {canvas.componentArray?.map((component, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        position: "absolute",
+                        top: component.y,
+                        left: component.x,
+                        width: component.width,
+                        height: component.height,
+                        transform: `rotate(${component.rotate}deg)`, // Xoay hình ảnh
+                        transformOrigin: "center", // Tâm xoay nằm ở giữa
+                      }}>
+                      {component.type === "Text" ? (
+                        <div
+                          style={{
+                            color: component.color,
+                            fontSize: component.fontSize,
+                            fontFamily: component.fontFamily,
+                            fontStyle: component.fontStyle,
+                            fontWeight: component.fontWeight,
+                            textDecoration: component.textDecorationLine,
+                            textAlign: component.textAlign,
+                            whiteSpace: "pre-wrap", // Để xuống dòng nếu có nhiều dòng
+                          }}>
+                          {component.content}
+                        </div>
+                      ) : component.type === "Image" ? (
+                        <img
+                          src={component.image}
+                          alt=''
+                          style={{
+                            width: "100%", // Đảm bảo hình ảnh chiếm toàn bộ chiều rộng container
+                            height: "100%", // Đảm bảo hình ảnh chiếm toàn bộ chiều cao container
+                            opacity: component.opacity, // Áp dụng độ mờ
+                            objectFit: "contain", // Đảm bảo hình ảnh không bị méo
+                          }}
+                        />
+                      ) : (
+                        getShapeSVG(
+                          component.shapeType,
+                          component.width + 10,
+                          component.height + 10,
+                          component.color
+                        )
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
-          </div>
         </div>
-      ))}
-       </div>
-        
+
         {/* Nút chia sẻ */}
         <button
           onClick={() => console.log("userInRoom", usersInRoom)}
           className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 border-black shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
           <span className='gradient'>Share</span>
         </button>
-  
+
         {/* Nút trạng thái Private/Public */}
         {ownerId === project?.owner && (
           <button
@@ -584,7 +596,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         )}
       </div>
     </div>
-  );  
+  );
 };
 
 export default WorkplaceHeader;

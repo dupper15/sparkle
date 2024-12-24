@@ -20,7 +20,7 @@ const projectSchema = new mongoose.Schema(
     isPublic: { type: Boolean, default: false },
     height: { type: Number, required: true },
     width: { type: Number, required: true },
-    copy: { type: String}
+    copy: { type: String },
   },
   {
     timestamps: true,

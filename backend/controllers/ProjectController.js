@@ -12,7 +12,7 @@ const createProject = async (req, res) => {
       });
     }
     const newProject = {
-      owner: userId, // Truyền ID người dùng vào trường owner
+      owner: userId,
       projectName: projectName,
       height: height,
       width: width,
@@ -272,7 +272,7 @@ const renameProject = async (req, res) => {
       message: e,
     });
   }
-}
+};
 
 module.exports = {
   createProject,

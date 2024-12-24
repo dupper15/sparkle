@@ -1,15 +1,20 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const canvasSchema = new mongoose.Schema({
-    background: {type: String, default: "#ffffff"}, 
-    componentArray: [{
+const canvasSchema = new mongoose.Schema(
+  {
+    background: { type: String, default: "#ffffff" },
+    componentArray: [
+      {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Component',
+        ref: "Component",
         default: null,
-    }],
-}, {
-    timestamps: true
-})
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Canvas = mongoose.model('Canvas', canvasSchema)
-module.exports = Canvas
+const Canvas = mongoose.model("Canvas", canvasSchema);
+module.exports = Canvas;

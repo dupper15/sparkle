@@ -1,72 +1,91 @@
-import { useState } from 'react';
-import { FaLayerGroup } from 'react-icons/fa';
-import { RiBringForward, RiBringToFront, RiSendBackward, RiSendToBack } from "react-icons/ri";
+import { useState } from "react";
+import { FaLayerGroup } from "react-icons/fa";
+import {
+  RiBringForward,
+  RiBringToFront,
+  RiSendBackward,
+  RiSendToBack,
+} from "react-icons/ri";
 
 /* eslint react/prop-types: 0 */
 const PositionEditSection = ({
-                                 handleSendBackward,
-                                 handleSendToBack,
-                                 handleSendForward,
-                                 handleSendToFront,
-                                 activeTab,
-                                 setActiveTab
-                             }) => {
-    const [isPositionMenuOpen, setIsPositionMenuOpen] = useState(false);
+  handleSendBackward,
+  handleSendToBack,
+  handleSendForward,
+  handleSendToFront,
+  activeTab,
+  setActiveTab,
+}) => {
+  const [isPositionMenuOpen, setIsPositionMenuOpen] = useState(false);
 
-    const handleLayerClick = () => {
-        setIsPositionMenuOpen(!isPositionMenuOpen);
-    };
+  const handleLayerClick = () => {
+    setIsPositionMenuOpen(!isPositionMenuOpen);
+  };
 
-    return (
-        <div className="relative toolbar flex h-8">
-            <button
-                className={`text-xl rounded text-gray-700 pr-2 pl-2 mr-1 ${activeTab === 'layer'? 'bg-purple-200 text-purple-700' : ''}`}
-                onClick={() => {
-                    handleLayerClick();
-                    setActiveTab(activeTab === 'layer' ? '' : 'layer');
-                }}
-            >
-                <FaLayerGroup />
-            </button>
-            {activeTab === 'layer' && (
-                <div className="absolute top-[6rem] right-[1rem] translate-x-[50%] translate-y-[-55%] shadow">
-                    <PositionMenu
-                        onSendBackward={handleSendBackward}
-                        onSendToBack={handleSendToBack}
-                        onSendForward={handleSendForward}
-                        onSendToFront={handleSendToFront}
-                    />
-                </div>
-            )}
+  return (
+    <div className='relative toolbar flex h-8'>
+      <button
+        className={`text-xl rounded text-gray-700 pr-2 pl-2 mr-1 ${
+          activeTab === "layer" ? "bg-purple-200 text-purple-700" : ""
+        }`}
+        onClick={() => {
+          handleLayerClick();
+          setActiveTab(activeTab === "layer" ? "" : "layer");
+        }}>
+        <FaLayerGroup />
+      </button>
+      {activeTab === "layer" && (
+        <div className='absolute top-[6rem] right-[1rem] translate-x-[50%] translate-y-[-55%] shadow'>
+          <PositionMenu
+            onSendBackward={handleSendBackward}
+            onSendToBack={handleSendToBack}
+            onSendForward={handleSendForward}
+            onSendToFront={handleSendToFront}
+          />
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
-const PositionMenu = ({ onSendBackward, onSendToBack, onSendForward, onSendToFront }) => {
-    return (
-        <div className="inline-flex bg-white profile-dropdown box-border rounded-2xl text-sm text-gray-700">
-            <div className="flex flex-col space-y-2 px-4 py-1">
-                <button className="flex items-center rounded-md hover:bg-gray-100" onClick={onSendBackward}>
-                    <RiSendBackward className="h-6 w-6 mr-2" />
-                    <span>Send Backward</span>
-                </button>
-                <button className="flex items-center rounded-md hover:bg-gray-100" onClick={onSendToBack}>
-                    <RiSendToBack className="h-6 w-6 mr-2" />
-                    <span>Send To Back</span>
-                </button>
-            </div>
-            <div className="flex flex-col space-y-2 pr-4 py-1">
-                <button className="flex items-center rounded-md hover:bg-gray-100" onClick={onSendForward}>
-                    <RiBringForward className="h-6 w-8 mr-2" />
-                    <span>Send Forward</span>
-                </button>
-                <button className="flex items-center rounded-md hover:bg-gray-100" onClick={onSendToFront}>
-                    <RiBringToFront className="h-6 w-8 mr-2" />
-                    <span>Send to Front</span>
-                </button>
-            </div>
-        </div>
-    );
+const PositionMenu = ({
+  onSendBackward,
+  onSendToBack,
+  onSendForward,
+  onSendToFront,
+}) => {
+  return (
+    <div className='inline-flex bg-white profile-dropdown box-border rounded-2xl text-sm text-gray-700'>
+      <div className='flex flex-col space-y-2 px-4 py-1'>
+        <button
+          className='flex items-center rounded-md hover:bg-gray-100'
+          onClick={onSendBackward}>
+          <RiSendBackward className='h-6 w-6 mr-2' />
+          <span>Send Backward</span>
+        </button>
+        <button
+          className='flex items-center rounded-md hover:bg-gray-100'
+          onClick={onSendToBack}>
+          <RiSendToBack className='h-6 w-6 mr-2' />
+          <span>Send To Back</span>
+        </button>
+      </div>
+      <div className='flex flex-col space-y-2 pr-4 py-1'>
+        <button
+          className='flex items-center rounded-md hover:bg-gray-100'
+          onClick={onSendForward}>
+          <RiBringForward className='h-6 w-8 mr-2' />
+          <span>Send Forward</span>
+        </button>
+        <button
+          className='flex items-center rounded-md hover:bg-gray-100'
+          onClick={onSendToFront}>
+          <RiBringToFront className='h-6 w-8 mr-2' />
+          <span>Send to Front</span>
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default PositionEditSection;

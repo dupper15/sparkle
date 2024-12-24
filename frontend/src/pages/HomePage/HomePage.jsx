@@ -9,22 +9,22 @@ import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const { isDarkMode } = useDarkMode();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleNavigateProject = () => {
-    navigate('/project')
-  }
+    navigate("/project");
+  };
 
   const handleNavigateTemplate = () => {
-    navigate('/template')
-  }
+    navigate("/template");
+  };
 
   return (
     <div
       className={`h-screen flex flex-col overflow-y-auto ${
         isDarkMode ? "bg-[#101010]" : "bg-white"
       }`}>
-      <header className="z-40">
+      <header className='z-40'>
         <Header />
       </header>
       <div
@@ -32,43 +32,45 @@ const HomePage = () => {
           isDarkMode ? "bg-[#101010] text-white" : "bg-white text-black"
         }`}>
         <Sidebar />
-        <div className="w-[calc(100%-100px)] flex flex-col h-full ">
-          <div className="mr-auto ml-auto mt-8 mb-8">
+        <div className='w-[calc(100%-100px)] flex flex-col h-full '>
+          <div className='mr-auto ml-auto mt-8 mb-8'>
             <Banner></Banner>
           </div>
-          <div className="">
-            <div className="flex justify-between items-center mx-10 my-2">
-              <div className="ml-2 text-2xl font-bold w-max pointer-events-none">
+          <div className=''>
+            <div className='flex justify-between items-center mx-10 my-2'>
+              <div className='ml-2 text-2xl font-bold w-max pointer-events-none'>
                 Your recent design
               </div>
-              <a onClick={handleNavigateProject}
-                className="mr-2 text-right underline font-bold hover:text-[#4335DE]"
-                href="">
+              <a
+                onClick={handleNavigateProject}
+                className='mr-2 text-right underline font-bold hover:text-[#4335DE]'
+                href=''>
                 See all
               </a>
             </div>
-            <div className="px-8">
+            <div className='px-8'>
               <CustomCarousel></CustomCarousel>
             </div>
           </div>
-          <div className="">
-            <div className="flex justify-between items-center mx-10 my-2">
-              <div className="ml-2 text-2xl font-bold w-max pointer-events-none">
+          <div className=''>
+            <div className='flex justify-between items-center mx-10 my-2'>
+              <div className='ml-2 text-2xl font-bold w-max pointer-events-none'>
                 Hot Trending
               </div>
-              <a onClick={handleNavigateTemplate}
-                className="mr-2 text-right underline font-bold hover:text-[#4335DE]"
-                href="">
+              <a
+                onClick={handleNavigateTemplate}
+                className='mr-2 text-right underline font-bold hover:text-[#4335DE]'
+                href=''>
                 See all
               </a>
             </div>
-            <div className="px-8">
-              <ResponsiveGridTemplate/>
+            <div className='px-8'>
+              <ResponsiveGridTemplate />
             </div>
           </div>
         </div>
       </div>
-      <div className="mt-6">
+      <div className='mt-6'>
         <Footer />
       </div>
     </div>

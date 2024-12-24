@@ -4,58 +4,56 @@ import { FaFacebook } from "react-icons/fa";
 import { BiLogoGmail } from "react-icons/bi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { useMutation } from "@tanstack/react-query";
-import * as UserService from '../../services/UserService'
-import { useEffect, useState } from "react"
-import * as Alert from '../Alert/Alert'
+import * as UserService from "../../services/UserService";
+import { useEffect, useState } from "react";
+import * as Alert from "../Alert/Alert";
 import { useNavigate } from "react-router-dom";
 const SignUpForm = () => {
-
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const mutation = useMutation(
-    {
-      mutationFn: UserService.signupUser,
-      onError: (error) => {
-        const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
-        setErrorMessage(apiErrorMessage);
-        console.error("Error:", apiErrorMessage);
-      },
-      onSuccess: (data) => {
-        setErrorMessage("");
-        const apiSuccessMessage = data.message || "Sign up successful!";
-        setSuccessMessage(apiSuccessMessage)
-        console.log("Sign up successful:", data);
-      },
-    }
-  )
+  const mutation = useMutation({
+    mutationFn: UserService.signupUser,
+    onError: (error) => {
+      const apiErrorMessage =
+        error.response?.data?.message || "An unexpected error occurred.";
+      setErrorMessage(apiErrorMessage);
+      console.error("Error:", apiErrorMessage);
+    },
+    onSuccess: (data) => {
+      setErrorMessage("");
+      const apiSuccessMessage = data.message || "Sign up successful!";
+      setSuccessMessage(apiSuccessMessage);
+      console.log("Sign up successful:", data);
+    },
+  });
 
-  console.log('mutation', mutation)
+  console.log("mutation", mutation);
 
   const handleSignup = () => {
     mutation.mutate({
-      email,  
+      email,
       password,
-      confirmPassword
-    })
-  }
+      confirmPassword,
+    });
+  };
 
-  const { isSuccess, isError } = mutation
+  const { isSuccess, isError } = mutation;
 
-  const handleNavigateLogin= () => {
-    navigate('/login')
-  }
+  const handleNavigateLogin = () => {
+    navigate("/login");
+  };
 
   useEffect(() => {
-    if (isSuccess){
-      Alert.success(successMessage)
-      handleNavigateLogin()
-    } 
-  },[isSuccess, successMessage]);
+    if (isSuccess) {
+      Alert.success(successMessage);
+      handleNavigateLogin();
+    }
+  }, [isSuccess, successMessage]);
 
   return (
     <div className='h-max w-[350px] bg-black border-none rounded-md flex flex-col gap-4 justify-center items-center px-6 '>
@@ -88,9 +86,11 @@ const SignUpForm = () => {
         />
       </div>
       {errorMessage && typeof errorMessage === "string" && (
-        <span className="text-red-500">{errorMessage}</span>
+        <span className='text-red-500'>{errorMessage}</span>
       )}
-      <button onClick={handleSignup} className=' w-full h-max p-1 bg-gradient text-black rounded-lg font-semibold text-lg'>
+      <button
+        onClick={handleSignup}
+        className=' w-full h-max p-1 bg-gradient text-black rounded-lg font-semibold text-lg'>
         Register
       </button>
       <div className='flex justify-center items-center px-3 gap-2'>
