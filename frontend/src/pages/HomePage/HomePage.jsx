@@ -5,19 +5,10 @@ import Footer from "../../components/SharedComponents/Footer/Footer.jsx";
 import Sidebar from "../../components/SharedComponents/SideBar/Sidebar.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
 import ResponsiveGridTemplate from "../../components/SharedComponents/ResponsiveGrid/ResponsiveGridTemplate.jsx";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const { isDarkMode } = useDarkMode();
-  const navigate = useNavigate();
-
-  const handleNavigateProject = () => {
-    navigate("/project");
-  };
-
-  const handleNavigateTemplate = () => {
-    navigate("/template");
-  };
 
   return (
     <div
@@ -33,7 +24,7 @@ const HomePage = () => {
         }`}>
         <Sidebar />
         <div className='w-[calc(100%-100px)] flex flex-col h-full '>
-          <div className='mr-auto ml-auto mt-8 mb-8'>
+          <div className='mr-auto ml-auto mt-2 mb-4'>
             <Banner></Banner>
           </div>
           <div className=''>
@@ -41,12 +32,12 @@ const HomePage = () => {
               <div className='ml-2 text-2xl font-bold w-max pointer-events-none'>
                 Your recent design
               </div>
-              <a
-                onClick={handleNavigateProject}
+              <Link
+                to='../project'
                 className='mr-2 text-right underline font-bold hover:text-[#4335DE]'
                 href=''>
                 See all
-              </a>
+              </Link>
             </div>
             <div className='px-8'>
               <CustomCarousel></CustomCarousel>
@@ -57,12 +48,12 @@ const HomePage = () => {
               <div className='ml-2 text-2xl font-bold w-max pointer-events-none'>
                 Hot Trending
               </div>
-              <a
-                onClick={handleNavigateTemplate}
+              <Link
+                to='../template'
                 className='mr-2 text-right underline font-bold hover:text-[#4335DE]'
                 href=''>
                 See all
-              </a>
+              </Link>
             </div>
             <div className='px-8'>
               <ResponsiveGridTemplate />

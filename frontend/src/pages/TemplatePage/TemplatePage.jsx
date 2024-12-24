@@ -26,7 +26,9 @@ const TemplatePage = () => {
             <TemplatePageBanner></TemplatePageBanner>
           </div>
           <div className=''>
-            <div className='text-2xl font-bold'>Trending</div>
+            <div className='ml-12 text-2xl font-bold w-max pointer-events-none'>
+              Trending
+            </div>
             <div className='pl-8 pr-8'>
               <ResponsiveGridTemplate />
             </div>

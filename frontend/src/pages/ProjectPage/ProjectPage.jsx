@@ -17,16 +17,18 @@ const ProjectPage = () => {
         <Header />
       </header>
       <div
-        className={`flex w-full flex-row ${
+        className={`flex w-full ${
           isDarkMode ? "bg-[#101010] text-white" : "bg-white text-black"
         }`}>
         <Sidebar />
         <div className='w-[calc(100%-100px)] flex flex-col h-full ]'>
-          <div className='mr-auto ml-auto mt-8 mb-8'>
+          <div className='mr-auto ml-auto mt-2 mb-4'>
             <ProjectPageBanner></ProjectPageBanner>
           </div>
           <div className=''>
-            <div className='text-2xl font-bold'>Your Projects</div>
+            <div className='ml-12 text-2xl font-bold w-max pointer-events-none'>
+              Your Projects
+            </div>
             <div className='pl-8 pr-8'>
               <ResponsiveGrid></ResponsiveGrid>
             </div>

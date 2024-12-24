@@ -422,7 +422,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
 
         <button
           onClick={handleClickDownload}
-          className='w-[100px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2'>
+          className='w-[100px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer flex justify-center items-center p-2'>
           <span className='text-white'>Download</span>
         </button>
         {download && (
@@ -565,7 +565,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         {/* Nút chia sẻ */}
         <button
           onClick={() => console.log("userInRoom", usersInRoom)}
-          className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 border-black shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
+          className='w-[100px] h-[40px] bg-white font-semibold rounded-lg  shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
           <span className='gradient'>Share</span>
         </button>
 
@@ -573,7 +573,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         {ownerId === project?.owner && (
           <button
             onClick={status ? handlePrivate : handlePublic}
-            className='w-[100px] h-[40px] bg-white font-semibold rounded-lg border-2 shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
+            className='w-[100px] h-[40px] bg-white font-semibold rounded-lg shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
             <span className='gradient'>{status ? "Private" : "Public"}</span>
           </button>
         )}

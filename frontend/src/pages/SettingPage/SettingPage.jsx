@@ -7,37 +7,45 @@ const SettingPage = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   return (
-    <div className='flex flex-col h-screen overflow-y-auto bg-white transition-colors duration-500 dark:bg-[#101010]'>
+    <div className='flex flex-col h-screen overflow-y-auto w-screen bg-white transition-colors duration-500 dark:bg-black'>
       <header>
         <Header className='fixed top-0 left-0 w-full z-50' />
       </header>
-      <div className='flex flex-grow w-screen'>
-        <div className='w-[55px] md:w-[80px] z-50 h-full overflow-y-auto overflow-x-hidden scrollbar-hide'>
+      <div className='flex w-screen h-screen'>
+        {/* Sidebar */}
+        <div className='w-[70px] md:w-[90px] h-full bg-white dark:bg-black shadow-md'>
           <SettingSideBar />
         </div>
-        <div className='flex flex-col w-[calc(100%-50px)] md:w-[calc(100%-80px)] overflow-y-auto text-black dark:text-white gap-4 ps-14 pe-20 scrollbar-hide'>
-          <span className='font-bold text-xl md:text-3xl pointer-events-none'>
-            Settings
-          </span>
-          <div className='flex flex-row items-center w-max md:w-full h-[auto] border-2 border-black dark:border-white rounded-lg my-2 py-3 px-2'>
-            <div className='flex flex-col space-y-2'>
-              <span className='font-semibold text-xl pointer-events-none'>
-                Dark mode
-              </span>
+
+        {/* Main Content */}
+        <div className='flex flex-col flex-grow px-8 py-6 w-full text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-black overflow-y-auto gap-6'>
+          {/* Title */}
+          <h1 className='text-2xl md:text-4xl font-bold'>Settings</h1>
+
+          {/* Dark Mode Toggle */}
+          <div className='flex items-center justify-between w-full p-4 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-black shadow-sm'>
+            <div>
+              <p className='text-lg font-semibold'>Dark Mode</p>
+              <p className='text-sm text-gray-600 dark:text-gray-400'>
+                Adjust the appearance to reduce eye strain.
+              </p>
             </div>
             <button
               onClick={toggleDarkMode}
-              className={`ml-auto inline-flex items-center h-8 px-4 rounded-full transition-colors hover:bg-slate-400 duration-300 ${
-                isDarkMode ? "bg-white" : "bg-black"
+              className={`relative flex items-center w-16 h-8 rounded-full transition-all duration-300 ${
+                isDarkMode ? "bg-gray-800" : "bg-gray-300"
               }`}>
               <span
-                className={`w-8 ${isDarkMode ? "text-black" : "text-white"}`}>
-                {isDarkMode ? "ON" : "OFF"}
-              </span>
+                className={`absolute w-6 h-6 rounded-full bg-white transition-transform duration-300 ${
+                  isDarkMode ? "translate-x-8" : "translate-x-0"
+                }`}
+                style={{ left: "4px", right: "4px" }}
+              />
             </button>
           </div>
         </div>
       </div>
+
       <div className='mt-6'>
         <Footer />
       </div>

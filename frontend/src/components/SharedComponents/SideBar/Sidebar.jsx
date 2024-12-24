@@ -7,7 +7,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`w-[100px] z-50 h-full overflow-y-auto ${
+      className={`w-[100px] z-50 h-full overflow-y-auto bg-slate-50 ${
         isDarkMode ? "bg-black text-white" : "bg-white text-black"
       }`}>
       <Link
