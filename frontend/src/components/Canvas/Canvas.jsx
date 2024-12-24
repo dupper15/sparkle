@@ -90,7 +90,7 @@ const Canvas = React.forwardRef(
     }, [canvasRef, handleMouseLeave]);
     return (
       <div ref={canvasRef} className='flex flex-col gap-4'>
-        <div className={"z-50"}>
+        <div className='z-0'>
           {isImageToolBarOpen && (
             <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
               <ShapeToolBar
@@ -145,11 +145,11 @@ const Canvas = React.forwardRef(
           <div className='text-2xl font-bold'>Canvas {title}</div>
           <div className='flex gap-2'>
             <IoIosArrowUp
-              className='hover:text-red-600 cursor-pointer text-2xl'
+              className='hover:text-blue-600 cursor-pointer text-2xl'
               onClick={upButton}
             />
             <IoIosArrowDown
-              className='hover:text-red-600 cursor-pointer text-2xl'
+              className='hover:text-blue-600 cursor-pointer text-2xl'
               onClick={downButton}
             />
             <FaRegTrashCan

@@ -171,93 +171,111 @@ const SignupPage = () => {
   }, [verifyMutation.isSuccess, successMessage]);
 
   return (
-    <div className='flex justify-center items-center h-screen bg-gradient-to-r from-gray-900 to-black'>
-      <div className='h-max w-[350px] bg-black border-none rounded-md flex flex-col gap-4 justify-center items-center px-6 '>
+    <div className='flex justify-center items-center h-screen bg-gradient-to-r from-gray-900 p-4 to-black'>
+      <div className='bg-black border border-gray-700 rounded-xl shadow-lg p-8 my-4 h-max w-full max-w-md'>
         {!isVerificationStep ? (
           <>
-            <h1 className='text-white text-3xl font-bold mt-0'>Sign up</h1>
-            <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-500'>
-              <FaRegUser className='text-white mr-2' />
-              <input
-                onChange={(e) => setUserName(e.target.value)}
-                type='text'
-                placeholder='Enter your username...'
-                className='w-full h-10 placeholder:text-slate-400 text-white bg-black outline-none'
-              />
-            </div>
-            <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-500'>
-              <MdOutlineEmail className='text-white mr-2' />
-              <input
-                onChange={(e) => setEmail(e.target.value)}
-                type='email'
-                placeholder='Enter your email...'
-                className='w-full h-10 placeholder:text-slate-400 text-white bg-black outline-none'
-              />
-            </div>
-            <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300'>
-              <IoKeyOutline className='text-white mr-2' />
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                type='password'
-                placeholder='Enter your password...'
-                className='w-full h-10 placeholder:text-slate-400 text-white  bg-black outline-none'
-              />
-            </div>
-            <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300'>
-              <RiLockPasswordLine className='text-white mr-2' />
-              <input
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                type='password'
-                placeholder='Confirm your password...'
-                className='w-full h-10 placeholder:text-slate-400 text-white  bg-black outline-none'
-              />
-            </div>
-            {errorMessage && typeof errorMessage === "string" && (
-              <span className='text-red-500'>{errorMessage}</span>
-            )}
-            <button
-              onClick={handleSignup}
-              className=' w-full h-max p-1 bg-gradient text-black rounded-lg font-semibold text-lg'>
-              Register
-            </button>
-            <div className='flex justify-center items-center px-3 gap-2'>
-              <div className='w-[130px] h-[1px] bg-gray-400'></div>
-              <div className='text-gray-400'>Or</div>
-              <div className='w-[130px] h-[1px] bg-gray-400'></div>
+            <h1 className='text-white text-3xl font-bold text-center mb-6'>
+              Sign Up
+            </h1>
+
+            <div className='space-y-4'>
+              <div className='flex items-center border-2 rounded-lg border-gray-600 px-3 py-2 bg-black focus-within:border-purple-500'>
+                <FaRegUser className='text-gray-400 mr-3' />
+                <input
+                  onChange={(e) => setUserName(e.target.value)}
+                  type='text'
+                  placeholder='Username'
+                  className='w-full text-white placeholder-gray-500 bg-transparent outline-none'
+                />
+              </div>
+              <div className='flex items-center border-2 rounded-lg border-gray-600 px-3 py-2 bg-black focus-within:border-purple-500'>
+                <MdOutlineEmail className='text-gray-400 mr-3' />
+                <input
+                  onChange={(e) => setEmail(e.target.value)}
+                  type='email'
+                  placeholder='Email'
+                  className='w-full text-white placeholder-gray-500 bg-transparent outline-none'
+                />
+              </div>
+              <div className='flex items-center border-2 rounded-lg border-gray-600 px-3 py-2 bg-black focus-within:border-purple-500'>
+                <IoKeyOutline className='text-gray-400 mr-3' />
+                <input
+                  onChange={(e) => setPassword(e.target.value)}
+                  type='password'
+                  placeholder='Password'
+                  className='w-full text-white placeholder-gray-500 bg-transparent outline-none'
+                />
+              </div>
+              <div className='flex items-center border-2 rounded-lg border-gray-600 px-3 py-2 bg-black focus-within:border-purple-500'>
+                <RiLockPasswordLine className='text-gray-400 mr-3' />
+                <input
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  type='password'
+                  placeholder='Confirm Password'
+                  className='w-full text-white placeholder-gray-500 bg-transparent outline-none'
+                />
+              </div>
+              {errorMessage && (
+                <p className='text-red-500 text-sm mt-2'>{errorMessage}</p>
+              )}
             </div>
 
             <button
-              onClick={handleLoginFacebook}
-              className='flex items-center bg-transparent border-2 rounded-lg border-white text-white w-full h-max p-2 gap-3 hover:border-blue-400 hover:bg-blue-400 transition-all ease-in-out duration-100'>
-              <FaFacebook className='h-[25px] w-[25px]' />
-              <span>Login with Facebook</span>
+              onClick={handleSignup}
+              className='w-full bg-[#4335DE] hover:bg-[#584cdb] text-white font-semibold rounded-lg py-2 mt-4 transition duration-300'>
+              Register
             </button>
-            <button
-              onClick={handleLoginGoogle}
-              className='flex items-center bg-transparent border-2 rounded-lg border-white text-white w-full h-max p-2 gap-3  hover:border-red-500 hover:bg-red-500 transition-all ease-in-out duration-100'>
-              <BiLogoGmail className='h-[25px] w-[25px]' />
-              <span>Login with Gmail</span>
-            </button>
+
+            <div className='flex items-center justify-between mt-6'>
+              <span className='bg-gray-700 h-px w-1/3'></span>
+              <p className='text-gray-400 text-sm mx-2'>Or sign in with</p>
+              <span className='bg-gray-700 h-px w-1/3'></span>
+            </div>
+
+            <div className='flex flex-col gap-3 mt-4'>
+              <button
+                onClick={handleLoginFacebook}
+                className='flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2 transition duration-300'>
+                <FaFacebook className='mr-3' />
+                Facebook
+              </button>
+              <button
+                onClick={handleLoginGoogle}
+                className='flex items-center justify-center bg-red-600 hover:bg-red-700 text-white rounded-lg py-2 transition duration-300'>
+                <BiLogoGmail className='mr-3' />
+                Google
+              </button>
+            </div>
+
+            <p className='text-center text-gray-400 mt-6'>
+              Already have an account?{" "}
+              <span
+                onClick={() => navigate("/login")}
+                className='text-[#4335DE] font-semibold cursor-pointer hover:underline'>
+                Sign in
+              </span>
+            </p>
           </>
         ) : (
           <>
-            <h1 className='text-white text-3xl p-4 font-bold mt-0'>
+            <h1 className='text-white text-4xl font-bold text-center mb-6'>
               Verify Email
             </h1>
-            <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full'>
+            <div className='flex items-center border-2 rounded-lg border-gray-600 px-3 py-2 bg-black focus-within:border-purple-500'>
               <input
                 onChange={(e) => setVerificationCode(e.target.value)}
                 type='text'
-                placeholder='Enter verification code...'
-                className='w-full h-10 placeholder:text-slate-400 text-white bg-black outline-none'
+                placeholder='Verification Code'
+                className='w-full text-white placeholder-gray-500 bg-transparent outline-none'
               />
             </div>
             {errorMessage && (
-              <span className='text-red-500'>{errorMessage}</span>
+              <p className='text-red-500 text-sm mt-2'>{errorMessage}</p>
             )}
             <button
               onClick={handleVerifyEmail}
-              className='w-full h-max p-1 bg-gradient text-black rounded-lg font-semibold text-lg'>
+              className='w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg py-2 mt-4 transition duration-300'>
               Verify
             </button>
           </>

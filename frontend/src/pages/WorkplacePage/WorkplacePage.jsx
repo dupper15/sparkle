@@ -443,10 +443,10 @@ const WorkplaceCanvas = () => {
           isDarkMode ? "bg-[#151318]" : "bg-slate-300"
         }`}>
         <WorkplaceHeader usersInRoom={usersInRoom} />
-        <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide'>
+        <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide '>
           <div
-            className={`w-[80px]  scrollbar-hide h-full overflow-y-auto ${
-              isDarkMode ? "bg-black text-white" : "bg-gray-100 text-black"
+            className={`w-[80px] scrollbar-hide h-full overflow-y-auto ${
+              isDarkMode ? "bg-black text-white" : "bg-gray-200 text-black"
             }`}>
             {[
               { icon: <LuLayoutTemplate />, label: "Design", type: "design" },
@@ -487,10 +487,12 @@ const WorkplaceCanvas = () => {
           <div className='h-full w-[calc(100%-75px)]'>
             <div
               className={`${
-                show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
+                show.status ? "py-5 -left-[400px]" : "px-8 left-[75px] py-5"
               } ${
                 isDarkMode ? "bg-[#252627]" : "bg-white"
-              } h-full fixed transition-all w-[350px]  duration-500`}>
+              } h-full fixed transition-all w-[350px] ${
+                draggingComponent ? "z-10" : ""
+              } duration-500`}>
               <div
                 onClick={() => setShow({ name: "", status: true })}
                 className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${
@@ -513,7 +515,7 @@ const WorkplaceCanvas = () => {
                 <Background setBackground={setBackground} />
               )}
             </div>
-            <div className='flex flex-col items-center justify-start gap-8 m-8 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
+            <div className='flex flex-col items-center justify-start gap-8 m-2 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
               {canvases.map((canvasData, index) => (
                 <div
                   key={canvasData.id}

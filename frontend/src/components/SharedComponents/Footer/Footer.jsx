@@ -8,25 +8,23 @@ const Footer = () => {
 
   return (
     <div
-      className={`flex flex-col transition-colors duration-500 ${
-        isDarkMode ? "bg-[#131315]" : "bg-gray-50"
-      }`}>
+      className={`flex flex-col h-max transition-colors duration-500 ${
+        isDarkMode ? "bg-[#131315]" : "bg-slate-50"
+      } `}>
       <div
-        className={`pt-4 pb-4 flex flex-row w-full justify-between ${
+        className={`flex items-center justify-between py-4 px-8 ${
           isDarkMode ? "text-gray-400" : "text-black"
         }`}>
-        <div className='flex flex-row'>
-          <img
-            className='mt-auto mb-auto ml-8 w-[80x] h-[80px]'
-            src={UITLogo}
-            alt='UIT Logo'
-          />
-          <div className='mt-auto mb-auto ml-8'>
+        <div className='flex items-center space-x-4'>
+          <img className='w-16 h-16' src={UITLogo} alt='UIT Logo' />
+          <div>
             <p className='text-sm'>SE</p>
-            <p className='font-bold'>University of Information Technology</p>
+            <p className='font-bold text-lg'>
+              University of Information Technology
+            </p>
           </div>
         </div>
-        <div className='mr-8'>
+        <div className='text-right'>
           <p className='text-sm'>Group 1</p>
           <div className='text-xs font-bold'>
             <p>Cao Dương Lâm</p>
@@ -34,17 +32,24 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <hr></hr>
-      <div className='flex flex-row w-full justify-between'>
-        <div className='flex flex-row text-xs font-bold'>
-          <a className='ml-8'>Welcome. All rights reserved.</a>
-          <a className='ml-8'>Privacy Policy</a>
-          <a className='ml-8'>Terms of Service</a>
+      <hr className={`${isDarkMode ? "border-gray-700" : "border-gray-300"}`} />
+
+      <div className='flex justify-between items-center py-4 px-8 text-sm'>
+        <div className='flex space-x-8 font-medium'>
+          <a href='#' className='hover:underline'>
+            Welcome. All rights reserved.
+          </a>
+          <a href='#' className='hover:underline'>
+            Privacy Policy
+          </a>
+          <a href='#' className='hover:underline'>
+            Terms of Service
+          </a>
         </div>
-        <div className='flex flex-row mr-8'>
-          <FaSquareXTwitter />
-          <FaFacebookSquare />
-          <FaYoutubeSquare />
+        <div className='flex space-x-4 text-lg'>
+          <FaSquareXTwitter className='hover:text-blue-500 cursor-pointer' />
+          <FaFacebookSquare className='hover:text-blue-700 cursor-pointer' />
+          <FaYoutubeSquare className='hover:text-red-600 cursor-pointer' />
         </div>
       </div>
     </div>

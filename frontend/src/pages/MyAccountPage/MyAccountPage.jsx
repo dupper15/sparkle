@@ -201,14 +201,14 @@ const MyAccountPage = () => {
           className={`flex flex-col w-[calc(100%-50px)] md:w-[calc(100%-80px)] overflow-y-auto gap-4 ps-14 pe-20 scrollbar-hide ${
             isDarkMode ? "text-white" : "text-black"
           }`}>
-          <span className='font-bold text-xl md:text-3xl pointer-events-none'>
+          <span className='font-bold text-xl md:text-3xl mt-4 pointer-events-none'>
             My Profile
           </span>
           <div>
             <span className='font-semibold text-xl pointer-events-none'>
               Avatar
             </span>
-            <div className='flex items-center justify-between'>
+            <div className='flex items-center justify-between mt-4'>
               <label htmlFor='upload-avatar' className='cursor-pointer'>
                 <img
                   className='object-cover w-[100px] h-[100px] rounded-full'
@@ -340,12 +340,12 @@ const MyAccountPage = () => {
               <span className='font-semibold text-xl pointer-events-none'>
                 Social Media
               </span>
-              <span className='font-thin text-s pointer-events-none'>
+              <span className='font-thin text-s  pointer-events-none'>
                 Services you have used
               </span>
             </div>
             <div
-              className={`flex flex-row items-center w-max md:w-full h-[auto] border-2 rounded-lg my-2 py-3 px-2 ${
+              className={`flex flex-row items-center mt-4 w-max md:w-full h-[auto] border-2 rounded-lg my-2 py-3 px-2 ${
                 isDarkMode ? "border-white" : "border-black"
               }`}>
               <div className='flex flex-row items-center'>
