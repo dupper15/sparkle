@@ -445,7 +445,7 @@ const WorkplaceCanvas = () => {
         <WorkplaceHeader usersInRoom={usersInRoom} />
         <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide'>
           <div
-            className={`w-[80px] z-50 scrollbar-hide h-full overflow-y-auto ${
+            className={`w-[80px]  scrollbar-hide h-full overflow-y-auto ${
               isDarkMode ? "bg-black text-white" : "bg-gray-100 text-black"
             }`}>
             {[
@@ -490,7 +490,7 @@ const WorkplaceCanvas = () => {
                 show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
               } ${
                 isDarkMode ? "bg-[#252627]" : "bg-white"
-              } h-full fixed transition-all w-[350px] z-30 duration-500`}>
+              } h-full fixed transition-all w-[350px]  duration-500`}>
               <div
                 onClick={() => setShow({ name: "", status: true })}
                 className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${

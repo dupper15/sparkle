@@ -75,8 +75,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       if (!element) continue;
 
       const page = await html2canvas(element, {
-        useCORS: true, // Hỗ trợ tải ảnh từ các nguồn khác
-        scale: 3, // Tăng chất lượng ảnh chụp
+        useCORS: true,
+        scale: 3,
       });
 
       const data = page.toDataURL("image/png");
@@ -91,7 +91,6 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     }
     pdf.save(`${project?.projectName}.pdf`);
   };
-  // Handle PNG download using html2canvas
   const handleDownloadPNG = async () => {
     if (!canvasRefs.current.length) {
       console.error("No canvases available to download.");
@@ -99,9 +98,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     }
 
     try {
-      // Trường hợp nhiều canvas, nén vào file ZIP
-      const zip = new JSZip(); // Tạo một đối tượng ZIP
-      const folder = zip.folder("canvases"); // Tạo thư mục bên trong file ZIP
+      const zip = new JSZip();
+      const folder = zip.folder("canvases");
       if (!folder) {
         console.error("Failed to create folder in ZIP.");
         return;
@@ -111,19 +109,16 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         const element = canvasRefs.current[i];
         if (!element) continue;
 
-        // Chụp canvas thành ảnh
         const canvasImage = await html2canvas(element, {
           useCORS: true,
           scale: 3,
         });
         const dataUrl = canvasImage.toDataURL("image/png");
 
-        // Chuyển base64 sang binary để thêm vào ZIP
         const base64Data = dataUrl.split(",")[1];
         folder.file(`canvas_${i + 1}.png`, base64Data, { base64: true });
       }
 
-      // Lưu file ZIP
       const content = await zip.generateAsync({ type: "blob" });
       saveAs(content, `${project?.projectName}.zip`);
     } catch (error) {
@@ -227,7 +222,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
           </svg>
         );
       default:
-        return null; // Không render gì nếu không khớp
+        return null;
     }
   };
 
@@ -264,7 +259,6 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     mutationFn: async ({ projectId }) => {
       const response = await ProjectService.updatePublic(projectId);
       if (response.status === "ERROR") {
-        // Throw an error to trigger onError
         throw new Error(response.message);
       }
       return response;
@@ -290,7 +284,6 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     mutationFn: async ({ projectId }) => {
       const response = await ProjectService.updatePrivate(projectId);
       if (response.status === "ERROR") {
-        // Throw an error to trigger onError
         throw new Error(response.message);
       }
       return response;
@@ -338,9 +331,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       const result = await ProjectService.getDetailProject(projectId);
 
       if (result?.data?.canvasArray) {
-        // Cập nhật state canvases
-        setCanvases([...result.data.canvasArray]); // Tạo một array mới để trigger render
-        setDownload(!download); // Thay đổi trạng thái download nếu cần
+        setCanvases([...result.data.canvasArray]);
+        setDownload(!download);
       } else {
         console.error("Canvas array not found in response.");
       }
@@ -368,7 +360,6 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       className={`flex items-center justify-between w-full h-[50px] px-5 py-8 ${
         isDarkMode ? "bg-[#18191B]" : "bg-gray-200"
       }`}>
-      {/* Logo và tên ứng dụng */}
       <div className='flex items-center gap-2'>
         <div className="w-[40px] h-[40px] bg-[url('./assets/logo.png')] bg-cover bg-center" />
         <div
@@ -380,9 +371,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         </div>
       </div>
 
-      {/* Các chức năng ở góc phải */}
       <div className='flex items-center gap-5'>
-        {/* Hiển thị avatar */}
         <div className='hidden md:flex md:items-center relative mr-6'>
           <div className='flex flex-row-reverse'>
             {state.avatars.map((value, index) => (
@@ -402,7 +391,6 @@ const WorkplaceHeader = ({ usersInRoom }) => {
               </div>
             ))}
           </div>
-          {/* Nút thêm thành viên */}
           <button
             onClick={toggleAddMember}
             className='w-[40px] h-[40px] bg-white font-semibold rounded-full
@@ -412,14 +400,12 @@ const WorkplaceHeader = ({ usersInRoom }) => {
               position: "absolute",
               top: "50%",
               left: "calc(100% - 15px)",
-              zIndex: 50,
               transform: "translateY(-50%)",
             }}>
             <FaPlus className='w-[30px] h-[30px]' />
           </button>
         </div>
 
-        {/* Form thêm thành viên */}
         {state.isShow && (
           <>
             <div
@@ -434,14 +420,11 @@ const WorkplaceHeader = ({ usersInRoom }) => {
           </>
         )}
 
-        {/* Nút tải xuống */}
         <button
           onClick={handleClickDownload}
           className='w-[100px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2'>
           <span className='text-white'>Download</span>
         </button>
-
-        {/* Dropdown lựa chọn tải xuống */}
         {download && (
           <div
             className={`profile-dropdown absolute w-[200px] top-[4rem] right-[15rem] box-border pb-2 shadow-lg rounded-2xl ${
@@ -498,9 +481,9 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         <div
           style={{
             position: "absolute",
-            transform: "translate(-9999px, -9999px)", // Di chuyển canvas ra ngoài khung nhìn
-            opacity: 0, // Làm cho canvas trong suốt
-            pointerEvents: "none", // Ngăn người dùng tương tác
+            transform: "translate(-9999px, -9999px)",
+            opacity: 0,
+            pointerEvents: "none",
           }}>
           {Array.isArray(canvases) &&
             canvases.map((canvas, index) => (
