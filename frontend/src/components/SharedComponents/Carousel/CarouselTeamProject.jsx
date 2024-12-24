@@ -82,15 +82,17 @@ function CarouselTeamProject() {
             <div
               className='bg-cover h-[200px] w-[420px]'
               style={{
-                backgroundImage: project.canvasArray?.[0]?.background === '#ffffff' 
-                  ? 'none' // Không hiển thị hình ảnh nền
-                  : `url(${project.canvasArray?.[0]?.background})`,
-                backgroundColor: project.canvasArray?.[0]?.background === '#ffffff' 
-                  ? '#ffffff' // Hiển thị màu trắng
-                  : 'transparent', // Màu nền trong suốt nếu có hình ảnh nền
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
+                backgroundImage:
+                  project.canvasArray?.[0]?.background === "#ffffff"
+                    ? "none" // Không hiển thị hình ảnh nền
+                    : `url(${project.canvasArray?.[0]?.background})`,
+                backgroundColor:
+                  project.canvasArray?.[0]?.background === "#ffffff"
+                    ? "#ffffff" // Hiển thị màu trắng
+                    : "transparent", // Màu nền trong suốt nếu có hình ảnh nền
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
               }}
             />
             <span>{project.projectName || "Unnamed Project"}</span>

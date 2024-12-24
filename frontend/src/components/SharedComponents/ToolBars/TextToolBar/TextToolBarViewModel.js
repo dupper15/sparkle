@@ -1,30 +1,38 @@
 import { useState, useEffect } from "react";
 
-const useTextToolbarViewModel = (selectedTextFontWeight, selectedTextFontStyle, selectedTextDecorationLine) => {
-    const [openColorPickerPanel, setOpenPickerPanel] = useState(false);
-    const [activeColor, setActiveColor] = useState("#000000");
-    const [isBold, setIsBold] = useState(false);
-    const [isItalic, setIsItalic] = useState(false);
-    const [isUnderlined, setIsUnderlined] = useState(false);
-    const [activeTab, setActiveTab] = useState('');
+const useTextToolbarViewModel = (
+  selectedTextFontWeight,
+  selectedTextFontStyle,
+  selectedTextDecorationLine
+) => {
+  const [openColorPickerPanel, setOpenPickerPanel] = useState(false);
+  const [activeColor, setActiveColor] = useState("#000000");
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isUnderlined, setIsUnderlined] = useState(false);
+  const [activeTab, setActiveTab] = useState("");
 
-    useEffect(() => {
-        setIsBold(selectedTextFontWeight === "bold");
-        setIsItalic(selectedTextFontStyle === "italic");
-        setIsUnderlined(selectedTextDecorationLine === "underline");
-    }, [selectedTextFontWeight, selectedTextFontStyle, selectedTextDecorationLine]);
+  useEffect(() => {
+    setIsBold(selectedTextFontWeight === "bold");
+    setIsItalic(selectedTextFontStyle === "italic");
+    setIsUnderlined(selectedTextDecorationLine === "underline");
+  }, [
+    selectedTextFontWeight,
+    selectedTextFontStyle,
+    selectedTextDecorationLine,
+  ]);
 
-    return {
-        openColorPickerPanel,
-        setOpenPickerPanel,
-        activeColor,
-        setActiveColor,
-        isBold,
-        isItalic,
-        isUnderlined,
-        activeTab,
-        setActiveTab,
-    };
+  return {
+    openColorPickerPanel,
+    setOpenPickerPanel,
+    activeColor,
+    setActiveColor,
+    isBold,
+    isItalic,
+    isUnderlined,
+    activeTab,
+    setActiveTab,
+  };
 };
 
 export default useTextToolbarViewModel;

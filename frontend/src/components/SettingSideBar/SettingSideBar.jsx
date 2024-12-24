@@ -22,19 +22,19 @@ const SettingSideBar = () => {
       }`}>
       <div
         onClick={goToMyAccountPage}
-        className="w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF] ">
-        <span className="text-2xl ">
+        className='w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF] '>
+        <span className='text-2xl '>
           <RiAccountCircleLine />
         </span>
-        <span className="text-xs font-medium">Account</span>
+        <span className='text-xs font-medium'>Account</span>
       </div>
       <div
         onClick={goToSettingPage}
-        className="w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF] ">
-        <span className="text-2xl">
+        className='w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF] '>
+        <span className='text-2xl'>
           <LuSettings />
         </span>
-        <span className="text-xs font-medium">Setting</span>
+        <span className='text-xs font-medium'>Setting</span>
       </div>
     </div>
   );

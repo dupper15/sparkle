@@ -83,7 +83,7 @@ export const addProject = async (id, data) => {
 export const updatePublic = async (id) => {
   try {
     const response = await axios.put(
-      `${import.meta.env.VITE_API_KEY}/project/update-public/${id}`,
+      `${import.meta.env.VITE_API_KEY}/project/update-public/${id}`
     );
     return response.data;
   } catch (error) {
@@ -94,7 +94,7 @@ export const updatePublic = async (id) => {
 export const updatePrivate = async (id) => {
   try {
     const response = await axios.put(
-      `${import.meta.env.VITE_API_KEY}/project/update-private/${id}`,
+      `${import.meta.env.VITE_API_KEY}/project/update-private/${id}`
     );
     return response.data;
   } catch (error) {
@@ -141,7 +141,8 @@ export const downloadProject = async (id, data) => {
 export const renameProject = async (id, projectName) => {
   try {
     const response = await axios.put(
-      `${import.meta.env.VITE_API_KEY}/project/rename-project/${id}`, {projectName}
+      `${import.meta.env.VITE_API_KEY}/project/rename-project/${id}`,
+      { projectName }
     );
     return response.data;
   } catch (error) {

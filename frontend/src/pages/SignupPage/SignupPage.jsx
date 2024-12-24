@@ -4,246 +4,264 @@ import { FaFacebook } from "react-icons/fa";
 import { BiLogoGmail } from "react-icons/bi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { useMutation } from "@tanstack/react-query";
-import * as UserService from '../../services/UserService'
-import { useEffect, useState } from "react"
-import * as Alert from '../../components/Alert/Alert'
+import * as UserService from "../../services/UserService";
+import { useEffect, useState } from "react";
+import * as Alert from "../../components/Alert/Alert";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineEmail } from "react-icons/md";
-import {auth, googleProvider, facebookProvider } from "../../utils/firebase"
-import {signInWithPopup } from 'firebase/auth'
+import { auth, googleProvider, facebookProvider } from "../../utils/firebase";
+import { signInWithPopup } from "firebase/auth";
 import { updateUser } from "../../redux/slides/userSlide";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 
 const SignupPage = () => {
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [isVerificationStep, setIsVerificationStep] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
 
-  const mutation = useMutation(
-    {
-      mutationFn: UserService.signupUser,
-      onError: (error) => {
-        const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
-        setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
-        console.error("Error:", apiErrorMessage);
-      },
-      onSuccess: (data) => {
-        setErrorMessage("");
-        const apiSuccessMessage = data.message || "Sign up successful! Please verify your email.";
-        setSuccessMessage(apiSuccessMessage)     
-      },
-    }
-  )
+  const mutation = useMutation({
+    mutationFn: UserService.signupUser,
+    onError: (error) => {
+      const apiErrorMessage =
+        error.response?.data?.message || "An unexpected error occurred.";
+      setErrorMessage(
+        apiErrorMessage.message === undefined
+          ? apiErrorMessage
+          : apiErrorMessage.message
+      );
+      console.error("Error:", apiErrorMessage);
+    },
+    onSuccess: (data) => {
+      setErrorMessage("");
+      const apiSuccessMessage =
+        data.message || "Sign up successful! Please verify your email.";
+      setSuccessMessage(apiSuccessMessage);
+    },
+  });
 
   const verifyMutation = useMutation({
     mutationFn: (code) => UserService.verifyEmail(code),
     onError: (error) => {
-      const apiErrorMessage = error.response?.data?.message || "Verification failed.";
+      const apiErrorMessage =
+        error.response?.data?.message || "Verification failed.";
       setErrorMessage(apiErrorMessage);
     },
     onSuccess: (data) => {
       setErrorMessage("");
       Alert.success("Email verified successfully!");
-      navigate("/login"); // Điều hướng đến trang đăng nhập sau khi xác minh thành công
+      navigate("/login");
     },
   });
 
-  const mutationGoogle = useMutation(
-    {
-      mutationFn: UserService.loginGoogle,
-      onError: (error) => {
-        const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
-        setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
-      },
-      onSuccess: (data) => {
-        setErrorMessage("");
-        const apiSuccessMessage = data.message || "Login successful!";
-        setSuccessMessage(apiSuccessMessage)
-        localStorage.setItem('access_token',  JSON.stringify(data?.access_token))
-        if(data?.access_token) {
-          const decoded = jwtDecode(data?.access_token)
-          if (decoded?.id){
-              handleGetDetailUser(decoded?.id, data?.access_token)
-              navigate('/home')
-          }
+  const mutationGoogle = useMutation({
+    mutationFn: UserService.loginGoogle,
+    onError: (error) => {
+      const apiErrorMessage =
+        error.response?.data?.message || "An unexpected error occurred.";
+      setErrorMessage(
+        apiErrorMessage.message === undefined
+          ? apiErrorMessage
+          : apiErrorMessage.message
+      );
+    },
+    onSuccess: (data) => {
+      setErrorMessage("");
+      const apiSuccessMessage = data.message || "Login successful!";
+      setSuccessMessage(apiSuccessMessage);
+      localStorage.setItem("access_token", JSON.stringify(data?.access_token));
+      if (data?.access_token) {
+        const decoded = jwtDecode(data?.access_token);
+        if (decoded?.id) {
+          handleGetDetailUser(decoded?.id, data?.access_token);
+          navigate("/home");
         }
-      },
-    }
-  )
+      }
+    },
+  });
 
-  const mutationFacebook = useMutation(
-    {
-      mutationFn: UserService.loginFacebook,
-      onError: (error) => {
-        const apiErrorMessage = error.response?.data?.message || "An unexpected error occurred.";
-        setErrorMessage(apiErrorMessage.message === undefined ? apiErrorMessage : apiErrorMessage.message);
-      },
-      onSuccess: (data) => {
-        setErrorMessage("");
-        const apiSuccessMessage = data.message || "Login successful!";
-        setSuccessMessage(apiSuccessMessage)
-        localStorage.setItem('access_token',  JSON.stringify(data?.access_token))
-        if(data?.access_token) {
-          const decoded = jwtDecode(data?.access_token)
-          if (decoded?.id){
-              handleGetDetailUser(decoded?.id, data?.access_token)
-              navigate('/home')
-          }
+  const mutationFacebook = useMutation({
+    mutationFn: UserService.loginFacebook,
+    onError: (error) => {
+      const apiErrorMessage =
+        error.response?.data?.message || "An unexpected error occurred.";
+      setErrorMessage(
+        apiErrorMessage.message === undefined
+          ? apiErrorMessage
+          : apiErrorMessage.message
+      );
+    },
+    onSuccess: (data) => {
+      setErrorMessage("");
+      const apiSuccessMessage = data.message || "Login successful!";
+      setSuccessMessage(apiSuccessMessage);
+      localStorage.setItem("access_token", JSON.stringify(data?.access_token));
+      if (data?.access_token) {
+        const decoded = jwtDecode(data?.access_token);
+        if (decoded?.id) {
+          handleGetDetailUser(decoded?.id, data?.access_token);
+          navigate("/home");
         }
-      },
-    }
-  )
+      }
+    },
+  });
 
   const handleGetDetailUser = async (id, token) => {
-    const res = await UserService.getDetailUser(id, token)
-    dispatch(updateUser({...res?.data, access_token: token}))
-  }
+    const res = await UserService.getDetailUser(id, token);
+    dispatch(updateUser({ ...res?.data, access_token: token }));
+  };
 
   const handleLoginGoogle = async () => {
     try {
-        const result = await signInWithPopup(auth, googleProvider);
-        const emailGoogle = result.user.email
-        const name = result.user.displayName
-        const image = result.user.photoURL
-        
-        mutationGoogle.mutate({emailGoogle, name, image})
+      const result = await signInWithPopup(auth, googleProvider);
+      const emailGoogle = result.user.email;
+      const name = result.user.displayName;
+      const image = result.user.photoURL;
+
+      mutationGoogle.mutate({ emailGoogle, name, image });
     } catch (error) {
-        console.error("Error during Google login:", error);
+      console.error("Error during Google login:", error);
     }
   };
 
   const handleLoginFacebook = async () => {
     try {
-        const result = await signInWithPopup(auth, facebookProvider);
-        const emailFacebook = result.user.email
-        const name = result.user.displayName
-        const image = result.user.photoURL
-        const fb = result.user.uid
-        mutationFacebook.mutate({emailFacebook, name, image, fb})
+      const result = await signInWithPopup(auth, facebookProvider);
+      const emailFacebook = result.user.email;
+      const name = result.user.displayName;
+      const image = result.user.photoURL;
+      const fb = result.user.uid;
+      mutationFacebook.mutate({ emailFacebook, name, image, fb });
     } catch (error) {
-        console.error("Error during Facebook login:", error);
+      console.error("Error during Facebook login:", error);
     }
-  }
-
+  };
 
   const handleSignup = () => {
-    mutation.mutate({
-      userName,
-      email,  
-      password,
-      confirmPassword
-    },
-    {
-      onSuccess: () => {
-        setIsVerificationStep(true); // Chuyển sang form xác minh sau khi đăng ký thành công
+    mutation.mutate(
+      {
+        userName,
+        email,
+        password,
+        confirmPassword,
       },
-    })
-  }
+      {
+        onSuccess: () => {
+          setIsVerificationStep(true);
+        },
+      }
+    );
+  };
 
   const handleVerifyEmail = () => {
     verifyMutation.mutate(verificationCode);
   };
 
   useEffect(() => {
-    if (verifyMutation.isSuccess){
-      Alert.success(successMessage)
-    } 
-  },[verifyMutation.isSuccess, successMessage]);
+    if (verifyMutation.isSuccess) {
+      Alert.success(successMessage);
+    }
+  }, [verifyMutation.isSuccess, successMessage]);
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gradient-to-r from-gray-900 to-black">
+    <div className='flex justify-center items-center h-screen bg-gradient-to-r from-gray-900 to-black'>
       <div className='h-max w-[350px] bg-black border-none rounded-md flex flex-col gap-4 justify-center items-center px-6 '>
         {!isVerificationStep ? (
           <>
             <h1 className='text-white text-3xl font-bold mt-0'>Sign up</h1>
-        <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-500'>
-            <FaRegUser className='text-white mr-2' />
-            <input
-            onChange={(e) => setUserName(e.target.value)}
-            type='text'
-            placeholder='Enter your username...'
-            className='w-full h-10 placeholder:text-slate-400 text-white bg-black outline-none'
-            />
-        </div>
-        <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-500'>
-            <MdOutlineEmail  className='text-white mr-2' />
-            <input
-            onChange={(e) => setEmail(e.target.value)}
-            type='email'
-            placeholder='Enter your email...'
-            className='w-full h-10 placeholder:text-slate-400 text-white bg-black outline-none'
-            />
-        </div>
-        <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300'>
-            <IoKeyOutline className='text-white mr-2' />
-            <input
-            onChange={(e) => setPassword(e.target.value)}
-            type='password'
-            placeholder='Enter your password...'
-            className='w-full h-10 placeholder:text-slate-400 text-white  bg-black outline-none'
-            />
-        </div>
-        <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300'>
-            <RiLockPasswordLine className='text-white mr-2' />
-            <input
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            type='password'
-            placeholder='Confirm your password...'
-            className='w-full h-10 placeholder:text-slate-400 text-white  bg-black outline-none'
-            />
-        </div>
-        {errorMessage && typeof errorMessage === "string" && (
-            <span className="text-red-500">{errorMessage}</span>
-        )}
-        <button onClick={handleSignup} className=' w-full h-max p-1 bg-gradient text-black rounded-lg font-semibold text-lg'>
-            Register
-        </button>
-        <div className='flex justify-center items-center px-3 gap-2'>
-            <div className='w-[130px] h-[1px] bg-gray-400'></div>
-            <div className='text-gray-400'>Or</div>
-            <div className='w-[130px] h-[1px] bg-gray-400'></div>
-        </div>
- 
-        <button onClick={handleLoginFacebook} className='flex items-center bg-transparent border-2 rounded-lg border-white text-white w-full h-max p-2 gap-3 hover:border-blue-400 hover:bg-blue-400 transition-all ease-in-out duration-100'>
-            <FaFacebook className='h-[25px] w-[25px]' />
-            <span>Login with Facebook</span>
-        </button>
-        <button onClick={handleLoginGoogle} className='flex items-center bg-transparent border-2 rounded-lg border-white text-white w-full h-max p-2 gap-3  hover:border-red-500 hover:bg-red-500 transition-all ease-in-out duration-100'>
-            <BiLogoGmail className='h-[25px] w-[25px]' />
-            <span>Login with Gmail</span>
-        </button>
+            <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-500'>
+              <FaRegUser className='text-white mr-2' />
+              <input
+                onChange={(e) => setUserName(e.target.value)}
+                type='text'
+                placeholder='Enter your username...'
+                className='w-full h-10 placeholder:text-slate-400 text-white bg-black outline-none'
+              />
+            </div>
+            <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-500'>
+              <MdOutlineEmail className='text-white mr-2' />
+              <input
+                onChange={(e) => setEmail(e.target.value)}
+                type='email'
+                placeholder='Enter your email...'
+                className='w-full h-10 placeholder:text-slate-400 text-white bg-black outline-none'
+              />
+            </div>
+            <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300'>
+              <IoKeyOutline className='text-white mr-2' />
+              <input
+                onChange={(e) => setPassword(e.target.value)}
+                type='password'
+                placeholder='Enter your password...'
+                className='w-full h-10 placeholder:text-slate-400 text-white  bg-black outline-none'
+              />
+            </div>
+            <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300'>
+              <RiLockPasswordLine className='text-white mr-2' />
+              <input
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                type='password'
+                placeholder='Confirm your password...'
+                className='w-full h-10 placeholder:text-slate-400 text-white  bg-black outline-none'
+              />
+            </div>
+            {errorMessage && typeof errorMessage === "string" && (
+              <span className='text-red-500'>{errorMessage}</span>
+            )}
+            <button
+              onClick={handleSignup}
+              className=' w-full h-max p-1 bg-gradient text-black rounded-lg font-semibold text-lg'>
+              Register
+            </button>
+            <div className='flex justify-center items-center px-3 gap-2'>
+              <div className='w-[130px] h-[1px] bg-gray-400'></div>
+              <div className='text-gray-400'>Or</div>
+              <div className='w-[130px] h-[1px] bg-gray-400'></div>
+            </div>
+
+            <button
+              onClick={handleLoginFacebook}
+              className='flex items-center bg-transparent border-2 rounded-lg border-white text-white w-full h-max p-2 gap-3 hover:border-blue-400 hover:bg-blue-400 transition-all ease-in-out duration-100'>
+              <FaFacebook className='h-[25px] w-[25px]' />
+              <span>Login with Facebook</span>
+            </button>
+            <button
+              onClick={handleLoginGoogle}
+              className='flex items-center bg-transparent border-2 rounded-lg border-white text-white w-full h-max p-2 gap-3  hover:border-red-500 hover:bg-red-500 transition-all ease-in-out duration-100'>
+              <BiLogoGmail className='h-[25px] w-[25px]' />
+              <span>Login with Gmail</span>
+            </button>
           </>
         ) : (
           <>
-             <h1 className="text-white text-3xl p-4 font-bold mt-0">Verify Email</h1>
-            {/* Form xác minh email */}
-            <div className="flex items-center border-2 rounded-lg border-white px-2 bg-black w-full">
+            <h1 className='text-white text-3xl p-4 font-bold mt-0'>
+              Verify Email
+            </h1>
+            <div className='flex items-center border-2 rounded-lg border-white px-2 bg-black w-full'>
               <input
                 onChange={(e) => setVerificationCode(e.target.value)}
-                type="text"
-                placeholder="Enter verification code..."
-                className="w-full h-10 placeholder:text-slate-400 text-white bg-black outline-none"
+                type='text'
+                placeholder='Enter verification code...'
+                className='w-full h-10 placeholder:text-slate-400 text-white bg-black outline-none'
               />
             </div>
-            {errorMessage && <span className="text-red-500">{errorMessage}</span>}
+            {errorMessage && (
+              <span className='text-red-500'>{errorMessage}</span>
+            )}
             <button
               onClick={handleVerifyEmail}
-              className="w-full h-max p-1 bg-gradient text-black rounded-lg font-semibold text-lg"
-            >
+              className='w-full h-max p-1 bg-gradient text-black rounded-lg font-semibold text-lg'>
               Verify
             </button>
           </>
-        )
-        }
+        )}
       </div>
     </div>
   );

@@ -43,7 +43,7 @@ const createImage = (newImage) => {
         y,
         height,
         width,
-        image, // image: newImage.image,
+        image,
       });
 
       if (createdImage) {

@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState, forwardRef} from "react";
-import {useLocation} from "react-router-dom";
+import React, { useEffect, useRef, useState, forwardRef } from "react";
+import { useLocation } from "react-router-dom";
 import WorkplaceHeader from "../../components/WorkplaceHeader/WorkplaceHeader";
 import { LuFolder, LuImage, LuLayoutTemplate, LuShapes } from "react-icons/lu";
 import { RiText } from "react-icons/ri";
@@ -42,7 +42,7 @@ const WorkplaceCanvas = () => {
 
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
- 
+
   useEffect(() => {
     setWidth(project?.width);
     setHeight(project?.height);
@@ -57,18 +57,16 @@ const WorkplaceCanvas = () => {
   saveCanvasId(project?.canvasArray[current_canvas]);
 
   useEffect(() => {
-    // Lấy id từ localStorage
     const storedProjectId = localStorage.getItem("projectId");
 
     if (storedProjectId) {
       const fetchProject = async () => {
         const res = await ProjectService.getDetailProject(storedProjectId);
-        dispatch(updateProject(res.data)); // Cập nhật dữ liệu dự án vào Redux store
+        dispatch(updateProject(res.data));
       };
       fetchProject();
 
       return () => {
-        // Cleanup khi rời khỏi trang
         localStorage.removeItem("projectId");
       };
     }
@@ -149,7 +147,7 @@ const WorkplaceCanvas = () => {
   useEffect(() => {
     socket.on("addCanvas", ({ newCanvas }) => {
       setCanvases((prev) => {
-        const newCanvases = [...prev, newCanvas]; // Thêm canvas mới vào list canvases
+        const newCanvases = [...prev, newCanvas];
         return newCanvases;
       });
     });
@@ -166,7 +164,6 @@ const WorkplaceCanvas = () => {
     });
     socket.on("updateBackground", ({ canvasId, background }) => {
       try {
-        // Cập nhật trạng thái nền cho một canvas cụ thể
         setBackgrounds((prev) => ({
           ...prev,
           [canvasId]: background || "white",
@@ -207,7 +204,6 @@ const WorkplaceCanvas = () => {
   }, [project]);
 
   useEffect(() => {
-    // Chỉ thực hiện cuộn khi canvases đã thay đổi và có ít nhất một trang
     if (canvases.length > 0) {
       const lastCanvasIndex = canvases.length - 1;
       canvasRef.current[lastCanvasIndex]?.scrollIntoView({
@@ -220,14 +216,12 @@ const WorkplaceCanvas = () => {
   const addCanvas = async () => {
     try {
       const newCanvas = await mutation.mutateAsync({ id: project?.id });
-      // Cập nhật lại canvases (local state)
       setCanvases((prev) => {
-        const newCanvases = [...prev, project?.canvasArray]; // Thêm canvas mới vào list canvases
-        setCurrentCanvas(newCanvases[newCanvases.length]?.id); // Chuyển đến trang mới
+        const newCanvases = [...prev, project?.canvasArray];
+        setCurrentCanvas(newCanvases[newCanvases.length]?.id);
 
         return newCanvases;
       });
-      // Hiển thị thông báo thành công
       Alert.success("Add canvas successfully!");
       socket.emit("addCanvas", { roomId: project?.id, newCanvas });
       handleGetDetailProject(project?.id);
@@ -250,10 +244,9 @@ const WorkplaceCanvas = () => {
         id: templateCanvas._id,
       };
 
-      // Cập nhật lại state của canvases
       setCanvases((prev) => {
         const updatedCanvases = [...prev, newCanvas];
-        setCurrentCanvas(newCanvas.id); // Chuyển đến canvas mới
+        setCurrentCanvas(newCanvas.id);
         return updatedCanvases;
       });
 
@@ -280,10 +273,9 @@ const WorkplaceCanvas = () => {
           id: canvas._id,
         };
 
-        // Cập nhật state của canvases
         setCanvases((prev) => {
           const updatedCanvases = [...prev, newCanvas];
-          setCurrentCanvas(newCanvas.id); // Chuyển đến canvas vừa thêm
+          setCurrentCanvas(newCanvas.id);
           return updatedCanvases;
         });
       });
@@ -326,14 +318,12 @@ const WorkplaceCanvas = () => {
   const setBackground = async (bgLink) => {
     if (current_canvas !== null && current_canvas !== undefined) {
       try {
-        // Cập nhật trạng thái tạm thời để UI phản hồi nhanh
         setBackgrounds((prev) => ({
           ...prev,
           [current_canvas]: bgLink || "white",
         }));
 
-        // Gửi yêu cầu cập nhật lên server
-        const data = { background: bgLink || "white" }; // Giả sử trường là `background`
+        const data = { background: bgLink || "white" };
         const canvasId = current_canvas;
         if (!canvasId) {
           throw new Error("Canvas ID not found");
@@ -349,7 +339,6 @@ const WorkplaceCanvas = () => {
           project?.id
         );
         if (updatedProject) {
-          // Cập nhật lại backgrounds từ updatedProject
           const updatedBackgrounds = updatedProject.canvasArray.reduce(
             (acc, canvas) => ({
               ...acc,
@@ -394,7 +383,6 @@ const WorkplaceCanvas = () => {
           project?.id
         );
         newComponent.id = response.data._id;
-        // Notify the specific canvas to update its components
         document.dispatchEvent(
           new CustomEvent(
             `update-${draggingComponent.type.toLowerCase()}s-${over.id}`,
@@ -457,7 +445,7 @@ const WorkplaceCanvas = () => {
         <WorkplaceHeader usersInRoom={usersInRoom} />
         <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide'>
           <div
-            className={`w-[80px] z-50 scrollbar-hide h-full overflow-y-auto ${
+            className={`w-[80px]  scrollbar-hide h-full overflow-y-auto ${
               isDarkMode ? "bg-black text-white" : "bg-gray-100 text-black"
             }`}>
             {[
@@ -502,7 +490,7 @@ const WorkplaceCanvas = () => {
                 show.status ? "py-5 -left-[350px]" : "px-8 left-[75px] py-5"
               } ${
                 isDarkMode ? "bg-[#252627]" : "bg-white"
-              } h-full fixed transition-all w-[350px] z-30 duration-500`}>
+              } h-full fixed transition-all w-[350px]  duration-500`}>
               <div
                 onClick={() => setShow({ name: "", status: true })}
                 className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${
@@ -513,12 +501,12 @@ const WorkplaceCanvas = () => {
                 <MdKeyboardArrowLeft />
               </div>
               {state === "design" && (
-                <TemplateDesign
-                  addCanvasFromTemplate={addTemplate}
-                />
+                <TemplateDesign addCanvasFromTemplate={addTemplate} />
               )}
               {state === "shape" && <Shape drag={setDraggingComponent} />}
-              {state === "project" && <Project addProjectFromWorkplace={addProject}/>}
+              {state === "project" && (
+                <Project addProjectFromWorkplace={addProject} />
+              )}
               {state === "text" && <Text drag={setDraggingComponent} />}
               {state === "image" && <Image drag={setDraggingComponent} />}
               {state === "background" && (
@@ -546,8 +534,7 @@ const WorkplaceCanvas = () => {
                     removeButton={() => removeCanvas(canvasData.id)}
                     upButton={() => scrollToCanvas(index - 1)}
                     downButton={() => scrollToCanvas(index + 1)}
-                    ref={(el) => (canvasRef.current[index] = el)} // Callback function
-                    // ref={(el) => (canvasRef.current[index] = el)}
+                    ref={(el) => (canvasRef.current[index] = el)}
                   />
                 </div>
               ))}

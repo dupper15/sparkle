@@ -4,13 +4,15 @@ import { useMutationHooks } from "../../hooks/useMutationHook";
 import { useSelector } from "react-redux";
 import { createImageUpload, getAllImage } from "../../services/ImageService";
 import * as Alert from "../Alert/Alert";
+import EditImage from "./EditImage";
 
-/* eslint react/prop-types: 0 */
 const Image = ({ drag }) => {
   const [draggingImage, setDraggingImage] = useState(null);
   const [images, setImages] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const user = useSelector((state) => state.user);
+  const [selectedImage, setSelectedImage] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
 
   const handleDragStart = (img) => {
     const imgObject = { ...img, type: "Image" };
@@ -46,10 +48,13 @@ const Image = ({ drag }) => {
       formData.append("file", file);
       formData.append("upload_preset", uploadPreset);
 
-      const response = await fetch("https://api.cloudinary.com/v1_1/ddcjjegzf/image/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/ddcjjegzf/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const result = await response.json();
 
@@ -70,65 +75,99 @@ const Image = ({ drag }) => {
     }
   };
 
-  const ImagePalette = ({ onDragStart }) => {
+  // Xử lý khi click ra ngoài
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".image-container")) {
+        setSelectedImage("");
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  const ImagePalette = ({ onDragStart, onSelectImage }) => {
     return (
-        <div className="grid grid-cols-3 gap-2 w-full">
-          {images.map((img, i) => (
-              <DraggableImage
-                  key={img._id || i}
-                  img={img}
-                  onDragStart={onDragStart}
-              />
-          ))}
-        </div>
+      <div className='grid grid-cols-3 gap-2 w-full image-container'>
+        {images.map((img, i) => (
+          <DraggableImage
+            key={img._id || i}
+            img={img}
+            onDragStart={onDragStart}
+            onSelectImage={onSelectImage}
+            isSelected={selectedImage === img.image}
+          />
+        ))}
+      </div>
     );
   };
 
-  return (
-      <div>
-        <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
-          <label className='text-center cursor-pointer' htmlFor='uploadImage'>
-            Upload Image
-          </label>
-          <input
-              type='file'
-              id='uploadImage'
-              className='hidden'
-              onChange={handleUpload}
-          />
-        </div>
-        <ImagePalette onDragStart={handleDragStart} />
-        <DragOverlay>
-          {draggingImage ? (
-              <div
-                  style={{
-                    width: "90px",
-                    height: "90px",
-                    backgroundImage: `url(${draggingImage.image})`,
-                    backgroundSize: "cover",
-                  }}
-              />
-          ) : null}
-        </DragOverlay>
+  return isEdit ? (
+    <EditImage setIsEdit={setIsEdit} imageLink={selectedImage} />
+  ) : (
+    <div>
+      <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
+        <label className='text-center cursor-pointer' htmlFor='uploadImage'>
+          Upload Image
+        </label>
+        <input
+          type='file'
+          id='uploadImage'
+          className='hidden'
+          onChange={handleUpload}
+        />
       </div>
+      <ImagePalette
+        onDragStart={handleDragStart}
+        onSelectImage={(img) => {
+          setSelectedImage(img.image);
+        }}
+      />
+      <DragOverlay>
+        {draggingImage ? (
+          <div
+            style={{
+              width: "90px",
+              height: "90px",
+              backgroundImage: `url(${draggingImage.image})`,
+              backgroundSize: "cover",
+            }}
+          />
+        ) : null}
+      </DragOverlay>
+      <button
+        className={`${
+          selectedImage ? "block" : "hidden"
+        } w-full h-[40px] flex justify-center items-center bg-blue-600 rounded-md text-white mt-10 hover:bg-blue-400`}
+        onClick={() => setIsEdit(true)}>
+        Edit
+      </button>
+    </div>
   );
 };
 
-const DraggableImage = ({ img, onDragStart }) => {
+const DraggableImage = ({ img, onDragStart, onSelectImage, isSelected }) => {
   const { attributes, listeners, setNodeRef } = useDraggable({
     id: img._id || img.id || img.url,
   });
 
   return (
-      <div
-          ref={setNodeRef}
-          className='w-full h-[90px] overflow-hidden rounded-md cursor-pointer'
-          {...listeners}
-          {...attributes}
-          onMouseDown={() => onDragStart(img)}
-      >
-        <img className='w-full h-full' src={img.image} alt='' />
-      </div>
+    <div
+      ref={setNodeRef}
+      className={`w-full h-[90px] overflow-hidden rounded-md cursor-pointer ${
+        isSelected ? "border-4 border-blue-500" : ""
+      }`}
+      {...listeners}
+      {...attributes}
+      onMouseDown={() => {
+        onDragStart(img);
+        onSelectImage(img);
+      }}>
+      <img className='w-full h-full' src={img.image} alt='' />
+    </div>
   );
 };
 

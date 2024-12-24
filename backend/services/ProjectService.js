@@ -46,8 +46,8 @@ const getDetailProject = (projectId) => {
       }).populate({
         path: "canvasArray",
         populate: {
-          path: "componentArray", // Trỏ tới mảng componentArray
-          model: "Component", // Tên model được tham chiếu
+          path: "componentArray",
+          model: "Component",
         },
       });
       if (!project) {
@@ -78,12 +78,12 @@ const getAllProject = (userId) => {
     try {
       const projects = await Project.find({
         owner: userId,
-        copy: null
+        copy: null,
       }).populate({
         path: "canvasArray",
         populate: {
-          path: "componentArray", // Trỏ tới mảng componentArray
-          model: "Component", // Tên model được tham chiếu
+          path: "componentArray",
+          model: "Component",
         },
       });
       if (!projects) {
@@ -112,14 +112,14 @@ const getAllProject = (userId) => {
 const getAllTeamProject = (userId) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const user = await User.findById(userId)
+      const user = await User.findById(userId);
       const projects = await Project.find({
-        editorArray: { $in: [user.email] }, 
+        editorArray: { $in: [user.email] },
       }).populate({
         path: "canvasArray",
         populate: {
-          path: "componentArray", // Trỏ tới mảng componentArray
-          model: "Component", // Tên model được tham chiếu
+          path: "componentArray",
+          model: "Component",
         },
       });
       if (!projects) {
@@ -154,8 +154,8 @@ const getPublic = () => {
       }).populate({
         path: "canvasArray",
         populate: {
-          path: "componentArray", // Trỏ tới mảng componentArray
-          model: "Component", // Tên model được tham chiếu
+          path: "componentArray",
+          model: "Component",
         },
       });
       if (!projects) {
@@ -184,14 +184,14 @@ const getPublic = () => {
 const updateProject = (projectId, data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("data", data)
+      console.log("data", data);
       const checkProject = await Project.findOne({
         _id: projectId,
       }).populate({
         path: "canvasArray",
         populate: {
-          path: "componentArray", // Trỏ tới mảng componentArray
-          model: "Component", // Tên model được tham chiếu
+          path: "componentArray",
+          model: "Component",
         },
       });
       if (!checkProject) {
@@ -203,26 +203,24 @@ const updateProject = (projectId, data) => {
       }
 
       const updatedCanvasCopy = JSON.parse(JSON.stringify(data));
-      delete updatedCanvasCopy._id
+      delete updatedCanvasCopy._id;
 
       updatedCanvasCopy.componentArray = await Promise.all(
         (updatedCanvasCopy.componentArray || []).map(async (component) => {
           const newComponent = { ...component };
           delete newComponent._id;
-      
-          // Lưu component mới vào database
+
           const savedComponent = await Component.create(newComponent);
-          return savedComponent; // Trả về toàn bộ thông tin hoặc chỉ `_id`
+          return savedComponent;
         })
       );
-      
-      // Lưu canvas copy mới vào database
-      const savedCanvasCopy = await Canvas.create(updatedCanvasCopy);      
 
-      let createdCanvas = null
+      const savedCanvasCopy = await Canvas.create(updatedCanvasCopy);
+
+      let createdCanvas = null;
 
       if (data && Object.keys(data).length > 0) {
-        createdCanvas = savedCanvasCopy
+        createdCanvas = savedCanvasCopy;
       } else {
         createdCanvas = await Canvas.create({
           background: "#ffffff",
@@ -264,14 +262,14 @@ const updateProject = (projectId, data) => {
 const addProject = (projectId, data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("data", data.canvasArray)
+      console.log("data", data.canvasArray);
       const checkProject = await Project.findOne({
         _id: projectId,
       }).populate({
         path: "canvasArray",
         populate: {
-          path: "componentArray", // Trỏ tới mảng componentArray
-          model: "Component", // Tên model được tham chiếu
+          path: "componentArray",
+          model: "Component",
         },
       });
       if (!checkProject) {
@@ -284,7 +282,6 @@ const addProject = (projectId, data) => {
 
       const newCanvases = await Promise.all(
         (data.canvasArray || []).map(async (canvas) => {
-          // Tạo một bản sao canvas và xử lý componentArray
           const updatedCanvasCopy = JSON.parse(JSON.stringify(canvas));
           delete updatedCanvasCopy._id;
 
@@ -293,24 +290,21 @@ const addProject = (projectId, data) => {
               const newComponent = { ...component };
               delete newComponent._id;
 
-              // Lưu component mới vào database
               const savedComponent = await Component.create(newComponent);
-              return savedComponent; // Trả về toàn bộ thông tin hoặc chỉ `_id`
+              return savedComponent;
             })
           );
 
-          // Lưu canvas mới vào database
           return await Canvas.create(updatedCanvasCopy);
         })
       );
 
-      // Cập nhật mảng canvasArray của project
       const canvasArray = [
         ...(checkProject.canvasArray || []).map((canvas) => canvas._id),
         ...newCanvases.map((canvas) => canvas._id),
       ];
 
-      console.log('canvasArray', canvasArray)
+      console.log("canvasArray", canvasArray);
 
       const updatedProject = await Project.findByIdAndUpdate(
         projectId,
@@ -323,7 +317,6 @@ const addProject = (projectId, data) => {
           model: "Component",
         },
       });
-
 
       if (!updatedProject) {
         resolve({
@@ -358,7 +351,7 @@ const updatePublic = async (projectId) => {
       },
     });
 
-    checkProject.isPublic = true
+    checkProject.isPublic = true;
     checkProject.save();
 
     if (!checkProject) {
@@ -370,13 +363,11 @@ const updatePublic = async (projectId) => {
 
     const updatedProjectCopy = JSON.parse(JSON.stringify(checkProject));
 
-    updatedProjectCopy.copy = projectId
-    // Loại bỏ `_id` của project để MongoDB tự sinh mới
+    updatedProjectCopy.copy = projectId;
     delete updatedProjectCopy._id;
     updatedProjectCopy.isPublic = true;
 
-    // Tạo và lưu từng `canvas` mới
-   updatedProjectCopy.canvasArray = await Promise.all(
+    updatedProjectCopy.canvasArray = await Promise.all(
       (updatedProjectCopy.canvasArray || []).map(async (canvas) => {
         const newCanvas = { ...canvas };
         delete newCanvas._id;
@@ -386,19 +377,16 @@ const updatePublic = async (projectId) => {
             const newComponent = { ...component };
             delete newComponent._id;
 
-            // Lưu component mới vào database
             const savedComponent = await Component.create(newComponent);
-            return savedComponent; // Trả về toàn bộ thông tin hoặc chỉ `_id`
+            return savedComponent;
           })
         );
 
-        // Lưu canvas mới vào database
         const savedCanvas = await Canvas.create(newCanvas);
-        return savedCanvas; // Trả về toàn bộ thông tin hoặc chỉ `_id`
+        return savedCanvas;
       })
     );
 
-    // Lưu project mới vào database
     const savedProject = await Project.create(updatedProjectCopy);
 
     const populatedProject = await Project.findById(savedProject._id).populate({
@@ -433,10 +421,10 @@ const updatePrivate = async (projectId) => {
       },
     });
 
-    checkProject.isPublic = false
+    checkProject.isPublic = false;
     checkProject.save();
- 
-    await Project.findOneAndDelete({copy: projectId})
+
+    await Project.findOneAndDelete({ copy: projectId });
 
     return {
       status: "OK",
@@ -460,7 +448,7 @@ const deleteProject = (projectId) => {
       const projectCopy = await Project.findOne({
         copy: projectId,
       });
-      console.log(project)
+      console.log(project);
       if (!project) {
         resolve({
           status: "ERROR",
@@ -546,7 +534,7 @@ const renameProject = async (projectId, projectName) => {
       error: error.stack,
     };
   }
-}
+};
 
 module.exports = {
   createProject,

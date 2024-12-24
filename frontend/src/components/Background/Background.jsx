@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import * as BackgroundService from '../../services/BackgroundService';
+import * as BackgroundService from "../../services/BackgroundService";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../hooks/useMutationHook";
-import * as Alert from "../Alert/Alert"
+import * as Alert from "../Alert/Alert";
 
-const Background = ( {setBackground }) => {
+const Background = ({ setBackground }) => {
   const user = useSelector((state) => state.user);
   const [backgrounds, setBackgrounds] = useState([]); // State lưu trữ danh sách backgrounds
   const [isUploading, setIsUploading] = useState(false); // State để theo dõi trạng thái upload
@@ -30,17 +30,20 @@ const Background = ( {setBackground }) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    setIsUploading(true); 
+    setIsUploading(true);
     try {
       const uploadPreset = "afh5sfc";
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", uploadPreset);
 
-      const response = await fetch("https://api.cloudinary.com/v1_1/ddcjjegzf/image/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/ddcjjegzf/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const result = await response.json();
 
@@ -49,16 +52,18 @@ const Background = ( {setBackground }) => {
         image: result.secure_url,
       });
 
-      
-      setBackgrounds((prevBackgrounds) => [...prevBackgrounds, result.secure_url]);
+      setBackgrounds((prevBackgrounds) => [
+        ...prevBackgrounds,
+        result.secure_url,
+      ]);
       await fetchBackgrounds();
-      
-      Alert.success("Upload background success")
+
+      Alert.success("Upload background success");
     } catch (error) {
-      Alert.error("Failed to upload image. Please try again.")
+      Alert.error("Failed to upload image. Please try again.");
       console.error(error);
     } finally {
-      setIsUploading(false); 
+      setIsUploading(false);
     }
   };
 
@@ -67,26 +72,36 @@ const Background = ( {setBackground }) => {
   };
 
   return (
-    <div className="pt-4">
+    <div className='pt-4'>
       {/* Nút Upload */}
-      <div className="w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3">
-        <label className="text-center cursor-pointer" htmlFor="image">Upload Background</label>
-        <input type="file" id="image" className="hidden" onChange={handleUploadBackground} />
+      <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
+        <label className='text-center cursor-pointer' htmlFor='image'>
+          Upload Background
+        </label>
+        <input
+          type='file'
+          id='image'
+          className='hidden'
+          onChange={handleUploadBackground}
+        />
       </div>
-      
+
       {/* Grid hiển thị backgrounds */}
-       <div className='grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide'>
+      <div className='grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide'>
         {backgrounds.map((background, i) => (
           <div
             key={i}
-            className="w-full h-[90px] rounded-md cursor-pointer"
+            className='w-full h-[90px] rounded-md cursor-pointer'
             style={{
               backgroundImage: `url(${background.background_url})`,
               backgroundSize: "100% 100%",
-              backgroundColor: background.background_url ? "transparent" : "white",
+              backgroundColor: background.background_url
+                ? "transparent"
+                : "white",
             }}
-            onClick={() => handleClickBackground(background.background_url)}
-          ></div>
+            onClick={() =>
+              handleClickBackground(background.background_url)
+            }></div>
         ))}
       </div>
     </div>

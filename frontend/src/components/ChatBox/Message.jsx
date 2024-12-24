@@ -22,6 +22,37 @@ const Message = ({ message }) => {
   const handleShowTime = () => {
     setShowTime((prev) => !prev);
   };
+  const downloadImage = async (imageUrl) => {
+    try {
+      // Tải ảnh từ URL
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error("Failed to fetch image");
+      }
+      const blob = await response.blob();
+
+      // Yêu cầu người dùng chọn vị trí và tên file
+      const fileHandle = await window.showSaveFilePicker({
+        suggestedName: imageUrl.split("/").pop() || "image.jpg",
+        types: [
+          {
+            description: "Image Files",
+            accept: { "image/*": [".png", ".jpg", ".jpeg", ".gif"] },
+          },
+        ],
+      });
+
+      // Ghi dữ liệu vào file
+      const writableStream = await fileHandle.createWritable();
+      await writableStream.write(blob);
+      await writableStream.close();
+
+      alert("Image saved successfully!");
+    } catch (error) {
+      console.error("Error saving image:", error);
+    }
+  };
+
   return (
     <div className='px-2 pb-4'>
       <div
@@ -60,9 +91,7 @@ const Message = ({ message }) => {
               onMouseDown={handleShowTime}
               className={`my-1 ${
                 isDarkMode ? "bg-black text-white" : "bg-white text-black"
-              } 
-              ${message.sender === user.id ? "text-right" : "text-left"}
-              `}>
+              } ${message.sender === user.id ? "text-right" : "text-left"}`}>
               {message.content}
             </div>
           )}
@@ -100,13 +129,23 @@ const Message = ({ message }) => {
       </div>
       {isModalOpen && (
         <div
-          className='fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-[9999]'
+          className='fixed inset-0 bg-black bg-opacity-95 flex justify-center items-center z-[9999]'
           onClick={closeModal}>
+          {/* Nút Download */}
+          <button
+            onClick={(e) => {
+              e.preventDefault(); // Ngăn hành vi mặc định ở đây
+              downloadImage(currentImage);
+            }}
+            className='fixed top-4 right-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded z-[10000]'>
+            Download
+          </button>
+          {/* Ảnh */}
           <div className='relative' onClick={(e) => e.stopPropagation()}>
             <img
               src={currentImage}
               alt='Large'
-              className='max-w-4xl max-h-screen object-contain'
+              className='max-w-4xl max-h-[calc(100vh-4rem)] object-contain my-5'
             />
           </div>
         </div>

@@ -21,8 +21,8 @@ const CreateDesign = () => {
 
   console.log(state);
   return (
-    <div className="w-screen h-screen flex justify-center items-center relative">
-      <div ref={ref} className="relative w-auto h-auto overflow-auto">
+    <div className='w-screen h-screen flex justify-center items-center relative'>
+      <div ref={ref} className='relative w-auto h-auto overflow-auto'>
         <CreateComponent infor={object} current_component={{}} />
       </div>
     </div>
