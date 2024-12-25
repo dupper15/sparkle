@@ -7,8 +7,8 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`w-[100px] z-50 h-full overflow-y-auto bg-slate-50 ${
-        isDarkMode ? "bg-black text-white" : "bg-white text-black"
+      className={`w-[100px] z-0 h-full overflow-y-auto ${
+        isDarkMode ? "bg-black text-white" : "bg-slate-50 text-black"
       }`}>
       <Link
         to='../home'

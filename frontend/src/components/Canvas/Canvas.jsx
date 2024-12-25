@@ -90,7 +90,7 @@ const Canvas = React.forwardRef(
     }, [canvasRef, handleMouseLeave]);
     return (
       <div ref={canvasRef} className='flex flex-col gap-4'>
-        <div className='z-0'>
+        <div className={"z-50"}>
           {isImageToolBarOpen && (
             <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
               <ShapeToolBar
