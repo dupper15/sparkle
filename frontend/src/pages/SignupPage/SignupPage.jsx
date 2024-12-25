@@ -144,7 +144,8 @@ const SignupPage = () => {
     }
   };
 
-  const handleSignup = () => {
+  const handleSignup = (e) => {
+    e.preventDefault();
     mutation.mutate(
       {
         userName,
@@ -171,7 +172,9 @@ const SignupPage = () => {
   }, [verifyMutation.isSuccess, successMessage]);
 
   return (
-    <div className='flex justify-center items-center h-screen bg-gradient-to-r from-gray-900 p-4 to-black'>
+    <form
+      onSubmit={handleSignup}
+      className='flex justify-center items-center h-screen bg-gradient-to-r from-gray-900 p-4 to-black'>
       <div className='bg-black border border-gray-700 rounded-xl shadow-lg p-8 my-4 h-max w-full max-w-md'>
         {!isVerificationStep ? (
           <>
@@ -222,7 +225,7 @@ const SignupPage = () => {
             </div>
 
             <button
-              onClick={handleSignup}
+              type='submit'
               className='w-full bg-[#4335DE] hover:bg-[#584cdb] text-white font-semibold rounded-lg py-2 mt-4 transition duration-300'>
               Register
             </button>
@@ -281,7 +284,7 @@ const SignupPage = () => {
           </>
         )}
       </div>
-    </div>
+    </form>
   );
 };
 

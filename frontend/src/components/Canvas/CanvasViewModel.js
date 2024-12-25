@@ -272,6 +272,45 @@ const useCanvasViewModel = (id, databaseId) => {
         )
       );
     });
+    socket.on("componentOpacityChanged", ({ componentId, opacity }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId ? { ...component, opacity } : component
+        )
+      );
+    });
+    socket.on(
+      "horizontalFlipChanged",
+      ({ componentId, horizontalFlip, componentType }) => {
+        setComponents((prevComponents) =>
+          prevComponents.map((component) =>
+            component._id === componentId
+              ? { ...component, horizontalFlip }
+              : component
+          )
+        );
+      }
+    );
+    socket.on("verticalFlipChanged", ({ componentId, verticalFlip }) => {
+      setComponents((prevComponents) =>
+        prevComponents.map((component) =>
+          component._id === componentId
+            ? { ...component, verticalFlip }
+            : component
+        )
+      );
+    });
+    socket.on("remove-cursor", (userId) => {
+      setCursors((prev) => {
+        if (prev[userId]) {
+          const { [userId]: _, ...remainingCursors } = prev;
+          return remainingCursors;
+        }
+        return prev; // Không làm gì nếu `userId` không tồn tại
+      });
+
+      console.log("3", cursors);
+    });
     return () => {
       socket.off("update-select-component", handleSelectUpdate);
       socket.off("update-deselect-component", handleDeselectUpdate);
@@ -285,6 +324,10 @@ const useCanvasViewModel = (id, databaseId) => {
       socket.off("textContentChanged");
       socket.off("remove-component");
       socket.off("componentZIndexChanged");
+      socket.off("componentOpacityChanged");
+      socket.off("horizontalFlipChanged");
+      socket.off("verticalFlipChanged");
+      socket.off("remove-cursor");
     };
   }, []);
   // Update component helper function
@@ -329,13 +372,6 @@ const useCanvasViewModel = (id, databaseId) => {
       roomId: databaseId,
     });
   };
-  socket.on("remove-cursor", ({ userId }) => {
-    setCursors((prev) => {
-      const newCursors = { ...prev };
-      delete newCursors[userId];
-      return newCursors;
-    });
-  });
   useEffect(() => {
     socket.emit("join-page", databaseId);
 
@@ -347,7 +383,7 @@ const useCanvasViewModel = (id, databaseId) => {
     });
 
     return () => {
-      socket.emit("leave-page", { databaseId });
+      socket.emit("leave-page", databaseId);
       socket.off("update-cursor");
     };
   }, [databaseId]);
@@ -578,6 +614,8 @@ const useCanvasViewModel = (id, databaseId) => {
       ).then(() => {
         socket.emit("componentHorizontalFlipChanged", {
           componentId: component._id,
+          componentType: component.type,
+          horizontalFlip: component.horizontalFlip,
           roomId,
         });
       });
@@ -594,6 +632,7 @@ const useCanvasViewModel = (id, databaseId) => {
       ).then(() => {
         socket.emit("componentVerticalFlipChanged", {
           componentId: component._id,
+          verticalFlip: !component.verticalFlip,
           roomId,
         });
       });

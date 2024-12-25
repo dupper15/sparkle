@@ -125,23 +125,41 @@ const Message = ({ message }) => {
         )}
       </div>
       {isModalOpen && (
-        <div
-          className='fixed inset-0 bg-black bg-opacity-95 flex justify-center items-center z-[9999]'
-          onClick={closeModal}>
-          <HiOutlineDocumentDownload
-            className='fixed top-4 right-4 font-bold text-4xl hover:text-white cursor-pointer'
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              downloadImage(currentImage);
-            }}
-          />
-          <div className='relative' onClick={(e) => e.stopPropagation()}>
-            <img
-              src={currentImage}
-              alt='Large'
-              className='max-w-4xl max-h-[calc(100vh-4rem)] object-contain my-5'
-            />
+        <div className='z-[9999]'>
+          {/* Nền che mờ */}
+          <div
+            className='fixed inset-0 bg-black bg-opacity-75 z-[9998]'
+            onClick={closeModal}></div>
+
+          {/* Modal hiển thị hình */}
+          <div className='fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in'>
+            <div
+              className={`relative flex items-center justify-center p-4 rounded-lg shadow-lg ${
+                isDarkMode ? "bg-gray-800" : "bg-gray-100"
+              }`}>
+              {/* Nút đóng */}
+              <button
+                className='absolute top-2 right-2 text-gray-400 hover:text-gray-600 font-bold text-xl'
+                onClick={closeModal}>
+                ×
+              </button>
+
+              {/* Hình ảnh */}
+              <img
+                src={currentImage}
+                alt='Preview'
+                className='max-w-full max-h-[80vh] rounded-md'
+              />
+
+              {/* Nút tải hình */}
+              <HiOutlineDocumentDownload
+                className='absolute bottom-4 right-4 text-white text-3xl cursor-pointer hover:opacity-80'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  downloadImage(currentImage);
+                }}
+              />
+            </div>
           </div>
         </div>
       )}

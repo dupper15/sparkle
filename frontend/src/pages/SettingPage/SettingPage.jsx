@@ -18,7 +18,7 @@ const SettingPage = () => {
         </div>
 
         {/* Main Content */}
-        <div className='flex flex-col flex-grow px-8 py-6 w-full text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-black overflow-y-auto gap-6'>
+        <div className='flex flex-col flex-grow px-8 py-6 w-full text-gray-900 dark:text-gray-100 bg-white dark:bg-black overflow-y-auto gap-6'>
           {/* Title */}
           <h1 className='text-2xl md:text-4xl font-bold'>Settings</h1>
 

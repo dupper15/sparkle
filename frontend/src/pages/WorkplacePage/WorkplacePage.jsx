@@ -422,16 +422,20 @@ const WorkplaceCanvas = () => {
   const toggleChatBox = () => {
     setShowChatBox((prev) => !prev);
   };
+
   useEffect(() => {
     if (project?.id && user?.id) {
       socket.emit("setUserId", user.id);
       socket.emit("joinRoom", project.id);
-      const handleUserInRoom = (usersInRoom) => {
-        setUsersInRoom(usersInRoom);
+      const handleUserInRoom = (userId) => {
+        setUsersInRoom(userId);
+        console.log("User in room2:", userId);
       };
+
       socket.on("userInRoom", handleUserInRoom);
       return () => {
         socket.off("userInRoom", handleUserInRoom);
+        socket.emit("leaveRoom", project.id);
       };
     }
   }, [project?.id, user?.id]);
@@ -491,7 +495,7 @@ const WorkplaceCanvas = () => {
               } ${
                 isDarkMode ? "bg-[#252627]" : "bg-white"
               } h-full fixed transition-all w-[350px] ${
-                draggingComponent ? "z-10" : ""
+                draggingComponent ? "z-10" : "z-10"
               } duration-500`}>
               <div
                 onClick={() => setShow({ name: "", status: true })}

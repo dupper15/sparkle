@@ -49,7 +49,6 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   const [canvases, setCanvases] = useState("");
 
   const canvasRefs = useRef([]);
-
   const handleDownloadPDF = async () => {
     const pdfWidth = project?.width;
     const pdfHeight = project?.height;
@@ -240,8 +239,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   }, [project?.isPublic]);
 
   const mutation = useMutation({
-    mutationFn: (data) => {
-      return ProjectService.getAvatar(data.usersInRoom);
+    mutationFn: (usersInRoom) => {
+      return ProjectService.getAvatar(usersInRoom);
     },
     onError: (error) => {
       const apiErrorMessage =
@@ -351,7 +350,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
 
   useEffect(() => {
     if (usersInRoom.length > 0) {
-      mutation.mutate(projectId);
+      mutation.mutate(usersInRoom);
     }
   }, [usersInRoom]);
 
@@ -373,24 +372,27 @@ const WorkplaceHeader = ({ usersInRoom }) => {
 
       <div className='flex items-center gap-5'>
         <div className='hidden md:flex md:items-center relative mr-6'>
-          <div className='flex flex-row-reverse'>
-            {state.avatars.map((value, index) => (
-              <div
-                key={index}
-                className='w-[40px] h-[40px] rounded-full overflow-hidden border-2 border-white'
-                style={{
-                  marginLeft:
-                    index !== state.avatars.length - 1 ? "-15px" : "0",
-                  zIndex: state.avatars.length - index,
-                }}>
-                <img
-                  src={value || avt}
-                  alt='Avatar'
-                  className='w-full h-full object-cover'
-                />
-              </div>
-            ))}
-          </div>
+          {state.avatars.length > 1 && (
+            <div className='flex flex-row-reverse'>
+              {state.avatars.map((value, index) => (
+                <div
+                  key={index}
+                  className='w-[40px] h-[40px] rounded-full overflow-hidden border-2 border-white'
+                  style={{
+                    marginLeft:
+                      index !== state.avatars.length - 1 ? "-15px" : "0",
+                    zIndex: state.avatars.length - index,
+                  }}>
+                  <img
+                    src={value || avt}
+                    alt='Avatar'
+                    className='w-full h-full object-cover'
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
           <button
             onClick={toggleAddMember}
             className='w-[40px] h-[40px] bg-white font-semibold rounded-full
@@ -427,57 +429,57 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         </button>
         {download && (
           <div
-            className={`profile-dropdown absolute w-[200px] top-[4rem] right-[15rem] box-border pb-2 shadow-lg rounded-2xl ${
+            className={`profile-dropdown absolute w-[240px] top-[4rem] right-[10rem] box-border pb-4 shadow-xl rounded-2xl ${
               isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
             }`}>
             {/* Header */}
-            <div className='text-center py-2 border-b'>
+            <div className='text-center py-3 border-b'>
               <span className='font-semibold text-lg'>Download Options</span>
             </div>
 
             {/* Options */}
-            <div className='flex flex-col px-4 py-2'>
+            <div className='flex flex-col px-6 py-4 space-y-3'>
               {/* Radio Option for PDF */}
-              <label className='flex items-center cursor-pointer py-2'>
-                <input
-                  type='radio'
-                  name='downloadType'
-                  value='pdf'
-                  checked={downloadType === "pdf"}
-                  onChange={() => setDownloadType("pdf")}
-                  className='mr-2'
-                />
-                <span className='w-full text-left hover:text-[#4335DE]'>
-                  Download PDF
-                </span>
+              <label className='flex items-center cursor-pointer text-sm hover:text-[#4335DE] transition'>
+                <div className='flex items-center'>
+                  <input
+                    type='radio'
+                    name='downloadType'
+                    value='pdf'
+                    checked={downloadType === "pdf"}
+                    onChange={() => setDownloadType("pdf")}
+                    className=' mr-3  accent-[#4335DE] focus:outline-none '
+                  />
+                  <label htmlFor='pdf' className='custom-radio'></label>
+                  <span className='w-full text-left'>Download PDF</span>
+                </div>
               </label>
 
               {/* Radio Option for PNG */}
-              <label className='flex items-center cursor-pointer py-2'>
+              <label className='flex items-center cursor-pointer text-sm hover:text-[#4335DE] transition'>
                 <input
                   type='radio'
                   name='downloadType'
                   value='png'
                   checked={downloadType === "png"}
                   onChange={() => setDownloadType("png")}
-                  className='mr-2'
+                  className='mr-3 accent-[#4335DE] focus:outline-none'
                 />
-                <span className='w-full text-left hover:text-[#4335DE]'>
-                  Download PNG
-                </span>
+                <span className='w-full text-left'>Download PNG</span>
               </label>
             </div>
 
             {/* Download Button */}
-            <div className='flex justify-center mt-4'>
+            <div className='flex justify-center mt-5'>
               <button
                 onClick={handleDownload}
-                className='px-4 py-2 bg-[#4335DE] text-white rounded-lg hover:bg-[#372fc9] transition z-99'>
+                className='px-5 py-2 bg-[#4335DE] text-white rounded-lg hover:bg-[#372fc9] transition transform hover:scale-105 z-99'>
                 Download
               </button>
             </div>
           </div>
         )}
+
         <div
           style={{
             position: "absolute",

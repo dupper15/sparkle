@@ -18,7 +18,7 @@ const SettingSideBar = () => {
   return (
     <div
       className={`w-[55px] md:w-[70px] z-50 h-full overflow-y-auto transition-colors duration-500 ${
-        isDarkMode ? "bg-black text-white" : "bg-white text-black"
+        isDarkMode ? "bg-black text-white" : "bg-gray-50 text-slate-900"
       }`}>
       <div
         onClick={goToMyAccountPage}

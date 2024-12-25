@@ -25,7 +25,11 @@ const HeroPage = () => {
             Tạo thiết kế của riêng bạn ngay
           </span>
         </div>
-        <button className='w-[170px] h-[60px] text-xl bg-gradient rounded-lg shadow-sm cursor-pointer font-bold text-white flex justify-center items-center p-2'>
+        <button
+          onClick={() => {
+            handleNavigateLogin();
+          }}
+          className='w-[170px] h-[60px] text-xl bg-gradient rounded-lg shadow-sm cursor-pointer font-bold text-white flex justify-center items-center p-2'>
           Get started <span className='text-3xl pb-1 pl-1'> →</span>
         </button>
       </div>
