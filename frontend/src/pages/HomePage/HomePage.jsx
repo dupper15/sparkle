@@ -6,6 +6,7 @@ import Sidebar from "../../components/SharedComponents/SideBar/Sidebar.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
 import ResponsiveGridTemplate from "../../components/SharedComponents/ResponsiveGrid/ResponsiveGridTemplate.jsx";
 import { Link } from "react-router-dom";
+import SlideBanner from "../../components/SlideBanner/SlideBanner.jsx";
 
 const HomePage = () => {
   const { isDarkMode } = useDarkMode();
@@ -25,7 +26,8 @@ const HomePage = () => {
         <Sidebar />
         <div className='w-[calc(100%-100px)] flex flex-col h-full '>
           <div className='mr-auto ml-auto mt-2 mb-4'>
-            <Banner></Banner>
+            {/* <Banner></Banner> */}
+            <SlideBanner></SlideBanner>
           </div>
           <div className=''>
             <div className='flex justify-between items-center mx-10 my-2'>

@@ -13,7 +13,7 @@ const Footer = () => {
       } `}>
       <div
         className={`flex items-center justify-between py-4 px-8 ${
-          isDarkMode ? "text-gray-400" : "text-black"
+          isDarkMode ? "text-gray-400" : "text-slate-900"
         }`}>
         <div className='flex items-center space-x-4'>
           <img className='w-16 h-16' src={UITLogo} alt='UIT Logo' />

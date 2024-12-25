@@ -42,12 +42,11 @@ const initializeSocket = async (server, mongoUri) => {
 
       socket.join(roomId);
       rooms[roomId] = rooms[roomId] || [];
-
+      io.to(roomId).emit("userInRoom", rooms[roomId]);
       if (!rooms[roomId].includes(socket.userId)) {
         rooms[roomId].push(socket.userId);
       }
 
-      io.to(roomId).emit("userInRoom", rooms[roomId]);
       console.log("User joined room", { roomId, users: rooms[roomId] });
 
       try {
@@ -56,6 +55,12 @@ const initializeSocket = async (server, mongoUri) => {
       } catch (error) {
         console.error("Error loading messages:", error);
       }
+    });
+    socket.on("leaveRoom", (roomId) => {
+      if (rooms[roomId]) {
+        rooms[roomId] = rooms[roomId].filter((id) => id !== socket.userId);
+      }
+      io.to(roomId).emit("userInRoom", rooms[roomId]);
     });
     WorkSocket(socket, io);
     socket.on("chatMessage", async (data) => {
@@ -123,10 +128,12 @@ const initializeSocket = async (server, mongoUri) => {
       socket.join(databaseId);
     });
 
-    socket.on("leave-page", ({ databaseId }) => {
+    socket.on("leave-page", (data) => {
+      const { databaseId } = data;
       if (!databaseId) return;
       const userId = socket.userId;
-      socket.to(databaseId).emit("remove-cursor", { userId });
+
+      socket.to(databaseId).emit("remove-cursor", userId);
     });
 
     socket.on("select-component", async ({ id, userId1, roomId }) => {

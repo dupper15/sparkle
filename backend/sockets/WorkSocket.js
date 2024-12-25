@@ -60,6 +60,30 @@ const WorkSocket = (socket, io) => {
       height,
     });
   });
+  socket.on("componentOpacityChanged", ({ roomId, componentId, opacity }) => {
+    socket.to(roomId).emit("componentOpacityChanged", {
+      componentId,
+      opacity,
+    });
+  });
+  socket.on(
+    "componentHorizontalFlipChanged",
+    ({ roomId, componentId, horizontalFlip, componentType }) => {
+      socket.to(roomId).emit("componentHorizontalFlipChanged", {
+        componentType,
+        componentId,
+        horizontalFlip,
+      });
+    }
+  );
+  socket.on(
+    "componentVerticalFlipChanged",
+    ({ roomId, componentId, verticalFlip }) => {
+      socket
+        .to(roomId)
+        .emit("componentVerticalFlipChanged", { componentId, verticalFlip });
+    }
+  );
   socket.on("updateText", (data) => {
     const { roomId, textId, x, y, width, height } = data;
     socket.to(roomId).emit("updateText", {

@@ -90,9 +90,9 @@ const Canvas = React.forwardRef(
     }, [canvasRef, handleMouseLeave]);
     return (
       <div ref={canvasRef} className='flex flex-col gap-4'>
-        <div className={"z-50"}>
+        <div>
           {isImageToolBarOpen && (
-            <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50 mt-20'>
+            <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50  mt-20'>
               <ShapeToolBar
                 selectedComponentColor={selectedComponentColor}
                 selectedComponentOpacity={selectedComponentOpacity}
@@ -209,39 +209,42 @@ const Canvas = React.forwardRef(
               />
             )
           )}
-          {Object.entries(cursors).map(([userId, position]) =>
-            position.x !== null &&
-            position.y !== null &&
-            position.databaseId === databaseId ? (
-              <div key={userId} className='absolute'>
-                <FaMousePointer
-                  className='cursor-indicator text-blue-800 absolute pointer-events-none z-[999]'
-                  style={{
-                    left: position.x,
-                    top: position.y,
-                    width: cursorSize,
-                    height: cursorSize,
-                    transition: "left 0.1s ease-out, top 0.1s ease-out",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    left: position.x + cursorSize,
-                    top: position.y,
-                    zIndex: 50,
-                  }}>
-                  <span
-                    className='block text-xs bg-blue-800 text-white rounded-lg py-0.5 px-1 text-center cursor-not-allowed'
+          {Object.entries(cursors).length > 0 &&
+            Object.entries(cursors).map(([userId, position]) =>
+              position?.x !== null &&
+              position?.y !== null &&
+              position?.databaseId === databaseId ? (
+                <div key={userId} className='absolute'>
+                  <FaMousePointer
+                    className='cursor-indicator text-blue-800 absolute pointer-events-none z-[999]'
                     style={{
-                      display: "inline-block",
+                      left: position.x,
+                      top: position.y,
+                      width: cursorSize,
+                      height: cursorSize,
+                      transition: "left 0.1s ease-out, top 0.1s ease-out",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: position.x + cursorSize,
+                      top: position.y,
+                      zIndex: 50,
                     }}>
-                    {position.userName || "User"}
-                  </span>
+                    <span
+                      className='block text-xs bg-blue-800 text-white rounded-lg py-0.5 px-1 text-center cursor-not-allowed'
+                      style={{
+                        display: "inline-block",
+                      }}>
+                      {position.userName || "User"}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ) : null
-          )}
+              ) : (
+                <div key={userId}></div>
+              )
+            )}
         </div>
       </div>
     );

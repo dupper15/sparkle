@@ -41,7 +41,7 @@ const useTextComponentViewModel = (
       }
     });
     return () => {
-      socket.off("shapeUpdated");
+      socket.off("updateText");
     };
   }, [info._id]);
   const updateTextInDatabase = useRef(

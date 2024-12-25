@@ -194,12 +194,12 @@ const MyAccountPage = () => {
         <Header className='fixed top-0 left-0 w-full z-50' />
       </header>
       <div className='flex flex-grow w-screen'>
-        <div className='w-[55px] md:w-[80px] z-50 h-full overflow-y-auto overflow-x-hidden scrollbar-hide'>
+        <div className='w-[55px] md:w-[80px] h-full overflow-y-auto overflow-x-hidden scrollbar-hide'>
           <SettingSideBar />
         </div>
         <div
-          className={`flex flex-col w-[calc(100%-50px)] md:w-[calc(100%-80px)] overflow-y-auto gap-4 ps-14 pe-20 scrollbar-hide ${
-            isDarkMode ? "text-white" : "text-black"
+          className={`flex flex-col w-[calc(100%-50px)] md:w-[calc(100%-80px)] bg-white overflow-y-auto gap-4 ps-14 pe-20 scrollbar-hide ${
+            isDarkMode ? "text-white" : "text-slate-900"
           }`}>
           <span className='font-bold text-xl md:text-3xl mt-4 pointer-events-none'>
             My Profile
@@ -267,8 +267,8 @@ const MyAccountPage = () => {
                 {isEditingUserName ? (
                   <input
                     type='text'
-                    className={`font-thin text-s md:text-m rounded p-1 border ${
-                      isDarkMode ? "text-black" : "text-black"
+                    className={`font-thin text-s md:text-m rounded bg-white p-1 border border-slate-400 ${
+                      isDarkMode ? "text-white" : "text-slate-700"
                     }`}
                     value={userName}
                     onChange={handleOnChangeUserName}
@@ -293,10 +293,10 @@ const MyAccountPage = () => {
                   </>
                 ) : (
                   <button
-                    className={`w-[80px] h-[40px] font-semibold rounded-lg shadow-sm flex justify-center items-center p-2 hover:bg-slate-400 ${
+                    className={`w-[80px] h-[40px] border-slate-600  border-2 font-semibold rounded-lg shadow-sm flex justify-center items-center p-2 hover:bg-slate-400 ${
                       isDarkMode
                         ? "bg-white text-black"
-                        : "bg-black text-white "
+                        : "bg-slate-100 text-slate-800 "
                     }`}
                     onClick={handleEditUserName}>
                     Edit
@@ -321,19 +321,14 @@ const MyAccountPage = () => {
                 </span>
               </div>
               <button
-                className={`w-[auto] h-[40px] font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
-                  isDarkMode ? "bg-white text-black" : "bg-black text-white"
+                className={`w-[auto] h-[40px] font-semibold rounded-lg border-slate-600  border-2 shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
+                  isDarkMode
+                    ? "bg-white text-black"
+                    : "bg-slate-100 text-slate-800 "
                 }`}
                 onClick={handleChangePassword}>
                 Change Password
               </button>
-              {isChangePassword && (
-                <div className='fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]'>
-                  <FormChangePassword
-                    closeForm={() => setChangePassword(false)}
-                  />
-                </div>
-              )}
             </div>
             <div className='w-full h-[1px] bg-gray-400 my-4'></div>
             <div className='flex flex-col space-y-2'>
@@ -346,7 +341,7 @@ const MyAccountPage = () => {
             </div>
             <div
               className={`flex flex-row items-center mt-4 w-max md:w-full h-[auto] border-2 rounded-lg my-2 py-3 px-2 ${
-                isDarkMode ? "border-white" : "border-black"
+                isDarkMode ? "border-white" : "border-slate-600"
               }`}>
               <div className='flex flex-row items-center'>
                 <FaGoogle className='h-[40px] w-[40px]' />
@@ -360,15 +355,17 @@ const MyAccountPage = () => {
                 </div>
               </div>
               <button
-                className={`w-[auto] h-[40px] ml-auto font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
-                  isDarkMode ? "bg-white text-black" : "bg-black text-white"
+                className={`w-[auto] h-[40px] ml-auto border-slate-600  border-2 font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
+                  isDarkMode
+                    ? "bg-white text-black"
+                    : "bg-slate-100 text-slate-800 "
                 }`}>
                 Connect
               </button>
             </div>
             <div
               className={`flex flex-row items-center w-max md:w-full h-[auto] border-2 rounded-lg my-2 py-3 px-2 ${
-                isDarkMode ? "border-white" : "border-black"
+                isDarkMode ? "border-white" : "border-slate-600"
               }`}>
               <div className='flex flex-row items-center'>
                 <FaFacebook className='h-[40px] w-[40px]' />
@@ -382,8 +379,10 @@ const MyAccountPage = () => {
                 </div>
               </div>
               <button
-                className={`w-[auto] h-[40px] ml-auto font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
-                  isDarkMode ? "bg-white text-black" : "bg-black text-white"
+                className={`w-[auto] h-[40px] ml-auto font-semibold rounded-lg shadow-sm border-slate-600  border-2 flex justify-center items-center px-3 py-2 hover:bg-slate-400 ${
+                  isDarkMode
+                    ? "bg-white text-black"
+                    : "bg-slate-100 text-slate-800 "
                 }`}>
                 Disconnect
               </button>
@@ -394,6 +393,9 @@ const MyAccountPage = () => {
       <div className='mt-6'>
         <Footer />
       </div>
+      {isChangePassword && (
+        <FormChangePassword closeForm={() => setChangePassword(false)} />
+      )}
     </div>
   );
 };

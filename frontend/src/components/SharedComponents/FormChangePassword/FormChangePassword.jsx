@@ -76,65 +76,68 @@ const FormChangePassword = ({ closeForm }) => {
   };
 
   return (
-    <div
-      className={`relative h-[400px] w-[600px] flex-column items-center justify-center p-6 rounded-lg shadow-lg text-center ${
-        isDarkMode ? "bg-gray-800" : "bg-gray-100"
-      }`}>
-      <button
-        onClick={closeForm}
-        className='absolute top-2 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl'>
-        ×
-      </button>
-      <h2
-        className={`text-lg font-semibold mb-6 ${
-          isDarkMode ? "text-white" : "text-black"
+    <div className='fixed inset-0 bg-black bg-opacity-50 z-10 flex items-center justify-center'>
+      <div
+        className={`relative w-full max-w-md flex flex-col border border-slate-500 p-8 rounded-xl shadow-2xl ${
+          isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
         }`}>
-        Change password
-      </h2>
-      <div>
-        <input
-          name='password'
-          type='text'
-          value={passwordCurrent}
-          onChange={handleOnPasswordCurrent}
-          placeholder='Enter current password...'
-          className={`w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300 ${
-            isDarkMode ? "bg-black text-white" : "bg-white text-black"
-          }`}
-        />
+        <button
+          onClick={closeForm}
+          className='absolute top-2 right-4 text-gray-400 hover:text-red-500 font-bold text-2xl transition duration-200'>
+          ×
+        </button>
+        <h2 className='text-xl font-semibold mb-6 text-center'>
+          Change Password
+        </h2>
+        <div className='space-y-4'>
+          <input
+            name='password'
+            type='password'
+            value={passwordCurrent}
+            onChange={handleOnPasswordCurrent}
+            placeholder='Enter current password...'
+            className={`w-full p-3 border-2 rounded-md focus:outline-none focus:ring-2 ${
+              isDarkMode
+                ? "bg-black text-white border-gray-700 focus:ring-purple-500"
+                : "bg-gray-50 text-gray-900 border-gray-300 focus:ring-indigo-500"
+            }`}
+          />
+          <input
+            name='new_password'
+            type='password'
+            value={passwordNew}
+            onChange={handleOnPasswordNew}
+            placeholder='Enter new password...'
+            className={`w-full p-3 border-2 rounded-md focus:outline-none focus:ring-2 ${
+              isDarkMode
+                ? "bg-black text-white border-gray-700 focus:ring-purple-500"
+                : "bg-gray-50 text-gray-900 border-gray-300 focus:ring-indigo-500"
+            }`}
+          />
+          <input
+            name='confirm_password'
+            type='password'
+            value={passwordConfirm}
+            onChange={handleOnPasswordConfirm}
+            placeholder='Confirm new password...'
+            className={`w-full p-3 border-2 rounded-md focus:outline-none focus:ring-2 ${
+              isDarkMode
+                ? "bg-black text-white border-gray-700 focus:ring-purple-500"
+                : "bg-gray-50 text-gray-900 border-gray-300 focus:ring-indigo-500"
+            }`}
+          />
+        </div>
+        {errorMessage && typeof errorMessage === "string" && (
+          <div className='mt-2 text-sm text-center text-red-500'>
+            {errorMessage}
+          </div>
+        )}
+        <button
+          onClick={handleUpdatePassword}
+          className='w-full py-3 mt-6 font-semibold rounded-md bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:opacity-90 transition duration-200'>
+          Save
+        </button>
       </div>
-      <div>
-        <input
-          name='new_password'
-          type='password'
-          value={passwordNew}
-          onChange={handleOnPasswordNew}
-          placeholder='Enter new password...'
-          className={`w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300 ${
-            isDarkMode ? "bg-black text-white" : "bg-white text-black"
-          }`}
-        />
-      </div>
-      <div>
-        <input
-          name='confirm_password'
-          type='password'
-          value={passwordConfirm}
-          onChange={handleOnPasswordConfirm}
-          placeholder='Enter confirm password...'
-          className={`w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300 ${
-            isDarkMode ? "bg-black text-white" : "bg-white text-black"
-          }`}
-        />
-      </div>
-      {errorMessage && typeof errorMessage === "string" && (
-        <div className='text-red-500'>{errorMessage}</div>
-      )}
-      <button
-        onClick={handleUpdatePassword}
-        className='w-[120px] py-3 mt-4 font-bold text-white rounded-md bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90'>
-        Save
-      </button>
     </div>
   );
 };
