@@ -50,12 +50,19 @@ const Header = () => {
           <span className=' text-white'> Create a design</span>
         </button>
         {openCustomizeSizeDialogue && (
-          <div className='fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%]'>
-            <CustomizeSizeDialogue
-              childCloseFormRequest={() => setOpenCustomizeSizeDialogue(false)}
-              onCreate={(data) => handleCreate(data)}
-            />
-          </div>
+          <>
+            <div
+              className='fixed inset-0 bg-black bg-opacity-50 z-10'
+              onClick={() => setOpenCustomizeSizeDialogue(false)}></div>
+            <div className='fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-20'>
+              <CustomizeSizeDialogue
+                childCloseFormRequest={() =>
+                  setOpenCustomizeSizeDialogue(false)
+                }
+                onCreate={(data) => handleCreate(data)}
+              />
+            </div>
+          </>
         )}
         <div className='rounded-full p-2 h-[64px] w-[64px]'>
           <input

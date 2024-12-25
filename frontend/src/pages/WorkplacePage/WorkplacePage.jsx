@@ -446,7 +446,7 @@ const WorkplaceCanvas = () => {
         <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide '>
           <div
             className={`w-[80px] scrollbar-hide h-full overflow-y-auto ${
-              isDarkMode ? "bg-black text-white" : "bg-gray-200 text-black"
+              isDarkMode ? "bg-black text-white" : "bg-slate-100 text-black"
             }`}>
             {[
               { icon: <LuLayoutTemplate />, label: "Design", type: "design" },

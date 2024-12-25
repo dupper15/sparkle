@@ -358,15 +358,15 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   return (
     <div
       className={`flex items-center justify-between w-full h-[50px] px-5 py-8 ${
-        isDarkMode ? "bg-[#18191B]" : "bg-gray-200"
+        isDarkMode ? "bg-[#18191B]" : "bg-slate-100"
       }`}>
       <div className='flex items-center gap-2'>
         <div className="w-[40px] h-[40px] bg-[url('./assets/logo.png')] bg-cover bg-center" />
         <div
           onClick={goHome}
-          className={`text-3xl font-bold cursor-pointer ${
-            isDarkMode ? "text-white" : "text-black"
-          }`}>
+          className='text-3xl font-bold cursor-pointer 
+           gradient
+          '>
           Sparkle
         </div>
       </div>

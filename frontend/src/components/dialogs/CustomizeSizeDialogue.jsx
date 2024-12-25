@@ -78,57 +78,92 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
 
   return (
     <div
-      className={`relative h-[400px] w-[600px] flex-column items-center justify-center p-6 rounded-lg shadow-lg text-center ${
-        isDarkMode ? "bg-gray-800" : "bg-gray-100"
+      className={`relative h-auto w-[400px] flex flex-col border-2 border-slate-500 items-center justify-center p-8 rounded-xl shadow-2xl ${
+        isDarkMode ? "bg-gray-900" : "bg-white"
       }`}>
+      {/* Nút Đóng */}
       <button
-        className='absolute top-2 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl'
+        className='absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl'
         onClick={() => childCloseFormRequest(false)}>
-        ×
+        &times;
       </button>
+
+      {/* Tiêu Đề */}
       <h2
-        className={`text-lg font-semibold mb-6 ${
-          isDarkMode ? "text-white" : "text-black"
+        className={`text-2xl font-bold mb-6 ${
+          isDarkMode ? "text-white" : "text-gray-800"
         }`}>
-        Customize size
+        Customize Size
       </h2>
-      <div>
+
+      {/* Input Name */}
+      <div className='w-full mb-4'>
+        <label
+          className={`block mb-2 text-sm font-medium ${
+            isDarkMode ? "text-gray-300" : "text-gray-600"
+          }`}>
+          Project Name
+        </label>
         <input
           name='name'
           onChange={handleOnName}
           type='text'
           placeholder='Enter name...'
-          className={`w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300 ${
-            isDarkMode ? "bg-black text-white" : "bg-white text-black"
+          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 ${
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-700 focus:ring-indigo-400"
+              : "bg-gray-100 text-gray-800 border-gray-300 focus:ring-indigo-500"
           }`}
         />
       </div>
-      <div>
+
+      {/* Input Width */}
+      <div className='w-full mb-4'>
+        <label
+          className={`block mb-2 text-sm font-medium ${
+            isDarkMode ? "text-gray-300" : "text-gray-600"
+          }`}>
+          Width (px)
+        </label>
         <input
           name='width'
           onChange={handleOnWidth}
-          type='number'
+          type='text'
           placeholder='Enter width...'
-          className={`w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300 ${
-            isDarkMode ? "bg-black text-white" : "bg-white text-black"
+          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 ${
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-700 focus:ring-indigo-400"
+              : "bg-gray-100 text-gray-800 border-gray-300 focus:ring-indigo-500"
           }`}
         />
       </div>
-      <div>
+
+      {/* Input Height */}
+      <div className='w-full mb-6'>
+        <label
+          className={`block mb-2 text-sm font-medium ${
+            isDarkMode ? "text-gray-300" : "text-gray-600"
+          }`}>
+          Height (px)
+        </label>
         <input
           name='height'
           onChange={handleOnHeight}
-          type='number'
+          type='text'
           placeholder='Enter height...'
-          className={`w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300 ${
-            isDarkMode ? "bg-black text-white" : "bg-white text-black"
+          className={`w-full p-3 border rounded-lg focus:outline-none  ${
+            isDarkMode
+              ? "bg-gray-800 text-white border-gray-700 focus:ring-indigo-400"
+              : "bg-gray-100 text-gray-800 border-gray-300 focus:ring-indigo-500"
           }`}
         />
       </div>
+
+      {/* Nút Tạo */}
       <button
         onClick={createProject}
-        className='w-[120px] py-3 mt-4 font-bold text-white rounded-md bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90'>
-        Create
+        className='w-full py-3 font-bold text-white rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 hover:opacity-90 focus:ring-4 focus:ring-blue-300'>
+        Create Project
       </button>
     </div>
   );
