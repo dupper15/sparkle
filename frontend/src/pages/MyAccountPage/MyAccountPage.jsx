@@ -192,7 +192,7 @@ const MyAccountPage = () => {
         <div className="w-[55px] md:w-[80px] h-full overflow-y-auto overflow-x-hidden scrollbar-hide">
           <SettingSideBar />
         </div>
-        <div className="flex flex-col w-[calc(100%-50px)] md:w-[calc(100%-80px)] overflow-y-auto gap-4 ps-14 pe-20 scrollbar-hide text-slate-900 bg-white dark:bg-black dark:text-white">
+        <div className="flex flex-col w-[calc(100%-50px)] md:w-[calc(100%-80px)] overflow-y-auto gap-4 pb-8 ps-14 pe-20 scrollbar-hide text-slate-900 bg-white dark:bg-black dark:text-white">
           <span className="font-bold text-xl md:text-3xl mt-4 pointer-events-none">
             My Profile
           </span>
@@ -356,7 +356,7 @@ const MyAccountPage = () => {
           </div>
         </div>
       </div>
-      <div className="mt-6">
+      <div className="">
         <Footer />
       </div>
       {isChangePassword && (

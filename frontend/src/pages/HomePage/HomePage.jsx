@@ -16,7 +16,7 @@ const HomePage = () => {
       className={`h-screen flex flex-col overflow-y-auto ${
         isDarkMode ? "bg-[#101010]" : "bg-white"
       }`}>
-      <header className='z-40'>
+      <header className="z-40">
         <Header />
       </header>
       <div
@@ -24,46 +24,46 @@ const HomePage = () => {
           isDarkMode ? "bg-[#101010] text-white" : "bg-white text-black"
         }`}>
         <Sidebar />
-        <div className='w-[calc(100%-100px)] flex flex-col h-full '>
-          <div className='mr-auto ml-auto mt-2 mb-4'>
+        <div className="w-[calc(100%-100px)] flex flex-col h-full pb-5">
+          <div className="mr-auto ml-auto mt-2 mb-4">
             {/* <Banner></Banner> */}
             <SlideBanner></SlideBanner>
           </div>
-          <div className=''>
-            <div className='flex justify-between items-center mx-10 my-2'>
-              <div className='ml-2 text-2xl font-bold w-max pointer-events-none'>
+          <div className="">
+            <div className="flex justify-between items-center mx-10 my-2">
+              <div className="ml-2 text-2xl font-bold w-max pointer-events-none">
                 Your recent design
               </div>
               <Link
-                to='../project'
-                className='mr-2 text-right underline font-bold hover:text-[#4335DE]'
-                href=''>
+                to="../project"
+                className="mr-2 text-right underline font-bold hover:text-[#4335DE]"
+                href="">
                 See all
               </Link>
             </div>
-            <div className='px-8'>
+            <div className="px-8">
               <CustomCarousel></CustomCarousel>
             </div>
           </div>
-          <div className=''>
-            <div className='flex justify-between items-center mx-10 my-2'>
-              <div className='ml-2 text-2xl font-bold w-max pointer-events-none'>
+          <div className="">
+            <div className="flex justify-between items-center mx-10 my-2">
+              <div className="ml-2 text-2xl font-bold w-max pointer-events-none">
                 Hot Trending
               </div>
               <Link
-                to='../template'
-                className='mr-2 text-right underline font-bold hover:text-[#4335DE]'
-                href=''>
+                to="../template"
+                className="mr-2 text-right underline font-bold hover:text-[#4335DE]"
+                href="">
                 See all
               </Link>
             </div>
-            <div className='px-8'>
+            <div className="px-8">
               <ResponsiveGridTemplate />
             </div>
           </div>
         </div>
       </div>
-      <div className='mt-6'>
+      <div className="">
         <Footer />
       </div>
     </div>
