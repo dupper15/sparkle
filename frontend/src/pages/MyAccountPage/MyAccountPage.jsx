@@ -188,7 +188,7 @@ const MyAccountPage = () => {
       <header>
         <Header className="fixed top-0 left-0 w-full z-50" />
       </header>
-      <div className="flex flex-grow w-screen">
+      <div className="flex flex-grow w-auto">
         <div className="w-[55px] md:w-[80px] h-full overflow-y-auto overflow-x-hidden scrollbar-hide">
           <SettingSideBar />
         </div>
