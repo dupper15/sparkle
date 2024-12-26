@@ -4,7 +4,7 @@ import SettingSideBar from "../../components/SettingSideBar/SettingSideBar.jsx";
 import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
 
 const SettingPage = () => {
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const { toggleDarkMode } = useDarkMode();
 
   return (
     <div className="flex flex-col h-screen overflow-y-auto w-screen bg-white transition-colors duration-500 dark:bg-black">
@@ -44,7 +44,7 @@ const SettingPage = () => {
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="">
         <Footer />
       </div>
     </div>
