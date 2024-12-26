@@ -129,11 +129,13 @@ const initializeSocket = async (server, mongoUri) => {
     });
 
     socket.on("leave-page", (data) => {
-      const { databaseId } = data;
-      if (!databaseId) return;
-      const userId = socket.userId;
+      if (!data) {
+        const { databaseId } = data;
+        if (!databaseId) return;
+        const userId = socket.userId;
 
-      socket.to(databaseId).emit("remove-cursor", userId);
+        socket.to(databaseId).emit("remove-cursor", userId);
+      }
     });
 
     socket.on("select-component", async ({ id, userId1, roomId }) => {

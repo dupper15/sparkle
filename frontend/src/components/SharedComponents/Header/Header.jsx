@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../../../assets/default-profile-icon.png";
 import UserProfileMenu from "../UserProfileMenu/UserProfileMenu.jsx";
-
+import * as Alert from "../../Alert/Alert.jsx";
 import CustomizeSizeDialogue from "../../dialogs/CustomizeSizeDialogue.jsx";
 import { useDarkMode } from "../../../contexts/DarkModeContext.jsx";
 import { useSelector } from "react-redux";
@@ -26,6 +26,7 @@ const Header = () => {
   };
 
   const handleCreate = (designData) => {
+    Alert.success("Create project successfully!");
     navigate("/edit", { state: designData });
   };
 
