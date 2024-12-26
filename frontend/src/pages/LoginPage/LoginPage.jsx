@@ -201,8 +201,9 @@ const LoginPage = () => {
     dispatch(updateUser({ ...res?.data, access_token: token }));
   };
 
-  const handleLoginGoogle = async () => {
+  const handleLoginGoogle = async (e) => {
     try {
+      e.preventDefault();
       const result = await signInWithPopup(auth, googleProvider);
       const emailGoogle = result.user.email;
       const name = result.user.displayName;
@@ -213,8 +214,9 @@ const LoginPage = () => {
     }
   };
 
-  const handleLoginFacebook = async () => {
+  const handleLoginFacebook = async (e) => {
     try {
+      e.preventDefault();
       const result = await signInWithPopup(auth, facebookProvider);
       const emailFacebook = result.user.email;
       const name = result.user.displayName;

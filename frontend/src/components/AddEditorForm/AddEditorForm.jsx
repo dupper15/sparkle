@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 import * as ProjectService from "../../services/ProjectService";
 import { addEditor } from "../../redux/slides/projectSlide.js";
+import * as Alert from "../Alert/Alert.jsx";
 
 const AddEditorForm = ({ childCloseFormRequest }) => {
   const { isDarkMode } = useDarkMode();
@@ -25,8 +26,8 @@ const AddEditorForm = ({ childCloseFormRequest }) => {
     },
     onSuccess: (data) => {
       setErrorMessage("");
-
       const apiSuccessMessage = data.message || "Editor added successfully!";
+      Alert.success("Add editor successfully!");
       setSuccessMessage(apiSuccessMessage);
       childCloseFormRequest();
     },

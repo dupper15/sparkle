@@ -12,6 +12,8 @@ import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import SettingWork from "../AddEditorForm/SettingWork";
 
 const initialState = {
   isShow: false,
@@ -33,6 +35,7 @@ function reducer(state, action) {
 }
 
 const WorkplaceHeader = ({ usersInRoom }) => {
+  const [openSetting, setOpenSetting] = useState(false);
   const { isDarkMode } = useDarkMode();
   const navigate = useNavigate();
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -573,11 +576,19 @@ const WorkplaceHeader = ({ usersInRoom }) => {
 
         {/* Nút trạng thái Private/Public */}
         {ownerId === project?.owner && (
-          <button
-            onClick={status ? handlePrivate : handlePublic}
-            className='w-[100px] h-[40px] bg-white font-semibold rounded-lg shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
-            <span className='gradient'>{status ? "Private" : "Public"}</span>
-          </button>
+          <BsThreeDotsVertical
+            onClick={() => setOpenSetting((prev) => !prev)}
+            className='text-xl text-slate-800 hover:text-slate-600 cursor-pointer'
+          />
+        )}
+        {openSetting && (
+          <div className='absolute top-[4.5rem] right-[1rem] padding-[15px]'>
+            <SettingWork
+              status={status}
+              handlePrivate={handlePrivate}
+              handlePublic={handlePublic}
+            />
+          </div>
         )}
       </div>
     </div>
