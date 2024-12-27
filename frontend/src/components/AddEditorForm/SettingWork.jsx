@@ -1,24 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MdOutlinePublic } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { useMutation } from "@tanstack/react-query";
+import * as ProjectService from "../../services/ProjectService";
 import Avatar from "antd/es/avatar/avatar";
 import profileIcon from "../../assets/default-profile-icon.png";
-import { RiDeleteBin6Line } from "react-icons/ri";
+import * as Message from "../Alert/Alert"
 
-const SettingWork = ({ status, handlePrivate, handlePublic }) => {
-  const items = [
-    {
-      avatar: <Avatar size={40} src={profileIcon} />,
-      name: "Nguyen Van A",
+const SettingWork = ({ status, handlePrivate, handlePublic, setOpenAddEditor }) => {
+  const [items, setItems] = useState([]);
+  const projecId = localStorage.getItem("projectId");
+  const [refresh, setRefresh] = useState(false);
+
+  const mutationGet = useMutation({
+    mutationFn: (data) => {
+      return ProjectService.getEditor(data);
     },
-    {
-      avatar: <Avatar size={40} src={profileIcon} />,
-      name: "Nguyen Van B",
+    onSuccess: (data) => {
+      console.log("Project updated successfully:", data);
+      setItems(data.data)
+
     },
-    {
-      avatar: <Avatar size={40} src={profileIcon} />,
-      name: "Nguyen Van C",
+  })
+
+  const mutationDelete = useMutation({
+    mutationFn: (data) => {
+      return ProjectService.removeEditor(data);
     },
-  ];
+    onSuccess: (data) => {
+      console.log("Project updated successfully:", data);
+      setRefresh(!refresh)
+      Message.success("Remove editor successfully")
+      setOpenAddEditor();
+    },
+  })
+
+  useEffect(() => {
+    mutationGet.mutate(projecId)
+  }, [refresh])
+
+  const handleRemove = (email) => { 
+    mutationDelete.mutate({ id: projecId, email: email})
+  };
 
   return (
     <div className='bg-gray-50 p-6 rounded-lg shadow-md w-[240px] mx-auto'>
@@ -34,23 +57,31 @@ const SettingWork = ({ status, handlePrivate, handlePublic }) => {
 
       {/* Section: User List */}
       <div className='flex flex-col gap-3'>
-        {items.map((item, index) => (
-          <div
-            key={index}
-            className='flex items-center justify-between px-2 py-4 bg-white rounded-lg shadow hover:bg-gray-100 transition-colors'>
-            <div className='flex items-center gap-3'>
-              {item.avatar}
-              <span className='text-sm font-medium text-gray-700'>
-                {item.name}
-              </span>
+        {items.length === 0 ? (
+          // Nếu items rỗng, hiển thị div trắng
+          <div className='h-20 bg-white rounded-lg shadow'></div>
+        ) : (
+          // Nếu items không rỗng, hiển thị danh sách
+          items.map((item, index) => (
+            <div
+              key={index}
+              className='flex items-center justify-between px-2 py-4 bg-white rounded-lg shadow hover:bg-gray-100 transition-colors'>
+              <div className='flex items-center gap-3'>
+                <Avatar size={40} src={item.image || profileIcon} />
+                <span className='text-sm font-medium text-gray-700'>
+                  {item.userName}
+                </span>
+              </div>
+              <RiDeleteBin6Line
+                onClick={() => handleRemove(item.email)}
+                size={20}
+                className='text-gray-500 cursor-pointer hover:text-red-500 transition-colors'
+              />
             </div>
-            <RiDeleteBin6Line
-              size={20}
-              className='text-gray-500 cursor-pointer hover:text-red-500 transition-colors'
-            />
-          </div>
-        ))}
+          ))
+        )}
       </div>
+
     </div>
   );
 };

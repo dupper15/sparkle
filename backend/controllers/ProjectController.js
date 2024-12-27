@@ -274,6 +274,32 @@ const renameProject = async (req, res) => {
   }
 };
 
+const getEditor = async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const response = await ProjectService.getEditor(projectId);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+const removeEditor = async (req, res) => {
+  try {
+    const projectId = req.params.id;
+    const data = req.body;
+    const response = await ProjectService.removeEditor(projectId, data);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
+
 module.exports = {
   createProject,
   getDetailProject,
@@ -288,4 +314,6 @@ module.exports = {
   addEditor,
   getAvatar,
   renameProject,
+  getEditor,
+  removeEditor
 };

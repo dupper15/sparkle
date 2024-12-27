@@ -61,9 +61,9 @@ const ResponsiveGrid = () => {
               onClick={() => handleClick(project?._id)}
               key={project?._id}
               id={project?._id}
-              className='bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'>
+              className='bg-white w-[360px] rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'>
               <div
-                className='w-[320px] h-[200px] relative bg-cover overflow-hidden border '
+                className='w-[360px] h-[200px] relative bg-cover overflow-hidden border '
                 style={{
                   backgroundImage:
                     project.canvasArray?.[0]?.background === "#ffffff"
@@ -137,7 +137,7 @@ const ResponsiveGrid = () => {
 
                     const shapeStyle = getShapeStyle(component.shapeType);
 
-                    const scaleX = 320 / project.width;
+                    const scaleX = 360 / project.width;
                     const scaleY = 200 / project.height;
 
                     const widthComponent = component.width * scaleX;
