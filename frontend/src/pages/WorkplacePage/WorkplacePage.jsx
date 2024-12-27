@@ -441,16 +441,6 @@ const WorkplaceCanvas = () => {
     }
   }, [project?.id, user?.id]);
 
-  const [isJoined, setIsJoined] = useState(false);
-
-  useEffect(() => {
-    if (usersInRoom.some((usersInRoom) => usersInRoom.id === user._id)) {
-      setIsJoined(true);
-    } else {
-      setIsJoined(false);
-    }
-  }, [usersInRoom, user._id]);
-
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div
@@ -566,15 +556,6 @@ const WorkplaceCanvas = () => {
               toggleChatBox={toggleChatBox}
               setUsersInRoom={setUsersInRoom}
             />
-          )}
-
-          {!isJoined && (
-            <>
-              <div className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"></div>
-              <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in">
-                <JoinForm childCloseFormRequest={() => {}} />
-              </div>
-            </>
           )}
         </div>
       </div>

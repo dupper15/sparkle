@@ -27,7 +27,7 @@ const Header = () => {
 
   const handleCreate = (designData) => {
     Alert.success("Create project successfully!");
-    navigate("/edit", { state: designData });
+    //navigate("/edit", { state: designData });
   };
 
   return (

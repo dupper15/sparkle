@@ -361,6 +361,28 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     }
   }, [usersInRoom]);
 
+  const [isJoined, setIsJoined] = useState(true);
+
+  useEffect(() => {
+    if (usersInRoom.some((usersInRoom) => usersInRoom.id === user._id)) {
+      setIsJoined(true);
+    } else {
+      setIsJoined(false);
+    }
+  }, [usersInRoom, user._id]);
+
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowForm(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  isJoined ? console.log("yes") : "no";
+
   return (
     <div
       className={`flex items-center justify-between w-full h-[50px] px-5 py-8 ${
@@ -605,6 +627,15 @@ const WorkplaceHeader = ({ usersInRoom }) => {
               handlePublic={handlePublic}
             />
           </div>
+        )}
+
+        {!isJoined && showForm && (
+          <>
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"></div>
+            <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in">
+              <JoinForm childCloseFormRequest={() => {}} />
+            </div>
+          </>
         )}
       </div>
     </div>
