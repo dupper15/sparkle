@@ -8,15 +8,16 @@ import * as ProjectService from "../../../services/ProjectService";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
+import * as Alert from "../../Alert/Alert"
 
 const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 4000, min: 3000 },
-    items: 5,
+    items: 4,
   },
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
-    items: 3,
+    items: 4,
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
@@ -28,7 +29,7 @@ const responsive = {
   },
 };
 
-function CustomCarousel() {
+function CustomCarousel({onDelete}) {
   const user = useSelector((state) => state.user);
   const navigate = useNavigate();
 
@@ -39,7 +40,7 @@ function CustomCarousel() {
   const [renameId, setRenameId] = useState(null);
   const [newProjectName, setNewProjectName] = useState("");
   const inputRef = useRef(null);
-
+ 
   const mutation = useMutationHooks(async (data) => {
     try {
       const project_arr = await ProjectService.getAllProject(data);
@@ -53,7 +54,6 @@ function CustomCarousel() {
     try {
       const id = data.projectId;
       const projectName = data.newProjectName;
-      console.log(id, projectName);
       const result = await ProjectService.renameProject(id, projectName);
       return result; // Trả về kết quả từ API
     } catch (error) {
@@ -62,17 +62,6 @@ function CustomCarousel() {
     }
   });
 
-  const mutationDelete = useMutationHooks(
-    async (data) => {
-      const id = data.projectId;
-      await ProjectService.deleteProject(id);
-    },
-    {
-      onSuccess: () => {
-        handleGetAllProject(); // Gọi lại API để cập nhật danh sách sau khi xóa
-      },
-    }
-  );
 
   useEffect(() => {
     handleGetAllProject();
@@ -110,17 +99,7 @@ function CustomCarousel() {
       );
       setProjects(updatedProjects);
       setRenameId(null); // Đóng chế độ rename
-    } catch (error) {
-      console.error("Error saving renamed project:", error);
-      // Bạn có thể thêm logic hiển thị thông báo lỗi ở đây
-    }
-  };
-
-  const handleDelete = async (projectId) => {
-    try {
-      mutationDelete.mutateAsync({
-        projectId,
-      });
+      Alert.success("Rename project successfully")
     } catch (error) {
       console.error("Error saving renamed project:", error);
       // Bạn có thể thêm logic hiển thị thông báo lỗi ở đây
@@ -139,7 +118,7 @@ function CustomCarousel() {
       keyBoardControl={true}
       transitionDuration={500}
       removeArrowOnDeviceType={["tablet", "mobile"]}
-      itemClass='p-4 flex gap-4'>
+      itemClass='p-4 gap-4'>
       {projects.length === 0 ? (
         <div className='flex justify-center items-center h-full w-full text-gray-500 text-center'>
           There are no projects to display.
@@ -169,7 +148,7 @@ function CustomCarousel() {
               }}
               className='cursor-pointer group'>
               <div
-                className='relative bg-cover h-[200px] w-[420px] overflow-hidden border transition-transform transform hover:scale-105' // Div chứa background và các component
+                className='relative bg-cover h-[200px] w-[360px] overflow-hidden border transition-transform transform hover:scale-105' // Div chứa background và các component
                 style={{
                   backgroundImage:
                     project.canvasArray?.[0]?.background === "#ffffff"
@@ -243,7 +222,7 @@ function CustomCarousel() {
 
                     const shapeStyle = getShapeStyle(component.shapeType);
 
-                    const scaleX = 420 / project.width;
+                    const scaleX = 360 / project.width;
                     const scaleY = 200 / project.height;
 
                     const widthComponent = component.width * scaleX;
@@ -323,7 +302,7 @@ function CustomCarousel() {
                   }
                 )}
               </div>
-              <div
+              <div 
                 onClick={(e) => {
                   e.stopPropagation();
                   setOption(!option);
@@ -332,26 +311,25 @@ function CustomCarousel() {
                 <SlOptionsVertical />
               </div>
               {option && hoveredProjectId === project._id && (
-                <div className='absolute top-0 right-0 bg-white p-2 rounded shadow'>
+                <div className='absolute top-6 right-6 bg-white p-2 rounded shadow'>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleRename(project._id);
                     }}
                     className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>
-                    Rename
+                    <span>Rename</span>
                   </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDelete(project._id);
+                      onDelete(project._id);
                     }}
                     className='block px-4 py-2 text-sm text-red-600 hover:bg-red-100'>
-                    Delete
+                    <span>Delete</span>
                   </button>
                 </div>
               )}
-
               {renameId === project._id ? (
                 <div className='p-2 flex flex-row'>
                   <input

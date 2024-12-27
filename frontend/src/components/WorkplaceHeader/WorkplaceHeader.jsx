@@ -50,6 +50,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   const [status, setStatus] = useState("");
   const [download, setDownload] = useState(false);
   const [downloadType, setDownloadType] = useState("pdf");
+  const [openAddEditor, setOpenAddEditor] = useState(false);
 
   const [isShareOpen, SetIsShare] = useState(false);
 
@@ -625,6 +626,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
               status={status}
               handlePrivate={handlePrivate}
               handlePublic={handlePublic}
+              setOpenAddEditor={() => setOpenSetting(!openSetting)}
             />
           </div>
         )}

@@ -15,5 +15,7 @@ router.delete("/delete/:id", projectController.deleteProject);
 router.put("/:id/add-editor", projectController.addEditor);
 router.post("/get-avatar", projectController.getAvatar);
 router.put("/rename-project/:id", projectController.renameProject);
+router.get("/get-editor/:id", projectController.getEditor);
+router.delete("/remove-editor/:id", projectController.removeEditor);
 
 module.exports = router;
