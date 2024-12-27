@@ -7,9 +7,45 @@ import { useDarkMode } from "../../contexts/DarkModeContext.jsx";
 import ResponsiveGridTemplate from "../../components/SharedComponents/ResponsiveGrid/ResponsiveGridTemplate.jsx";
 import { Link } from "react-router-dom";
 import SlideBanner from "../../components/SlideBanner/SlideBanner.jsx";
+import { useState } from "react";
+import { useMutationHooks } from "../../hooks/useMutationHook.js";
+import * as ProjectService from "../../services/ProjectService";
+import * as Alert from "../../components/Alert/Alert.jsx"
 
 const HomePage = () => {
   const { isDarkMode } = useDarkMode();
+  const [isDelete, setDelete] = useState(false);
+  const [id, setId] = useState("");
+
+  const handleDelete = (id) => {
+    setId(id);
+    setDelete(!isDelete);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      mutationDelete.mutateAsync({
+        projectId: id,
+      });
+      setDelete(!isDelete);
+      Alert.success("Delete successfully");
+    } catch (error) {
+      console.error("Error saving renamed project:", error);
+      // Bạn có thể thêm logic hiển thị thông báo lỗi ở đây
+    }
+  };
+
+  const mutationDelete = useMutationHooks(
+    async (data) => {
+      const id = data.projectId;
+      await ProjectService.deleteProject(id);
+    },
+    {
+      onSuccess: () => {
+        
+      },
+    }
+  );
 
   return (
     <div
@@ -42,7 +78,7 @@ const HomePage = () => {
               </Link>
             </div>
             <div className="px-8">
-              <CustomCarousel></CustomCarousel>
+              <CustomCarousel onDelete={(projectId) => handleDelete(projectId)}></CustomCarousel>
             </div>
           </div>
           <div className="">
@@ -66,7 +102,30 @@ const HomePage = () => {
       <div className="">
         <Footer />
       </div>
+      {isDelete && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
+            <h2 className="text-lg font-bold mb-4">Confirm delete</h2>
+            <p className="mb-4">Are you sure you want to delete this item? This action cannot be undone.</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setDelete(!isDelete)}
+                className="px-4 py-2 bg-gray-200 rounded text-gray-800 hover:bg-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+    
   );
 };
 

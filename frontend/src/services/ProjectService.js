@@ -160,3 +160,25 @@ export const deleteProject = async (id) => {
     throw new Error(error.response?.data?.message || "API call failed");
   }
 };
+
+export const getEditor = async (id) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_KEY}/project/get-editor/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};
+
+export const removeEditor = async (data) => {
+  try {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_API_KEY}/project/remove-editor/${data.id}`, {data}
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};

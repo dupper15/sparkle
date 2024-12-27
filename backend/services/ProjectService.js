@@ -536,6 +536,66 @@ const renameProject = async (projectId, projectName) => {
   }
 };
 
+const getEditor = (projectId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const project = await Project.findById(projectId)
+      if (!project) {
+        resolve({
+          status: "ERROR",
+          message: "Account is not defined!",
+        });
+        return;
+      }
+
+      const editors = await User.find({
+        email: { $in: project.editorArray }, // Tìm tất cả các user có id trong editorArray
+      });
+
+      resolve({
+        status: "OK",
+        message: "SUCCESS",
+        data: editors,
+      });
+    } catch (error) {
+      reject({
+        status: "ERROR",
+        message: "Failed to create Project",
+        error: error.message,
+      });
+    }
+  });
+};
+
+const removeEditor = (projectId, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const project = await Project.findById(projectId)
+      if (!project) {
+        resolve({
+          status: "ERROR",
+          message: "Account is not defined!",
+        });
+        return;
+      }
+      project.editorArray.pull(data.email);
+      await project.save();
+
+      resolve({
+        status: "OK",
+        message: "Editor removed successfully!",
+      });
+
+    } catch (error) {
+      reject({
+        status: "ERROR",
+        message: "Failed to create Project",
+        error: error.message,
+      });
+    }
+  });
+};
+
 module.exports = {
   createProject,
   getDetailProject,
@@ -549,4 +609,6 @@ module.exports = {
   deleteProject,
   addEditor,
   renameProject,
+  getEditor,
+  removeEditor
 };
