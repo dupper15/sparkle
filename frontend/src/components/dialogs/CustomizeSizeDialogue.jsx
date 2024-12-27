@@ -19,6 +19,8 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [isLoading, setIsLoading] = useState(false); // Thêm state isLoading
+
   const mutation = useMutation({
     mutationFn: (data) => {
       const { id, ...rests } = data;
@@ -57,13 +59,21 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
     setHeight(e.target.value);
   };
 
-  const createProject = () => {
-    mutation.mutate({ id: user?.id, projectName, width, height });
-    onCreate({
-      projectName: projectName,
-      width: parseInt(width),
-      height: parseInt(height),
-    });
+  const createProject = async () => {
+    setIsLoading(true);
+    try {
+      await mutation.mutateAsync({ id: user?.id, projectName, width, height });
+
+      onCreate({
+        projectName: projectName,
+        width: parseInt(width),
+        height: parseInt(height),
+      });
+    } catch (error) {
+      console.error("Error creating project:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const { data, isSuccess, isError } = mutation;
@@ -83,7 +93,7 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
       }`}>
       {/* Nút Đóng */}
       <button
-        className='absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl'
+        className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl"
         onClick={() => childCloseFormRequest(false)}>
         &times;
       </button>
@@ -97,7 +107,7 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
       </h2>
 
       {/* Input Name */}
-      <div className='w-full mb-4'>
+      <div className="w-full mb-4">
         <label
           className={`block mb-2 text-sm font-medium ${
             isDarkMode ? "text-gray-300" : "text-gray-600"
@@ -105,10 +115,10 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
           Project Name
         </label>
         <input
-          name='name'
+          name="name"
           onChange={handleOnName}
-          type='text'
-          placeholder='Enter name...'
+          type="text"
+          placeholder="Enter name..."
           className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700 focus:ring-indigo-400"
@@ -118,7 +128,7 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
       </div>
 
       {/* Input Width */}
-      <div className='w-full mb-4'>
+      <div className="w-full mb-4">
         <label
           className={`block mb-2 text-sm font-medium ${
             isDarkMode ? "text-gray-300" : "text-gray-600"
@@ -126,10 +136,10 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
           Width (px)
         </label>
         <input
-          name='width'
+          name="width"
           onChange={handleOnWidth}
-          type='text'
-          placeholder='Enter width...'
+          type="text"
+          placeholder="Enter width..."
           className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700 focus:ring-indigo-400"
@@ -139,7 +149,7 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
       </div>
 
       {/* Input Height */}
-      <div className='w-full mb-6'>
+      <div className="w-full mb-6">
         <label
           className={`block mb-2 text-sm font-medium ${
             isDarkMode ? "text-gray-300" : "text-gray-600"
@@ -147,10 +157,10 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
           Height (px)
         </label>
         <input
-          name='height'
+          name="height"
           onChange={handleOnHeight}
-          type='text'
-          placeholder='Enter height...'
+          type="text"
+          placeholder="Enter height..."
           className={`w-full p-3 border rounded-lg focus:outline-none  ${
             isDarkMode
               ? "bg-gray-800 text-white border-gray-700 focus:ring-indigo-400"
@@ -162,8 +172,9 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
       {/* Nút Tạo */}
       <button
         onClick={createProject}
-        className='w-full py-3 font-bold text-white rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 hover:opacity-90 focus:ring-4 focus:ring-blue-300'>
-        Create Project
+        disabled={isLoading}
+        className="w-full py-3 font-bold text-white rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 hover:opacity-90 focus:ring-4 focus:ring-blue-300">
+        {isLoading ? "Creating..." : "Create Project"}
       </button>
     </div>
   );

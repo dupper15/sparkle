@@ -14,6 +14,8 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import SettingWork from "../AddEditorForm/SettingWork";
+import ShareProject from "../ShareProject/ShareProject";
+import JoinForm from "../JoinForm/JoinForm";
 
 const initialState = {
   isShow: false,
@@ -49,6 +51,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   const [download, setDownload] = useState(false);
   const [downloadType, setDownloadType] = useState("pdf");
   const [openAddEditor, setOpenAddEditor] = useState(false);
+
+  const [isShareOpen, SetIsShare] = useState(false);
 
   const [canvases, setCanvases] = useState("");
 
@@ -134,14 +138,14 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       case "circle":
         return (
           <svg width={width} height={height}>
-            <circle cx='50%' cy='50%' r='50%' fill={color || "transparent"} />
+            <circle cx="50%" cy="50%" r="50%" fill={color || "transparent"} />
           </svg>
         );
       case "triangle":
         return (
           <svg width={width} height={height}>
             <polygon
-              points='50,0 100,100 0,100'
+              points="50,0 100,100 0,100"
               fill={color || "transparent"}
             />
           </svg>
@@ -149,7 +153,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
       case "invertedTriangle":
         return (
           <svg width={width} height={height}>
-            <polygon points='50,100 0,0 100,0' fill={color || "transparent"} />
+            <polygon points="50,100 0,0 100,0" fill={color || "transparent"} />
           </svg>
         );
       case "rect":
@@ -165,7 +169,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points='50,0 100,38 82,100 18,100 0,38'
+              points="50,0 100,38 82,100 18,100 0,38"
               fill={color || "transparent"}
             />
           </svg>
@@ -174,7 +178,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points='50,0 100,25 100,75 50,100 0,75 0,25'
+              points="50,0 100,25 100,75 50,100 0,75 0,25"
               fill={color || "transparent"}
             />
           </svg>
@@ -183,7 +187,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points='30,0 70,0 100,30 100,70 70,100 30,100 0,70 0,30'
+              points="30,0 70,0 100,30 100,70 70,100 30,100 0,70 0,30"
               fill={color || "transparent"}
             />
           </svg>
@@ -192,7 +196,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points='50,0 100,50 75,50 75,100 25,100 25,50 0,50'
+              points="50,0 100,50 75,50 75,100 25,100 25,50 0,50"
               fill={color || "transparent"}
             />
           </svg>
@@ -201,7 +205,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points='50,100 100,50 75,50 75,0 25,0 25,50 0,50'
+              points="50,100 100,50 75,50 75,0 25,0 25,50 0,50"
               fill={color || "transparent"}
             />
           </svg>
@@ -210,7 +214,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points='0,50 50,0 50,25 100,25 100,75 50,75 50,100'
+              points="0,50 50,0 50,25 100,25 100,75 50,75 50,100"
               fill={color || "transparent"}
             />
           </svg>
@@ -219,7 +223,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         return (
           <svg width={width} height={height}>
             <polygon
-              points='100,50 50,0 50,25 0,25 0,75 50,75 50,100'
+              points="100,50 50,0 50,25 0,25 0,75 50,75 50,100"
               fill={color || "transparent"}
             />
           </svg>
@@ -358,30 +362,52 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     }
   }, [usersInRoom]);
 
+  const [isJoined, setIsJoined] = useState(true);
+
+  useEffect(() => {
+    if (usersInRoom.some((usersInRoom) => usersInRoom.id === user._id)) {
+      setIsJoined(true);
+    } else {
+      setIsJoined(false);
+    }
+  }, [usersInRoom, user._id]);
+
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowForm(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  isJoined ? console.log("yes") : "no";
+
   return (
     <div
       className={`flex items-center justify-between w-full h-[50px] px-5 py-8 ${
         isDarkMode ? "bg-[#18191B]" : "bg-slate-100"
       }`}>
-      <div className='flex items-center gap-2'>
+      <div className="flex items-center gap-2">
         <div className="w-[40px] h-[40px] bg-[url('./assets/logo.png')] bg-cover bg-center" />
         <div
           onClick={goHome}
-          className='text-3xl font-bold cursor-pointer 
+          className="text-3xl font-bold cursor-pointer 
            gradient
-          '>
+          ">
           Sparkle
         </div>
       </div>
 
-      <div className='flex items-center gap-5'>
-        <div className='hidden md:flex md:items-center relative mr-6'>
+      <div className="flex items-center gap-5">
+        <div className="hidden md:flex md:items-center relative mr-6">
           {state.avatars.length > 1 && (
-            <div className='flex flex-row-reverse'>
+            <div className="flex flex-row-reverse">
               {state.avatars.map((value, index) => (
                 <div
                   key={index}
-                  className='w-[40px] h-[40px] rounded-full overflow-hidden border-2 border-white'
+                  className="w-[40px] h-[40px] rounded-full overflow-hidden border-2 border-white"
                   style={{
                     marginLeft:
                       index !== state.avatars.length - 1 ? "-15px" : "0",
@@ -389,8 +415,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
                   }}>
                   <img
                     src={value || avt}
-                    alt='Avatar'
-                    className='w-full h-full object-cover'
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
                   />
                 </div>
               ))}
@@ -399,25 +425,25 @@ const WorkplaceHeader = ({ usersInRoom }) => {
 
           <button
             onClick={toggleAddMember}
-            className='w-[40px] h-[40px] bg-white font-semibold rounded-full
+            className="w-[40px] h-[40px] bg-white font-semibold rounded-full
                       border-2 shadow-sm cursor-pointer text-[#4335DE] flex justify-center
-                      items-center p-2 hover:bg-slate-200'
+                      items-center p-2 hover:bg-slate-200"
             style={{
               position: "absolute",
               top: "50%",
               left: "calc(100% - 15px)",
               transform: "translateY(-50%)",
             }}>
-            <FaPlus className='w-[30px] h-[30px]' />
+            <FaPlus className="w-[30px] h-[30px]" />
           </button>
         </div>
 
         {state.isShow && (
           <>
             <div
-              className='fixed inset-0 bg-black bg-opacity-50 z-[9998]'
+              className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"
               onClick={toggleAddMember}></div>
-            <div className='fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in'>
+            <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in">
               <AddEditorForm
                 childCloseFormRequest={toggleAddMember}
                 onCreate={(data) => console.log("Member added:", data)}
@@ -428,8 +454,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
 
         <button
           onClick={handleClickDownload}
-          className='w-[100px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer flex justify-center items-center p-2'>
-          <span className='text-white'>Download</span>
+          className="w-[100px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer flex justify-center items-center p-2">
+          <span className="text-white">Download</span>
         </button>
         {download && (
           <div
@@ -437,47 +463,47 @@ const WorkplaceHeader = ({ usersInRoom }) => {
               isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
             }`}>
             {/* Header */}
-            <div className='text-center py-3 border-b'>
-              <span className='font-semibold text-lg'>Download Options</span>
+            <div className="text-center py-3 border-b">
+              <span className="font-semibold text-lg">Download Options</span>
             </div>
 
             {/* Options */}
-            <div className='flex flex-col px-6 py-4 space-y-3'>
+            <div className="flex flex-col px-6 py-4 space-y-3">
               {/* Radio Option for PDF */}
-              <label className='flex items-center cursor-pointer text-sm hover:text-[#4335DE] transition'>
-                <div className='flex items-center'>
+              <label className="flex items-center cursor-pointer text-sm hover:text-[#4335DE] transition">
+                <div className="flex items-center">
                   <input
-                    type='radio'
-                    name='downloadType'
-                    value='pdf'
+                    type="radio"
+                    name="downloadType"
+                    value="pdf"
                     checked={downloadType === "pdf"}
                     onChange={() => setDownloadType("pdf")}
-                    className=' mr-3  accent-[#4335DE] focus:outline-none '
+                    className=" mr-3  accent-[#4335DE] focus:outline-none "
                   />
-                  <label htmlFor='pdf' className='custom-radio'></label>
-                  <span className='w-full text-left'>Download PDF</span>
+                  <label htmlFor="pdf" className="custom-radio"></label>
+                  <span className="w-full text-left">Download PDF</span>
                 </div>
               </label>
 
               {/* Radio Option for PNG */}
-              <label className='flex items-center cursor-pointer text-sm hover:text-[#4335DE] transition'>
+              <label className="flex items-center cursor-pointer text-sm hover:text-[#4335DE] transition">
                 <input
-                  type='radio'
-                  name='downloadType'
-                  value='png'
+                  type="radio"
+                  name="downloadType"
+                  value="png"
                   checked={downloadType === "png"}
                   onChange={() => setDownloadType("png")}
-                  className='mr-3 accent-[#4335DE] focus:outline-none'
+                  className="mr-3 accent-[#4335DE] focus:outline-none"
                 />
-                <span className='w-full text-left'>Download PNG</span>
+                <span className="w-full text-left">Download PNG</span>
               </label>
             </div>
 
             {/* Download Button */}
-            <div className='flex justify-center mt-5'>
+            <div className="flex justify-center mt-5">
               <button
                 onClick={handleDownload}
-                className='px-5 py-2 bg-[#4335DE] text-white rounded-lg hover:bg-[#372fc9] transition transform hover:scale-105 z-99'>
+                className="px-5 py-2 bg-[#4335DE] text-white rounded-lg hover:bg-[#372fc9] transition transform hover:scale-105 z-99">
                 Download
               </button>
             </div>
@@ -496,10 +522,10 @@ const WorkplaceHeader = ({ usersInRoom }) => {
               <div
                 key={canvas?._id}
                 id={canvas?._id}
-                className='canvas-container bg-white'>
+                className="canvas-container bg-white">
                 <div
                   ref={(el) => (canvasRefs.current[index] = el)}
-                  className='canvas-background'
+                  className="canvas-background"
                   style={{
                     width: `${project.width}px`,
                     height: `${project.height}px`,
@@ -545,7 +571,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
                       ) : component.type === "Image" ? (
                         <img
                           src={component.image}
-                          alt=''
+                          alt=""
                           style={{
                             width: "100%", // Đảm bảo hình ảnh chiếm toàn bộ chiều rộng container
                             height: "100%", // Đảm bảo hình ảnh chiếm toàn bộ chiều cao container
@@ -570,20 +596,32 @@ const WorkplaceHeader = ({ usersInRoom }) => {
 
         {/* Nút chia sẻ */}
         <button
-          onClick={() => console.log("userInRoom", usersInRoom)}
-          className='w-[100px] h-[40px] bg-white font-semibold rounded-lg  shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200'>
-          <span className='gradient'>Share</span>
+          onClick={() => SetIsShare((prev) => !prev)}
+          className="w-[100px] h-[40px] bg-white font-semibold rounded-lg  shadow-sm cursor-pointer text-black flex justify-center items-center p-2 hover:bg-slate-200">
+          <span className="gradient">Share</span>
         </button>
+        {isShareOpen && (
+          <>
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"
+              onClick={() => SetIsShare((prev) => !prev)}></div>
+            <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in">
+              <ShareProject
+                childCloseFormRequest={() => SetIsShare((prev) => !prev)}
+              />
+            </div>
+          </>
+        )}
 
         {/* Nút trạng thái Private/Public */}
         {ownerId === project?.owner && (
           <BsThreeDotsVertical
             onClick={() => setOpenSetting((prev) => !prev)}
-            className='text-xl text-slate-800 hover:text-slate-600 cursor-pointer'
+            className="text-xl text-slate-800 hover:text-slate-600 cursor-pointer dark:text-white"
           />
         )}
         {openSetting && (
-          <div className='absolute top-[4.5rem] right-[1rem] padding-[15px]'>
+          <div className="absolute top-[4.5rem] right-[1rem] padding-[15px]">
             <SettingWork
               status={status}
               handlePrivate={handlePrivate}
@@ -591,6 +629,15 @@ const WorkplaceHeader = ({ usersInRoom }) => {
               setOpenAddEditor={() => setOpenSetting(!openSetting)}
             />
           </div>
+        )}
+
+        {!isJoined && showForm && (
+          <>
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"></div>
+            <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in">
+              <JoinForm childCloseFormRequest={() => {}} />
+            </div>
+          </>
         )}
       </div>
     </div>
