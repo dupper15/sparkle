@@ -27,6 +27,7 @@ import { useMutation } from "@tanstack/react-query";
 import socket from "../../utils/socket.js";
 import { createAndAddComponentToCanvas } from "../../services/utils/componentOrchestrator.js";
 import { extractIdFromOver } from "../../utils/utils.js";
+import JoinForm from "../../components/JoinForm/JoinForm.jsx";
 
 const WorkplaceCanvas = () => {
   const dispatch = useDispatch();
@@ -440,6 +441,16 @@ const WorkplaceCanvas = () => {
     }
   }, [project?.id, user?.id]);
 
+  const [isJoined, setIsJoined] = useState(false);
+
+  useEffect(() => {
+    if (usersInRoom.some((usersInRoom) => usersInRoom.id === user._id)) {
+      setIsJoined(true);
+    } else {
+      setIsJoined(false);
+    }
+  }, [usersInRoom, user._id]);
+
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div
@@ -447,7 +458,7 @@ const WorkplaceCanvas = () => {
           isDarkMode ? "bg-[#151318]" : "bg-slate-300"
         }`}>
         <WorkplaceHeader usersInRoom={usersInRoom} />
-        <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide '>
+        <div className="flex h-[calc(100%-60px)] w-screen scrollbar-hide ">
           <div
             className={`w-[80px] scrollbar-hide h-full overflow-y-auto ${
               isDarkMode ? "bg-black text-white" : "bg-slate-100 text-black"
@@ -482,13 +493,13 @@ const WorkplaceCanvas = () => {
                       : "bg-white"
                     : ""
                 } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}>
-                <span className='text-2xl'>{icon}</span>
-                <span className='text-xs font-medium'>{label}</span>
+                <span className="text-2xl">{icon}</span>
+                <span className="text-xs font-medium">{label}</span>
               </div>
             ))}
           </div>
 
-          <div className='h-full w-[calc(100%-75px)]'>
+          <div className="h-full w-[calc(100%-75px)]">
             <div
               className={`${
                 show.status ? "py-5 -left-[400px]" : "px-8 left-[75px] py-5"
@@ -519,7 +530,7 @@ const WorkplaceCanvas = () => {
                 <Background setBackground={setBackground} />
               )}
             </div>
-            <div className='flex flex-col items-center justify-start gap-8 m-2 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
+            <div className="flex flex-col items-center justify-start gap-8 m-2 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide">
               {canvases.map((canvasData, index) => (
                 <div
                   key={canvasData.id}
@@ -555,6 +566,15 @@ const WorkplaceCanvas = () => {
               toggleChatBox={toggleChatBox}
               setUsersInRoom={setUsersInRoom}
             />
+          )}
+
+          {!isJoined && (
+            <>
+              <div className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"></div>
+              <div className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in">
+                <JoinForm childCloseFormRequest={() => {}} />
+              </div>
+            </>
           )}
         </div>
       </div>
