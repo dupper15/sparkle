@@ -333,8 +333,10 @@ const MyAccountPage = () => {
                   </span>
                 </div>
               </div>
-              <button className="w-[auto] h-[40px] ml-auto bg-slate-100 text-slate-800 border-slate-600  border-2 font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 hover:bg-slate-400 dark:bg-black dark:text-white">
-                Connect
+              <button
+                disabled="false"
+                className="w-[auto] h-[40px] ml-auto bg-slate-500 text-slate-800 border-slate-600  border-2 font-semibold rounded-lg shadow-sm flex justify-center items-center px-3 py-2 dark:bg-black dark:text-white">
+                Connected
               </button>
             </div>
             <div className="flex flex-row items-center border-slate-600 w-max md:w-full h-[auto] border-2 rounded-lg my-2 py-3 px-2 dark:border-white">
@@ -350,7 +352,7 @@ const MyAccountPage = () => {
                 </div>
               </div>
               <button className="w-[auto] h-[40px] ml-auto bg-slate-100 text-slate-800 font-semibold rounded-lg shadow-sm border-slate-600  border-2 flex justify-center items-center px-3 py-2 hover:bg-slate-400 dark:bg-black dark:text-white">
-                Disconnect
+                Connect
               </button>
             </div>
           </div>

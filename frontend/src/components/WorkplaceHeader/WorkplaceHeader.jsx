@@ -323,14 +323,30 @@ const WorkplaceHeader = ({ usersInRoom }) => {
     }
   }, [isSuccess, isError, errorMessage, successMessage]);
 
-  const handlePublic = () => {
-    mutationPublic.mutate({ projectId });
-    setStatus(!status);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handlePublic = async () => {
+    try {
+      setIsLoading(true);
+      await mutationPublic.mutateAsync({ projectId });
+      setStatus(true);
+    } catch (error) {
+      console.error("Error updating project to public:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handlePrivate = () => {
-    mutationPrivate.mutate({ projectId });
-    setStatus(!status);
+  const handlePrivate = async () => {
+    try {
+      setIsLoading(true);
+      await mutationPrivate.mutateAsync({ projectId });
+      setStatus(false);
+    } catch (error) {
+      console.error("Error updating project to private:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleClickDownload = async () => {
@@ -623,6 +639,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
         {openSetting && (
           <div className="absolute top-[4.5rem] right-[1rem] padding-[15px]">
             <SettingWork
+              isLoading={isLoading}
               status={status}
               handlePrivate={handlePrivate}
               handlePublic={handlePublic}
