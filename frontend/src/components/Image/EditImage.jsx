@@ -7,6 +7,10 @@ import { createImageUpload } from "../../services/ImageService";
 import { useSelector } from "react-redux";
 
 const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
+  const [image, setImage] = useState("");
+  useEffect(() => {
+    setImage(imageLink);
+  }, []);
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
   const [canvasCtx, setCanvasCtx] = useState(null);
@@ -17,8 +21,8 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
     return createImageUpload(data);
   });
   const mutation = useMutation({
-    mutationFn: ({ imageLink }) => {
-      return ImageService.removeBackground(imageLink);
+    mutationFn: (data) => {
+      return ImageService.removeBackground(data);
     },
     onError: (error) => {
       console.log(error);
@@ -51,14 +55,26 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       const img = new Image();
-      img.src = imageNoneBackground;
-      img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-      };
+
+      // Fetch ảnh từ URL về dưới dạng Blob để tránh lỗi CORS
+      fetch(imageNoneBackground)
+        .then((res) => res.blob())
+        .then((blob) => {
+          const url = URL.createObjectURL(blob);
+          img.src = url;
+          img.onload = () => {
+            canvas.width = 400;
+            canvas.height = 400;
+            ctx.drawImage(img, 0, 0, 400, 400);
+            imageRef.current = img;
+          };
+        })
+        .catch((err) => {
+          console.error("Error loading image: ", err);
+        });
     }
   }, [imageNoneBackground]);
+
   const applyFilters = () => {
     if (!canvasCtx || !imageRef.current) return;
     const brightness = parseFloat(document.getElementById("brightness").value);
@@ -110,7 +126,7 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
     canvasCtx.putImageData(imageData, 0, 0);
   };
   const handleSubmit = (imageLink) => {
-    mutation.mutate({ imageLink });
+    mutation.mutate({ data: imageLink });
   };
   const handleRestore = () => {
     setImageNoneBackground("");
@@ -184,17 +200,17 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
       });
 
       console.log("Image uploaded successfully: ", result.secure_url);
+      setIsEdit(false);
 
       fetchImages();
-      setIsEdit(false);
     } catch (error) {
       console.error("Error uploading image: ", error);
     }
   };
 
   return (
-    <div className='flex flex-col overflow-y-scroll'>
-      <div className='flex gap-4 items-center'>
+    <div className='flex flex-col overflow-y-scroll h-full p-4'>
+      <div className='flex gap-4 items-center '>
         <IoIosArrowBack
           onClick={() => setIsEdit(false)}
           className='text-xl cursor-pointer hover:text-slate-200'
@@ -210,8 +226,7 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
         <div className='absolute inset-0 h-[200px] my-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-50 text-white font-bold rounded-md'>
           <button
             onClick={() => {
-              handleSubmit(imageLink);
-              console.log("imageLink", imageLink);
+              handleSubmit(image);
             }}
             className='flex justify-center items-center bg-blue-500 rounded-md text-white p-3 hover:bg-blue-400'>
             Remove background

@@ -73,10 +73,9 @@ const updateImage = async (req, res) => {
 };
 const removeBackground = async (req, res) => {
   try {
-    const imageUrl = req.body;
-    const response = await ImageService.removeBackground(imageUrl);
-
-    console.log("hế 3", response);
+    const data = req.body.data;
+    const response = await ImageService.removeBackground(data);
+    console.log("response", response);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({

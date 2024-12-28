@@ -33,7 +33,9 @@ const initializeSocket = async (server, mongoUri) => {
   const rooms = {};
   const activeUsers = {};
   io.on("connection", (socket) => {
+    if (!socket) return;
     socket.on("setUserId", (userId) => {
+      if (!userId) return;
       socket.userId = userId;
     });
 
@@ -57,6 +59,7 @@ const initializeSocket = async (server, mongoUri) => {
       }
     });
     socket.on("leaveRoom", (roomId) => {
+      if (!roomId) return;
       if (rooms[roomId]) {
         rooms[roomId] = rooms[roomId].filter((id) => id !== socket.userId);
       }
@@ -129,7 +132,7 @@ const initializeSocket = async (server, mongoUri) => {
     });
 
     socket.on("leave-page", (data) => {
-      if (!data) {
+      if (data) {
         const { databaseId } = data;
         if (!databaseId) return;
         const userId = socket.userId;
@@ -139,6 +142,7 @@ const initializeSocket = async (server, mongoUri) => {
     });
 
     socket.on("select-component", async ({ id, userId1, roomId }) => {
+      if (!id || !userId1 || !roomId) return;
       socket.join(roomId);
       const userName = await getUserName(userId1);
       socket
@@ -146,6 +150,7 @@ const initializeSocket = async (server, mongoUri) => {
         .emit("update-select-component", { id, userId1, userName });
     });
     socket.on("deselect-component", ({ componentId, userId, roomId }) => {
+      if (!componentId || !userId || !roomId) return;
       socket
         .to(roomId)
         .emit("update-deselect-component", { componentId, userId });

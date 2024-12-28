@@ -153,9 +153,11 @@ const updateImage = (imageId, data) => {
 
 const removeBackground = async (imageUrl) => {
   try {
+    console.log("8", imageUrl);
+    // Bước 1: Gửi yêu cầu tới API remove.bg để xóa nền
     const formData = new FormData();
     formData.append("size", "auto");
-    formData.append("image_url", imageUrl.imageUrl);
+    formData.append("image_url", imageUrl); // URL ảnh từ yêu cầu
 
     const response = await fetch("https://api.remove.bg/v1.0/removebg", {
       method: "POST",
@@ -167,17 +169,20 @@ const removeBackground = async (imageUrl) => {
       const arrayBuffer = await response.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
+      // Bước 2: Lưu ảnh PNG đã xóa nền vào ổ đĩa tạm thời
       const tempFilePath = path.join(__dirname, "temp_no_bg.png");
       fs.writeFileSync(tempFilePath, buffer);
       console.log("Image saved as temp_no_bg.png");
 
+      // Bước 3: Upload ảnh lên Cloudinary
       const cloudinaryUrl = await uploadToCloudinary(tempFilePath);
 
+      // Bước 4: Xóa ảnh tạm thời khỏi hệ thống
       await unlinkAsync(tempFilePath);
 
       console.log("Image uploaded to Cloudinary:", cloudinaryUrl);
 
-      return cloudinaryUrl;
+      return cloudinaryUrl; // Trả về URL ảnh trên Cloudinary
     } else {
       throw new Error(`${response.status}: ${response.statusText}`);
     }
@@ -187,12 +192,14 @@ const removeBackground = async (imageUrl) => {
   }
 };
 
+// Hàm upload ảnh lên Cloudinary
 const uploadToCloudinary = async (filePath) => {
   const cloudinaryUrl =
     "https://api.cloudinary.com/v1_1/ddcjjegzf/image/upload";
-  const uploadPreset = "afh5sfc";
+  const uploadPreset = "afh5sfc"; // Thay bằng preset của bạn trên Cloudinary
+
   const formData = new FormData();
-  formData.append("file", fs.createReadStream(filePath));
+  formData.append("file", fs.createReadStream(filePath)); // Đọc ảnh từ file
   formData.append("upload_preset", uploadPreset);
 
   const cloudinaryResponse = await fetch(cloudinaryUrl, {
@@ -207,7 +214,7 @@ const uploadToCloudinary = async (filePath) => {
     );
   }
 
-  return cloudinaryResult.secure_url;
+  return cloudinaryResult.secure_url; // Trả về URL của ảnh đã upload
 };
 
 const deleteImage = (imageId) => {
