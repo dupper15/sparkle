@@ -12,7 +12,19 @@ export const createImageUpload = async (data) => {
     throw error;
   }
 };
-
+export const removeBackground = async (data) => {
+  try {
+    console.log("hế 1", data);
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_KEY}/image/remove-background`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to 1 remove background:", error);
+    throw error;
+  }
+};
 export const getAllImage = async (id) => {
   try {
     const response = await axios.get(

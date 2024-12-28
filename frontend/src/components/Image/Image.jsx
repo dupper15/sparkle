@@ -106,9 +106,13 @@ const Image = ({ drag }) => {
   };
 
   return isEdit ? (
-    <EditImage setIsEdit={setIsEdit} imageLink={selectedImage} />
+    <EditImage
+      setIsEdit={setIsEdit}
+      imageLink={selectedImage}
+      fetchImages={fetchImages}
+    />
   ) : (
-    <div>
+    <div className='overflow-y-auto h-full relative'>
       <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
         <label className='text-center cursor-pointer' htmlFor='uploadImage'>
           Upload Image
@@ -141,7 +145,7 @@ const Image = ({ drag }) => {
       <button
         className={`${
           selectedImage ? "block" : "hidden"
-        } w-full h-[40px] flex justify-center items-center bg-blue-600 rounded-md text-white mt-10 hover:bg-blue-400`}
+        } w-full h-[40px]  flex justify-center absolute bottom-20 items-center bg-blue-600 rounded-md text-white mt-10 hover:bg-blue-400`}
         onClick={() => setIsEdit(true)}>
         Edit
       </button>
