@@ -381,6 +381,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   const [isJoined, setIsJoined] = useState(true);
 
   useEffect(() => {
+    console.log("User in room(join):", usersInRoom);
     if (usersInRoom.some((usersInRoom) => usersInRoom.id === user._id)) {
       setIsJoined(true);
     } else {
@@ -393,7 +394,8 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowForm(true);
-    }, 1000);
+      console.log("form");
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);
