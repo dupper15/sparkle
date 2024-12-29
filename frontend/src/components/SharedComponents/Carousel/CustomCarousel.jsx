@@ -107,8 +107,8 @@ function CustomCarousel({ onDelete }) {
 
   return (
     <Carousel
-      customLeftArrow={<IoIosArrowDropleft className="left-arrow " />}
-      customRightArrow={<IoIosArrowDropright className="right-arrow" />}
+      customLeftArrow={<IoIosArrowDropleft className='left-arrow ' />}
+      customRightArrow={<IoIosArrowDropright className='right-arrow' />}
       responsive={responsive}
       swipeable={false}
       draggable={false}
@@ -117,9 +117,9 @@ function CustomCarousel({ onDelete }) {
       keyBoardControl={true}
       transitionDuration={500}
       removeArrowOnDeviceType={["tablet", "mobile"]}
-      itemClass="p-4 gap-4">
+      itemClass='p-4 gap-4'>
       {projects.length === 0 ? (
-        <div className="flex justify-center items-center h-full w-full text-gray-500 text-center">
+        <div className='flex justify-center items-center h-full w-full text-gray-500 text-center'>
           There are no projects to display.
         </div>
       ) : (
@@ -145,9 +145,9 @@ function CustomCarousel({ onDelete }) {
                 }
                 setHoveredProjectId(null);
               }}
-              className="cursor-pointer group">
+              className='cursor-pointer group'>
               <div
-                className="relative bg-cover h-[200px] w-[360px] overflow-hidden border transition-transform transform hover:scale-105" // Div chứa background và các component
+                className='relative bg-cover h-[200px] rounded-md max-w-[300px] w-full overflow-hidden border transition-transform transform hover:scale-105' // Div chứa background và các component
                 style={{
                   backgroundImage:
                     project.canvasArray?.[0]?.background === "#ffffff"
@@ -265,7 +265,7 @@ function CustomCarousel({ onDelete }) {
                           <img
                             key={index}
                             src={component.image}
-                            alt=""
+                            alt=''
                             style={{
                               position: "absolute",
                               top: topComponent,
@@ -306,17 +306,17 @@ function CustomCarousel({ onDelete }) {
                   e.stopPropagation();
                   setOption(!option);
                 }}
-                className="absolute top-6 right-6 hidden group-hover:flex justify-between border p-1 bg-white rounded shadow">
-                <SlOptionsVertical className="text-black" />
+                className='absolute top-6 right-6 hidden group-hover:flex justify-between border p-1 bg-white rounded shadow'>
+                <SlOptionsVertical className='text-black' />
               </div>
               {option && hoveredProjectId === project._id && (
-                <div className="absolute top-6 right-6 bg-white dark:bg-gray-700 p-2 rounded shadow">
+                <div className='absolute top-6 right-6 bg-white dark:bg-gray-700 p-2 rounded shadow'>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleRename(project._id);
                     }}
-                    className="block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 dark:text-white dark:hover:bg-gray-400">
+                    className='block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 dark:text-white dark:hover:bg-gray-400'>
                     <span>Rename</span>
                   </button>
                   <button
@@ -324,15 +324,15 @@ function CustomCarousel({ onDelete }) {
                       e.stopPropagation();
                       onDelete(project._id);
                     }}
-                    className="block px-4 py-2 text-sm text-red-600 hover:bg-red-100">
+                    className='block px-4 py-2 text-sm text-red-600 hover:bg-red-100'>
                     <span>Delete</span>
                   </button>
                 </div>
               )}
               {renameId === project._id ? (
-                <div className="p-2 flex flex-row">
+                <div className='p-2 flex flex-row'>
                   <input
-                    type="text"
+                    type='text'
                     ref={inputRef} // Gán input với useRef
                     value={newProjectName}
                     onChange={(e) => {
@@ -345,7 +345,7 @@ function CustomCarousel({ onDelete }) {
                         handleSaveRename(project._id); // Gọi hàm rename khi nhấn Enter
                       }
                     }}
-                    className="border rounded w-full px-2 py-1"
+                    className='border rounded w-full px-2 py-1'
                   />
                 </div>
               ) : (

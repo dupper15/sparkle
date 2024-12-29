@@ -45,7 +45,6 @@ const Canvas = React.forwardRef(
       isTextToolBarOpen,
       isDarkMode,
       isOver,
-      canvasRef,
       setNodeRef,
       handleShapeClick,
       handleTextClick,
@@ -69,15 +68,12 @@ const Canvas = React.forwardRef(
       handleTextContentChange,
       handleComponentHorizontalFlip,
       handleComponentVerticalFlip,
-    } = useCanvasViewModel(id, databaseId);
+    } = useCanvasViewModel(id, databaseId, ref);
 
     const [cursorSize, setCursorSize] = useState(16);
     useEffect(() => {
       const handleGlobalMouseLeave = (event) => {
-        if (
-          canvasRef.current &&
-          !canvasRef.current.contains(event.relatedTarget)
-        ) {
+        if (ref.current && !ref.current.contains(event.relatedTarget)) {
           handleMouseLeave();
         }
       };
@@ -87,9 +83,9 @@ const Canvas = React.forwardRef(
       return () => {
         document.removeEventListener("mouseleave", handleGlobalMouseLeave);
       };
-    }, [canvasRef, handleMouseLeave]);
+    }, [ref, handleMouseLeave]);
     return (
-      <div ref={canvasRef} className='flex flex-col gap-4'>
+      <div ref={ref} className='flex flex-col gap-4'>
         <div>
           {isImageToolBarOpen && (
             <div className='fixed top-0 left-1/2 transform -translate-x-1/2 z-50  mt-20'>
@@ -142,8 +138,8 @@ const Canvas = React.forwardRef(
           className={`flex justify-between items-center ${
             isDarkMode ? "text-white" : "text-black"
           }`}>
-          <div className='text-2xl font-bold'>Canvas {title}</div>
-          <div className='flex gap-2'>
+          <div className='text-2xl font-bold ml-5 sm:ml-0'>Canvas {title}</div>
+          <div className='flex gap-2 mr-5 sm:mr-0'>
             <IoIosArrowUp
               className='hover:text-blue-600 cursor-pointer text-2xl'
               onClick={upButton}

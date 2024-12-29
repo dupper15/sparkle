@@ -7,34 +7,40 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`w-[100px] z-0 h-full overflow-y-auto ${
+      className={`w-[80px] lg:w-[100px] h-full overflow-y-auto ${
         isDarkMode ? "bg-black text-white" : "bg-slate-50 text-black"
-      }`}>
+      } flex flex-col items-center py-4`}>
+      {/* Link: Home */}
       <Link
         to='../home'
-        className='w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF] '>
-        <span className='text-2xl'>
+        className='w-full h-[70px] lg:h-[80px] flex flex-col items-center justify-center gap-1 hover:text-[#610BEF] transition-colors duration-300'>
+        <span className='text-2xl lg:text-3xl'>
           <LuHome />
         </span>
-        <span className='text-l'>Home</span>
+        <span className='text-xs md:text-sm lg:text-base'>Home</span>
       </Link>
+
+      {/* Link: Projects */}
       <Link
         to='../project'
-        className='w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF] '>
-        <span className='text-2xl'>
+        className='w-full h-[70px] lg:h-[80px] flex flex-col items-center justify-center gap-1 hover:text-[#610BEF] transition-colors duration-300'>
+        <span className='text-2xl lg:text-3xl'>
           <LuNewspaper />
         </span>
-        <span className='text-l'>Projects</span>
+        <span className='text-xs md:text-sm lg:text-base'>Projects</span>
       </Link>
+
+      {/* Link: Templates */}
       <Link
         to='../template'
-        className='w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF] '>
-        <span className='text-2xl'>
+        className='w-full h-[70px] lg:h-[80px] flex flex-col items-center justify-center gap-1 hover:text-[#610BEF] transition-colors duration-300'>
+        <span className='text-2xl lg:text-3xl'>
           <LuLayoutTemplate />
         </span>
-        <span className='text-l'>Templates</span>
+        <span className='text-xs md:text-sm lg:text-base'>Templates</span>
       </Link>
     </div>
   );
 };
+
 export default Sidebar;

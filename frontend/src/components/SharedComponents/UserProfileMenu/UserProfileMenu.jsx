@@ -30,7 +30,7 @@ const UserProfileMenu = () => {
   return (
     <div
       className={`profile-dropdown box-border justify-center align-middle pb-2 shadow-lg rounded-2xl ${
-        isDarkMode ? "bg-gray-900 text-white" : "bg-white text-black"
+        isDarkMode ? "bg-black text-white" : "bg-white text-black"
       }`}>
       <div className='profile-header flex p-4 w-[250px]'>
         <img

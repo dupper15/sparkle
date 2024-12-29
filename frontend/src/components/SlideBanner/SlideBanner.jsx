@@ -14,20 +14,26 @@ const bannerImgs = [banner1, banner2, banner3];
 
 const SlideBanner = () => {
   return (
-    <Swiper
-      modules={[Autoplay, Pagination, Navigation]}
-      spaceBetween={50}
-      slidesPerView={1}
-      autoplay={{ delay: 2000, disableOnInteraction: false }}
-      pagination={{ clickable: true }}
-      navigation
-      className='rounded-2xl w-[1220px] h-[400px]'>
-      {bannerImgs.map((item, idx) => (
-        <SwiperSlide key={idx}>
-          <img src={item} className='object-cover' alt={`Banner ${idx + 1}`} />
-        </SwiperSlide>
-      ))}
-    </Swiper>
+    <div className='w-full rounded-2xl'>
+      <Swiper
+        modules={[Autoplay, Pagination, Navigation]}
+        spaceBetween={20}
+        slidesPerView={1}
+        autoplay={{ delay: 2000, disableOnInteraction: false }}
+        pagination={{ clickable: true }}
+        navigation
+        className='rounded-2xl'>
+        {bannerImgs.map((item, idx) => (
+          <SwiperSlide key={idx}>
+            <img
+              src={item}
+              className='w-full h-[200px] sm:h-[300px] md:h-[400px] object-conver rounded-2xl'
+              alt={`Banner ${idx + 1}`}
+            />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
   );
 };
 

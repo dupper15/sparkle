@@ -10,12 +10,12 @@ import { useSelector } from "react-redux";
 import { throttle } from "lodash";
 import debounce from "lodash.debounce";
 
-const useCanvasViewModel = (id, databaseId) => {
+const useCanvasViewModel = (id, databaseId, ref) => {
   const [isImageToolBarOpen, setOpenImageToolBar] = useState(false);
   const [isTextToolBarOpen, setOpenTextToolBar] = useState(false);
   const [components, setComponents] = useState([]);
   const [selectedComponents, setSelectedComponents] = useState([]);
-  const canvasRef = useRef(null);
+  const canvasRef = useRef(ref);
   const { isOver, setNodeRef } = useDroppable({ id });
   const { isDarkMode } = useDarkMode();
   const [selectedComponentColor, setSelectedComponentColor] =
@@ -673,7 +673,6 @@ const useCanvasViewModel = (id, databaseId) => {
     components,
     isImageToolBarOpen,
     isTextToolBarOpen,
-    canvasRef,
     isOver,
     setNodeRef,
     isDarkMode,
