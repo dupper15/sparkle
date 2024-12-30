@@ -288,7 +288,7 @@ const SignupPage = () => {
             )}
             <button
               onClick={handleVerifyEmail}
-              className="w-full bg-orange-500 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-500 text-white font-semibold rounded-lg py-2 mt-4 transition duration-300">
+              className="w-full bg-orange-500 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-500 text-black dark:text-white font-semibold rounded-lg py-2 mt-4 transition duration-300">
               Verify
             </button>
           </>
