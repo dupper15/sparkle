@@ -16,10 +16,12 @@ const HomePage = () => {
   const { isDarkMode } = useDarkMode();
   const [isDelete, setDelete] = useState(false);
   const [id, setId] = useState("");
+  const [refresh, setRefresh] = useState(false);
 
   const handleDelete = (id) => {
     setId(id);
     setDelete(!isDelete);
+    setRefresh(!refresh);
   };
 
   const handleConfirmDelete = async () => {

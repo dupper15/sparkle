@@ -38,6 +38,80 @@ const createProject = (newProject) => {
   });
 };
 
+const createCopy = async (userId, data) => {
+  try {
+    // Lấy dự án gốc
+    const checkProject = await Project.findById(data.data).populate({
+      path: "canvasArray",
+      populate: {
+        path: "componentArray",
+        model: "Component",
+      },
+    });
+
+    if (!checkProject) {
+      return {
+        status: "ERROR",
+        message: "Original project not found.",
+      };
+    }
+    // Tạo bản sao dữ liệu của dự án
+    const projectObject = JSON.parse(JSON.stringify(checkProject.toObject()));
+    delete projectObject._id;
+
+    const newProjectData = {
+      ...projectObject,
+      owner: userId,
+      editorArray: [],
+      isPublic: false,
+      copy: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    // Sao chép canvasArray và componentArray
+    newProjectData.canvasArray = await Promise.all(
+      (newProjectData.canvasArray || []).map(async (canvas) => {
+        const newCanvas = { ...canvas };
+        delete newCanvas._id;
+
+        newCanvas.componentArray = await Promise.all(
+          (canvas.componentArray || []).map(async (component) => {
+            const newComponent = { ...component };
+            delete newComponent._id;
+
+            //newComponent.type = component.type
+
+            // Lưu component mới
+            const savedComponent = await Component.create(newComponent);
+            return savedComponent;
+          })
+        );
+
+        // Lưu canvas mới
+        const savedCanvas = await Canvas.create(newCanvas);
+        return savedCanvas;
+      })
+    );
+
+    // Lưu dự án mới
+    const createdProject = await Project.create(newProjectData);
+   
+    return {
+      status: "OK",
+      message: "Create success",
+      data: createdProject,
+    };
+  } catch (error) {
+    console.error("Error creating project copy:", error.message);
+    return {
+      status: "ERROR",
+      message: "Failed to create Project",
+      error: error.message,
+    };
+  }
+};
+
 const getDetailProject = (projectId) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -610,5 +684,6 @@ module.exports = {
   addEditor,
   renameProject,
   getEditor,
-  removeEditor
+  removeEditor,
+  createCopy
 };

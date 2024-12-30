@@ -64,7 +64,7 @@ function CustomCarousel({ onDelete }) {
 
   useEffect(() => {
     handleGetAllProject();
-  }, [user, projects]);
+  }, [user, onDelete]);
 
   const handleGetAllProject = () => {
     mutation.mutate(user?.id);
@@ -117,7 +117,7 @@ function CustomCarousel({ onDelete }) {
       keyBoardControl={true}
       transitionDuration={500}
       removeArrowOnDeviceType={["tablet", "mobile"]}
-      itemClass='p-4 gap-4'>
+      itemClass='py-4 px-12 flex gap-4'>
       {projects.length === 0 ? (
         <div className='flex justify-center items-center h-full w-full text-gray-500 text-center'>
           There are no projects to display.
@@ -147,7 +147,7 @@ function CustomCarousel({ onDelete }) {
               }}
               className='cursor-pointer group'>
               <div
-                className='relative bg-cover h-[200px] rounded-md max-w-[300px] w-full overflow-hidden border transition-transform transform hover:scale-105' // Div chứa background và các component
+                className="relative bg-cover h-[200px] w-[300px] overflow-hidden border transition-transform transform hover:scale-105" // Div chứa background và các component
                 style={{
                   backgroundImage:
                     project.canvasArray?.[0]?.background === "#ffffff"
@@ -221,7 +221,7 @@ function CustomCarousel({ onDelete }) {
 
                     const shapeStyle = getShapeStyle(component.shapeType);
 
-                    const scaleX = 360 / project.width;
+                    const scaleX = 300 / project.width;
                     const scaleY = 200 / project.height;
 
                     const widthComponent = component.width * scaleX;
@@ -306,11 +306,11 @@ function CustomCarousel({ onDelete }) {
                   e.stopPropagation();
                   setOption(!option);
                 }}
-                className='absolute top-6 right-6 hidden group-hover:flex justify-between border p-1 bg-white rounded shadow'>
+                className='absolute top-6 right-10 hidden group-hover:flex justify-between border p-1 bg-white rounded shadow'>
                 <SlOptionsVertical className='text-black' />
               </div>
               {option && hoveredProjectId === project._id && (
-                <div className='absolute top-6 right-6 bg-white dark:bg-gray-700 p-2 rounded shadow'>
+                <div className='absolute top-6 right-10 bg-white dark:bg-gray-700 p-2 rounded shadow'>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

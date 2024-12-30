@@ -22,7 +22,7 @@ const Project = ({ addProjectFromWorkplace }) => {
     if (project?.id) {
       handleGetAllProject();
     }
-  }, [project]);
+  }, [addProjectFromWorkplace]);
 
   const handleGetAllProject = () => {
     mutation.mutate(user?.id);

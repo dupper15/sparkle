@@ -649,15 +649,6 @@ const WorkplaceHeader = ({ usersInRoom }) => {
             />
           </div>
         )}
-
-        {!isJoined && showForm && (
-          <>
-            <div className='fixed inset-0 bg-black bg-opacity-50 z-[9998]'></div>
-            <div className='fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in'>
-              <JoinForm childCloseFormRequest={() => {}} />
-            </div>
-          </>
-        )}
       </div>
     </div>
   );

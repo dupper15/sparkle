@@ -7,6 +7,7 @@ import * as UserService from "../../../services/UserService";
 import { useDarkMode } from "../../../contexts/DarkModeContext";
 import { resetUser, updateUser } from "../../../redux/slides/userSlide";
 import { useEffect, useState } from "react";
+import * as Alert from "../../Alert/Alert";
 
 const UserProfileMenu = () => {
   const user = useSelector((state) => state.user);
@@ -21,6 +22,7 @@ const UserProfileMenu = () => {
     localStorage.removeItem("access_token");
     dispatch(resetUser());
     navigate("/");
+    Alert.success("Logout successfully");
   };
 
   useEffect(() => {

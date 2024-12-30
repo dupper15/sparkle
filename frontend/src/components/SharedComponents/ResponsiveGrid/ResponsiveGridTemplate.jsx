@@ -4,9 +4,10 @@ import testImage from "../../../assets/banner1.png";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useMutationHooks } from "../../../hooks/useMutationHook";
-import * as ProjectService from "../../../services/ProjectService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as ProjectService from "../../../services/ProjectService"
+import { useMutation } from "@tanstack/react-query";
 
 const ResponsiveGrid = () => {
   const user = useSelector((state) => state.user);
@@ -30,17 +31,38 @@ const ResponsiveGrid = () => {
     }
   });
 
+  const mutaionCopy = useMutation({
+    mutationFn: async ({data}) => {
+      return await ProjectService.createCopy(data._id, data)
+    },
+    onSuccess: (data) => {
+      if (data.status === "OK"){
+        const projectId = data.data._id;
+        localStorage.setItem("projectId", projectId);
+        navigate(`/${projectId}/edit`);
+      }
+      console.log("Copy created successfully");
+    },
+    onError: (error) => {
+      console.error("Error creating copy:", error);
+    },
+  })
+
+
   useEffect(() => {
     handleGetPublic();
-  }, [user]);
+  }, []);
 
   const handleGetPublic = () => {
     mutation.mutate();
   };
 
   const handleClick = (id) => {
-    localStorage.setItem("projectId", id);
-    navigate(`/${id}/edit`);
+    const values = {
+      _id: user?.id,
+      data: id
+    }
+    mutaionCopy.mutate({data: values});
   };
 
   return (

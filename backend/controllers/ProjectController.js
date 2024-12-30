@@ -26,6 +26,20 @@ const createProject = async (req, res) => {
   }
 };
 
+const createCopy = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const data = req.body
+    console.log("data", data)
+    const response = await ProjectService.createCopy(userId, data);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
+
 const getDetailProject = async (req, res) => {
   try {
     const projectId = req.params.id;
@@ -315,5 +329,6 @@ module.exports = {
   getAvatar,
   renameProject,
   getEditor,
-  removeEditor
+  removeEditor,
+  createCopy
 };

@@ -44,6 +44,8 @@ const WorkplaceCanvas = () => {
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
 
+  const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
     setWidth(project?.width);
     setHeight(project?.height);
@@ -253,6 +255,8 @@ const WorkplaceCanvas = () => {
         return updatedCanvases;
       });
 
+      setRefresh(!refresh);
+
       Alert.success("Template added successfully!");
 
       handleGetDetailProject(project?.id);
@@ -281,6 +285,8 @@ const WorkplaceCanvas = () => {
           setCurrentCanvas(newCanvas.id);
           return updatedCanvases;
         });
+
+        setRefresh(!refresh);
       });
 
       Alert.success("Template added successfully!");

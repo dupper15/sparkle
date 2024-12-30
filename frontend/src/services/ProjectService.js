@@ -12,6 +12,18 @@ export const createProject = async (id, data) => {
   }
 };
 
+export const createCopy = async (id, data) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_KEY}/project/create-copy/${id}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};
+
 export const getDetailProject = async (id) => {
   try {
     const response = await axios.get(

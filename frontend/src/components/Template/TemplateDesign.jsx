@@ -37,7 +37,7 @@ const TemplateDesign = ({ addCanvasFromTemplate }) => {
 
   useEffect(() => {
     mutation.mutate();
-  }, [renderKey]);
+  }, [addCanvasFromTemplate]);
 
   const handleTemplateClick = (projectId, canvasIndex) => {
     const selectedCanvas = projects.find((project) => project._id === projectId)
