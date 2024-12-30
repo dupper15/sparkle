@@ -126,7 +126,7 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
           className={`block mb-2 text-sm font-medium ${
             isDarkMode ? "text-gray-300" : "text-gray-600"
           }`}>
-          Width (0-1086)
+          Width (0-500)
         </label>
         <input
           name="width"

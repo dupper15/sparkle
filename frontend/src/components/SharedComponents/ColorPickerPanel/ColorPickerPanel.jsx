@@ -70,13 +70,13 @@ const ColorPickerPanel = ({
       <div className="relative mt-4 mb-2">
         <HexColorInput
           placeholder='Try "#00c4cc"'
-          className="w-full pl-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full pl-10 py-2 border bg-white text-black dark:bg-black dark:text-white border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
           color={activeColor}
           onChange={(color) => {
             handleColorClick(color);
           }}
         />
-        <span className="absolute left-3 top-1.5 text-gray-500">&#128269;</span>
+        <span className="absolute left-3 top-1.5">&#128269;</span>
       </div>
 
       <div className={"w-full"}>

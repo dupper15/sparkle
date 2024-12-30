@@ -347,9 +347,6 @@ const MyAccountPage = () => {
                   <span className="font-semibold text-lg sm:text-xl pointer-events-none">
                     Facebook
                   </span>
-                  <span className="font-thin text-sm sm:text-base pointer-events-none">
-                    caoduonglam@gmail.com
-                  </span>
                 </div>
               </div>
               <button className="mt-3 w-28 ml-auto sm:mt-0 sm:ml-auto font-semibold rounded-lg shadow-sm border-slate-600 border-2 flex justify-center items-center px-4 py-2 bg-white text-black hover:bg-orange-400 dark:hover:bg-orange-600 dark:text-white dark:bg-black">
