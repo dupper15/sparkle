@@ -1,4 +1,3 @@
-import template from "../../assets/bg-dm.png";
 import { useEffect, useState } from "react";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import * as ProjectService from "../../services/ProjectService";
@@ -38,7 +37,7 @@ const Project = ({ addProjectFromWorkplace }) => {
   };
 
   return (
-    <div className='grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide'>
+    <div className="grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide">
       {projects
         .slice()
         .reverse()
@@ -47,9 +46,9 @@ const Project = ({ addProjectFromWorkplace }) => {
             key={project._id}
             id={project?._id}
             onClick={() => handleProjectClick(project._id)}
-            className='cursor-pointer'>
+            className="cursor-pointer">
             <div
-              className='w-[140px] h-[100px] relative bg-cover overflow-hidden border'
+              className="w-[140px] h-[100px] relative bg-cover overflow-hidden border"
               style={{
                 backgroundImage:
                   project.canvasArray?.[0]?.background === "#ffffff"
@@ -164,7 +163,7 @@ const Project = ({ addProjectFromWorkplace }) => {
                         <img
                           key={index}
                           src={component.image}
-                          alt=''
+                          alt=""
                           style={{
                             position: "absolute",
                             top: topComponent,

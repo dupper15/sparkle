@@ -232,16 +232,16 @@ const LoginPage = () => {
   return (
     <form
       onSubmit={handleLogin}
-      className="flex justify-center items-center h-screen bg-gradient-to-r from-white p-4 dark:to-black dark:from-gray-900 to-gray-200">
-      <div className="bg-white dark:bg-black border border-gray-700 dark:border-gray-100 rounded-xl shadow-lg p-8 my-4 h-max w-full max-w-md">
+      className="flex justify-center items-center h-screen bg-no-repeat bg-cover bg-[url('./assets/bg-lm.jpg')] dark:bg-[url('./assets/bg-dm.jpg')]">
+      <div className="bg-orange-50 dark:bg-black border border-gray-700 dark:border-gray-100 rounded-xl shadow-lg p-8 my-4 h-max w-full max-w-md">
         {!stepVerify && !stepPassword && (
           <>
             <h1 className="text-black dark:text-white text-3xl font-bold text-center mb-6">
-              Sign In
+              Log In
             </h1>
 
             <div className="space-y-4">
-              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500">
+              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-orange-300 dark:focus-within:border-orange-300">
                 <MdOutlineEmail className="text-gray-500 dark:text-white mr-3" />
                 <input
                   onChange={(e) => setEmail(e.target.value)}
@@ -250,7 +250,7 @@ const LoginPage = () => {
                   className="w-full text-black placeholder-gray-500 dark:text-white dark:placeholder-gray-500 bg-transparent outline-none"
                 />
               </div>
-              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500">
+              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-orange-300 dark:focus-within:border-orange-300">
                 <IoKeyOutline className="text-gray-500 dark:text-white mr-3" />
                 <input
                   onChange={(e) => setPassword(e.target.value)}
