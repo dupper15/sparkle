@@ -32,24 +32,21 @@ const Header = () => {
 
   return (
     <div
-      className={`flex items-center justify-between w-full h-[80px] px-5 py-4 transition-colors duration-500 ${
+      className={`flex items-center justify-between w-full h-[60px] px-5 py-4 transition-colors duration-500 ${
         isDarkMode ? "bg-black" : "bg-slate-50"
       }`}>
-      {/* Logo và tiêu đề */}
       <div className="flex items-center gap-2">
-        <div className="rounded-full p-1 h-[60px] w-[60px] bg-[url('./assets/logo.png')] bg-cover bg-center" />
+        <div className="rounded-full p-1 h-[50px] w-[50px] bg-[url('./assets/logo.png')] bg-cover bg-center" />
         <div
           onClick={goHome}
           className="text-xl md:text-2xl lg:text-4xl font-bold hover:cursor-pointer gradient">
-          Sparkle
+          Grafik
         </div>
       </div>
 
-      {/* Phần giữa: Nút và ảnh đại diện */}
       <div className="flex items-center gap-3 md:gap-5 px-3 py-4">
-        {/* Nút tạo thiết kế */}
         <button
-          className="w-[120px] md:w-[140px] lg:w-[160px] h-[50px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2"
+          className="w-[120px] md:w-[140px] lg:w-[160px] h-[40px] bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2"
           onClick={() => setOpenCustomizeSizeDialogue((prev) => !prev)}>
           <span className="text-sm md:text-lg text-white">Create a design</span>
         </button>
@@ -70,8 +67,7 @@ const Header = () => {
           </>
         )}
 
-        {/* Ảnh đại diện */}
-        <div className="rounded-full p-1 h-[60px] w-[60px] md:h-[56px] md:w-[56px] lg:h-[64px] lg:w-[64px]">
+        <div className="rounded-full p-1 h-[56px] w-[56px] md:h-[52px] md:w-[52px] lg:h-[60px] lg:w-[60px]">
           <input
             type="image"
             className="object-cover w-full h-full rounded-full"

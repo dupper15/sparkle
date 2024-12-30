@@ -31,7 +31,7 @@ const ShapeToolBar = ({
   } = useShapeToolbarViewModel();
 
   return (
-    <div className='toolbar h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md'>
+    <div className="toolbar h-[48px] inline-flex items-center space-x-2 bg-white dark:bg-black text-black dark:text-white p-2 rounded-lg shadow-md">
       <ImageStylesEditSection
         setOpenPickerPanel={setOpenPickerPanel}
         activeColor={selectedComponentColor}

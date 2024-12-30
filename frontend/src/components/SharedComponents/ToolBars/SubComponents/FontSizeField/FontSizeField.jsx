@@ -9,9 +9,9 @@ const FontSizeField = ({
   const minValue = 1;
 
   return (
-    <div className='flex items-center text-gray-700 font-medium rounded border-2 px-2'>
+    <div className="flex items-center text-black bg-white dark:text-white dark:bg-black dark:border-gray-500 font-medium rounded border-2 px-2">
       <button
-        className='text-lg pr-1'
+        className="text-lg pr-1"
         onClick={() => {
           handleFontSizeChange(currentFontSize - 1);
           setActiveTab(activeTab === "none");
@@ -20,19 +20,19 @@ const FontSizeField = ({
         -
       </button>
       <input
-        id='valueInput'
-        type='text'
+        id="valueInput"
+        type="text"
         value={currentFontSize}
         onClick={() => {
           setActiveTab(activeTab === "none");
         }}
         onChange={(e) => handleFontSizeChange(Number(e.target.value))}
-        className='bg-white text-black w-8 text-center focus:outline-none'
+        className="w-8 text-center focus:outline-none text-black bg-white dark:text-white dark:bg-black"
         maxLength={maxValue}
         minLength={minValue}
       />
       <button
-        className='text-lg pl-0.5'
+        className="text-lg pl-0.5"
         onClick={() => {
           handleFontSizeChange(currentFontSize + 1);
           setActiveTab(activeTab === "none");

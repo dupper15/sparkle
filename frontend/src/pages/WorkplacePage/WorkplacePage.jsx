@@ -490,7 +490,7 @@ const WorkplaceCanvas = () => {
                       ? "bg-[#252627]"
                       : "bg-white"
                     : ""
-                } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}>
+                } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-orange-500`}>
                 <span className="text-2xl">{icon}</span>
                 <span className="text-xs font-medium">{label}</span>
               </div>
@@ -508,7 +508,7 @@ const WorkplaceCanvas = () => {
               } duration-500`}>
               <div
                 onClick={() => setShow({ name: "", status: true })}
-                className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${
+                className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full hover:bg-orange-300 ${
                   isDarkMode
                     ? "bg-[#252627] text-slate-700"
                     : "bg-white text-slate-300"

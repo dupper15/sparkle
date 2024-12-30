@@ -29,12 +29,12 @@ const SettingPage = () => {
                 Dark Mode
               </p>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Adjust the appearance to reduce eye strain.
+                Recommended in low-light environment.
               </p>
             </div>
             <button
               onClick={toggleDarkMode}
-              className="relative flex items-center w-16 h-8 rounded-full transition-all duration-500 bg-gray-300 dark:bg-gray-600">
+              className="relative flex items-center w-16 h-8 rounded-full transition-all duration-500 bg-gray-300 dark:bg-orange-500">
               <span
                 className="absolute w-6 h-6 rounded-full bg-white transition-transform duration-500 translate-x-0 dark:translate-x-8"
                 style={{ left: "4px", right: "4px" }}

@@ -91,22 +91,16 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
       className={`relative h-auto w-[400px] flex flex-col border-2 border-slate-500 items-center justify-center p-8 rounded-xl shadow-2xl ${
         isDarkMode ? "bg-gray-900" : "bg-white"
       }`}>
-      {/* Nút Đóng */}
       <button
         className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 font-bold text-2xl"
         onClick={() => childCloseFormRequest(false)}>
         &times;
       </button>
 
-      {/* Tiêu Đề */}
-      <h2
-        className={`text-2xl font-bold mb-6 ${
-          isDarkMode ? "text-white" : "text-gray-800"
-        }`}>
+      <h2 className="text-2xl font-bold mb-6 text-transparent bg-gradient-to-r from-[#ffa500] to-[#fae500] bg-clip-text">
         Customize Size
       </h2>
 
-      {/* Input Name */}
       <div className="w-full mb-4">
         <label
           className={`block mb-2 text-sm font-medium ${
@@ -119,61 +113,58 @@ const CustomizeSizeDialogue = ({ childCloseFormRequest, onCreate }) => {
           onChange={handleOnName}
           type="text"
           placeholder="Enter name..."
-          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 ${
+          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-1 ${
             isDarkMode
-              ? "bg-gray-800 text-white border-gray-700 focus:ring-indigo-400"
-              : "bg-gray-100 text-gray-800 border-gray-300 focus:ring-indigo-500"
+              ? "bg-gray-800 text-white border-gray-700 focus:ring-orange-500"
+              : "bg-gray-100 text-gray-800 border-gray-300 focus:ring-orange-500"
           }`}
         />
       </div>
 
-      {/* Input Width */}
       <div className="w-full mb-4">
         <label
           className={`block mb-2 text-sm font-medium ${
             isDarkMode ? "text-gray-300" : "text-gray-600"
           }`}>
-          Width (px)
+          Width (0-1086)
         </label>
         <input
           name="width"
           onChange={handleOnWidth}
           type="text"
           placeholder="Enter width..."
-          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-2 ${
+          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-1 ${
             isDarkMode
-              ? "bg-gray-800 text-white border-gray-700 focus:ring-indigo-400"
-              : "bg-gray-100 text-gray-800 border-gray-300 focus:ring-indigo-500"
+              ? "bg-gray-800 text-white border-gray-700 focus:ring-orange-500"
+              : "bg-gray-100 text-gray-800 border-gray-300 focus:ring-orange-500"
           }`}
         />
       </div>
 
-      {/* Input Height */}
       <div className="w-full mb-6">
         <label
           className={`block mb-2 text-sm font-medium ${
             isDarkMode ? "text-gray-300" : "text-gray-600"
           }`}>
-          Height (px)
+          Height (0-500)
         </label>
         <input
           name="height"
           onChange={handleOnHeight}
           type="text"
           placeholder="Enter height..."
-          className={`w-full p-3 border rounded-lg focus:outline-none  ${
+          className={`w-full p-3 border rounded-lg focus:outline-none focus:ring-1  ${
             isDarkMode
-              ? "bg-gray-800 text-white border-gray-700 focus:ring-indigo-400"
-              : "bg-gray-100 text-gray-800 border-gray-300 focus:ring-indigo-500"
+              ? "bg-gray-800 text-white border-gray-700 focus:ring-orange-500"
+              : "bg-gray-100 text-gray-800 border-gray-300 focus:ring-orange-500"
           }`}
         />
       </div>
 
-      {/* Nút Tạo */}
       <button
         onClick={createProject}
         disabled={isLoading}
-        className="w-full py-3 font-bold text-white rounded-lg bg-gradient-to-r from-purple-600 to-blue-500 hover:opacity-90 focus:ring-4 focus:ring-blue-300">
+        className="w-full py-3 font-bold text-white rounded-lg bg-gradient hover:opacity-90 focus:ring-4 focus:ring-orange-500">
         {isLoading ? "Creating..." : "Create Project"}
       </button>
     </div>

@@ -1,13 +1,13 @@
 import React from "react";
-import { MdOutlineMail } from "react-icons/md";
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 
 const ButtonMessage = ({ toggleChatBox }) => {
   return (
     <div
-      className='flex flex-col w-[60px] h-[60px] bg-[#4335DE] fixed bottom-3 right-3 rounded-full justify-center items-center cursor-pointer hover:bg-[#6055da]'
+      className="flex flex-col w-[60px] h-[60px] bg-orange-500 fixed bottom-3 right-3 rounded-full justify-center items-center cursor-pointer hover:bg-orange-400"
       onClick={toggleChatBox}>
-      <button className='text-white text-3xl'>
-        <MdOutlineMail />
+      <button className="text-white text-3xl">
+        <IoChatbubbleEllipsesOutline />
       </button>
     </div>
   );

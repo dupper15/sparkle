@@ -14,7 +14,7 @@ const TemplatePage = () => {
       className={`h-screen flex flex-col overflow-y-auto ${
         isDarkMode ? "bg-[#101010]" : "bg-white"
       }`}>
-      <header className='z-40'>
+      <header className="z-40">
         <Header />
       </header>
       <div
@@ -22,22 +22,22 @@ const TemplatePage = () => {
           isDarkMode ? "bg-[#101010] text-white" : "bg-white text-black"
         }`}>
         <Sidebar />
-        <div className='w-[calc(100%-80px)] flex flex-col h-full pb-5'>
-          <div className=' w-full mt-2 mb-4 pr-10 pl-12'>
+        <div className="w-[calc(100%-80px)] flex flex-col h-full pb-5">
+          <div className=" w-full mt-2 mb-4 pr-10 pl-12">
             {/* <Banner></Banner> */}
             <SlideBanner></SlideBanner>
           </div>
-          <div className=''>
-            <div className='ml-12 text-2xl font-bold w-max pointer-events-none'>
-              Trending
+          <div className="">
+            <div className="ml-12 text-2xl font-bold w-max pointer-events-none">
+              Trending Templates
             </div>
-            <div className='pl-8 pr-8'>
+            <div className="pl-8 pr-8">
               <ResponsiveGridTemplate />
             </div>
           </div>
         </div>
       </div>
-      <div className=''>
+      <div className="">
         <Footer />
       </div>
     </div>

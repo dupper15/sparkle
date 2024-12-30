@@ -12,22 +12,22 @@ const ImageTransformationSection = ({
 }) => {
   return (
     <div className={"relative"}>
-      <div className='h-8 toolbar flex'>
+      <div className="h-8 toolbar flex">
         <button
-          className={`text-xl rounded pr-2 pl-2 text-gray-700 ${
-            activeTab === "flip" ? "bg-purple-200 text-purple-700" : ""
+          className={`text-xl rounded pr-2 pl-2 text-gray-700 dark:text-gray-300 ${
+            activeTab === "flip" ? "bg-orange-200 text-orange-700" : ""
           }`}
           onClick={() => {
             setActiveTab(activeTab === "flip" ? "" : "flip");
           }}>
           <div className={"flex h-full"}>
-            <span className={"text-purple-700 tex-sm"}>Flip</span>
+            <span className={"text-orange-700 tex-sm"}>Flip</span>
           </div>
         </button>
       </div>
       <div>
         {activeTab === "flip" && (
-          <div className='absolute top-[6rem] right-[1rem] translate-x-[50%] translate-y-[-55%] shadow'>
+          <div className="absolute top-[6rem] right-[1rem] translate-x-[50%] translate-y-[-55%] shadow">
             <FlipMenu
               selectedComponentHorizontalFlip={selectedComponentHorizontalFlip}
               selectedComponentVerticalFlip={selectedComponentVerticalFlip}
@@ -50,9 +50,9 @@ const FlipMenu = ({
   handleVerticalFlipClick,
 }) => {
   return (
-    <div className='bg-white p-2 profile-dropdown box-border rounded-xl text-sm text-gray-700'>
+    <div className="bg-white dark:bg-black p-2 profile-dropdown box-border rounded-xl text-sm text-gray-700 dark:text-gray-300">
       <button
-        className={`flex items-center rounded-md hover:bg-gray-200 px-2 py-2 w-40 mb-1 ${
+        className={`flex items-center rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-2 w-40 mb-1 ${
           selectedComponentHorizontalFlip ? "bg-gray-300" : ""
         }`}
         onClick={handleHorizontalFlipClick}>
@@ -60,7 +60,7 @@ const FlipMenu = ({
         <span>Flip Horizontal</span>
       </button>
       <button
-        className={`flex items-center rounded-md hover:bg-gray-200 px-2 py-2 w-40 mt-1 ${
+        className={`flex items-center rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 px-2 py-2 w-40 mt-1 ${
           selectedComponentVerticalFlip ? "bg-gray-300" : ""
         }`}
         onClick={handleVerticalFlipClick}>

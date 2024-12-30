@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { LuSendHorizonal } from "react-icons/lu";
-import { FaRobot } from "react-icons/fa6";
+import { FaRobot, FaRegImages } from "react-icons/fa6";
 import { useDarkMode } from "../../contexts/DarkModeContext";
-import { FaPencil } from "react-icons/fa6";
 
 const SendMessage = ({ addMessage }) => {
   const { isDarkMode } = useDarkMode();
@@ -73,42 +72,42 @@ const SendMessage = ({ addMessage }) => {
       }`}>
       <form
         onSubmit={handleSubmit}
-        className='flex w-full space-x-3 items-center'>
+        className="flex w-full space-x-3 items-center">
         <span
           className={`text-2xl cursor-pointer rounded-full p-2 ${
-            isChatBot ? "bg-[#610BEF]" : ""
+            isChatBot ? "bg-orange-500" : ""
           }`}
           onClick={chatBotClick}>
           <FaRobot className={`${isChatBot ? "text-white" : ""}`} />
         </span>
         <span
           className={`text-2xl cursor-pointer rounded-full p-2 ${
-            isImageBot ? "bg-[#610BEF]" : ""
+            isImageBot ? "bg-orange-500" : ""
           }`}
           onClick={chatImageClick}>
-          <FaPencil className={`${isImageBot ? "text-white" : ""}`} />
+          <FaRegImages className={`${isImageBot ? "text-white" : ""}`} />
         </span>
-        <div className='w-full focus:outline-none bg-[#F2F2F2] text-black rounded-lg shadow px-4 py-2 flex flex-col'>
-          <div className='flex-grow'>
+        <div className="w-full h-[45px] focus:outline-none bg-[#F2F2F2] text-black dark:bg-gray-950 dark:text-white rounded-lg shadow px-4 py-2 flex flex-col">
+          <div className="flex-grow">
             <input
-              className='input w-full focus:outline-none bg-transparent text-black rounded-lg shadow px-4 py-2'
-              placeholder='Type a message...'
+              className="input w-full h-[30px] focus:outline-none bg-transparent text-black dark:text-white rounded-lg shadow px-4 py-2"
+              placeholder="Type a message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onPaste={handlePaste}
             />
           </div>
           {image && (
-            <div className='flex-shrink-0 w-16 h-16 ml-2 relative'>
+            <div className="flex-shrink-0 w-16 h-16 ml-2 relative">
               <img
                 src={URL.createObjectURL(image)}
-                alt='Preview'
-                className='w-full h-auto object-cover rounded-lg cursor-pointer'
+                alt="Preview"
+                className="w-full h-auto object-cover rounded-lg cursor-pointer"
               />
               <button
                 onClick={() => setImage(null)}
-                type='button'
-                className='absolute top-0 right-0 text-red-500 bg-white rounded-full w-6 h-6 flex items-center justify-center border border-red-500 hover:bg-slate-200 text-sm'>
+                type="button"
+                className="absolute top-0 right-0 text-red-500 bg-white rounded-full w-6 h-6 flex items-center justify-center border border-red-500 hover:bg-slate-200 text-sm">
                 ✕
               </button>
             </div>
@@ -116,7 +115,7 @@ const SendMessage = ({ addMessage }) => {
         </div>
         <span
           onClick={handleSubmit}
-          className='text-2xl cursor-pointer flex items-center hover:text-[#610BEF]'>
+          className="text-2xl cursor-pointer flex items-center hover:text-orange-500">
           <LuSendHorizonal />
         </span>
       </form>

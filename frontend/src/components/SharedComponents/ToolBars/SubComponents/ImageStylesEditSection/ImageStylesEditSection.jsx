@@ -13,10 +13,10 @@ const ImageStylesEditSection = ({
 }) => {
   return (
     <div>
-      <div className='h-8 toolbar flex'>
+      <div className="h-8 toolbar flex">
         <button
           style={{ color: activeColor }}
-          className={`text-xl rounded text-gray-700 pl-1 pr-1 mr-1 ${
+          className={`text-xl rounded text-gray-700 dark:text-gray-300 pl-1 pr-1 mr-1 ${
             activeTab === "color" ? "bg-gray-200" : ""
           }`}
           onClick={() => {

@@ -20,13 +20,15 @@ const TextFormatSection = ({
 }) => {
   return (
     <div>
-      <div className='h-8 toolbar flex'>
+      <div className="h-8 toolbar flex">
         {/* Color Selector */}
-        <div className='h-8 toolbar flex'>
+        <div className="h-8 toolbar flex">
           <button
             style={{ color: activeColor }}
-            className={`text-xl rounded text-gray-700 pl-1 pr-1 mr-1 ${
-              activeTab === "color" ? "bg-purple-200 text-purple-700" : ""
+            className={`text-xl rounded text-gray-700 dark:text-gray-200 pl-1 pr-1 mr-1 ${
+              activeTab === "color"
+                ? "bg-orange-200 text-orange-700 dark:bg-orange-700 dark:text-orange-200"
+                : ""
             }`}
             onClick={() => {
               setActiveTab(activeTab === "color" ? "" : "color");
@@ -49,8 +51,10 @@ const TextFormatSection = ({
         </div>
 
         <button
-          className={`rounded text-gray-700 pl-1 pr-1 mr-1 ${
-            isBold ? "bg-purple-200 text-purple-700" : ""
+          className={`rounded text-gray-700 dark:text-gray-200 pl-1 pr-1 mr-1 ${
+            isBold
+              ? "bg-orange-200 text-orange-700 dark:bg-orange-700 dark:text-orange-200"
+              : ""
           }`}
           onClick={() => {
             setActiveTab("");
@@ -59,8 +63,10 @@ const TextFormatSection = ({
           <FaBold />
         </button>
         <button
-          className={`rounded text-gray-700 pl-1 pr-1 mr-1 ${
-            isItalic ? "bg-purple-200 text-purple-700" : ""
+          className={`rounded text-gray-700 dark:text-gray-200 pl-1 pr-1 mr-1 ${
+            isItalic
+              ? "bg-orange-200 text-orange-700 dark:bg-orange-700 dark:text-orange-200"
+              : ""
           }`}
           onClick={() => {
             setActiveTab("");
@@ -69,8 +75,10 @@ const TextFormatSection = ({
           <FaItalic />
         </button>
         <button
-          className={`rounded text-gray-700 pl-1 pr-1 mr-1 ${
-            isUnderlined ? "bg-purple-200 text-purple-700" : ""
+          className={`rounded text-gray-700 dark:text-gray-200 pl-1 pr-1 mr-1 ${
+            isUnderlined
+              ? "bg-orange-200 text-orange-700 dark:bg-orange-700 dark:text-orange-200"
+              : ""
           }`}
           onClick={() => {
             setActiveTab("");

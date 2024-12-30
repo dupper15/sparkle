@@ -17,7 +17,7 @@ const Text = ({ drag }) => {
     });
 
     return (
-      <div className='grid grid-cols-1 gap-2'>
+      <div className="grid grid-cols-1 gap-2">
         <div
           ref={setNodeRef}
           style={{
@@ -31,7 +31,7 @@ const Text = ({ drag }) => {
           {...listeners}
           {...attributes}
           onMouseDown={() => onDragStart({ content: "Sample Text" })}
-          className='bg-transparent border-2 cursor-pointer hover font-bold p-3 rounded-md text-x1 border-[#3c3c3d] hover:bg-gray-200 text-black'>
+          className="bg-transparent border-2 cursor-pointer hover font-bold p-3 rounded-md text-x1 border-[#3c3c3d] dark:border-white hover:bg-gray-200 text-black dark:text-white">
           <h2>Add new text</h2>
         </div>
       </div>

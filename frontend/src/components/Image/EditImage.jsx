@@ -209,31 +209,31 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
   };
 
   return (
-    <div className='flex flex-col overflow-y-scroll h-full p-4'>
-      <div className='flex gap-4 items-center '>
+    <div className="flex flex-col overflow-y-scroll h-full p-4">
+      <div className="flex gap-4 items-center ">
         <IoIosArrowBack
           onClick={() => setIsEdit(false)}
-          className='text-xl cursor-pointer hover:text-slate-200'
+          className="text-xl cursor-pointer hover:text-slate-200"
         />
-        <h1 className='text-slate-800 text-xl font-semibold'>
+        <h1 className="text-slate-800 dark:text-white text-xl font-semibold">
           Edit your image
         </h1>
       </div>
-      <div className='relative group'>
+      <div className="relative group">
         <canvas
           ref={canvasRef}
-          className='w-full h-[200px] border border-black rounded-md my-4 transition-all duration-300 group-hover:opacity-50'></canvas>
-        <div className='absolute inset-0 h-[200px] my-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-50 text-white font-bold rounded-md'>
+          className="w-full h-[200px] border border-black rounded-md my-4 transition-all duration-300 group-hover:opacity-50"></canvas>
+        <div className="absolute inset-0 h-[200px] my-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-50 text-white font-bold rounded-md">
           <button
             onClick={() => {
               handleSubmit(image);
             }}
-            className='flex justify-center items-center bg-blue-500 rounded-md text-white p-3 hover:bg-blue-400'>
+            className="flex justify-center items-center bg-orange-500 rounded-md text-white p-3 hover:bg-orange-400">
             Remove background
           </button>
         </div>
       </div>
-      <div className='controls'>
+      <div className="controls">
         {[
           {
             id: "brightness",
@@ -261,33 +261,33 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
           { id: "blue", label: "Blue", min: -1, max: 1, defaultValue: 0 },
           { id: "alpha", label: "Alpha", min: -1, max: 1, defaultValue: 0 },
         ].map((control) => (
-          <div key={control.id} className='flex flex-col overflow-y-auto'>
+          <div key={control.id} className="flex flex-col overflow-y-auto">
             <label
-              className='text-base text-slate-600 mr-2'
+              className="text-base text-slate-600 mr-2"
               htmlFor={control.id}>
               {control.label}
             </label>
             <input
-              className='w-full bg-gray-200 rounded-lg cursor-pointer accent-indigo-700'
-              type='range'
+              className="w-full bg-gray-200 rounded-lg cursor-pointer accent-orange-700"
+              type="range"
               id={control.id}
               min={control.min}
               max={control.max}
-              step='0.01'
+              step="0.01"
               defaultValue={control.defaultValue}
               onChange={applyFilters}
             />
           </div>
         ))}
       </div>
-      <div className='flex gap-4 items-center justify-center w-full h-max mb-16 mt-4'>
+      <div className="flex gap-4 items-center justify-center w-full h-max mb-16 mt-4">
         <button
-          className='w-[1/3] h-[40px] p-3 flex justify-center items-center bg-blue-600 rounded-md text-white hover:bg-blue-400'
+          className="w-[1/3] h-[40px] p-3 flex justify-center items-center bg-orange-600 rounded-md text-white hover:bg-orange-400"
           onClick={handleRestore}>
           Restore
         </button>
         <button
-          className='w-[1/3] h-[40px] p-3  flex justify-center items-center bg-indigo-600 rounded-md text-white hover:bg-indigo-400'
+          className="w-[1/3] h-[40px] p-3  flex justify-center items-center bg-orange-600 rounded-md text-white hover:bg-orange-400"
           onClick={handleApply}>
           Apply
         </button>

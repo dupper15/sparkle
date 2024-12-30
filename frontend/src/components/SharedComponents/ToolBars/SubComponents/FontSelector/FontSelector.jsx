@@ -19,14 +19,14 @@ const FontSelector = ({
         key={font}
         value={font}
         style={{ fontFamily: font }}
-        className='text-sm'>
+        className="text-sm">
         {font}
       </option>
     ));
   }, []);
 
   return (
-    <div className='font-dropdown relative'>
+    <div className="font-dropdown relative">
       <select
         value={currentFontFamily}
         onClick={() => {
@@ -34,8 +34,8 @@ const FontSelector = ({
         }}
         onChange={onFontFamilyChange}
         style={{ fontFamily: currentFontFamily }}
-        className='text-gray-700 border-2 rounded px-2 py-1.5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm h-8 w-[160px]'
-        aria-label='Select font'>
+        className="text-black dark:text-white border-2 rounded px-2 py-1.5 bg-white dark:bg-black dark:border-gray-500 focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm h-8 w-[160px]"
+        aria-label="Select font">
         {fontOptions}
       </select>
     </div>

@@ -23,10 +23,12 @@ const PositionEditSection = ({
   };
 
   return (
-    <div className='relative toolbar flex h-8'>
+    <div className="relative toolbar flex h-8">
       <button
-        className={`text-xl rounded text-gray-700 pr-2 pl-2 mr-1 ${
-          activeTab === "layer" ? "bg-purple-200 text-purple-700" : ""
+        className={`text-xl rounded text-gray-700 dark:text-gray-200 pr-2 pl-2 mr-1 ${
+          activeTab === "layer"
+            ? "bg-orange-200 text-orange-700 dark:bg-orange-700 dark:text-orange-200"
+            : ""
         }`}
         onClick={() => {
           handleLayerClick();
@@ -35,7 +37,7 @@ const PositionEditSection = ({
         <FaLayerGroup />
       </button>
       {activeTab === "layer" && (
-        <div className='absolute top-[6rem] right-[1rem] translate-x-[50%] translate-y-[-55%] shadow'>
+        <div className="absolute top-[6rem] right-[1rem] translate-x-[50%] translate-y-[-55%] shadow">
           <PositionMenu
             onSendBackward={handleSendBackward}
             onSendToBack={handleSendToBack}
@@ -55,32 +57,32 @@ const PositionMenu = ({
   onSendToFront,
 }) => {
   return (
-    <div className='inline-flex bg-white profile-dropdown box-border rounded-2xl text-sm text-gray-700'>
-      <div className='flex flex-col space-y-2 px-4 py-1'>
+    <div className="inline-flex bg-white dark:bg-black dark:text-gray-300 profile-dropdown box-border rounded-2xl text-sm text-gray-700">
+      <div className="flex flex-col space-y-2 px-4 py-1">
         <button
-          className='flex items-center rounded-md hover:bg-gray-100'
+          className="flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={onSendBackward}>
-          <RiSendBackward className='h-6 w-6 mr-2' />
+          <RiSendBackward className="h-6 w-6 mr-2" />
           <span>Send Backward</span>
         </button>
         <button
-          className='flex items-center rounded-md hover:bg-gray-100'
+          className="flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={onSendToBack}>
-          <RiSendToBack className='h-6 w-6 mr-2' />
+          <RiSendToBack className="h-6 w-6 mr-2" />
           <span>Send To Back</span>
         </button>
       </div>
-      <div className='flex flex-col space-y-2 pr-4 py-1'>
+      <div className="flex flex-col space-y-2 pr-4 py-1">
         <button
-          className='flex items-center rounded-md hover:bg-gray-100'
+          className="flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={onSendForward}>
-          <RiBringForward className='h-6 w-8 mr-2' />
+          <RiBringForward className="h-6 w-8 mr-2" />
           <span>Send Forward</span>
         </button>
         <button
-          className='flex items-center rounded-md hover:bg-gray-100'
+          className="flex items-center rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={onSendToFront}>
-          <RiBringToFront className='h-6 w-8 mr-2' />
+          <RiBringToFront className="h-6 w-8 mr-2" />
           <span>Send to Front</span>
         </button>
       </div>

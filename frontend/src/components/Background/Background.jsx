@@ -72,26 +72,26 @@ const Background = ({ setBackground }) => {
   };
 
   return (
-    <div className='pt-4'>
+    <div className="pt-4">
       {/* Nút Upload */}
-      <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
-        <label className='text-center cursor-pointer' htmlFor='image'>
+      <div className="w-full h-[40px] flex justify-center items-center bg-orange-500 rounded-md text-white mb-3">
+        <label className="text-center cursor-pointer font-bold" htmlFor="image">
           Upload Background
         </label>
         <input
-          type='file'
-          id='image'
-          className='hidden'
+          type="file"
+          id="image"
+          className="hidden"
           onChange={handleUploadBackground}
         />
       </div>
 
       {/* Grid hiển thị backgrounds */}
-      <div className='grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide'>
+      <div className="grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide">
         {backgrounds.map((background, i) => (
           <div
             key={i}
-            className='w-full h-[90px] rounded-md cursor-pointer'
+            className="w-full h-[90px] rounded-md cursor-pointer"
             style={{
               backgroundImage: `url(${background.background_url})`,
               backgroundSize: "100% 100%",

@@ -49,34 +49,34 @@ const SettingWork = ({
   };
 
   return (
-    <div className='bg-gray-50 dark:bg-black p-6 rounded-lg shadow-md w-[300px] mx-auto'>
+    <div className="bg-gray-50 dark:bg-gray-900 p-6 rounded-lg shadow-md w-[300px] mx-auto">
       {/* Section: Privacy Toggle */}
-      <div className='flex items-center justify-between gap-2 mb-6'>
+      <div className="flex items-center justify-between gap-2 mb-6">
         <button
           disabled={isLoading}
           onClick={status ? handlePrivate : handlePublic}
-          className='w-full h-[40px] bg-indigo-600 gap-4 text-white font-semibold rounded-lg shadow cursor-pointer flex justify-center items-center hover:bg-indigo-400 transition-colors'>
-          <MdOutlinePublic size={24} className='text-white' />
+          className="w-full h-[40px] bg-orange-600 gap-4 text-white font-semibold rounded-lg shadow cursor-pointer flex justify-center items-center hover:bg-orange-400 transition-colors">
+          <MdOutlinePublic size={24} className="text-white" />
           {isLoading ? "Loading..." : status ? "Private" : "Public"}
         </button>
       </div>
 
       {/* Section: User List */}
-      <div className='flex flex-col gap-3'>
+      <div className="flex flex-col gap-3">
         {items.map((item, index) => (
           <div
             key={index}
-            className='flex items-center justify-between px-2 py-4 bg-white dark:bg-black rounded-lg shadow hover:bg-gray-100 transition-colors'>
-            <div className='flex items-center gap-3'>
+            className="flex items-center justify-between px-2 py-4 bg-white dark:bg-black rounded-lg shadow hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <div className="flex items-center gap-3">
               <Avatar size={40} src={item.image || profileIcon} />
-              <span className='text-sm font-medium text-gray-700 dark:text-white'>
+              <span className="text-sm font-medium text-gray-700 dark:text-white">
                 {item.userName}
               </span>
             </div>
             <RiDeleteBin6Line
               onClick={() => handleRemove(item.email)}
               size={20}
-              className='text-gray-500 dark:text-white cursor-pointer dark:hover:text-red-500 hover:text-red-500 transition-colors'
+              className="text-gray-500 dark:text-white cursor-pointer dark:hover:text-red-500 hover:text-red-500 transition-colors"
             />
           </div>
         ))}

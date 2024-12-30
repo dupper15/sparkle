@@ -26,10 +26,12 @@ const OpacitySlider = ({
   };
 
   return (
-    <div className='relative'>
+    <div className="relative">
       <button
-        className={`text-xl rounded text-gray-700 p-2 ${
-          activeTab === "opacity" ? "bg-purple-200 text-purple-700" : ""
+        className={`text-xl rounded text-gray-700 dark:text-gray-200 p-2 ${
+          activeTab === "opacity"
+            ? "bg-orange-200 text-orange-700 dark:bg-orange-700 dark:text-orange-200"
+            : ""
         }`}
         onClick={() => {
           handleIconClick();
@@ -38,41 +40,41 @@ const OpacitySlider = ({
         <FaAdjust />
       </button>
       {activeTab === "opacity" && (
-        <div className='absolute top-full translate-x-[-40%] translate-y-[0%] mt-2 p-2 bg-white border rounded shadow-lg'>
-          <div className='flex flex-col'>
-            <label htmlFor='opacity-range' className='text-gray-700 mb-2'>
+        <div className="absolute top-full translate-x-[-40%] translate-y-[0%] mt-2 p-2 bg-white dark:bg-black border rounded shadow-lg">
+          <div className="flex flex-col">
+            <label
+              htmlFor="opacity-range"
+              className="text-gray-700 dark:text-gray-200 mb-2">
               Opacity:
             </label>
-            <div className='flex items-center w-full'>
+            <div className="flex items-center w-full">
               <input
-                type='range'
-                id='opacity-range'
-                min='0'
-                max='1'
-                step='0.01'
+                type="range"
+                id="opacity-range"
+                min="0"
+                max="1"
+                step="0.01"
                 value={currentOpacity}
                 onChange={(e) => handleComponentOpacityChange(e.target.value)}
-                className='flex-grow mr-2'
+                className="flex-grow mr-2"
                 style={{
                   appearance: "none",
                   WebkitAppearance: "none",
                   height: "4px",
                   borderRadius: "4px",
-                  background: `linear-gradient(to right, #6b46c1 ${
+                  background: `linear-gradient(to right, #ea580c ${
                     currentOpacity * 100
                   }%, #d3d3d3 ${currentOpacity * 100}%)`,
                 }}
               />
               <input
-                type='text'
+                type="text"
                 value={Math.round(currentOpacity * 100)}
                 onChange={handleInputChange}
-                className='w-16 text-center'
+                className="w-16 text-center text-black bg-white dark:text-white dark:bg-black"
                 style={{
-                  backgroundColor: "transparent",
                   border: "1px solid #ccc",
                   borderRadius: "4px",
-                  color: "#000",
                   appearance: "textfield",
                   MozAppearance: "textfield",
                   WebkitAppearance: "none",

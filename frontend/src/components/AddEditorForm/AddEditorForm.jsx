@@ -51,7 +51,7 @@ const AddEditorForm = ({ childCloseFormRequest }) => {
         isDarkMode ? "bg-gray-800" : "bg-gray-100"
       }`}>
       <button
-        className='absolute top-2 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl'
+        className="absolute top-2 right-4 text-gray-400 hover:text-gray-600 font-bold text-xl"
         onClick={() => childCloseFormRequest(false)}>
         ×
       </button>
@@ -63,25 +63,25 @@ const AddEditorForm = ({ childCloseFormRequest }) => {
       </h1>
       <div>
         <input
-          name='email'
+          name="email"
           value={emailNewEditor}
           onChange={handleOnChange}
-          type='email'
-          placeholder='Enter editor email...'
-          className={`w-full p-3 mb-4 border-2 border-indigo-400 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-300 ${
+          type="email"
+          placeholder="Enter editor email..."
+          className={`w-full p-3 mb-4 border-2 border-orange-400 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-300 ${
             isDarkMode ? "bg-black text-white" : "bg-white text-black"
           }`}
         />
       </div>
       {errorMessage && (
-        <p className='text-red-500 text-sm mb-2'>{errorMessage}</p>
+        <p className="text-red-500 text-sm mb-2">{errorMessage}</p>
       )}
       {successMessage && (
-        <p className='text-green-500 text-sm mb-2'>{successMessage}</p>
+        <p className="text-green-500 text-sm mb-2">{successMessage}</p>
       )}
       <button
         onClick={handleSubmit}
-        className='w-[120px] py-3 mt-4 font-bold text-white rounded-md bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90'>
+        className="w-[120px] py-3 mt-4 font-bold text-white rounded-md bg-gradient">
         Add
       </button>
     </div>

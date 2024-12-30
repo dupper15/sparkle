@@ -52,9 +52,9 @@ const ParagraphFormatSection = ({
   };
 
   return (
-    <div className='h-8 toolbar flex'>
+    <div className="h-8 toolbar flex">
       <button
-        className={`text-gray-700 text-xl pr-2 mr-1 ${
+        className={`text-gray-700 dark:text-gray-200 text-xl pr-2 mr-1 ${
           currentTextAlign !== "none" ? "active" : ""
         }`}
         onClick={() => {

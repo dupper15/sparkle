@@ -47,7 +47,7 @@ const TextToolbar = ({
     selectedTextDecorationLine
   );
   return (
-    <div className='toolbar h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md border'>
+    <div className="toolbar h-[48px] inline-flex items-center space-x-2 bg-white text-black dark:text-white dark:bg-black p-2 rounded-lg shadow-md border">
       {/* Font */}
       <FontSelector
         currentFontFamily={selectedTextFontFamily}

@@ -36,7 +36,7 @@ const ShareProject = ({ childCloseFormRequest }) => {
         />
         <button
           onClick={handleCopy}
-          className="p-1 mt-2 ml-2 w-[100px] bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+          className="p-1 mt-2 ml-2 w-[100px] bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition">
           {isCopied ? "Copied" : "Copy"}
         </button>
       </div>

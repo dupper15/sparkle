@@ -14,6 +14,7 @@ import { signInWithPopup } from "firebase/auth";
 import { updateUser } from "../../redux/slides/userSlide";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
+import { IoArrowBack } from "react-icons/io5";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -174,8 +175,8 @@ const SignupPage = () => {
   return (
     <form
       onSubmit={handleSignup}
-      className="flex justify-center items-center h-screen bg-gradient-to-r from-white p-4 dark:to-black dark:from-gray-900 to-gray-200">
-      <div className="bg-white dark:bg-black border border-gray-700 dark:border-gray-100 rounded-xl shadow-lg p-8 my-4 h-max w-full max-w-md">
+      className="flex justify-center items-center h-screen bg-no-repeat bg-cover bg-[url('./assets/bg-lm.jpg')] dark:bg-[url('./assets/bg-dm.jpg')]">
+      <div className="bg-orange-50 dark:bg-black border border-gray-700 dark:border-gray-100 rounded-xl shadow-lg p-8 my-4 h-max w-full max-w-md">
         {!isVerificationStep ? (
           <>
             <h1 className="text-black dark:text-white text-3xl font-bold text-center mb-6">
@@ -183,7 +184,7 @@ const SignupPage = () => {
             </h1>
 
             <div className="space-y-4">
-              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500">
+              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-orange-300 dark:focus-within:border-orange-300">
                 <FaRegUser className="text-gray-500 dark:text-white mr-3" />
                 <input
                   onChange={(e) => setUserName(e.target.value)}
@@ -192,7 +193,7 @@ const SignupPage = () => {
                   className="w-full text-black placeholder-gray-500 dark:text-white dark:placeholder-gray-500 bg-transparent outline-none"
                 />
               </div>
-              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500">
+              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-orange-300 dark:focus-within:border-orange-300">
                 <MdOutlineEmail className="text-gray-500 dark:text-white mr-3" />
                 <input
                   onChange={(e) => setEmail(e.target.value)}
@@ -201,7 +202,7 @@ const SignupPage = () => {
                   className="w-full text-black placeholder-gray-500 dark:text-white dark:placeholder-gray-500 bg-transparent outline-none"
                 />
               </div>
-              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500">
+              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-orange-300 dark:focus-within:border-orange-300">
                 <IoKeyOutline className="text-gray-500 dark:text-white mr-3" />
                 <input
                   onChange={(e) => setPassword(e.target.value)}
@@ -210,7 +211,7 @@ const SignupPage = () => {
                   className="w-full text-black placeholder-gray-500 dark:text-white dark:placeholder-gray-500 bg-transparent outline-none"
                 />
               </div>
-              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500">
+              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-orange-300 dark:focus-within:border-orange-300">
                 <RiLockPasswordLine className="text-gray-500 dark:text-white mr-3" />
                 <input
                   onChange={(e) => setConfirmPassword(e.target.value)}
@@ -226,7 +227,7 @@ const SignupPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-[#4335DE] hover:bg-[#584cdb] text-white font-semibold rounded-lg py-2 mt-4 transition duration-300">
+              className="w-full bg-orange-500 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-500 text-white font-semibold rounded-lg py-2 mt-4 transition duration-300">
               Register
             </button>
 
@@ -256,16 +257,25 @@ const SignupPage = () => {
               <span
                 onClick={() => navigate("/login")}
                 className="text-[#4335DE] font-semibold cursor-pointer hover:underline">
-                Sign in
+                Log in
               </span>
             </p>
           </>
         ) : (
           <>
+            <div>
+              <IoArrowBack
+                className="w-5 h-5 cursor-pointer hover:text-orange-500 dark:hover:text-orange-500 text-black dark:text-white"
+                onClick={() => {
+                  setIsVerificationStep((prev) => !prev);
+                  setErrorMessage("");
+                }}
+              />
+            </div>
             <h1 className="text-black dark:text-white text-4xl font-bold text-center mb-6">
               Verify Email
             </h1>
-            <div className="flex items-center border-2 rounded-lg border-gray-600 px-3 py-2 bg-white dark:bg-black focus-within:border-purple-500">
+            <div className="flex items-center border-2 rounded-lg border-gray-600 px-3 py-2 bg-white dark:bg-black focus-within:border-orange-300 dark:focus-within:border-orange-300">
               <input
                 onChange={(e) => setVerificationCode(e.target.value)}
                 type="text"
@@ -278,7 +288,7 @@ const SignupPage = () => {
             )}
             <button
               onClick={handleVerifyEmail}
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg py-2 mt-4 transition duration-300">
+              className="w-full bg-orange-500 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-500 text-white font-semibold rounded-lg py-2 mt-4 transition duration-300">
               Verify
             </button>
           </>

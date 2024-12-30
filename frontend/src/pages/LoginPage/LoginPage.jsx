@@ -165,6 +165,7 @@ const LoginPage = () => {
 
   const handleNavigateSendEmail = () => {
     setStepVerify(true);
+    setErrorMessage("");
   };
 
   const handleSendEmail = () => {
@@ -275,7 +276,7 @@ const LoginPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-[#4335DE] hover:bg-[#584cdb] text-white font-semibold rounded-lg py-2 mt-4 transition duration-300">
+              className="w-full bg-orange-500 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-500 text-white font-semibold rounded-lg py-2 mt-4 transition duration-300">
               Login
             </button>
 
@@ -314,9 +315,10 @@ const LoginPage = () => {
           <div>
             <div>
               <IoArrowBack
-                className="w-5 h-5 cursor-pointer text-black dark:text-white"
+                className="w-5 h-5 cursor-pointer text-black dark:text-white hover:text-orange-500 dark:hover:text-orange-500"
                 onClick={() => {
                   setStepVerify((prev) => !prev);
+                  setErrorMessage("");
                 }}
               />
             </div>
@@ -327,7 +329,7 @@ const LoginPage = () => {
 
               {/* Email Input */}
               <div className="flex flex-col w-full max-w-md gap-4">
-                <div className="flex items-center border-2 rounded-lg border-black px-3 bg-white dark:border-white dark:bg-black focus-within:border-purple-500 transition-all ease-in-out duration-500">
+                <div className="flex items-center border-2 rounded-lg border-black px-3 bg-white dark:border-white dark:bg-black focus-within:border-orange-500 dark:focus-within:border-orange-500 transition-all ease-in-out duration-500">
                   <FaRegUser className="text-black dark:text-white mr-2" />
                   <input
                     type="email"
@@ -338,14 +340,14 @@ const LoginPage = () => {
                 </div>
                 <button
                   onClick={handleSendEmail}
-                  className="w-full h-12 bg-gradient-to-r from-purple-400 to-purple-600 text-white rounded-lg font-semibold text-lg transition-transform transform hover:scale-105">
+                  className="w-full h-12 bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-lg font-semibold text-lg transition-transform transform hover:scale-105">
                   Send
                 </button>
               </div>
 
               {/* Code Input */}
               <div className="w-full max-w-md">
-                <div className="flex items-center border-2 rounded-lg border-black px-3 bg-white dark:border-white dark:bg-black focus-within:border-purple-500 transition-all ease-in-out duration-500">
+                <div className="flex items-center border-2 rounded-lg border-black px-3 bg-white dark:border-white dark:bg-black focus-within:border-orange-500 dark:focus-within:border-orange-500 transition-all ease-in-out duration-500">
                   <input
                     type="text"
                     placeholder="Enter code..."
@@ -373,17 +375,18 @@ const LoginPage = () => {
           <div className="space-y-6">
             <div>
               <IoArrowBack
-                className="w-5 h-5 cursor-pointer text-black dark:text-white"
+                className="w-5 h-5 cursor-pointer text-black dark:text-white hover:text-orange-500 dark:hover:text-orange-500"
                 onClick={() => {
                   setStepVerify(true);
                   setStepPassword(false);
+                  setErrorMessage("");
                 }}
               />
             </div>
             <h1 className="text-black dark:text-white text-3xl font-bold mt-0">
               New password
             </h1>
-            <div className="flex items-center border-2 rounded-lg border-black bg-white dark:border-white px-2 dark:bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300">
+            <div className="flex items-center border-2 rounded-lg border-black bg-white dark:border-white px-2 dark:bg-black w-full focus-within:border-orange-500 dark:focus-within:border-orange-500 transition-all ease-in-out duration-300">
               <IoKeyOutline className="text-black dark:text-white mr-2" />
               <input
                 onChange={(e) => setPassword(e.target.value)}
@@ -392,7 +395,7 @@ const LoginPage = () => {
                 className="w-full h-10 placeholder:text-slate-400 text-black bg-white dark:text-white  dark:bg-black outline-none"
               />
             </div>
-            <div className="flex items-center border-2 rounded-lg border-black bg-white dark:border-white px-2 dark:bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300">
+            <div className="flex items-center border-2 rounded-lg border-black bg-white dark:border-white px-2 dark:bg-black w-full focus-within:border-orange-500 dark:focus-within:border-orange-500 transition-all ease-in-out duration-300">
               <RiLockPasswordLine className="text-black dark:text-white mr-2" />
               <input
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -406,7 +409,7 @@ const LoginPage = () => {
             )}
             <button
               onClick={handleChangePassword}
-              className=" w-full h-max p-1 bg-gradient text-white rounded-lg font-semibold text-lg">
+              className=" w-full h-max p-1 bg-gradient text-[#5A3E2B] rounded-lg font-semibold text-lg">
               Change password
             </button>
           </div>
