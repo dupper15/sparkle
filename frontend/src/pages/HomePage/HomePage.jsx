@@ -60,8 +60,8 @@ const HomePage = () => {
           isDarkMode ? "bg-[#101010] text-white" : "bg-white text-black"
         }`}>
         <Sidebar />
-        <div className='w-[calc(100%-80px)] flex flex-col h-full pb-5'>
-          <div className=' w-full md:mt-2 md:mb-4 pr-10 pl-12'>
+        <div className='w-[calc(100%-80px)] flex flex-col h-full pb-5 '>
+          <div className=' w-full md:mt-2 md:mb-4 pr-10  pl-12'>
             {/* <Banner></Banner> */}
             <SlideBanner></SlideBanner>
           </div>

@@ -7,14 +7,15 @@ import { useMutationHooks } from "../../../hooks/useMutationHook";
 import * as ProjectService from "../../../services/ProjectService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 const ResponsiveGrid = () => {
   const user = useSelector((state) => state.user);
 
   const navigate = useNavigate();
 
   const [projects, setProjects] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true);
   const mutation = useMutationHooks(async (data) => {
     try {
       const project_arr = await ProjectService.getAllProject(data);
@@ -23,6 +24,7 @@ const ResponsiveGrid = () => {
       const combinedProjects = projectTeam_arr.data.concat(project_arr.data);
 
       setProjects(combinedProjects);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching projects:", error);
     }
@@ -48,7 +50,18 @@ const ResponsiveGrid = () => {
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4'>
-      {projects.length === 0 ? (
+      {isLoading ? (
+        Array.from({ length: 5 }).map((_, index) => (
+          <div className='' key={index}>
+            <div className='bg-gray-200 rounded-md w-[300px] h-[200px]'>
+              <Skeleton height={200} width='100%' borderRadius='8px' />
+            </div>
+            <div className='mt-2'>
+              <Skeleton width='60%' />
+            </div>
+          </div>
+        ))
+      ) : projects.length === 0 ? (
         <div className='text-gray-500 text-center col-span-4'>
           There are no projects to display.
         </div>

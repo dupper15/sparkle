@@ -33,7 +33,7 @@ const Header = () => {
   return (
     <div
       className={`flex items-center justify-between w-full h-[80px] px-5 py-4 transition-colors duration-500 ${
-        isDarkMode ? "bg-black" : "bg-slate-50"
+        isDarkMode ? "bg-black" : "bg-slate-100"
       }`}>
       {/* Logo và tiêu đề */}
       <div className='flex items-center gap-2'>

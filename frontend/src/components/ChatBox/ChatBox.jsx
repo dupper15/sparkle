@@ -22,6 +22,7 @@ const ChatBox = ({ toggleChatBox }) => {
     },
     onSuccess: (data) => {
       setBotAnswer(data.data.answer || "");
+      setIsLoading(false);
     },
   });
   const mutation2 = useMutation({
@@ -33,8 +34,10 @@ const ChatBox = ({ toggleChatBox }) => {
     },
     onSuccess: (data) => {
       setImageAnswer(data || "");
+      setIsLoading(false);
     },
   });
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     if (!project?.id) return;
     const handleLoadMessages = (loadedMessages) => {
@@ -61,9 +64,11 @@ const ChatBox = ({ toggleChatBox }) => {
         imageUrl,
       });
       if (isChatBot) {
+        setIsLoading(true);
         mutation.mutate({ text, imageUrl });
       }
       if (isImageBot) {
+        setIsLoading(true);
         mutation2.mutate({ text });
       }
     } else {
@@ -100,8 +105,13 @@ const ChatBox = ({ toggleChatBox }) => {
       <ChatHeader toggleChatBox={toggleChatBox} />
       <div className='flex-1 overflow-y-auto mt-2'>
         {messages.map((msg, index) => (
-          <Message key={index} message={msg} />
+          <Message key={index} message={msg} isLoading={isLoading} />
         ))}
+        {isLoading && (
+          <Message
+            message={{ content: "Loading...", senderName: "SparkleBot" }}
+          />
+        )}
         <div ref={messageEndRef} />
       </div>
       <SendMessage addMessage={sendMessage} />

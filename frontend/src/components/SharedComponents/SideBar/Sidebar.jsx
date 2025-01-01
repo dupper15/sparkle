@@ -8,7 +8,7 @@ const Sidebar = () => {
   return (
     <div
       className={`w-[80px] lg:w-[100px] h-full overflow-y-auto ${
-        isDarkMode ? "bg-black text-white" : "bg-slate-50 text-black"
+        isDarkMode ? "bg-black text-white" : "bg-slate-100 text-black"
       } flex flex-col items-center py-4`}>
       {/* Link: Home */}
       <Link
