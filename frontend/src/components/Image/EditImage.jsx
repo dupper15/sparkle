@@ -5,8 +5,11 @@ import { IoIosArrowBack } from "react-icons/io";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import { createImageUpload } from "../../services/ImageService";
 import { useSelector } from "react-redux";
+import { ClipLoader } from "react-spinners";
 
 const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
+  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState("");
   useEffect(() => {
     setImage(imageLink);
@@ -26,9 +29,11 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
     },
     onError: (error) => {
       console.log(error);
+      setIsLoading(false);
     },
     onSuccess: (data) => {
       setImageNoneBackground(data);
+      setIsLoading(false);
     },
   });
   useEffect(() => {
@@ -126,6 +131,7 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
     canvasCtx.putImageData(imageData, 0, 0);
   };
   const handleSubmit = (imageLink) => {
+    setIsLoading(true);
     mutation.mutate({ data: imageLink });
   };
   const handleRestore = () => {
@@ -156,6 +162,7 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
     });
   };
   const handleApply = async () => {
+    setLoading(true);
     const canvas = canvasRef.current;
     if (!canvas) {
       console.error("Canvas not found");
@@ -201,7 +208,7 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
 
       console.log("Image uploaded successfully: ", result.secure_url);
       setIsEdit(false);
-
+      setLoading(false);
       fetchImages();
     } catch (error) {
       console.error("Error uploading image: ", error);
@@ -232,6 +239,11 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
             Remove background
           </button>
         </div>
+        {isLoading && (
+          <div className='absolute inset-0 h-[200px] my-4 flex items-center justify-center bg-black bg-opacity-50 text-white font-bold rounded-md'>
+            <ClipLoader color='#3B82F6' />
+          </div>
+        )}
       </div>
       <div className='controls'>
         {[
@@ -284,12 +296,12 @@ const EditImage = ({ imageLink, setIsEdit, fetchImages }) => {
         <button
           className='w-[1/3] h-[40px] p-3 flex justify-center items-center bg-blue-600 rounded-md text-white hover:bg-blue-400'
           onClick={handleRestore}>
-          Restore
+          {loading ? <ClipLoader color='#fff' /> : "Restore"}
         </button>
         <button
           className='w-[1/3] h-[40px] p-3  flex justify-center items-center bg-indigo-600 rounded-md text-white hover:bg-indigo-400'
           onClick={handleApply}>
-          Apply
+          {loading ? <ClipLoader color='#fff' /> : "Apply"}
         </button>
       </div>
     </div>

@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useMutationHooks } from "../../../hooks/useMutationHook";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import * as ProjectService from "../../../services/ProjectService"
+import * as ProjectService from "../../../services/ProjectService";
 import { useMutation } from "@tanstack/react-query";
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 const ResponsiveGrid = () => {
   const user = useSelector((state) => state.user);
 
@@ -22,9 +23,11 @@ const ResponsiveGrid = () => {
       if (response?.status === "OK" && Array.isArray(response.data)) {
         setProjects(response.data); // Đặt vào projects
         console.log("Projects fetched successfully:", response.data);
+        setIsLoading(false);
       } else {
         setProjects([]); // Nếu không phải mảng, đặt mảng rỗng
         console.warn("Unexpected response format:", response);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching projects:", error);
@@ -32,11 +35,11 @@ const ResponsiveGrid = () => {
   });
 
   const mutaionCopy = useMutation({
-    mutationFn: async ({data}) => {
-      return await ProjectService.createCopy(data._id, data)
+    mutationFn: async ({ data }) => {
+      return await ProjectService.createCopy(data._id, data);
     },
     onSuccess: (data) => {
-      if (data.status === "OK"){
+      if (data.status === "OK") {
         const projectId = data.data._id;
         localStorage.setItem("projectId", projectId);
         navigate(`/${projectId}/edit`);
@@ -46,8 +49,7 @@ const ResponsiveGrid = () => {
     onError: (error) => {
       console.error("Error creating copy:", error);
     },
-  })
-
+  });
 
   useEffect(() => {
     handleGetPublic();
@@ -60,14 +62,26 @@ const ResponsiveGrid = () => {
   const handleClick = (id) => {
     const values = {
       _id: user?.id,
-      data: id
-    }
-    mutaionCopy.mutate({data: values});
+      data: id,
+    };
+    mutaionCopy.mutate({ data: values });
   };
+  const [isLoading, setIsLoading] = useState(true);
 
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4'>
-      {projects.length === 0 ? (
+      {isLoading ? (
+        Array.from({ length: 5 }).map((_, index) => (
+          <div className='' key={index}>
+            <div className='bg-gray-200 rounded-md w-[300px] h-[200px]'>
+              <Skeleton height={200} width='100%' borderRadius='8px' />
+            </div>
+            <div className='mt-2'>
+              <Skeleton width='60%' />
+            </div>
+          </div>
+        ))
+      ) : projects.length === 0 ? (
         <div className='text-gray-500 text-center col-span-4'>
           There are no projects to display.
         </div>

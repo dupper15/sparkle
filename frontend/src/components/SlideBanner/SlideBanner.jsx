@@ -14,7 +14,7 @@ const bannerImgs = [banner1, banner2, banner3];
 
 const SlideBanner = () => {
   return (
-    <div className='w-full rounded-2xl'>
+    <div className='w-full rounded-2xl mt-4'>
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
         spaceBetween={20}

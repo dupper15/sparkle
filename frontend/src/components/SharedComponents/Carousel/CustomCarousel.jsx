@@ -9,7 +9,8 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SlOptionsVertical } from "react-icons/sl";
 import * as Alert from "../../Alert/Alert";
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 4000, min: 3000 },
@@ -43,13 +44,15 @@ function CustomCarousel({ onDelete }) {
 
   const mutation = useMutationHooks(async (data) => {
     try {
+      setIsLoading(true);
       const project_arr = await ProjectService.getAllProject(data);
       setProjects(project_arr.data);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching projects:", error);
     }
   });
-
+  const [isLoading, setIsLoading] = useState(true);
   const mutationRename = useMutationHooks(async (data) => {
     try {
       const id = data.projectId;
@@ -116,9 +119,21 @@ function CustomCarousel({ onDelete }) {
       autoPlaySpeed={1000}
       keyBoardControl={true}
       transitionDuration={500}
+      className='items-center'
       removeArrowOnDeviceType={["tablet", "mobile"]}
-      itemClass='py-4 px-12 flex gap-4'>
-      {projects.length === 0 ? (
+      itemClass='py-4 px-4 flex gap-4'>
+      {isLoading ? (
+        Array.from({ length: 5 }).map((_, index) => (
+          <div className='' key={index}>
+            <div className='bg-gray-200 rounded-md w-[300px] h-[200px]'>
+              <Skeleton height={200} width='100%' borderRadius='8px' />
+            </div>
+            <div className='mt-2'>
+              <Skeleton width='60%' />
+            </div>
+          </div>
+        ))
+      ) : projects.length === 0 ? (
         <div className='flex justify-center items-center h-full w-full text-gray-500 text-center'>
           There are no projects to display.
         </div>
@@ -145,9 +160,9 @@ function CustomCarousel({ onDelete }) {
                 }
                 setHoveredProjectId(null);
               }}
-              className='cursor-pointer group'>
+              className='cursor-pointer group bg-white border border-gray-300 shadow-md rounded-md pb-8 transition-transform transform hover:scale-105'>
               <div
-                className="relative bg-cover h-[200px] w-[300px] overflow-hidden border transition-transform transform hover:scale-105" // Div chứa background và các component
+                className='relative bg-cover rounded-md h-[200px] w-[290px] overflow-hidden border ' // Div chứa background và các component
                 style={{
                   backgroundImage:
                     project.canvasArray?.[0]?.background === "#ffffff"
@@ -306,17 +321,17 @@ function CustomCarousel({ onDelete }) {
                   e.stopPropagation();
                   setOption(!option);
                 }}
-                className='absolute top-6 right-10 hidden group-hover:flex justify-between border p-1 bg-white rounded shadow'>
+                className='absolute top-2 right-1 hidden group-hover:flex justify-between border p-1 bg-white rounded shadow'>
                 <SlOptionsVertical className='text-black' />
               </div>
               {option && hoveredProjectId === project._id && (
-                <div className='absolute top-6 right-10 bg-white dark:bg-gray-700 p-2 rounded shadow'>
+                <div className='absolute top-10 right-1 bg-white dark:bg-gray-700 p-2 rounded shadow'>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleRename(project._id);
                     }}
-                    className='block px-4 py-2 text-sm text-gray-700  hover:bg-gray-100 dark:text-white dark:hover:bg-gray-400'>
+                    className='block px-2 py-2 w-full text-sm text-gray-700  hover:bg-gray-100 dark:text-white dark:hover:bg-gray-400'>
                     <span>Rename</span>
                   </button>
                   <button
@@ -324,7 +339,7 @@ function CustomCarousel({ onDelete }) {
                       e.stopPropagation();
                       onDelete(project._id);
                     }}
-                    className='block px-4 py-2 text-sm text-red-600 hover:bg-red-100'>
+                    className='block px-2 w-full py-2 text-sm text-red-600 hover:bg-red-100'>
                     <span>Delete</span>
                   </button>
                 </div>
@@ -349,7 +364,9 @@ function CustomCarousel({ onDelete }) {
                   />
                 </div>
               ) : (
-                <span>{project.projectName || "Unnamed Project"}</span>
+                <span className='ml-2 text-lg h-8 text-slate-800 flex items-center'>
+                  {project.projectName || "Unnamed Project"}
+                </span>
               )}
             </div>
           ))
