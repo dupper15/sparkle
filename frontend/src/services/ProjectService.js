@@ -187,7 +187,8 @@ export const getEditor = async (id) => {
 export const removeEditor = async (data) => {
   try {
     const response = await axios.delete(
-      `${import.meta.env.VITE_API_KEY}/project/remove-editor/${data.id}`, {data}
+      `${import.meta.env.VITE_API_KEY}/project/remove-editor/${data.id}`,
+      { data }
     );
     return response.data;
   } catch (error) {

@@ -29,8 +29,8 @@ const createProject = async (req, res) => {
 const createCopy = async (req, res) => {
   try {
     const userId = req.params.id;
-    const data = req.body
-    console.log("data", data)
+    const data = req.body;
+    console.log("data", data);
     const response = await ProjectService.createCopy(userId, data);
     return res.status(200).json(response);
   } catch (e) {
@@ -255,6 +255,10 @@ const getAvatar = async (req, res) => {
       const user = await User.findById(userId);
       if (user && user.image) {
         avatars.push(user.image);
+      } else if (user && !user.image) {
+        avatars.push(
+          "https://i.pinimg.com/originals/05/5a/91/055a91979264664a1ee12b9453610d82.png"
+        );
       } else {
         console.log(`Không tìm thấy user hoặc avatar cho ID: ${userId}`);
       }
@@ -313,7 +317,6 @@ const removeEditor = async (req, res) => {
   }
 };
 
-
 module.exports = {
   createProject,
   getDetailProject,
@@ -330,5 +333,5 @@ module.exports = {
   renameProject,
   getEditor,
   removeEditor,
-  createCopy
+  createCopy,
 };

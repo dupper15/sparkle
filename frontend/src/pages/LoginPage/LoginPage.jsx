@@ -232,185 +232,189 @@ const LoginPage = () => {
   return (
     <form
       onSubmit={handleLogin}
-      className="flex justify-center items-center h-screen bg-gradient-to-r from-white p-4 dark:to-black dark:from-gray-900 to-gray-200">
-      <div className="bg-white dark:bg-black border border-gray-700 dark:border-gray-100 rounded-xl shadow-lg p-8 my-4 h-max w-full max-w-md">
-        {!stepVerify && !stepPassword && (
-          <>
-            <h1 className="text-black dark:text-white text-3xl font-bold text-center mb-6">
-              Sign In
-            </h1>
-
-            <div className="space-y-4">
-              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500">
-                <MdOutlineEmail className="text-gray-500 dark:text-white mr-3" />
-                <input
-                  onChange={(e) => setEmail(e.target.value)}
-                  type="email"
-                  placeholder="Email"
-                  className="w-full text-black placeholder-gray-500 dark:text-white dark:placeholder-gray-500 bg-transparent outline-none"
-                />
-              </div>
-              <div className="flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500">
-                <IoKeyOutline className="text-gray-500 dark:text-white mr-3" />
-                <input
-                  onChange={(e) => setPassword(e.target.value)}
-                  type="password"
-                  placeholder="Password"
-                  className="w-full text-black placeholder-gray-500 dark:text-white dark:placeholder-gray-500 bg-transparent outline-none"
-                />
-              </div>
-              {errorMessage && (
-                <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
-              )}
-            </div>
-
-            <div className="flex justify-between items-center mt-4">
-              <div></div>
-              <p
-                onClick={handleNavigateSendEmail}
-                className="text-[#4335DE] text-sm font-semibold cursor-pointer hover:underline">
-                Forgot Password?
-              </p>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-[#4335DE] hover:bg-[#584cdb] text-white font-semibold rounded-lg py-2 mt-4 transition duration-300">
-              Login
-            </button>
-
-            <div className="flex items-center justify-between mt-6">
-              <span className="bg-gray-700 h-px w-1/3"></span>
-              <p className="text-gray-400 text-sm mx-2">Or sign in with</p>
-              <span className="bg-gray-700 h-px w-1/3"></span>
-            </div>
-
-            <div className="flex flex-col gap-3 mt-4">
-              <button
-                onClick={handleLoginFacebook}
-                className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2 transition duration-300">
-                <FaFacebook className="mr-3" />
-                Facebook
-              </button>
-              <button
-                onClick={handleLoginGoogle}
-                className="flex items-center justify-center bg-red-600 hover:bg-red-700 text-white rounded-lg py-2 transition duration-300">
-                <BiLogoGmail className="mr-3" />
-                Google
-              </button>
-            </div>
-
-            <p className="text-center text-gray-400 mt-6">
-              Don't have an account?{" "}
-              <span
-                onClick={() => navigate("/sign-up")}
-                className="text-[#4335DE] font-semibold cursor-pointer hover:underline">
-                Sign up
-              </span>
-            </p>
-          </>
-        )}
-        {stepVerify && !stepPassword && (
-          <div>
-            <div>
-              <IoArrowBack
-                className="w-5 h-5 cursor-pointer text-black dark:text-white"
-                onClick={() => {
-                  setStepVerify((prev) => !prev);
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-6 p-6 items-center justify-center h-max">
-              <h1 className="text-black dark:text-white text-4xl font-bold">
-                Verify Code
+      className="w-screen justify-center items-center bg-opacity-80 h-screen bg-no-repeat bg-cover bg-[url('./assets/bg-dm.png')] flex flex-col">
+      <div className='bg-black bg-opacity-70 w-full h-full justify-center items-center flex'>
+        <div className='bg-white dark:bg-black border border-gray-200 dark:border-gray-100 rounded-xl shadow-lg p-8 my-4 h-max w-full max-w-md'>
+          {!stepVerify && !stepPassword && (
+            <>
+              <h1 className='text-slate-800 dark:text-white text-3xl font-bold text-center mb-6'>
+                Sign In
               </h1>
 
-              {/* Email Input */}
-              <div className="flex flex-col w-full max-w-md gap-4">
-                <div className="flex items-center border-2 rounded-lg border-black px-3 bg-white dark:border-white dark:bg-black focus-within:border-purple-500 transition-all ease-in-out duration-500">
-                  <FaRegUser className="text-black dark:text-white mr-2" />
+              <div className='space-y-4'>
+                <div className='flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500'>
+                  <MdOutlineEmail className='text-gray-500 dark:text-white mr-3' />
                   <input
-                    type="email"
-                    placeholder="Enter your email..."
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-12 placeholder:text-slate-400 text-black dark:text-white bg-white dark:bg-black outline-none"
+                    type='email'
+                    placeholder='Email'
+                    className='w-full text-black placeholder-gray-500 dark:text-white dark:placeholder-gray-500 bg-transparent outline-none'
                   />
                 </div>
+                <div className='flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500'>
+                  <IoKeyOutline className='text-gray-500 dark:text-white mr-3' />
+                  <input
+                    onChange={(e) => setPassword(e.target.value)}
+                    type='password'
+                    placeholder='Password'
+                    className='w-full text-black placeholder-gray-500 dark:text-white dark:placeholder-gray-500 bg-transparent outline-none'
+                  />
+                </div>
+                {errorMessage && (
+                  <p className='text-red-500 text-sm mt-2'>{errorMessage}</p>
+                )}
+              </div>
+
+              <div className='flex justify-between items-center mt-4'>
+                <div></div>
+                <p
+                  onClick={handleNavigateSendEmail}
+                  className='text-[#4335DE] text-sm font-semibold cursor-pointer hover:underline'>
+                  Forgot Password?
+                </p>
+              </div>
+
+              <button
+                type='submit'
+                className='w-full bg-[#4335DE] hover:bg-[#584cdb] text-white font-semibold rounded-lg py-2 mt-4 transition duration-300'>
+                Login
+              </button>
+
+              <div className='flex items-center justify-between mt-6'>
+                <span className='bg-gray-700 h-px w-1/3'></span>
+                <p className='text-gray-400 text-sm mx-2'>Or sign in with</p>
+                <span className='bg-gray-700 h-px w-1/3'></span>
+              </div>
+
+              <div className='flex flex-col gap-3 mt-4'>
                 <button
-                  onClick={handleSendEmail}
-                  className="w-full h-12 bg-gradient-to-r from-purple-400 to-purple-600 text-white rounded-lg font-semibold text-lg transition-transform transform hover:scale-105">
-                  Send
+                  onClick={handleLoginFacebook}
+                  className='flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg py-2 transition duration-300'>
+                  <FaFacebook className='mr-3' />
+                  Facebook
+                </button>
+                <button
+                  onClick={handleLoginGoogle}
+                  className='flex items-center justify-center bg-red-600 hover:bg-red-700 text-white rounded-lg py-2 transition duration-300'>
+                  <BiLogoGmail className='mr-3' />
+                  Google
                 </button>
               </div>
 
-              {/* Code Input */}
-              <div className="w-full max-w-md">
-                <div className="flex items-center border-2 rounded-lg border-black px-3 bg-white dark:border-white dark:bg-black focus-within:border-purple-500 transition-all ease-in-out duration-500">
-                  <input
-                    type="text"
-                    placeholder="Enter code..."
-                    onChange={(e) => setCode(e.target.value)}
-                    className="w-full h-12 placeholder:text-slate-400 text-black dark:text-white bg-white dark:bg-black outline-none"
-                  />
-                </div>
+              <p className='text-center text-gray-400 mt-6'>
+                Don't have an account?{" "}
+                <span
+                  onClick={() => navigate("/sign-up")}
+                  className='text-[#4335DE] font-semibold cursor-pointer hover:underline'>
+                  Sign up
+                </span>
+              </p>
+            </>
+          )}
+          {stepVerify && !stepPassword && (
+            <div>
+              <div>
+                <IoArrowBack
+                  className='w-5 h-5 cursor-pointer text-black dark:text-white'
+                  onClick={() => {
+                    setStepVerify((prev) => !prev);
+                  }}
+                />
               </div>
+              <div className='flex flex-col gap-6 p-6 items-center justify-center h-max'>
+                <h1 className='text-black dark:text-white text-4xl font-bold'>
+                  Verify Code
+                </h1>
 
-              {/* Error Message */}
+                {/* Email Input */}
+                <div className='flex flex-col w-full max-w-md gap-4'>
+                  <div className='flex items-center border-2 rounded-lg border-black px-3 bg-white dark:border-white dark:bg-black focus-within:border-purple-500 transition-all ease-in-out duration-500'>
+                    <FaRegUser className='text-black dark:text-white mr-2' />
+                    <input
+                      type='email'
+                      placeholder='Enter your email...'
+                      onChange={(e) => setEmail(e.target.value)}
+                      className='w-full h-12 placeholder:text-slate-400 text-black dark:text-white bg-white dark:bg-black outline-none'
+                    />
+                  </div>
+                  <button
+                    onClick={handleSendEmail}
+                    className='w-full h-12 bg-gradient-to-r from-purple-400 to-purple-600 text-white rounded-lg font-semibold text-lg transition-transform transform hover:scale-105'>
+                    Send
+                  </button>
+                </div>
+
+                {/* Code Input */}
+                <div className='w-full max-w-md'>
+                  <div className='flex items-center border-2 rounded-lg border-black px-3 bg-white dark:border-white dark:bg-black focus-within:border-purple-500 transition-all ease-in-out duration-500'>
+                    <input
+                      type='text'
+                      placeholder='Enter code...'
+                      onChange={(e) => setCode(e.target.value)}
+                      className='w-full h-12 placeholder:text-slate-400 text-black dark:text-white bg-white dark:bg-black outline-none'
+                    />
+                  </div>
+                </div>
+
+                {/* Error Message */}
+                {errorMessage && typeof errorMessage === "string" && (
+                  <span className='text-red-500 text-center'>
+                    {errorMessage}
+                  </span>
+                )}
+
+                {/* Verify Button */}
+                <button
+                  onClick={handleVerifyCode}
+                  className='w-full max-w-md h-12 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-lg font-semibold text-lg transition-transform transform hover:scale-105'>
+                  Verify
+                </button>
+              </div>
+            </div>
+          )}
+          {stepPassword && (
+            <div className='space-y-6'>
+              <div>
+                <IoArrowBack
+                  className='w-5 h-5 cursor-pointer text-black dark:text-white'
+                  onClick={() => {
+                    setStepVerify(true);
+                    setStepPassword(false);
+                  }}
+                />
+              </div>
+              <h1 className='text-black dark:text-white text-3xl font-bold mt-0'>
+                New password
+              </h1>
+              <div className='flex items-center border-2 rounded-lg border-black bg-white dark:border-white px-2 dark:bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300'>
+                <IoKeyOutline className='text-black dark:text-white mr-2' />
+                <input
+                  onChange={(e) => setPassword(e.target.value)}
+                  type='password'
+                  placeholder='Enter your password...'
+                  className='w-full h-10 placeholder:text-slate-400 text-black bg-white dark:text-white  dark:bg-black outline-none'
+                />
+              </div>
+              <div className='flex items-center border-2 rounded-lg border-black bg-white dark:border-white px-2 dark:bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300'>
+                <RiLockPasswordLine className='text-black dark:text-white mr-2' />
+                <input
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  type='password'
+                  placeholder='Confirm your password...'
+                  className='w-full h-10 placeholder:text-slate-400 text-black bg-white dark:text-white  dark:bg-black outline-none'
+                />
+              </div>
               {errorMessage && typeof errorMessage === "string" && (
-                <span className="text-red-500 text-center">{errorMessage}</span>
+                <span className='text-red-500'>{errorMessage}</span>
               )}
-
-              {/* Verify Button */}
               <button
-                onClick={handleVerifyCode}
-                className="w-full max-w-md h-12 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-lg font-semibold text-lg transition-transform transform hover:scale-105">
-                Verify
+                onClick={handleChangePassword}
+                className=' w-full h-max p-1 bg-gradient text-white rounded-lg font-semibold text-lg'>
+                Change password
               </button>
             </div>
-          </div>
-        )}
-        {stepPassword && (
-          <div className="space-y-6">
-            <div>
-              <IoArrowBack
-                className="w-5 h-5 cursor-pointer text-black dark:text-white"
-                onClick={() => {
-                  setStepVerify(true);
-                  setStepPassword(false);
-                }}
-              />
-            </div>
-            <h1 className="text-black dark:text-white text-3xl font-bold mt-0">
-              New password
-            </h1>
-            <div className="flex items-center border-2 rounded-lg border-black bg-white dark:border-white px-2 dark:bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300">
-              <IoKeyOutline className="text-black dark:text-white mr-2" />
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                placeholder="Enter your password..."
-                className="w-full h-10 placeholder:text-slate-400 text-black bg-white dark:text-white  dark:bg-black outline-none"
-              />
-            </div>
-            <div className="flex items-center border-2 rounded-lg border-black bg-white dark:border-white px-2 dark:bg-black w-full focus-within:border-purple-500 transition-all ease-in-out duration-300">
-              <RiLockPasswordLine className="text-black dark:text-white mr-2" />
-              <input
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                type="password"
-                placeholder="Confirm your password..."
-                className="w-full h-10 placeholder:text-slate-400 text-black bg-white dark:text-white  dark:bg-black outline-none"
-              />
-            </div>
-            {errorMessage && typeof errorMessage === "string" && (
-              <span className="text-red-500">{errorMessage}</span>
-            )}
-            <button
-              onClick={handleChangePassword}
-              className=" w-full h-max p-1 bg-gradient text-white rounded-lg font-semibold text-lg">
-              Change password
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </form>
   );

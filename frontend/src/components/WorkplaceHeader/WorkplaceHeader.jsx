@@ -390,7 +390,6 @@ const WorkplaceHeader = ({ usersInRoom }) => {
   }, [usersInRoom, user._id]);
 
   const [showForm, setShowForm] = useState(false);
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowForm(true);
@@ -420,7 +419,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
 
       <div className='flex items-center gap-5'>
         <div className='hidden md:flex md:items-center relative mr-6'>
-          {state.avatars.length > 1 && (
+          {state.avatars.length > 0 && (
             <div className='flex flex-row-reverse'>
               {state.avatars.map((value, index) => (
                 <div

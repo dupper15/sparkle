@@ -91,7 +91,7 @@ const Image = ({ drag }) => {
 
   const ImagePalette = ({ onDragStart, onSelectImage }) => {
     return (
-      <div className='grid grid-cols-3 gap-2 w-full image-container'>
+      <div className='grid grid-cols-3 gap-2 w-full h-full overflow-y-auto pb-28 scrollbar-hide image-container'>
         {images.map((img, i) => (
           <DraggableImage
             key={img._id || i}
@@ -112,8 +112,8 @@ const Image = ({ drag }) => {
       fetchImages={fetchImages}
     />
   ) : (
-    <div className='overflow-y-auto h-full relative'>
-      <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
+    <div className='flex flex-col h-full relative'>
+      <div className='w-full  p-2 flex justify-center items-center bg-[#4335DE] rounded-md text-white mb-3'>
         <label className='text-center cursor-pointer' htmlFor='uploadImage'>
           Upload Image
         </label>
@@ -145,7 +145,7 @@ const Image = ({ drag }) => {
       <button
         className={`${
           selectedImage ? "block" : "hidden"
-        } w-full h-[40px]  flex justify-center absolute bottom-20 items-center bg-blue-600 rounded-md text-white mt-10 hover:bg-blue-400`}
+        } w-full h-[40px]  flex justify-center absolute bottom-16 items-center bg-blue-600 rounded-md text-white mt-10 hover:bg-blue-400`}
         onClick={() => setIsEdit(true)}>
         Edit
       </button>
