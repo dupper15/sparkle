@@ -133,11 +133,11 @@ const initializeSocket = async (server, mongoUri) => {
 
     socket.on("leave-page", (data) => {
       if (data) {
-        const { databaseId } = data;
-        if (!databaseId) return;
-        const userId = socket.userId;
+        console.log("hêlo", data);
 
-        socket.to(databaseId).emit("remove-cursor", userId);
+        const { databaseId, userId } = data;
+        if (!databaseId || !userId) return;
+        io.to(databaseId).emit("remove-cursor", userId);
       }
     });
 

@@ -503,18 +503,20 @@ const WorkplaceCanvas = () => {
                 show.status ? "py-5 -left-[400px]" : "px-8 left-[75px] py-5"
               } ${
                 isDarkMode ? "bg-[#252627]" : "bg-white"
-              } h-full fixed transition-all w-[350px] ${
+              } h-full fixed top-[60px] transition-all w-[350px] ${
                 draggingComponent ? "z-10" : "z-10"
               } duration-500`}>
               <div
                 onClick={() => setShow({ name: "", status: true })}
                 className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${
                   isDarkMode
-                    ? "bg-[#252627] text-slate-700"
-                    : "bg-white text-slate-300"
+                    ? "bg-[#252627] text-slate-200"
+                    : "bg-white text-slate-800"
                 }`}>
-                <MdKeyboardArrowLeft />
+                <MdKeyboardArrowLeft className='text-[20rem] font-bold' />
+                {/* Tăng kích thước biểu tượng */}
               </div>
+
               {state === "design" && (
                 <TemplateDesign addCanvasFromTemplate={addTemplate} />
               )}

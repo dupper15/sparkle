@@ -301,16 +301,9 @@ const useCanvasViewModel = (id, databaseId, ref) => {
       );
     });
     socket.on("remove-cursor", (userId) => {
-      setCursors((prev) => {
-        if (prev[userId]) {
-          const { [userId]: _, ...remainingCursors } = prev;
-          return remainingCursors;
-        }
-        return prev; // Không làm gì nếu `userId` không tồn tại
-      });
-
-      console.log("3", cursors);
+      setCursors({});
     });
+
     return () => {
       socket.off("update-select-component", handleSelectUpdate);
       socket.off("update-deselect-component", handleDeselectUpdate);
@@ -383,7 +376,6 @@ const useCanvasViewModel = (id, databaseId, ref) => {
     });
 
     return () => {
-      socket.emit("leave-page", databaseId);
       socket.off("update-cursor");
     };
   }, [databaseId]);
@@ -394,7 +386,8 @@ const useCanvasViewModel = (id, databaseId, ref) => {
     socket.emit("mousemove", { databaseId, x, y });
   }, 100);
   const handleMouseLeave = () => {
-    socket.emit("leave-page", { databaseId });
+    console.log("leave");
+    socket.emit("leave-page", { databaseId, userId });
   };
 
   // Handle shape click

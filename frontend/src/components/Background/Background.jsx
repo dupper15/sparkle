@@ -74,7 +74,7 @@ const Background = ({ setBackground }) => {
   return (
     <div className='pt-4'>
       {/* Nút Upload */}
-      <div className='w-full h-[40px] flex justify-center items-center bg-purple-500 rounded-md text-white mb-3'>
+      <div className='w-full h-[40px] flex justify-center items-center bg-[#4335DE] rounded-md text-white mb-3'>
         <label className='text-center cursor-pointer' htmlFor='image'>
           Upload Background
         </label>
@@ -87,11 +87,11 @@ const Background = ({ setBackground }) => {
       </div>
 
       {/* Grid hiển thị backgrounds */}
-      <div className='grid grid-cols-2 gap-2 mt-5 w-full max-h-[600px] overflow-auto scrollbar-hide'>
+      <div className='grid grid-cols-2 gap-2 mt-5 w-fullh-full pb-4 overflow-auto scrollbar-hide'>
         {backgrounds.map((background, i) => (
           <div
             key={i}
-            className='w-full h-[90px] rounded-md cursor-pointer'
+            className='w-full aspect-square rounded-md cursor-pointer'
             style={{
               backgroundImage: `url(${background.background_url})`,
               backgroundSize: "100% 100%",

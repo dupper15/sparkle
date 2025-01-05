@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import emptyAvatar from "../../assets/default-profile-icon.png";
 import chatbotAvatar from "../../assets/chatbot.jpg";
 import { HiOutlineDocumentDownload } from "react-icons/hi";
+import ReactDOM from "react-dom";
 
 const Message = ({ message }) => {
   const { isDarkMode } = useDarkMode();
@@ -124,45 +125,47 @@ const Message = ({ message }) => {
           </div>
         )}
       </div>
-      {isModalOpen && (
-        <div className='z-[9999]'>
-          {/* Nền che mờ */}
-          <div
-            className='fixed inset-0 bg-black bg-opacity-75 z-[9998]'
-            onClick={closeModal}></div>
-
-          {/* Modal hiển thị hình */}
-          <div className='fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in'>
+      {isModalOpen &&
+        ReactDOM.createPortal(
+          <div className='z-[9999]'>
+            {/* Nền che mờ */}
             <div
-              className={`relative flex items-center justify-center p-4 rounded-lg shadow-lg ${
-                isDarkMode ? "bg-gray-800" : "bg-gray-100"
-              }`}>
-              {/* Nút đóng */}
-              <button
-                className='absolute top-2 right-2 text-gray-400 hover:text-gray-600 font-bold text-xl'
-                onClick={closeModal}>
-                ×
-              </button>
+              className='fixed inset-0 bg-black bg-opacity-75 z-[9998]'
+              onClick={closeModal}></div>
 
-              {/* Hình ảnh */}
-              <img
-                src={currentImage}
-                alt='Preview'
-                className='max-w-full max-h-[80vh] rounded-md'
-              />
+            {/* Modal hiển thị hình */}
+            <div className='fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] z-[9999] animate-fade-in'>
+              <div
+                className={`relative flex items-center justify-center p-4 rounded-lg shadow-lg ${
+                  isDarkMode ? "bg-gray-800" : "bg-gray-100"
+                }`}>
+                {/* Nút đóng */}
+                <button
+                  className='absolute top-2 right-2 text-gray-400 hover:text-gray-600 font-bold text-xl'
+                  onClick={closeModal}>
+                  ×
+                </button>
 
-              {/* Nút tải hình */}
-              <HiOutlineDocumentDownload
-                className='absolute bottom-4 right-4 text-white text-3xl cursor-pointer hover:opacity-80'
-                onClick={(e) => {
-                  e.stopPropagation();
-                  downloadImage(currentImage);
-                }}
-              />
+                {/* Hình ảnh */}
+                <img
+                  src={currentImage}
+                  alt='Preview'
+                  className='max-w-full max-h-[80vh] rounded-md'
+                />
+
+                {/* Nút tải hình */}
+                <HiOutlineDocumentDownload
+                  className='absolute bottom-4 right-4 text-white text-3xl cursor-pointer hover:opacity-80'
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    downloadImage(currentImage);
+                  }}
+                />
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body // Đưa modal lên DOM root
+        )}
     </div>
   );
 };
