@@ -28,8 +28,26 @@ const getAllBackground = async (req, res) => {
     });
   }
 };
+const deleteBackground = async (req, res) => {
+  try {
+    const backgroundId = req.params.id;
+    if (!backgroundId) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Id is not defined",
+      });
+    }
+    const response = await BackgroundService.deleteBackground(backgroundId);
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(404).json({
+      message: e,
+    });
+  }
+};
 
 module.exports = {
   createBackground,
   getAllBackground,
+  deleteBackground,
 };

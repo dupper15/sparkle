@@ -4,11 +4,37 @@ import { useSelector } from "react-redux";
 import emptyAvatar from "../../assets/default-profile-icon.png";
 import chatbotAvatar from "../../assets/chatbot.jpg";
 import { HiOutlineDocumentDownload } from "react-icons/hi";
+import * as Alert from "../../components/Alert/Alert";
 import ReactDOM from "react-dom";
+import { LuImagePlus } from "react-icons/lu";
+import { useMutationHooks } from "../../hooks/useHookMutation";
+import { createImageUpload, getAllImage } from "../../services/ImageService";
+import { ClipLoader } from "react-spinners";
 
 const Message = ({ message }) => {
   const { isDarkMode } = useDarkMode();
   const user = useSelector((state) => state.user);
+  const [isUploading, setIsUploading] = useState(false);
+  const mutationCreate = useMutationHooks((data) => {
+    return createImageUpload(data);
+  });
+  const handleUpload = async () => {
+    if (message.imageUrl) {
+      setIsUploading(true);
+      try {
+        await mutationCreate.mutateAsync({
+          id: user?.id,
+          image: message.imageUrl,
+        });
+        Alert.success("Upload image success");
+      } catch (error) {
+        Alert.error("Failed to upload image. Please try again.");
+        console.error(error);
+      } finally {
+        setIsUploading(false);
+      }
+    }
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState("");
@@ -45,7 +71,7 @@ const Message = ({ message }) => {
       const writableStream = await fileHandle.createWritable();
       await writableStream.write(blob);
       await writableStream.close();
-      alert("Image saved successfully!");
+      Alert.success("Download image success !");
     } catch (error) {
       console.error("Error saving image:", error);
     }
@@ -77,26 +103,26 @@ const Message = ({ message }) => {
             )}
           </div>
         </div>
-        <div className='chat-header text-black'>
+        <div className='chat-header text-black dark:text-white'>
           {message.senderName || "Unknown"}
         </div>
         <div
-          className={`chat-bubble my-1 content-start ${
-            isDarkMode ? "bg-black text-white" : "bg-white text-black"
+          className={`chat-bubble p-3 rounded-lg shadow-md my-2  ${
+            isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
           }`}>
           {message.content && (
             <div
               onMouseDown={handleShowTime}
-              className={`my-1 ${
-                isDarkMode ? "bg-black text-white" : "bg-white text-black"
+              className={` ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
               } ${message.sender === user.id ? "text-right" : "text-left"}`}>
               {message.content}
             </div>
           )}
           {message.imageUrl && (
             <div
-              className={`my-1 ${
-                isDarkMode ? "bg-black text-white" : "bg-white text-black"
+              className={`my-1 flex items-center justify-center ${
+                isDarkMode ? "bg-gray-700 text-white" : "bg-white text-black"
               }`}>
               <img
                 src={message.imageUrl}
@@ -104,6 +130,19 @@ const Message = ({ message }) => {
                 style={{ maxWidth: "200px", cursor: "pointer" }}
                 onClick={() => openModal(message.imageUrl)}
               />
+            </div>
+          )}
+          {message.senderName === "SparkleBot" && message.imageUrl && (
+            <div className='flex justify-end w-full'>
+              {isUploading ? (
+                <ClipLoader color='#4335DE' size={20} />
+              ) : (
+                <button
+                  onClick={handleUpload}
+                  className='text-slate-600 text-xl mt-1 hover:text-slate-700 dark:text-slate-300 dark:hover:text-slate-200'>
+                  <LuImagePlus />
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -125,6 +164,7 @@ const Message = ({ message }) => {
           </div>
         )}
       </div>
+
       {isModalOpen &&
         ReactDOM.createPortal(
           <div className='z-[9999]'>

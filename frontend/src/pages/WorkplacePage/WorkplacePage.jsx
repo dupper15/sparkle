@@ -525,7 +525,9 @@ const WorkplaceCanvas = () => {
                 <Project addProjectFromWorkplace={addProject} />
               )}
               {state === "text" && <Text drag={setDraggingComponent} />}
-              {state === "image" && <Image drag={setDraggingComponent} />}
+              {state === "image" && (
+                <Image drag={setDraggingComponent} handleReset={handleReset} />
+              )}
               {state === "background" && (
                 <Background setBackground={setBackground} />
               )}

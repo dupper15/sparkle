@@ -3,16 +3,24 @@ import * as BackgroundService from "../../services/BackgroundService";
 import { useSelector } from "react-redux";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import * as Alert from "../Alert/Alert";
-
+import { FaRegTrashCan } from "react-icons/fa6";
+import { useMutation } from "@tanstack/react-query";
 const Background = ({ setBackground }) => {
   const user = useSelector((state) => state.user);
   const [backgrounds, setBackgrounds] = useState([]); // State lưu trữ danh sách backgrounds
   const [isUploading, setIsUploading] = useState(false); // State để theo dõi trạng thái upload
+  const [hoveredBackground, setHoveredBackground] = useState(null); // State lưu background đang được hover
+  const [refresh, setRefresh] = useState(false);
 
   const fetchBackgrounds = async () => {
     try {
       const data = await BackgroundService.getAllBackground(user?.id);
-      setBackgrounds(Array.isArray(data.data) ? data.data : []); // Gán dữ liệu background
+      const fetchedBackgrounds = Array.isArray(data.data) ? data.data : [];
+      const defaultBackground = {
+        _id: "default",
+        background_url: "",
+      };
+      setBackgrounds([defaultBackground, ...fetchedBackgrounds]);
     } catch (error) {
       console.error("Failed to fetch backgrounds:", error);
     }
@@ -20,7 +28,7 @@ const Background = ({ setBackground }) => {
 
   useEffect(() => {
     fetchBackgrounds();
-  }, [user?.id]);
+  }, [user?.id, refresh]);
 
   const mutationCreate = useMutationHooks((data) => {
     return BackgroundService.createBackground(data);
@@ -70,7 +78,21 @@ const Background = ({ setBackground }) => {
   const handleClickBackground = (bgLink) => {
     setBackground(bgLink);
   };
-
+  const mutationDelete = useMutation({
+    mutationFn: (bgId) => BackgroundService.deleteBackground(bgId),
+    onSuccess: (data) => {
+      Alert.success(data.message);
+      setRefresh(!refresh);
+    },
+    onError: (error) => {
+      Alert.error("Failed to delete background");
+      console.error(error);
+    },
+  });
+  const handleDeleteBackground = (bgId) => {
+    console.log("bg id", bgId);
+    mutationDelete.mutate(bgId);
+  };
   return (
     <div className='pt-4'>
       {/* Nút Upload */}
@@ -87,21 +109,40 @@ const Background = ({ setBackground }) => {
       </div>
 
       {/* Grid hiển thị backgrounds */}
-      <div className='grid grid-cols-2 gap-2 mt-5 w-fullh-full pb-4 overflow-auto scrollbar-hide'>
+      <div className='grid grid-cols-2 gap-2 mt-5 w-full h-full pb-4 overflow-auto scrollbar-hide'>
         {backgrounds.map((background, i) => (
           <div
-            key={i}
-            className='w-full aspect-square rounded-md cursor-pointer'
+            key={background._id || `default-${i}`}
+            className={`relative w-full aspect-square rounded-md cursor-pointer group ${
+              background._id === "default"
+                ? "border-2 border-collapse border-black"
+                : ""
+            }`}
             style={{
-              backgroundImage: `url(${background.background_url})`,
+              backgroundImage: background.background_url
+                ? `url(${background.background_url})`
+                : "none",
               backgroundSize: "100% 100%",
               backgroundColor: background.background_url
                 ? "transparent"
                 : "white",
             }}
-            onClick={() =>
-              handleClickBackground(background.background_url)
-            }></div>
+            onMouseEnter={() => setHoveredBackground(background._id)}
+            onMouseLeave={() => setHoveredBackground(null)}
+            onClick={() => handleClickBackground(background.background_url)}>
+            {/* Hiển thị icon thùng rác khi hover */}
+            {hoveredBackground === background._id &&
+              background._id !== "default" && (
+                <div
+                  className='absolute top-2 right-2 text-red-500 bg-white p-1 rounded-full cursor-pointer hover:bg-gray-200'
+                  onClick={(e) => {
+                    e.stopPropagation(); // Ngăn click bubble lên parent
+                    handleDeleteBackground(background._id);
+                  }}>
+                  <FaRegTrashCan size={20} />
+                </div>
+              )}
+          </div>
         ))}
       </div>
     </div>

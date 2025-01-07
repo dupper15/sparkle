@@ -31,8 +31,8 @@ const Text = ({ drag }) => {
           {...listeners}
           {...attributes}
           onMouseDown={() => onDragStart({ content: "Sample Text" })}
-          className='bg-transparent border-2 cursor-pointer hover font-bold p-3 rounded-md text-x1 border-[#3c3c3d] hover:bg-gray-200 text-black'>
-          <h2>Add new text</h2>
+          className='bg-transparent border-2 cursor-pointer w-full  hover font-semibold text-xl h-max px-4 py-2 rounded-md text-x1 dark:text-slate-300 border-[#3c3c3d] hover:bg-gray-200 text-black'>
+          {" "}
         </div>
       </div>
     );
@@ -43,8 +43,7 @@ const Text = ({ drag }) => {
       <TextPalette onDragStart={handleDragStart} />
       <DragOverlay>
         {draggingText ? (
-          <div
-            style={{ fontSize: "16px", color: "#000000", textAlign: "center" }}>
+          <div className='text-xl text-slate-700  text-center'>
             {draggingText.content}
           </div>
         ) : null}

@@ -2,17 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useDraggable, DragOverlay } from "@dnd-kit/core";
 import { useMutationHooks } from "../../hooks/useMutationHook";
 import { useSelector } from "react-redux";
-import { createImageUpload, getAllImage } from "../../services/ImageService";
 import * as Alert from "../Alert/Alert";
 import EditImage from "./EditImage";
+import { useMutation } from "@tanstack/react-query";
+import { set } from "mongoose";
+import ImageService from "../../services/ImageService";
+import { createImageUpload, getAllImage } from "../../services/ImageService";
 
-const Image = ({ drag }) => {
+const Image = ({ drag, handleReset }) => {
   const [draggingImage, setDraggingImage] = useState(null);
   const [images, setImages] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const user = useSelector((state) => state.user);
   const [selectedImage, setSelectedImage] = useState("");
   const [isEdit, setIsEdit] = useState(false);
+  const [select, setSelect] = useState("");
 
   const handleDragStart = (img) => {
     const imgObject = { ...img, type: "Image" };
@@ -31,7 +35,7 @@ const Image = ({ drag }) => {
 
   useEffect(() => {
     fetchImages();
-  }, [user?.id]);
+  }, [handleReset]);
 
   const mutationCreate = useMutationHooks((data) => {
     return createImageUpload(data);
@@ -91,7 +95,7 @@ const Image = ({ drag }) => {
 
   const ImagePalette = ({ onDragStart, onSelectImage }) => {
     return (
-      <div className='grid grid-cols-3 gap-2 w-full h-full overflow-y-auto pb-28 scrollbar-hide image-container'>
+      <div className='grid grid-cols-3 gap-2 w-full h-max overflow-y-auto pb-28 scrollbar-hide image-container'>
         {images.map((img, i) => (
           <DraggableImage
             key={img._id || i}
@@ -103,6 +107,17 @@ const Image = ({ drag }) => {
         ))}
       </div>
     );
+  };
+  const mutationDelete = useMutation({
+    mutationFn: (data) => ImageService.deleteImage(data),
+    onSuccess: () => {
+      fetchImages();
+      Alert.success("Delete image success");
+    },
+  });
+  const handleDelete = (id) => {
+    console.log("id", id);
+    mutationDelete.mutate(id);
   };
 
   return isEdit ? (
@@ -125,9 +140,11 @@ const Image = ({ drag }) => {
         />
       </div>
       <ImagePalette
+        className='h-full'
         onDragStart={handleDragStart}
         onSelectImage={(img) => {
           setSelectedImage(img.image);
+          setSelect(img._id);
         }}
       />
       <DragOverlay>
@@ -142,13 +159,23 @@ const Image = ({ drag }) => {
           />
         ) : null}
       </DragOverlay>
-      <button
+      <div
         className={`${
-          selectedImage ? "block" : "hidden"
-        } w-full h-[40px]  flex justify-center absolute bottom-16 items-center bg-blue-600 rounded-md text-white mt-10 hover:bg-blue-400`}
-        onClick={() => setIsEdit(true)}>
-        Edit
-      </button>
+          selectedImage ? "flex" : "hidden"
+        } w-full h-[40px] absolute bottom-16 items-center justify-between px-4`}>
+        <button
+          className='flex-1 h-full bg-red-600 rounded-md text-white hover:bg-red-400 mx-2'
+          onClick={() => {
+            handleDelete(select);
+          }}>
+          Delete
+        </button>
+        <button
+          className='flex-1 h-full bg-blue-600 rounded-md text-white hover:bg-blue-400 mx-2'
+          onClick={() => setIsEdit(true)}>
+          Edit
+        </button>
+      </div>
     </div>
   );
 };
@@ -161,7 +188,7 @@ const DraggableImage = ({ img, onDragStart, onSelectImage, isSelected }) => {
   return (
     <div
       ref={setNodeRef}
-      className={`w-full h-[90px] overflow-hidden rounded-md cursor-pointer ${
+      className={`w-full h-[90px] overflow-hidden scrollbar-hide rounded-md cursor-pointer ${
         isSelected ? "border-4 border-blue-500" : ""
       }`}
       {...listeners}

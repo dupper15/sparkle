@@ -1,5 +1,6 @@
 const ImageService = require("../services/ImageService");
-
+const Image = require("../models/ImageModel");
+const ImageUpload = require("../models/ImageUploadModel");
 const createImageUpload = async (req, res) => {
   try {
     console.log("req.body", req.body);
