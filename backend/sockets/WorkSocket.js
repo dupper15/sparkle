@@ -66,13 +66,14 @@ const WorkSocket = (socket, io) => {
   });
   socket.on("updateShape", (data) => {
     if (!data) return;
-    const { roomId, shapeId, x, y, width, height } = data;
+    const { roomId, shapeId, x, y, width, height, rotate } = data;
     socket.to(roomId).emit("shapeUpdated", {
       shapeId,
       x,
       y,
       width,
       height,
+      rotate,
     });
   });
   socket.on("componentOpacityChanged", ({ roomId, componentId, opacity }) => {
@@ -100,14 +101,27 @@ const WorkSocket = (socket, io) => {
     }
   );
   socket.on("updateText", (data) => {
-    const { roomId, textId, x, y, width, height } = data;
-    socket.to(roomId).emit("updateText", {
-      textId,
-      x,
-      y,
-      width,
-      height,
-    });
+    const { roomId, textId, x, y, width, height, rotate } = data;
+    if (!rotate) {
+      socket.to(roomId).emit("updateText", {
+        textId,
+        x,
+        y,
+        width,
+        height,
+        rotate,
+      });
+    }
+    if (rotate) {
+      socket.to(roomId).emit("updateText", {
+        textId,
+        x,
+        y,
+        width,
+        height,
+        rotate,
+      });
+    }
   });
 };
 module.exports = WorkSocket;

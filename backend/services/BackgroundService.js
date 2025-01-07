@@ -45,8 +45,25 @@ const getAllBackground = (userId) => {
     }
   });
 };
-
+const deleteBackground = (backgroundId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await Background.findByIdAndDelete(backgroundId);
+      resolve({
+        status: "OK",
+        message: "Delete background successfully",
+      });
+    } catch (error) {
+      reject({
+        status: "ERROR",
+        message: "Failed to create Background",
+        error: error.message,
+      });
+    }
+  });
+};
 module.exports = {
   createBackground,
   getAllBackground,
+  deleteBackground,
 };

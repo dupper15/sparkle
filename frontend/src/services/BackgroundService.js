@@ -22,3 +22,13 @@ export const createBackground = async (data) => {
     throw new Error(error.response?.data?.message || "API call failed");
   }
 };
+export const deleteBackground = async (id) => {
+  try {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_API_KEY}/background/delete/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};

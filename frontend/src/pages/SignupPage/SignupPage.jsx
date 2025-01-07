@@ -26,10 +26,15 @@ const SignupPage = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [isVerificationStep, setIsVerificationStep] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const mutation = useMutation({
     mutationFn: UserService.signupUser,
+    onMutate: () => {
+      setIsLoading(true);
+    },
     onError: (error) => {
+      setIsLoading(false);
       const apiErrorMessage =
         error.response?.data?.message || "An unexpected error occurred.";
       setErrorMessage(
@@ -40,6 +45,7 @@ const SignupPage = () => {
       console.error("Error:", apiErrorMessage);
     },
     onSuccess: (data) => {
+      setIsLoading(false);
       setErrorMessage("");
       const apiSuccessMessage =
         data.message || "Sign up successful! Please verify your email.";
@@ -53,6 +59,7 @@ const SignupPage = () => {
       const apiErrorMessage =
         error.response?.data?.message || "Verification failed.";
       setErrorMessage(apiErrorMessage);
+      Alert.error(apiErrorMessage);
     },
     onSuccess: (data) => {
       setErrorMessage("");
@@ -165,12 +172,6 @@ const SignupPage = () => {
     verifyMutation.mutate(verificationCode);
   };
 
-  useEffect(() => {
-    if (verifyMutation.isSuccess) {
-      Alert.success(successMessage);
-    }
-  }, [verifyMutation.isSuccess, successMessage]);
-
   return (
     <form
       onSubmit={handleSignup}
@@ -182,7 +183,6 @@ const SignupPage = () => {
               <h1 className='text-slate-800 dark:text-white text-3xl font-bold text-center mb-6'>
                 Sign Up
               </h1>
-
               <div className='space-y-4'>
                 <div className='flex items-center border-2 rounded-lg border-gray-600 bg-white px-3 py-2 dark:bg-black dark:border-gray-200 focus-within:border-purple-500'>
                   <FaRegUser className='text-gray-500 dark:text-white mr-3' />
@@ -271,16 +271,42 @@ const SignupPage = () => {
                   onChange={(e) => setVerificationCode(e.target.value)}
                   type='text'
                   placeholder='Verification Code'
-                  className='w-full text-white placeholder-gray-500 bg-transparent outline-none'
+                  className='w-full text-black dark:text-white placeholder-gray-500 bg-transparent outline-none'
                 />
               </div>
               {errorMessage && (
                 <p className='text-red-500 text-sm mt-2'>{errorMessage}</p>
               )}
+
               <button
-                onClick={handleVerifyEmail}
-                className='w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg py-2 mt-4 transition duration-300'>
-                Verify
+                type='submit'
+                className={`w-full ${
+                  isLoading
+                    ? "bg-[#4335DE] cursor-not-allowed"
+                    : "bg-[#4335DE] hover:bg-[#584cdb]"
+                } text-white font-semibold rounded-lg py-2 mt-4 transition duration-300 flex justify-center items-center`}
+                disabled={isLoading}>
+                {isLoading ? (
+                  <svg
+                    className='animate-spin h-5 w-5 text-white'
+                    xmlns='http://www.w3.org/2000/svg'
+                    fill='none'
+                    viewBox='0 0 24 24'>
+                    <circle
+                      className='opacity-25'
+                      cx='12'
+                      cy='12'
+                      r='10'
+                      stroke='currentColor'
+                      strokeWidth='4'></circle>
+                    <path
+                      className='opacity-75'
+                      fill='currentColor'
+                      d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.963 7.963 0 014 12H0c0 2.042.784 3.898 2.051 5.291l1.949-1.949z'></path>
+                  </svg>
+                ) : (
+                  "Register"
+                )}
               </button>
             </>
           )}

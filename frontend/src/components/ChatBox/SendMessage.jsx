@@ -69,7 +69,7 @@ const SendMessage = ({ addMessage }) => {
       className={`w-full ${
         image ? "h-[150px]" : "h-[60px]"
       } flex items-center justify-center px-4 ${
-        isDarkMode ? "bg-[#282828] text-gray-300" : "bg-white"
+        isDarkMode ? "bg-slate-800 text-gray-300" : "bg-white"
       }`}>
       <form
         onSubmit={handleSubmit}
@@ -88,10 +88,10 @@ const SendMessage = ({ addMessage }) => {
           onClick={chatImageClick}>
           <FaPencil className={`${isImageBot ? "text-white" : ""}`} />
         </span>
-        <div className='w-full focus:outline-none bg-[#F2F2F2] text-black rounded-lg shadow px-4 py-2 flex flex-col'>
+        <div className='w-full focus:outline-none bg-[#F2F2F2] dark:bg-slate-900 my-4 text-black rounded-lg shadow px-2 flex flex-col'>
           <div className='flex-grow'>
             <input
-              className='input w-full focus:outline-none bg-transparent text-black rounded-lg shadow px-4 py-2'
+              className='input w-full h-full border-none  dark:text-white focus:outline-none bg-transparent text-black px-2 py-2'
               placeholder='Type a message...'
               value={message}
               onChange={(e) => setMessage(e.target.value)}

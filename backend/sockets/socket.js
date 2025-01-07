@@ -131,7 +131,7 @@ const initializeSocket = async (server, mongoUri) => {
       socket.join(databaseId);
     });
 
-    socket.on("leave-page", (data) => {
+    socket.on("leave-page", (data) => { 
       if (data) {
         console.log("hêlo", data);
 

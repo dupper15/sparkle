@@ -280,30 +280,45 @@ const useCanvasViewModel = (id, databaseId, ref) => {
       );
     });
     socket.on(
-      "horizontalFlipChanged",
+      "componentHorizontalFlipChanged",
       ({ componentId, horizontalFlip, componentType }) => {
+        console.log("Horizontal flip received:", {
+          componentId,
+          horizontalFlip,
+        });
         setComponents((prevComponents) =>
           prevComponents.map((component) =>
             component._id === componentId
-              ? { ...component, horizontalFlip }
+              ? { ...component, horizontalFlip: !horizontalFlip }
               : component
           )
         );
       }
     );
-    socket.on("verticalFlipChanged", ({ componentId, verticalFlip }) => {
-      setComponents((prevComponents) =>
-        prevComponents.map((component) =>
-          component._id === componentId
-            ? { ...component, verticalFlip }
-            : component
-        )
-      );
-    });
-    socket.on("remove-cursor", (userId) => {
-      setCursors({});
-    });
 
+    socket.on(
+      "componentVerticalFlipChanged",
+      ({ componentId, verticalFlip }) => {
+        setComponents((prevComponents) =>
+          prevComponents.map((component) =>
+            component._id === componentId
+              ? { ...component, verticalFlip: !verticalFlip }
+              : component
+          )
+        );
+      }
+    );
+    socket.on("remove-cursor", (userId) => {
+      setCursors((prev) => {
+        if (prev[userId]) {
+          const { [userId]: _, ...remainingCursors } = prev;
+          return remainingCursors;
+        }
+        return prev; // Không làm gì nếu `userId` không tồn tại
+      });
+
+      console.log("3", cursors);
+    });
     return () => {
       socket.off("update-select-component", handleSelectUpdate);
       socket.off("update-deselect-component", handleDeselectUpdate);
@@ -376,6 +391,7 @@ const useCanvasViewModel = (id, databaseId, ref) => {
     });
 
     return () => {
+      socket.emit("leave-page", { databaseId, userId });
       socket.off("update-cursor");
     };
   }, [databaseId]);
@@ -386,7 +402,6 @@ const useCanvasViewModel = (id, databaseId, ref) => {
     socket.emit("mousemove", { databaseId, x, y });
   }, 100);
   const handleMouseLeave = () => {
-    console.log("leave");
     socket.emit("leave-page", { databaseId, userId });
   };
 
@@ -625,7 +640,7 @@ const useCanvasViewModel = (id, databaseId, ref) => {
       ).then(() => {
         socket.emit("componentVerticalFlipChanged", {
           componentId: component._id,
-          verticalFlip: !component.verticalFlip,
+          verticalFlip: component.verticalFlip,
           roomId,
         });
       });

@@ -101,7 +101,7 @@ const ChatBox = ({ toggleChatBox }) => {
   }, [messages]);
 
   return (
-    <div className='flex flex-col w-[400px] h-[500px] bg-[#EEEAEA] fixed bottom-3 right-3 shadow-lg rounded-lg overflow-hidden'>
+    <div className='flex flex-col w-[400px] h-[500px] bg-[#EEEAEA] dark:bg-[#252627] dark:text-white fixed bottom-3 right-3 shadow-lg rounded-lg overflow-hidden'>
       <ChatHeader toggleChatBox={toggleChatBox} />
       <div className='flex-1 overflow-y-auto mt-2'>
         {messages.map((msg, index) => (
