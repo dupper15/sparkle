@@ -13,23 +13,30 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 const responsive = {
 	superLargeDesktop: {
-		breakpoint: { max: 4000, min: 3000 },
+		breakpoint: { max: 4000, min: 3001 }, // >3000px
 		items: 5,
 	},
 	desktop: {
-		breakpoint: { max: 3000, min: 1024 },
+		breakpoint: { max: 3000, min: 1661 }, // 1441px - 3000px
 		items: 5,
 	},
+	smalDesktop: {
+		breakpoint: { max: 1660, min: 1361 }, // 1441px - 3000px
+		items: 4,
+	},
+	smallDesktop: {
+		breakpoint: { max: 1360, min: 1061 }, // 1025px - 1440px
+		items: 3,
+	},
 	tablet: {
-		breakpoint: { max: 1024, min: 464 },
+		breakpoint: { max: 1060, min: 801 }, // 465px - 1024px
 		items: 2,
 	},
 	mobile: {
-		breakpoint: { max: 464, min: 0 },
+		breakpoint: { max: 800, min: 0 }, // <464px
 		items: 1,
 	},
 };
-
 function CustomCarousel({ onDelete }) {
 	const user = useSelector((state) => state.user);
 	const navigate = useNavigate();
@@ -46,12 +53,14 @@ function CustomCarousel({ onDelete }) {
 		try {
 			setIsLoading(true);
 			const project_arr = await ProjectService.getAllProject(data);
-			setProjects(project_arr.data);
+			const limitedProjects = project_arr.data.slice(0, 7); // Lấy 5 dự án đầu tiên
+			setProjects(limitedProjects);
 			setIsLoading(false);
 		} catch (error) {
 			console.error('Error fetching projects:', error);
 		}
 	});
+
 	const [isLoading, setIsLoading] = useState(true);
 	const mutationRename = useMutationHooks(async (data) => {
 		try {
@@ -108,17 +117,17 @@ function CustomCarousel({ onDelete }) {
 
 	return (
 		<Carousel
-			customLeftArrow={<IoIosArrowDropleft className='left-arrow ' />}
-			customRightArrow={<IoIosArrowDropright className='right-arrow' />}
+			customLeftArrow={<IoIosArrowDropleft className='left-arrow text-slate-400 dark:text-slate-200' />}
+			customRightArrow={<IoIosArrowDropright className='right-arrow text-slate-400 dark:text-slate-200' />}
 			responsive={responsive}
 			swipeable={false}
 			draggable={false}
-			infinite={false}
-			autoPlaySpeed={1000}
+			infinite={true}
+			autoPlay={true}
+			autoPlaySpeed={2000}
 			keyBoardControl={true}
 			transitionDuration={500}
 			className='items-center'
-			removeArrowOnDeviceType={['tablet', 'mobile']}
 			itemClass='py-4 px-0 flex gap-4'
 		>
 			{isLoading ? (

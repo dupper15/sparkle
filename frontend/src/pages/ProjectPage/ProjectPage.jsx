@@ -13,7 +13,7 @@ const ProjectPage = () => {
 			<header className='z-40'>
 				<Header />
 			</header>
-			<div className={`flex w-full ${isDarkMode ? 'bg-[#101010] text-white' : 'bg-white text-black'}`}>
+			<div className={`flex w-full flex-row ${isDarkMode ? 'bg-[#101010] text-white' : 'bg-white text-black'}`}>
 				<Sidebar />
 				<div className='w-[calc(100%-80px)] flex flex-col h-full pb-5'>
 					<div className=' w-full mt-2 mb-4 pr-10 pl-12'>
@@ -21,14 +21,14 @@ const ProjectPage = () => {
 						<SlideBanner></SlideBanner>
 					</div>
 					<div className=''>
-						<div className='ml-12 text-2xl font-bold w-max pointer-events-none'>Your Projects</div>
+						<div className='ml-12 text-2xl font-bold w-max pointer-events-none'>Your project</div>
 						<div>
-							<ResponsiveGrid></ResponsiveGrid>
+							<ResponsiveGrid />
 						</div>
 					</div>
 				</div>
 			</div>
-			<div className=' absolute bottom-0'>
+			<div className=''>
 				<Footer />
 			</div>
 		</div>
