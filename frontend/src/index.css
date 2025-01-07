@@ -2,45 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 .gradient {
-  background: linear-gradient(to right, #610bef 0%, #438afd 78%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+	background: linear-gradient(to right, #610bef 0%, #438afd 78%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 .bg-gradient {
-  background: linear-gradient(to right, #610bef 0%, #438afd 78%);
-  position: relative;
-  overflow: hidden;
+	background: linear-gradient(to right, #610bef 0%, #438afd 78%);
+	position: relative;
+	overflow: hidden;
 }
 
 .bg-gradient::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0);
-  transition: background-color 0.3s ease;
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0);
+	transition: background-color 0.3s ease;
 }
 
 .bg-gradient:hover::after {
-  background-color: rgba(0, 0, 0, 0.2);
+	background-color: rgba(0, 0, 0, 0.2);
 }
 .left-arrow,
 .right-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  font-size: 50px;
-  color: white;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	cursor: pointer;
+	font-size: 50px;
 }
 
 .left-arrow {
-  left: 10px;
+	left: 10px;
 }
 
 .right-arrow {
-  right: 10px;
+	right: 10px;
+}
+.left-arrow:hover,
+.right-arrow:hover {
+	transform: translateY(-50%) scale(1.2); /* Phóng to khi hover */
 }

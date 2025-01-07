@@ -1,55 +1,118 @@
-// Sample data array (replace this with your actual data)
-import { Link } from 'react-router-dom';
 import testImage from '../../../assets/banner1.png';
-
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import { IoIosArrowDropright, IoIosArrowDropleft } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutationHooks } from '../../../hooks/useMutationHook';
 import * as ProjectService from '../../../services/ProjectService';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SlOptionsVertical } from 'react-icons/sl';
+import * as Alert from '../../Alert/Alert';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-const ResponsiveGrid = () => {
-	const user = useSelector((state) => state.user);
+import { useMutation } from '@tanstack/react-query';
 
+const responsive = {
+	superLargeDesktop: {
+		breakpoint: { max: 4000, min: 3001 }, // >3000px
+		items: 5,
+	},
+	desktop: {
+		breakpoint: { max: 3000, min: 1661 }, // 1441px - 3000px
+		items: 5,
+	},
+	smalDesktop: {
+		breakpoint: { max: 1660, min: 1361 }, // 1441px - 3000px
+		items: 4,
+	},
+	smallDesktop: {
+		breakpoint: { max: 1360, min: 1061 }, // 1025px - 1440px
+		items: 3,
+	},
+	tablet: {
+		breakpoint: { max: 1060, min: 801 }, // 465px - 1024px
+		items: 2,
+	},
+	mobile: {
+		breakpoint: { max: 800, min: 0 }, // <464px
+		items: 1,
+	},
+};
+
+function CarouselTemplate() {
+	const user = useSelector((state) => state.user);
 	const navigate = useNavigate();
 
 	const [projects, setProjects] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const mutation = useMutationHooks(async (data) => {
+
+	const mutation = useMutationHooks(async () => {
 		try {
-			const project_arr = await ProjectService.getAllProject(data);
-			const projectTeam_arr = await ProjectService.getAllTeamProject(data);
-
-			const combinedProjects = projectTeam_arr.data.concat(project_arr.data);
-
-			setProjects(combinedProjects);
-			setIsLoading(false);
+			const response = await ProjectService.getPublic();
+			if (response?.status === 'OK' && Array.isArray(response.data)) {
+				const limitedProjects = response.data.slice(0, 7); // Lấy 5 phần tử đầu
+				setProjects(limitedProjects); // Đặt vào projects
+				console.log('Projects fetched successfully:', limitedProjects);
+				setIsLoading(false);
+			} else {
+				setProjects([]); // Nếu không phải mảng, đặt mảng rỗng
+				console.warn('Unexpected response format:', response);
+				setIsLoading(false);
+			}
 		} catch (error) {
 			console.error('Error fetching projects:', error);
+			setIsLoading(false); // Đừng quên set loading về false nếu có lỗi
 		}
 	});
 
+	const mutaionCopy = useMutation({
+		mutationFn: async ({ data }) => {
+			return await ProjectService.createCopy(data._id, data);
+		},
+		onSuccess: (data) => {
+			if (data.status === 'OK') {
+				const projectId = data.data._id;
+				localStorage.setItem('projectId', projectId);
+				navigate(`/${projectId}/edit`);
+			}
+			console.log('Copy created successfully');
+		},
+		onError: (error) => {
+			console.error('Error creating copy:', error);
+		},
+	});
+
 	useEffect(() => {
-		handleGetAllProject();
-		handleGetAllTeamProject();
-	}, [user]);
+		handleGetPublic();
+	}, []);
 
-	const handleGetAllProject = () => {
-		mutation.mutate(user?.id);
-	};
-
-	const handleGetAllTeamProject = () => {
-		mutation.mutate(user?.id);
+	const handleGetPublic = () => {
+		mutation.mutate();
 	};
 
 	const handleClick = (id) => {
-		localStorage.setItem('projectId', id);
-		navigate(`/${id}/edit`);
+		const values = {
+			_id: user?.id,
+			data: id,
+		};
+		mutaionCopy.mutate({ data: values });
 	};
-
+	const [isLoading, setIsLoading] = useState(true);
 	return (
-		<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-12 py-6 '>
+		<Carousel
+			customLeftArrow={<IoIosArrowDropleft className='left-arrow text-slate-400 dark:text-slate-200' />}
+			customRightArrow={<IoIosArrowDropright className='right-arrow text-slate-400 dark:text-slate-200' />}
+			responsive={responsive}
+			swipeable={false}
+			draggable={false}
+			infinite={true}
+			autoPlay={true}
+			autoPlaySpeed={2000}
+			keyBoardControl={true}
+			transitionDuration={500}
+			className='items-center'
+			itemClass='py-4 px-0 flex gap-4'
+		>
 			{isLoading ? (
 				Array.from({ length: 5 }).map((_, index) => (
 					<div className='' key={index}>
@@ -62,8 +125,8 @@ const ResponsiveGrid = () => {
 					</div>
 				))
 			) : projects.length === 0 ? (
-				<div className=' h-full w-full text-gray-500 text-start whitespace-nowrap'>
-					There are no projects to display.
+				<div className='pl-4 h-full w-full text-gray-500 text-start whitespace-nowrap'>
+					There are no templates to display.
 				</div>
 			) : (
 				projects
@@ -71,9 +134,11 @@ const ResponsiveGrid = () => {
 					.reverse()
 					.map((project, index) => (
 						<div
-							onClick={() => handleClick(project?._id)}
-							key={project?._id}
+							key={project._id}
 							id={project?._id}
+							onClick={() => {
+								handleClick(project._id);
+							}}
 							className='bg-white w-full cursor-pointer mb-4  max-w-[300px] mx-auto rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'
 						>
 							<div
@@ -144,7 +209,7 @@ const ResponsiveGrid = () => {
 
 									const shapeStyle = getShapeStyle(component.shapeType);
 
-									const scaleX = 360 / project.width;
+									const scaleX = 300 / project.width;
 									const scaleY = 200 / project.height;
 
 									const widthComponent = component.width * scaleX;
@@ -223,13 +288,13 @@ const ResponsiveGrid = () => {
 							</div>
 							<div className='p-4'>
 								<h3 className='font-semibold text-gray-800'>{project.projectName}</h3>
-								<p className='text-xs text-gray-500'>Your design</p>
+								<p className='text-xs text-gray-500'>Available template</p>
 							</div>
 						</div>
 					))
 			)}
-		</div>
+		</Carousel>
 	);
-};
+}
 
-export default ResponsiveGrid;
+export default CarouselTemplate;
