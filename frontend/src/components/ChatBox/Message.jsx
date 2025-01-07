@@ -7,7 +7,7 @@ import { HiOutlineDocumentDownload } from "react-icons/hi";
 import * as Alert from "../../components/Alert/Alert";
 import ReactDOM from "react-dom";
 import { LuImagePlus } from "react-icons/lu";
-import { useMutationHooks } from "../../hooks/useHookMutation";
+import { useMutationHooks } from "../../hooks/useMutationHook";
 import { createImageUpload, getAllImage } from "../../services/ImageService";
 import { ClipLoader } from "react-spinners";
 
