@@ -30,6 +30,7 @@ import { extractIdFromOver } from '../../utils/utils.js';
 import JoinForm from '../../components/JoinForm/JoinForm.jsx';
 
 const WorkplaceCanvas = () => {
+
 	const dispatch = useDispatch();
 	const project = useSelector((state) => state.project);
 	const user = useSelector((state) => state.user);
