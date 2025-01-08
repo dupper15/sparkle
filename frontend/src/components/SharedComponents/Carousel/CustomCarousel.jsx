@@ -52,11 +52,25 @@ function CustomCarousel({ onDelete }) {
 	const mutation = useMutationHooks(async (data) => {
 		try {
 			setIsLoading(true);
+
+			// Gọi API để lấy danh sách dự án
 			const project_arr = await ProjectService.getAllProject(data);
-			const limitedProjects = project_arr.data.slice(0, 7); // Lấy 5 dự án đầu tiên
-			setProjects(limitedProjects);
+
+			// Kiểm tra tính hợp lệ của `project_arr` và `project_arr.data`
+			if (project_arr && Array.isArray(project_arr.data)) {
+				const totalProjects = project_arr.data.length; // Tổng số dự án
+
+				// Lấy 6 dự án cuối cùng
+				const limitedProjects = project_arr.data.slice(Math.max(0, totalProjects - 6), totalProjects);
+
+				setProjects(limitedProjects);
+			} else {
+				console.error('Invalid project data:', project_arr);
+			}
+
 			setIsLoading(false);
 		} catch (error) {
+			setIsLoading(false);
 			console.error('Error fetching projects:', error);
 		}
 	});
