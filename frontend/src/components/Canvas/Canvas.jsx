@@ -45,6 +45,8 @@ const Canvas = React.forwardRef(
 			isTextToolBarOpen,
 			isDarkMode,
 			isOver,
+			isOver1,
+			isOver2,
 			setNodeRef,
 			handleShapeClick,
 			handleTextClick,
@@ -65,6 +67,7 @@ const Canvas = React.forwardRef(
 			handleMouseLeave,
 			cursors,
 			focuses,
+			setIsOver1,
 			handleTextContentChange,
 			handleComponentHorizontalFlip,
 			handleComponentVerticalFlip,
@@ -147,7 +150,11 @@ const Canvas = React.forwardRef(
 					id={id}
 					ref={setNodeRef}
 					onDrag={onDragEnd}
+					onMouseOver={() => {
+						setIsOver1(true);
+					}}
 					onMouseMove={handleMouseMove}
+					onMouseOut={handleMouseLeave}
 					onMouseLeave={handleMouseLeave}
 					style={{
 						width: `${width}px`,
@@ -192,7 +199,7 @@ const Canvas = React.forwardRef(
 					)}
 					{Object.entries(cursors).length > 0 &&
 						Object.entries(cursors).map(([userId, position]) =>
-							position?.x !== null && position?.y !== null && position?.databaseId === databaseId ? (
+							position?.x !== null && position?.y !== null && position?.databaseId === databaseId && isOver2 ? (
 								<div key={userId} className='absolute'>
 									<FaMousePointer
 										className='cursor-indicator text-blue-800 absolute pointer-events-none z-[999]'
