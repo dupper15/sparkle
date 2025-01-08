@@ -34,6 +34,8 @@ const useCanvasViewModel = (id, databaseId, ref) => {
 	const [cursors, setCursors] = useState({});
 	const [selectedComponentHorizontalFlip, setSelectedComponentHorizontalFlip] = useState(false);
 	const [selectedComponentVerticalFlip, setSelectedComponentVerticalFlip] = useState(false);
+	const [isOver1, setIsOver1] = useState(false);
+	const [isOver2, setIsOver2] = useState(true);
 	// Fetch components from the database
 	useEffect(() => {
 		const fetchComponents = async () => {
@@ -243,6 +245,7 @@ const useCanvasViewModel = (id, databaseId, ref) => {
 				}
 				return prev; // Không làm gì nếu `userId` không tồn tại
 			});
+			setIsOver2(false);
 		});
 		return () => {
 			socket.off('update-select-component', handleSelectUpdate);
@@ -303,6 +306,7 @@ const useCanvasViewModel = (id, databaseId, ref) => {
 				...prev,
 				[userId]: { x, y, userName, databaseId },
 			}));
+			setIsOver2(true);
 		});
 
 		return () => {
@@ -311,15 +315,21 @@ const useCanvasViewModel = (id, databaseId, ref) => {
 		};
 	}, [databaseId]);
 	const handleMouseMove = throttle((e) => {
-		const rect = document.getElementById(id).getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-		socket.emit('mousemove', { databaseId, x, y });
-	}, 100);
+		if (isOver1) {
+			const rect = document.getElementById(id).getBoundingClientRect();
+			const x = e.clientX - rect.left;
+			const y = e.clientY - rect.top;
+			socket.emit('mousemove', { databaseId, x, y });
+		}
+	}, 50);
 	const handleMouseLeave = () => {
+		setIsOver1(false);
 		socket.emit('leave-page', { databaseId, userId });
 	};
-
+	useEffect(() => {
+		console.log('5', isOver1);
+		console.log('7', isOver2);
+	});
 	// Handle shape click
 	const handleShapeClick = (shapeId, event) => {
 		handleSelectComponent(shapeId, event);
@@ -584,6 +594,9 @@ const useCanvasViewModel = (id, databaseId, ref) => {
 		handleMouseLeave,
 		cursors,
 		focuses,
+		isOver1,
+		isOver2,
+		setIsOver1,
 		handleTextContentChange,
 		handleComponentOpacityChange,
 		handleComponentHorizontalFlip,
