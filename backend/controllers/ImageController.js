@@ -87,6 +87,7 @@ const removeBackground = async (req, res) => {
 const deleteImage = async (req, res) => {
   try {
     const imageId = req.params.id;
+    await ImageUpload.findByIdAndDelete(imageId);
     if (!imageId) {
       return res.status(400).json({
         status: "ERROR",

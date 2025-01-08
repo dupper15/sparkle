@@ -448,6 +448,9 @@ const WorkplaceCanvas = () => {
       };
     }
   }, [project?.id, user?.id]);
+  const handleReset = () => {
+    setRefresh(!refresh);
+  };
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
@@ -543,6 +546,7 @@ const WorkplaceCanvas = () => {
                   }}>
                   <Canvas
                     key={canvasData.id}
+                    current_canvas={current_canvas}
                     databaseId={canvasData._id}
                     id={`drop-area-${canvasData.id}`}
                     title={`${index + 1}`}
