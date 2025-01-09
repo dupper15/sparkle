@@ -339,6 +339,7 @@ const CreateComponent = ({ info, removeComponent, onClick, selectedComponents, i
 			}}
 			onMouseDown={handleMouseDown}
 		>
+			<p>{info.zIndex}</p>
 			{isSelected && (
 				<MdOutlineChangeCircle
 					size={20}
