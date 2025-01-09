@@ -13,6 +13,10 @@ const useTextToolbarViewModel = (
   const [activeTab, setActiveTab] = useState("");
 
   useEffect(() => {
+    console.log("openColorPickerPanel", openColorPickerPanel);
+  }, [openColorPickerPanel]);
+
+  useEffect(() => {
     setIsBold(selectedTextFontWeight === "bold");
     setIsItalic(selectedTextFontStyle === "italic");
     setIsUnderlined(selectedTextDecorationLine === "underline");

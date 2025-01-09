@@ -36,7 +36,7 @@ const createImageUpload = (data) => {
 
 const createImage = (newImage) => {
   return new Promise(async (resolve, reject) => {
-    const { x, y, height, width, image } = newImage;
+    const { x, y, height, width, image, zIndex } = newImage;
     try {
       const createdImage = await Image.create({
         x,
@@ -44,6 +44,7 @@ const createImage = (newImage) => {
         height,
         width,
         image,
+        zIndex
       });
 
       if (createdImage) {

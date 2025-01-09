@@ -87,9 +87,9 @@ const Canvas = React.forwardRef(
 				document.removeEventListener('mouseleave', handleGlobalMouseLeave);
 			};
 		}, [ref, handleMouseLeave]);
-		useEffect(() => {
-			console.log(focuses);
-		});
+		// useEffect(() => {
+		// 	console.log(focuses);
+		// });
 		return (
 			<div ref={ref} className='flex flex-col gap-4'>
 				<div>

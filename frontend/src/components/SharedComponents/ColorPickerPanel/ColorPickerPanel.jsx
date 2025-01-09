@@ -62,7 +62,7 @@ const ColorPickerPanel = ({
         <h2 className='text-lg font-medium'>Colour</h2>
         <button
           className='text-2xl text-gray-500 hover:text-gray-700'
-          onClick={() => colorPanelCloseRequest(false)}>
+          onClick={colorPanelCloseRequest}>
           &times;
         </button>
       </div>

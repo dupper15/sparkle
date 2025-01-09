@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState, forwardRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, {useEffect, useRef, useState, forwardRef} from 'react';
+import {useLocation} from 'react-router-dom';
 import WorkplaceHeader from '../../components/WorkplaceHeader/WorkplaceHeader';
-import { LuFolder, LuImage, LuLayoutTemplate, LuShapes } from 'react-icons/lu';
-import { RiText } from 'react-icons/ri';
-import { RxTransparencyGrid } from 'react-icons/rx';
-import { MdKeyboardArrowLeft } from 'react-icons/md';
+import {LuFolder, LuImage, LuLayoutTemplate, LuShapes} from 'react-icons/lu';
+import {RiText} from 'react-icons/ri';
+import {RxTransparencyGrid} from 'react-icons/rx';
+import {MdKeyboardArrowLeft} from 'react-icons/md';
 import TemplateDesign from '../../components/Template/TemplateDesign';
 import Project from '../../components/Template/Project';
 import Image from '../../components/Image/Image';
@@ -14,539 +14,548 @@ import Canvas from './../../components/Canvas/Canvas';
 import Background from '../../components/Background/Background';
 import ChatBox from '../../components/ChatBox/ChatBox';
 import ButtonMessage from '../../components/ChatBox/ButtonMessage';
-import { DndContext } from '@dnd-kit/core';
+import {DndContext} from '@dnd-kit/core';
 import Text from '../../components/Text/Text.jsx';
-import { useDarkMode } from '../../contexts/DarkModeContext.jsx';
+import {useDarkMode} from '../../contexts/DarkModeContext.jsx';
 import * as ProjectService from '../../services/ProjectService.js';
 import * as CanvasService from '../../services/CanvasService.js';
-import { deleteCanvas } from '../../services/CanvasService.js';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateProject } from '../../redux/slides/projectSlide.js';
+import {deleteCanvas, getCanvasDetails} from '../../services/CanvasService.js';
+import {useDispatch, useSelector} from 'react-redux';
+import {updateProject} from '../../redux/slides/projectSlide.js';
 import * as Alert from '../../components/Alert/Alert.jsx';
-import { useMutation } from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import socket from '../../utils/socket.js';
-import { createAndAddComponentToCanvas } from '../../services/utils/componentOrchestrator.js';
-import { extractIdFromOver } from '../../utils/utils.js';
+import {createAndAddComponentToCanvas} from '../../services/utils/componentOrchestrator.js';
+import {extractIdFromOver} from '../../utils/utils.js';
 import JoinForm from '../../components/JoinForm/JoinForm.jsx';
 
 const WorkplaceCanvas = () => {
 
-	const dispatch = useDispatch();
-	const project = useSelector((state) => state.project);
-	const user = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const project = useSelector((state) => state.project);
+    const user = useSelector((state) => state.user);
 
-	const { isDarkMode } = useDarkMode();
-	const [state, setState] = useState('');
-	const canvasRef = useRef([]);
-	const [usersInRoom, setUsersInRoom] = useState([]);
-	const location = useLocation();
-	const designData = location.state || {};
+    const {isDarkMode} = useDarkMode();
+    const [state, setState] = useState('');
+    const canvasRef = useRef([]);
+    const [usersInRoom, setUsersInRoom] = useState([]);
+    const location = useLocation();
+    const designData = location.state || {};
 
-	const [width, setWidth] = useState('');
-	const [height, setHeight] = useState('');
+    const [width, setWidth] = useState('');
+    const [height, setHeight] = useState('');
 
-	const [refresh, setRefresh] = useState(false);
+    const [refresh, setRefresh] = useState(false);
 
-	useEffect(() => {
-		setWidth(project?.width);
-		setHeight(project?.height);
-	}, [project]);
+    useEffect(() => {
+        setWidth(project?.width);
+        setHeight(project?.height);
+    }, [project]);
 
-	const [current_canvas, setCurrentCanvas] = useState(project?.canvasArray[0]);
+    const [current_canvas, setCurrentCanvas] = useState(project?.canvasArray[0]);
 
-	const saveCanvasId = (canvasId) => {
-		localStorage.setItem('canvasId', canvasId);
-	};
+    const saveCanvasId = (canvasId) => {
+        localStorage.setItem('canvasId', canvasId);
+    };
 
-	saveCanvasId(project?.canvasArray[current_canvas]);
+    saveCanvasId(project?.canvasArray[current_canvas]);
 
-	useEffect(() => {
-		const storedProjectId = localStorage.getItem('projectId');
+    useEffect(() => {
+        const storedProjectId = localStorage.getItem('projectId');
 
-		if (storedProjectId) {
-			const fetchProject = async () => {
-				const res = await ProjectService.getDetailProject(storedProjectId);
-				dispatch(updateProject(res.data));
-			};
-			fetchProject();
+        if (storedProjectId) {
+            const fetchProject = async () => {
+                const res = await ProjectService.getDetailProject(storedProjectId);
+                dispatch(updateProject(res.data));
+            };
+            fetchProject();
 
-			return () => {
-				localStorage.removeItem('projectId');
-			};
-		}
-	}, [dispatch]);
+            return () => {
+                localStorage.removeItem('projectId');
+            };
+        }
+    }, [dispatch]);
 
-	const handleGetDetailProject = async (id) => {
-		const res = await ProjectService.getDetailProject(id);
-		localStorage.setItem('project', JSON.stringify(res?.data));
-		dispatch(updateProject({ ...res?.data }));
-	};
+    const handleGetDetailProject = async (id) => {
+        const res = await ProjectService.getDetailProject(id);
+        localStorage.setItem('project', JSON.stringify(res?.data));
+        dispatch(updateProject({...res?.data}));
+    };
 
-	useEffect(() => {
-		if (project?.canvasArray) {
-			const newCanvases = project.canvasArray.map((canvas, index) => ({
-				...canvas,
-				id: canvas.id || index,
-				name: canvas.name || `Canvas ${index + 1}`,
-			}));
-			setCanvases(newCanvases);
-			setCurrentCanvas(newCanvases[0]?.id);
-		}
-	}, [project]);
+    useEffect(() => {
+        if (project?.canvasArray) {
+            const newCanvases = project.canvasArray.map((canvas, index) => ({
+                ...canvas,
+                id: canvas.id || index,
+                name: canvas.name || `Canvas ${index + 1}`,
+            }));
+            setCanvases(newCanvases);
+            setCurrentCanvas(newCanvases[0]?.id);
+        }
+    }, [project]);
 
-	const mutation = useMutation({
-		mutationFn: (data) => {
-			return ProjectService.updateProject(data.id);
-		},
-		onSuccess: (data) => {
-			handleGetDetailProject(data.data.id);
-			console.log('Project updated successfully:', data);
-		},
-		onError: (error) => {
-			console.error('Failed to update project:', error);
-		},
-	});
+    const mutation = useMutation({
+        mutationFn: (data) => {
+            return ProjectService.updateProject(data.id);
+        },
+        onSuccess: (data) => {
+            handleGetDetailProject(data.data.id);
+            console.log('Project updated successfully:', data);
+        },
+        onError: (error) => {
+            console.error('Failed to update project:', error);
+        },
+    });
 
-	const mutationTemplate = useMutation({
-		mutationFn: (data) => {
-			return ProjectService.updateProject(data.id, data.canvas);
-		},
-		onSuccess: (data) => {
-			handleGetDetailProject(data.data.id);
-			console.log('Project updated successfully:', data);
-		},
-		onError: (error) => {
-			console.error('Failed to update project:', error);
-		},
-	});
+    const mutationTemplate = useMutation({
+        mutationFn: (data) => {
+            return ProjectService.updateProject(data.id, data.canvas);
+        },
+        onSuccess: (data) => {
+            handleGetDetailProject(data.data.id);
+            console.log('Project updated successfully:', data);
+        },
+        onError: (error) => {
+            console.error('Failed to update project:', error);
+        },
+    });
 
-	const mutationProject = useMutation({
-		mutationFn: (data) => {
-			return ProjectService.addProject(data.id, data);
-		},
-		onSuccess: (data) => {
-			handleGetDetailProject(data.data.id);
-			console.log('Project updated successfully:', data);
-		},
-		onError: (error) => {
-			console.error('Failed to update project:', error);
-		},
-	});
+    const mutationProject = useMutation({
+        mutationFn: (data) => {
+            return ProjectService.addProject(data.id, data);
+        },
+        onSuccess: (data) => {
+            handleGetDetailProject(data.data.id);
+            console.log('Project updated successfully:', data);
+        },
+        onError: (error) => {
+            console.error('Failed to update project:', error);
+        },
+    });
 
-	const scrollToCanvas = (index) => {
-		console.log('alo', index);
+    const scrollToCanvas = (index) => {
+        console.log('alo', index);
 
-		if (index >= 0 && index < canvases.length) {
-			if (canvasRef.current[index]) {
-				canvasRef.current[index].scrollIntoView({
-					behavior: 'smooth',
-					block: 'start',
-				});
-			}
-			setCurrentCanvas(canvases[index].id);
-		}
-	};
+        if (index >= 0 && index < canvases.length) {
+            if (canvasRef.current[index]) {
+                canvasRef.current[index].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                });
+            }
+            setCurrentCanvas(canvases[index].id);
+        }
+    };
 
-	const [canvases, setCanvases] = useState([]);
-	const [backgrounds, setBackgrounds] = useState({});
+    const [canvases, setCanvases] = useState([]);
+    const [backgrounds, setBackgrounds] = useState({});
 
-	useEffect(() => {
-		socket.on('addCanvas', ({ newCanvas }) => {
-			setCanvases((prev) => {
-				const newCanvases = [...prev, newCanvas];
-				return newCanvases;
-			});
-		});
-		socket.on('removeCanvas', ({ canvasId }) => {
-			setCanvases((prev) => {
-				const newCanvases = prev.filter((canvas) => canvas.id !== canvasId);
-				const canvasIndex = prev.findIndex((canvas) => canvas.id === canvasId);
-				const nextCanvasIndex = canvasIndex < newCanvases.length ? canvasIndex : canvasIndex - 1;
+    useEffect(() => {
+        socket.on('addCanvas', ({newCanvas}) => {
+            setCanvases((prev) => {
+                const newCanvases = [...prev, newCanvas];
+                return newCanvases;
+            });
+        });
+        socket.on('removeCanvas', ({canvasId}) => {
+            setCanvases((prev) => {
+                const newCanvases = prev.filter((canvas) => canvas.id !== canvasId);
+                const canvasIndex = prev.findIndex((canvas) => canvas.id === canvasId);
+                const nextCanvasIndex = canvasIndex < newCanvases.length ? canvasIndex : canvasIndex - 1;
 
-				setCurrentCanvas(newCanvases[nextCanvasIndex]?.id || null);
-				return newCanvases;
-			});
-		});
-		socket.on('updateBackground', ({ canvasId, background }) => {
-			try {
-				setBackgrounds((prev) => ({
-					...prev,
-					[canvasId]: background || 'white',
-				}));
-			} catch (error) {
-				console.error('Failed to update background via socket:', error.message);
-			}
-		});
-		socket.on('componentAdded', ({ canvasId, component }) => {
-			console.log('kora', canvasId, component);
-			const eventName = `update-${component.type.toLowerCase()}s-${canvasId}`;
-			console.log('Dispatching event:', eventName, 'with data:', component);
-			document.dispatchEvent(
-				new CustomEvent(eventName, {
-					detail: component,
-				})
-			);
-		});
+                setCurrentCanvas(newCanvases[nextCanvasIndex]?.id || null);
+                return newCanvases;
+            });
+        });
+        socket.on('updateBackground', ({canvasId, background}) => {
+            try {
+                setBackgrounds((prev) => ({
+                    ...prev,
+                    [canvasId]: background || 'white',
+                }));
+            } catch (error) {
+                console.error('Failed to update background via socket:', error.message);
+            }
+        });
+        socket.on('componentAdded', ({canvasId, component}) => {
+            console.log('kora', canvasId, component);
+            const eventName = `update-${component.type.toLowerCase()}s-${canvasId}`;
+            console.log('Dispatching event:', eventName, 'with data:', component);
+            document.dispatchEvent(
+                new CustomEvent(eventName, {
+                    detail: component,
+                })
+            );
+        });
 
-		return () => {
-			socket.off('addCanvas');
-			socket.off('removeCanvas');
-			socket.off('updateBackground');
-			socket.off('componentAdded');
-		};
-	}, []);
-	useEffect(() => {
-		if (project?.canvasArray) {
-			const newCanvases = project?.canvasArray.map((canvas, index) => ({
-				...canvas,
-				id: canvas.id || canvas._id,
-				name: canvas.name || `Canvas ${index + 1}`,
-				background: canvas.background || 'white',
-			}));
-			setCanvases(newCanvases);
-			setCurrentCanvas(newCanvases[0]?.id);
-		}
-	}, [project]);
+        return () => {
+            socket.off('addCanvas');
+            socket.off('removeCanvas');
+            socket.off('updateBackground');
+            socket.off('componentAdded');
+        };
+    }, []);
+    useEffect(() => {
+        if (project?.canvasArray) {
+            const newCanvases = project?.canvasArray.map((canvas, index) => ({
+                ...canvas,
+                id: canvas.id || canvas._id,
+                name: canvas.name || `Canvas ${index + 1}`,
+                background: canvas.background || 'white',
+            }));
+            setCanvases(newCanvases);
+            setCurrentCanvas(newCanvases[0]?.id);
+        }
+    }, [project]);
 
-	useEffect(() => {
-		if (canvases.length > 0) {
-			const lastCanvasIndex = canvases.length - 1;
-			canvasRef.current[lastCanvasIndex]?.scrollIntoView({
-				behavior: 'smooth',
-				block: 'start',
-			});
-		}
-	}, [canvases]);
+    useEffect(() => {
+        if (canvases.length > 0) {
+            const lastCanvasIndex = canvases.length - 1;
+            canvasRef.current[lastCanvasIndex]?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
+        }
+    }, [canvases]);
 
-	const addCanvas = async () => {
-		try {
-			const newCanvas = await mutation.mutateAsync({ id: project?.id });
-			setCanvases((prev) => {
-				const newCanvases = [...prev, project?.canvasArray];
-				setCurrentCanvas(newCanvases[newCanvases.length]?.id);
+    const addCanvas = async () => {
+        try {
+            const newCanvas = await mutation.mutateAsync({id: project?.id});
+            setCanvases((prev) => {
+                const newCanvases = [...prev, project?.canvasArray];
+                setCurrentCanvas(newCanvases[newCanvases.length]?.id);
 
-				return newCanvases;
-			});
-			Alert.success('Add canvas successfully!');
-			socket.emit('addCanvas', { roomId: project?.id, newCanvas });
-			handleGetDetailProject(project?.id);
-		} catch (error) {
-			console.error('Failed to add canvas:', error.message);
-			Alert.error('Failed to add canvas.');
-		}
-	};
+                return newCanvases;
+            });
+            Alert.success('Add canvas successfully!');
+            socket.emit('addCanvas', {roomId: project?.id, newCanvas});
+            handleGetDetailProject(project?.id);
+        } catch (error) {
+            console.error('Failed to add canvas:', error.message);
+            Alert.error('Failed to add canvas.');
+        }
+    };
 
-	const addTemplate = async (templateCanvas) => {
-		try {
-			await mutationTemplate.mutateAsync({
-				id: project?.id,
-				canvas: templateCanvas,
-			});
+    const addTemplate = async (templateCanvas) => {
+        try {
+            await mutationTemplate.mutateAsync({
+                id: project?.id,
+                canvas: templateCanvas,
+            });
 
-			const newCanvas = {
-				background: templateCanvas?.background || '#ffffff',
-				componentArray: templateCanvas?.componentArray || [],
-				id: templateCanvas._id,
-			};
+            const newCanvas = {
+                background: templateCanvas?.background || '#ffffff',
+                componentArray: templateCanvas?.componentArray || [],
+                id: templateCanvas._id,
+            };
 
-			setCanvases((prev) => {
-				const updatedCanvases = [...prev, newCanvas];
-				setCurrentCanvas(newCanvas.id);
-				return updatedCanvases;
-			});
+            setCanvases((prev) => {
+                const updatedCanvases = [...prev, newCanvas];
+                setCurrentCanvas(newCanvas.id);
+                return updatedCanvases;
+            });
 
-			setRefresh(!refresh);
+            setRefresh(!refresh);
 
-			Alert.success('Template added successfully!');
+            Alert.success('Template added successfully!');
 
-			handleGetDetailProject(project?.id);
-		} catch (error) {
-			console.error('Failed to add canvas:', error.message);
-			Alert.error('Failed to add canvas.');
-		}
-	};
+            handleGetDetailProject(project?.id);
+        } catch (error) {
+            console.error('Failed to add canvas:', error.message);
+            Alert.error('Failed to add canvas.');
+        }
+    };
 
-	const addProject = async (projectAdd) => {
-		try {
-			await mutationProject.mutateAsync({
-				id: project?.id,
-				canvasArray: projectAdd.canvasArray,
-			});
+    const addProject = async (projectAdd) => {
+        try {
+            await mutationProject.mutateAsync({
+                id: project?.id,
+                canvasArray: projectAdd.canvasArray,
+            });
 
-			project.canvasArray.map((canvas) => {
-				const newCanvas = {
-					background: canvas?.background || '#ffffff',
-					componentArray: canvas?.componentArray || [],
-					id: canvas._id,
-				};
+            project.canvasArray.map((canvas) => {
+                const newCanvas = {
+                    background: canvas?.background || '#ffffff',
+                    componentArray: canvas?.componentArray || [],
+                    id: canvas._id,
+                };
 
-				setCanvases((prev) => {
-					const updatedCanvases = [...prev, newCanvas];
-					setCurrentCanvas(newCanvas.id);
-					return updatedCanvases;
-				});
+                setCanvases((prev) => {
+                    const updatedCanvases = [...prev, newCanvas];
+                    setCurrentCanvas(newCanvas.id);
+                    return updatedCanvases;
+                });
 
-				setRefresh(!refresh);
-			});
+                setRefresh(!refresh);
+            });
 
-			Alert.success('Template added successfully!');
+            Alert.success('Template added successfully!');
 
-			handleGetDetailProject(project?.id);
-		} catch (error) {
-			console.error('Failed to add canvas:', error.message);
-			Alert.error('Failed to add canvas.');
-		}
-	};
-	const removeCanvas = async (id) => {
-		try {
-			if (project?.canvasArray?.length === 1) {
-				Alert.error('Can not delete canvas!');
-				return;
-			}
-			await deleteCanvas(id, project?.id);
+            handleGetDetailProject(project?.id);
+        } catch (error) {
+            console.error('Failed to add canvas:', error.message);
+            Alert.error('Failed to add canvas.');
+        }
+    };
+    const removeCanvas = async (id) => {
+        try {
+            if (project?.canvasArray?.length === 1) {
+                Alert.error('Can not delete canvas!');
+                return;
+            }
+            await deleteCanvas(id, project?.id);
 
-			setCanvases((prev) => {
-				const newCanvases = prev.filter((canvas) => canvas.id !== id);
+            setCanvases((prev) => {
+                const newCanvases = prev.filter((canvas) => canvas.id !== id);
 
-				const canvasIndex = prev.findIndex((canvas) => canvas.id === id);
-				const nextCanvasIndex = canvasIndex < newCanvases.length ? canvasIndex : canvasIndex - 1;
+                const canvasIndex = prev.findIndex((canvas) => canvas.id === id);
+                const nextCanvasIndex = canvasIndex < newCanvases.length ? canvasIndex : canvasIndex - 1;
 
-				setCurrentCanvas(newCanvases[nextCanvasIndex]?.id || null);
-				return newCanvases;
-			});
-			Alert.success('Delete canvas successfully!');
+                setCurrentCanvas(newCanvases[nextCanvasIndex]?.id || null);
+                return newCanvases;
+            });
+            Alert.success('Delete canvas successfully!');
 
-			await handleGetDetailProject(project?.id);
-		} catch (error) {
-			console.error('Failed to delete canvas:', error.message);
-			Alert.error('Failed to delete canvas.');
-		}
-	};
+            await handleGetDetailProject(project?.id);
+        } catch (error) {
+            console.error('Failed to delete canvas:', error.message);
+            Alert.error('Failed to delete canvas.');
+        }
+    };
 
-	const setBackground = async (bgLink) => {
-		if (current_canvas !== null && current_canvas !== undefined) {
-			try {
-				setBackgrounds((prev) => ({
-					...prev,
-					[current_canvas]: bgLink || 'white',
-				}));
+    const setBackground = async (bgLink) => {
+        if (current_canvas !== null && current_canvas !== undefined) {
+            try {
+                setBackgrounds((prev) => ({
+                    ...prev,
+                    [current_canvas]: bgLink || 'white',
+                }));
 
-				const data = { background: bgLink || 'white' };
-				const canvasId = current_canvas;
-				if (!canvasId) {
-					throw new Error('Canvas ID not found');
-				}
+                const data = {background: bgLink || 'white'};
+                const canvasId = current_canvas;
+                if (!canvasId) {
+                    throw new Error('Canvas ID not found');
+                }
 
-				await CanvasService.updateCanvas(canvasId, data);
-				socket.emit('updateBackground', {
-					roomId: project?.id,
-					canvasId: current_canvas,
-					background: bgLink || 'white',
-				});
-				const updatedProject = await ProjectService.getDetailProject(project?.id);
-				if (updatedProject) {
-					const updatedBackgrounds = updatedProject.canvasArray.reduce(
-						(acc, canvas) => ({
-							...acc,
-							[canvas.id]: canvas.background || 'white',
-						}),
-						{}
-					);
-					setBackgrounds(updatedBackgrounds);
-				}
+                await CanvasService.updateCanvas(canvasId, data);
+                socket.emit('updateBackground', {
+                    roomId: project?.id,
+                    canvasId: current_canvas,
+                    background: bgLink || 'white',
+                });
+                const updatedProject = await ProjectService.getDetailProject(project?.id);
+                if (updatedProject) {
+                    const updatedBackgrounds = updatedProject.canvasArray.reduce(
+                        (acc, canvas) => ({
+                            ...acc,
+                            [canvas.id]: canvas.background || 'white',
+                        }),
+                        {}
+                    );
+                    setBackgrounds(updatedBackgrounds);
+                }
 
-				console.log('Canvas updated successfully');
-			} catch (error) {
-				console.error('Failed to update canvas:', error.message);
-			}
-		}
-	};
-	const [draggingComponent, setDraggingComponent] = useState(null);
-	const handleDragEnd = async (event) => {
-		const { over, active } = event;
-		if (!over) return;
+                console.log('Canvas updated successfully');
+            } catch (error) {
+                console.error('Failed to update canvas:', error.message);
+            }
+        }
+    };
+    const [draggingComponent, setDraggingComponent] = useState(null);
+    const handleDragEnd = async (event) => {
+        const {over, active} = event;
+        if (!over) return;
 
-		const componentRectangle = active.rect.current.translated;
-		const dropAreaRect = document.getElementById(over.id).getBoundingClientRect();
+        const componentRectangle = active.rect.current.translated;
+        const dropAreaRect = document.getElementById(over.id).getBoundingClientRect();
+        const canvasId = extractIdFromOver(over.id);
+        const currentCanvasComponentZIndex = Math.min(project.canvasArray.find((canvas) => canvas._id === canvasId).componentArray.length +1, 50);
+        if (over && draggingComponent) {
+            const relativeX = componentRectangle.left - dropAreaRect.left;
+            const relativeY = componentRectangle.top - dropAreaRect.top;
 
-		if (over && draggingComponent) {
-			const relativeX = componentRectangle.left - dropAreaRect.left;
-			const relativeY = componentRectangle.top - dropAreaRect.top;
+            const newComponent = {
+                ...draggingComponent,
+                zIndex: currentCanvasComponentZIndex,
+                x: relativeX,
+                y: relativeY,
+            };
 
-			const newComponent = {
-				...draggingComponent,
-				x: relativeX,
-				y: relativeY,
-			};
+            try {
+                const response = await createAndAddComponentToCanvas(
+                    canvasId,
+                    draggingComponent.type,
+                    newComponent,
+                    project?.id
+                ).then((res) => {
+                    const updatedCanvasArray = project.canvasArray.map((canvas) =>
+                        canvas._id === canvasId ? { ...canvas, componentArray: [...canvas.componentArray, res.data] } : canvas
+                    );
+                    dispatch(updateProject({ ...project, canvasArray: updatedCanvasArray }));
+                    return res;
+                });
+                newComponent.id = response.data._id;
+                document.dispatchEvent(
+                    new CustomEvent(`update-${draggingComponent.type.toLowerCase()}s-${over.id}`, {
+                        detail: newComponent,
+                    })
+                );
+                socket.emit('componentAdded', {
+                    roomId: project?.id,
+                    canvasId: over.id,
+                    component: newComponent,
+                });
+            } catch (error) {
+                console.error(`Failed to upload ${draggingComponent.type.toLowerCase()}:`, error);
+            }
+        }
+    };
 
-			try {
-				const response = await createAndAddComponentToCanvas(
-					extractIdFromOver(over.id),
-					draggingComponent.type,
-					newComponent,
-					project?.id
-				);
-				newComponent.id = response.data._id;
-				document.dispatchEvent(
-					new CustomEvent(`update-${draggingComponent.type.toLowerCase()}s-${over.id}`, {
-						detail: newComponent,
-					})
-				);
-				socket.emit('componentAdded', {
-					roomId: project?.id,
-					canvasId: over.id,
-					component: newComponent,
-				});
-			} catch (error) {
-				console.error(`Failed to upload ${draggingComponent.type.toLowerCase()}:`, error);
-			}
-		}
-	};
+    const [show, setShow] = useState({
+        status: true,
+        name: '',
+    });
 
-	const [show, setShow] = useState({
-		status: true,
-		name: '',
-	});
+    const setElements = (type, name) => {
+        setState(type);
+        setShow({
+            status: false,
+            name,
+        });
+    };
+    const [showChatBox, setShowChatBox] = useState(false);
 
-	const setElements = (type, name) => {
-		setState(type);
-		setShow({
-			status: false,
-			name,
-		});
-	};
-	const [showChatBox, setShowChatBox] = useState(false);
+    const toggleChatBox = () => {
+        setShowChatBox((prev) => !prev);
+    };
 
-	const toggleChatBox = () => {
-		setShowChatBox((prev) => !prev);
-	};
+    useEffect(() => {
+        if (project?.id && user?.id) {
+            socket.emit('setUserId', user.id);
+            socket.emit('joinRoom', project.id);
+            const handleUserInRoom = (userId) => {
+                setUsersInRoom(userId);
+                console.log('User in room2:', userId);
+            };
 
-	useEffect(() => {
-		if (project?.id && user?.id) {
-			socket.emit('setUserId', user.id);
-			socket.emit('joinRoom', project.id);
-			const handleUserInRoom = (userId) => {
-				setUsersInRoom(userId);
-				console.log('User in room2:', userId);
-			};
+            socket.on('userInRoom', handleUserInRoom);
+            return () => {
+                socket.off('userInRoom', handleUserInRoom);
+                socket.emit('leaveRoom', project.id);
+            };
+        }
+    }, [project?.id, user?.id]);
+    const handleReset = () => {
+        setRefresh(!refresh);
+    };
+    return (
+        <DndContext onDragEnd={handleDragEnd}>
+            <div
+                className={`w-screen h-screen bg-no-repeat bg-cover flex flex-col scrollbar-hide overflow-hidden ${
+                    isDarkMode ? 'bg-[#151318]' : 'bg-slate-300'
+                }`}
+            >
+                <WorkplaceHeader usersInRoom={usersInRoom}/>
+                <div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide '>
+                    <div
+                        className={`w-[80px] scrollbar-hide h-full overflow-y-auto ${
+                            isDarkMode ? 'bg-black text-white' : 'bg-slate-100 text-black'
+                        }`}
+                    >
+                        {[
+                            {icon: <LuLayoutTemplate/>, label: 'Design', type: 'design'},
+                            {
+                                icon: <LuShapes/>,
+                                label: 'Shape',
+                                type: 'shape',
+                            },
+                            {icon: <LuFolder/>, label: 'Project', type: 'project'},
+                            {
+                                icon: <RiText/>,
+                                label: 'Text',
+                                type: 'text',
+                            },
+                            {icon: <LuImage/>, label: 'Image', type: 'image'},
+                            {
+                                icon: <RxTransparencyGrid/>,
+                                label: 'Background',
+                                type: 'background',
+                            },
+                        ].map(({icon, label, type}) => (
+                            <div
+                                key={type}
+                                onClick={() => setElements(type, label.toLowerCase())}
+                                className={`${
+                                    show.name === label.toLowerCase() ? (isDarkMode ? 'bg-[#252627]' : 'bg-white') : ''
+                                } w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}
+                            >
+                                <span className='text-2xl'>{icon}</span>
+                                <span className='text-xs font-medium'>{label}</span>
+                            </div>
+                        ))}
+                    </div>
 
-			socket.on('userInRoom', handleUserInRoom);
-			return () => {
-				socket.off('userInRoom', handleUserInRoom);
-				socket.emit('leaveRoom', project.id);
-			};
-		}
-	}, [project?.id, user?.id]);
-	const handleReset = () => {
-		setRefresh(!refresh);
-	};
-	return (
-		<DndContext onDragEnd={handleDragEnd}>
-			<div
-				className={`w-screen h-screen bg-no-repeat bg-cover flex flex-col scrollbar-hide overflow-hidden ${
-					isDarkMode ? 'bg-[#151318]' : 'bg-slate-300'
-				}`}
-			>
-				<WorkplaceHeader usersInRoom={usersInRoom} />
-				<div className='flex h-[calc(100%-60px)] w-screen scrollbar-hide '>
-					<div
-						className={`w-[80px] scrollbar-hide h-full overflow-y-auto ${
-							isDarkMode ? 'bg-black text-white' : 'bg-slate-100 text-black'
-						}`}
-					>
-						{[
-							{ icon: <LuLayoutTemplate />, label: 'Design', type: 'design' },
-							{
-								icon: <LuShapes />,
-								label: 'Shape',
-								type: 'shape',
-							},
-							{ icon: <LuFolder />, label: 'Project', type: 'project' },
-							{
-								icon: <RiText />,
-								label: 'Text',
-								type: 'text',
-							},
-							{ icon: <LuImage />, label: 'Image', type: 'image' },
-							{
-								icon: <RxTransparencyGrid />,
-								label: 'Background',
-								type: 'background',
-							},
-						].map(({ icon, label, type }) => (
-							<div
-								key={type}
-								onClick={() => setElements(type, label.toLowerCase())}
-								className={`${
-									show.name === label.toLowerCase() ? (isDarkMode ? 'bg-[#252627]' : 'bg-white') : ''
-								} w-full h-[80px] cursor-pointer flex justify-center flex-col items-center gap-1 hover:text-[#610BEF]`}
-							>
-								<span className='text-2xl'>{icon}</span>
-								<span className='text-xs font-medium'>{label}</span>
-							</div>
-						))}
-					</div>
+                    <div className='h-full w-[calc(100%-75px)]'>
+                        <div
+                            className={`${show.status ? 'py-5 -left-[400px]' : 'px-8 left-[75px] py-5'} ${
+                                isDarkMode ? 'bg-[#252627]' : 'bg-white'
+                            } h-full fixed top-[60px]  transition-all w-[350px] ${draggingComponent ? 'z-10' : 'z-10'} duration-500`}
+                        >
+                            <div
+                                onClick={() => setShow({name: '', status: true})}
+                                className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${
+                                    isDarkMode ? 'bg-[#252627] text-slate-200' : 'bg-white text-slate-800'
+                                }`}
+                            >
+                                <MdKeyboardArrowLeft className='text-[20rem] font-bold'/>
+                                {/* Tăng kích thước biểu tượng */}
+                            </div>
 
-					<div className='h-full w-[calc(100%-75px)]'>
-						<div
-							className={`${show.status ? 'py-5 -left-[400px]' : 'px-8 left-[75px] py-5'} ${
-								isDarkMode ? 'bg-[#252627]' : 'bg-white'
-							} h-full fixed top-[60px]  transition-all w-[350px] ${draggingComponent ? 'z-10' : 'z-10'} duration-500`}
-						>
-							<div
-								onClick={() => setShow({ name: '', status: true })}
-								className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${
-									isDarkMode ? 'bg-[#252627] text-slate-200' : 'bg-white text-slate-800'
-								}`}
-							>
-								<MdKeyboardArrowLeft className='text-[20rem] font-bold' />
-								{/* Tăng kích thước biểu tượng */}
-							</div>
-
-							{state === 'design' && <TemplateDesign addCanvasFromTemplate={addTemplate} />}
-							{state === 'shape' && <Shape drag={setDraggingComponent} />}
-							{state === 'project' && <Project addProjectFromWorkplace={addProject} />}
-							{state === 'text' && <Text drag={setDraggingComponent} />}
-							{state === 'image' && <Image drag={setDraggingComponent} handleReset={handleReset} />}
-							{state === 'background' && <Background setBackground={setBackground} />}
-						</div>
-						<div className='flex flex-col  items-center justify-start gap-8 m-2 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
-							{canvases.map((canvasData, index) => (
-								<div
-									key={canvasData.id}
-									onClick={() => {
-										if (current_canvas !== canvasData.id) {
-											setCurrentCanvas(canvasData.id);
-										}
-									}}
-								>
-									<Canvas
-										key={canvasData.id}
-										databaseId={canvasData._id}
-										id={`drop-area-${canvasData.id}`}
-										title={`${index + 1}`}
-										width={width}
-										height={height}
-										name={canvasData.name}
-										bgLink={backgrounds[canvasData.id] || canvasData.background}
-										removeButton={() => removeCanvas(canvasData.id)}
-										upButton={() => scrollToCanvas(index - 1)}
-										downButton={() => scrollToCanvas(index + 1)}
-										ref={(el) => (canvasRef.current[index] = el)}
-									/>
-								</div>
-							))}
-							<div>
-								<AddCanvasButton addCanvas={addCanvas} />
-							</div>
-						</div>
-					</div>
-					<ButtonMessage toggleChatBox={toggleChatBox} />
-					{showChatBox && <ChatBox toggleChatBox={toggleChatBox} setUsersInRoom={setUsersInRoom} />}
-				</div>
-			</div>
-		</DndContext>
-	);
+                            {state === 'design' && <TemplateDesign addCanvasFromTemplate={addTemplate}/>}
+                            {state === 'shape' && <Shape drag={setDraggingComponent}/>}
+                            {state === 'project' && <Project addProjectFromWorkplace={addProject}/>}
+                            {state === 'text' && <Text drag={setDraggingComponent}/>}
+                            {state === 'image' && <Image drag={setDraggingComponent} handleReset={handleReset}/>}
+                            {state === 'background' && <Background setBackground={setBackground}/>}
+                        </div>
+                        <div
+                            className='flex flex-col  items-center justify-start gap-8 m-2 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
+                            {canvases.map((canvasData, index) => (
+                                <div
+                                    key={canvasData.id}
+                                    onClick={() => {
+                                        if (current_canvas !== canvasData.id) {
+                                            setCurrentCanvas(canvasData.id);
+                                        }
+                                    }}
+                                >
+                                    <Canvas
+                                        key={canvasData.id}
+                                        databaseId={canvasData._id}
+                                        id={`drop-area-${canvasData.id}`}
+                                        title={`${index + 1}`}
+                                        width={width}
+                                        height={height}
+                                        name={canvasData.name}
+                                        bgLink={backgrounds[canvasData.id] || canvasData.background}
+                                        removeButton={() => removeCanvas(canvasData.id)}
+                                        upButton={() => scrollToCanvas(index - 1)}
+                                        downButton={() => scrollToCanvas(index + 1)}
+                                        ref={(el) => (canvasRef.current[index] = el)}
+                                    />
+                                </div>
+                            ))}
+                            <div>
+                                <AddCanvasButton addCanvas={addCanvas}/>
+                            </div>
+                        </div>
+                    </div>
+                    <ButtonMessage toggleChatBox={toggleChatBox}/>
+                    {showChatBox && <ChatBox toggleChatBox={toggleChatBox} setUsersInRoom={setUsersInRoom}/>}
+                </div>
+            </div>
+        </DndContext>
+    );
 };
 
 export default WorkplaceCanvas;

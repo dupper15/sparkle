@@ -9,6 +9,7 @@ const createShape = async (req, res) => {
         message: "All fields are required.",
       });
     }
+     console.log(req.body);
     const response = await ShapeService.createShape(req.body);
     return res.status(201).json(response);
   } catch (e) {

@@ -2,7 +2,7 @@ const Shape = require("../models/ShapeModel");
 
 const createShape = (newShape) => {
   return new Promise(async (resolve, reject) => {
-    const { x, y, shapeType, height, width, opacity, z_index, rotate, color } =
+    const { x, y, shapeType, height, width, opacity, zIndex, rotate, color } =
       newShape;
     try {
       const createdShape = await Shape.create({
@@ -12,7 +12,7 @@ const createShape = (newShape) => {
         height,
         width,
         opacity,
-        z_index,
+        zIndex,
         rotate,
         color,
       });

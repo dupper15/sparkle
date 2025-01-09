@@ -393,33 +393,33 @@ const useCanvasViewModel = (id, databaseId, ref) => {
       setIsOver2(true);
     });
 
-    return () => {
-      socket.emit("leave-page", { databaseId, userId });
-      socket.off("update-cursor");
-    };
-  }, [databaseId]);
-  const handleMouseMove = throttle((e) => {
-    if (isOver1) {
-      const rect = document.getElementById(id).getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      socket.emit("mousemove", { databaseId, x, y });
-    }
-  }, 50);
-  const handleMouseLeave = () => {
-    setIsOver1(false);
-    socket.emit("leave-page", { databaseId, userId });
-  };
-  useEffect(() => {
-    console.log("5", isOver1);
-    console.log("7", isOver2);
-  });
-  // Handle shape click
-  const handleShapeClick = (shapeId, event) => {
-    handleSelectComponent(shapeId, event);
-    setOpenImageToolBar(true);
-    setOpenTextToolBar(false);
-  };
+		return () => {
+			socket.emit('leave-page', { databaseId, userId });
+			socket.off('update-cursor');
+		};
+	}, [databaseId]);
+	const handleMouseMove = throttle((e) => {
+		if (isOver1) {
+			const rect = document.getElementById(id).getBoundingClientRect();
+			const x = e.clientX - rect.left;
+			const y = e.clientY - rect.top;
+			socket.emit('mousemove', { databaseId, x, y });
+		}
+	}, 50);
+	const handleMouseLeave = () => {
+		setIsOver1(false);
+		socket.emit('leave-page', { databaseId, userId });
+	};
+	// useEffect(() => {
+	// 	console.log('5', isOver1);
+	// 	console.log('7', isOver2);
+	// });
+	// // Handle shape click
+	const handleShapeClick = (shapeId, event) => {
+		handleSelectComponent(shapeId, event);
+		setOpenImageToolBar(true);
+		setOpenTextToolBar(false);
+	};
 
   // Handle text click
   const handleTextClick = (textId, event) => {

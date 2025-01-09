@@ -36,3 +36,13 @@ export const getAllCanvas = async (id) => {
     throw new Error(error.response?.data?.message || "API call failed");
   }
 };
+export const getCanvasDetails = async (id) => {
+    try {
+        const response = await axios.get(
+        `${import.meta.env.VITE_API_KEY}/canvas/get-detail/${id}`
+        );
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || "API call failed");
+    }
+}

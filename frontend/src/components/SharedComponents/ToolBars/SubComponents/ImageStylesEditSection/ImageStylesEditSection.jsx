@@ -11,6 +11,9 @@ const ImageStylesEditSection = ({
   activeTab,
   setActiveTab,
 }) => {
+    const handleCloseColorPickerPanel = () => {
+        setActiveTab("");
+    }
   return (
     <div>
       <div className='h-8 toolbar flex'>
@@ -31,7 +34,7 @@ const ImageStylesEditSection = ({
         }>
         {activeTab === "color" && (
           <ColorPickerPanel
-            colorPanelCloseRequest={setOpenPickerPanel}
+            colorPanelCloseRequest={handleCloseColorPickerPanel}
             activeColor={activeColor}
             setActiveColor={setActiveColor}
             handleColorChange={handleColorChange}

@@ -9,6 +9,7 @@ export const createAndAddComponentToCanvas = async (
   componentType,
   componentData
 ) => {
+  console.log(componentData)
   try {
     let componentResponse;
 
