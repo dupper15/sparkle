@@ -177,7 +177,7 @@ const SignupPage = () => {
       onSubmit={handleSignup}
       className="w-screen justify-center items-center bg-opacity-80 h-screen bg-no-repeat bg-cover bg-[url('./assets/bg-dm.png')] flex flex-col">
       <div className='bg-black bg-opacity-70 w-full h-full justify-center items-center flex'>
-        <div className='bg-white dark:bg-black border border-gray-700 dark:border-gray-100 rounded-xl shadow-lg px-8 py-6 my-4 h-max w-full max-w-md'>
+        <div className='bg-white dark:bg-black border mx-4 border-gray-700 dark:border-gray-100 rounded-xl shadow-lg px-8 py-6 my-4 h-max w-full max-w-md'>
           {!isVerificationStep ? (
             <>
               <h1 className='text-slate-800 dark:text-white text-3xl font-bold text-center mb-6'>
@@ -232,9 +232,11 @@ const SignupPage = () => {
               </button>
 
               <div className='flex items-center justify-between mt-6'>
-                <span className='bg-gray-700 h-px w-1/3'></span>
-                <p className='text-gray-400 text-sm mx-2'>Or sign in with</p>
-                <span className='bg-gray-700 h-px w-1/3'></span>
+                <span className='bg-gray-700 h-px w-full'></span>
+                <p className='text-gray-400 text-sm mx-2 whitespace-nowrap'>
+                  Or sign in with
+                </p>
+                <span className='bg-gray-700 h-px w-full'></span>
               </div>
 
               <div className='flex flex-col gap-3 mt-4'>

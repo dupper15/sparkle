@@ -13,32 +13,36 @@ const ProjectPage = () => {
       className={`h-screen flex flex-col overflow-y-auto ${
         isDarkMode ? "bg-[#101010]" : "bg-white"
       }`}>
+      {/* Header */}
       <header className='z-40'>
         <Header />
       </header>
+
+      {/* Main Content */}
       <div
-        className={`flex w-full flex-row ${
-          isDarkMode ? "bg-[#101010] text-white" : "bg-white text-black"
-        }`}>
-        <Sidebar />
-        <div className='w-[calc(100%-80px)] flex flex-col h-full pb-5'>
-          <div className=' w-full mt-2 mb-4 pr-10 pl-12'>
-            {/* <Banner></Banner> */}
-            <SlideBanner></SlideBanner>
+        className={`flex flex-1 ${isDarkMode ? "bg-[#101010]" : "bg-white"}`}>
+        {/* Sidebar */}
+        <Sidebar className='hidden md:block' />
+
+        {/* Main Section */}
+        <div className='w-full md:w-[calc(100%-80px)] flex flex-col h-full pb-5'>
+          {/* Banner Section */}
+          <div className='w-full md:mt-2 md:mb-4 px-4 md:pr-10 md:pl-12'>
+            <SlideBanner />
           </div>
+
+          {/* Project Section */}
           <div className=''>
-            <div className='ml-12 text-2xl font-bold w-max pointer-events-none'>
+            <div className='text-xl md:text-2xl font-bold mt-2 ml-4 md:ml-10'>
               Your project
             </div>
-            <div>
-              <ResponsiveGrid />
-            </div>
+            <ResponsiveGrid />
           </div>
         </div>
       </div>
-      <div className=''>
-        <Footer />
-      </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

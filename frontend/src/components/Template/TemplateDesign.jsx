@@ -56,7 +56,7 @@ const TemplateDesign = ({ addCanvasFromTemplate }) => {
   return (
     <div
       key={renderKey}
-      className='grid grid-cols-2 gap-2 mt-5 w-full h-full pb-20 overflow-auto scrollbar-hide'>
+      className='grid grid-cols-1 md:grid-cols-2 gap-2 mt-5 w-full h-full pb-20 overflow-y-auto scrollbar-hide'>
       {projects
         .slice()
         .reverse()
@@ -65,7 +65,7 @@ const TemplateDesign = ({ addCanvasFromTemplate }) => {
             <div
               key={`${project?._id}-${canvasIndex}`}
               onClick={() => handleTemplateClick(project?._id, canvasIndex)}
-              className='bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 cursor-pointer' // Tạo hiệu ứng cho từng canvas
+              className='bg-white h-max rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105 cursor-pointer' // Tạo hiệu ứng cho từng canvas
             >
               <div
                 className='w-[140px] h-[140px] relative bg-cover overflow-hidden '

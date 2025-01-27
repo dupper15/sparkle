@@ -33,14 +33,30 @@ const getMessage = async (req, res) => {
 const sendChatBot = async (req, res) => {
   try {
     const { text, imageUrl } = req.body;
+
     if (!text && !imageUrl) {
       return res.status(400).json({
         status: "ERROR",
         message: "Missing message content1",
       });
     }
-    const response = await messageService.sendChatBot(text, imageUrl);
-    return res.status(200).json(response);
+    if (text) {
+      const prompt = `Cho tôi biết ở câu hỏi "${text}" người dùng muốn câu trả lời là văn bản hay hình ảnh? nếu là hình ảnh thì bạn trả lời là sendImageBot và không nói thêm gì, nếu là văn bản thì bạn trả lời là sendChatBot`;
+      const typeOfAnswer = await messageService.sendChatBot(prompt);
+      console.log("typeOfAnswer", typeOfAnswer.data.answer.trim());
+      if (typeOfAnswer.data.answer.trim() === "sendImageBot") {
+        const response = await messageService.sendImageBot(text);
+        console.log("response", response);
+        return res.status(200).json(response.data.answer);
+      } else {
+        const response = await messageService.sendChatBot(text, imageUrl);
+        console.log("response", response);
+        return res.status(200).json(response.data.answer);
+      }
+    } else {
+      const response = await messageService.sendImageBot(text, imageUrl);
+      return res.status(200).json(response.data.answer);
+    }
   } catch (e) {
     return res.status(500).json({
       status: "ERROR",

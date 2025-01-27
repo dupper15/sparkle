@@ -19,7 +19,7 @@ const shapesList = [
 // eslint-disable-next-line react/prop-types
 const ShapePalette = ({ onDragStart }) => {
   return (
-    <div className='grid grid-cols-3 gap-2 mb-4'>
+    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mb-4 overflow-y-scroll  h-full scrollbar-hide'>
       {shapesList.map((shape) => (
         <DraggableShape
           key={shape.id}

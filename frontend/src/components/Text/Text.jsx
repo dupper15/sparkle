@@ -17,11 +17,11 @@ const Text = ({ drag }) => {
     });
 
     return (
-      <div className='grid grid-cols-1 gap-2'>
+      <div className='p-0'>
         <div
           ref={setNodeRef}
           style={{
-            width: "240px",
+            width: "100%",
             height: "40px",
             backgroundColor: "transparent",
             cursor: "pointer",
@@ -41,7 +41,7 @@ const Text = ({ drag }) => {
   };
 
   return (
-    <div>
+    <div className='w-full'>
       <TextPalette onDragStart={handleDragStart} />
       <DragOverlay>
         {draggingText ? (
