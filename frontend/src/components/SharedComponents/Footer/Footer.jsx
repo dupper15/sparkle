@@ -30,9 +30,9 @@ const Footer = () => {
           </div>
         </div>
         <div className='text-center md:text-right'>
-          <p className='text-xs md:text-sm'>Group 1</p>
+          <p className='text-xs md:text-sm'>Group 23</p>
           <div className='text-xs font-bold'>
-            <p>Cao Dương Lâm</p>
+            <p>Phạm Trần Anh Nhật</p>
             <p>Nguyễn Chí Nghĩa</p>
           </div>
         </div>

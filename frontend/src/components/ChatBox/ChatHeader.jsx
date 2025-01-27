@@ -6,7 +6,7 @@ const ChatHeader = ({ toggleChatBox }) => {
   const project = useSelector((state) => state.project);
   return (
     <div className='w-full h-[50px] rounded-t-lg bg-gradient-to-r from-purple-900 to-blue-500 flex items-center justify-between px-4'>
-      <span className='text-lg text-white font-semibold'>
+      <span className='text-base sm:text-lg text-white font-medium sm:font-semibold'>
         {project?.projectName}
       </span>
       <span

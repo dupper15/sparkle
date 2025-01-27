@@ -32,12 +32,12 @@ const Header = () => {
 
   return (
     <div
-      className={`flex items-center justify-between w-full h-[60px] px-5 py-4 transition-colors duration-500 ${
+      className={`flex items-center justify-between w-full h-[60px] px-3  sm:px-4 md:px-5 py-4 transition-colors duration-500 ${
         isDarkMode ? "bg-black" : "bg-slate-100"
       }`}>
       {/* Logo và tiêu đề */}
       <div className='flex items-center gap-2'>
-        <img src={logo} className=' h-[50px] w-[50px] ' />
+        <img src={logo} className=' h-10 w-10 md:h-12 md:w-12' />
         <div
           onClick={goHome}
           className='text-xl md:text-2xl lg:text-3xl font-bold hover:cursor-pointer gradient'>
@@ -51,7 +51,11 @@ const Header = () => {
         <button
           className='w-max px-4 h-max bg-gradient font-semibold rounded-lg shadow-sm cursor-pointer border-black flex justify-center items-center p-2'
           onClick={() => setOpenCustomizeSizeDialogue((prev) => !prev)}>
-          <span className='text-sm md:text-lg text-white'>Create a design</span>
+          <span className='text-sm text-white md:hidden'>Create</span>
+
+          <span className='hidden md:block text-lg text-white'>
+            Create a design
+          </span>
         </button>
 
         {openCustomizeSizeDialogue && (
@@ -71,7 +75,7 @@ const Header = () => {
         )}
 
         {/* Ảnh đại diện */}
-        <div className=' h-[50px] w-[50px] '>
+        <div className=' h-10 w-10 md:h-12 md:w-12'>
           <img
             className=' w-full h-full rounded-full object-cover cursor-pointer'
             src={image}
