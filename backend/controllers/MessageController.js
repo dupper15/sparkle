@@ -41,7 +41,7 @@ const sendChatBot = async (req, res) => {
       });
     }
     if (text) {
-      const prompt = `Cho tôi biết ở câu hỏi "${text}" người dùng muốn câu trả lời là văn bản hay hình ảnh? nếu là hình ảnh thì bạn trả lời là sendImageBot và không nói thêm gì, nếu là văn bản thì bạn trả lời là sendChatBot`;
+      const prompt = `Hãy phân loại câu hỏi sau: "${text}". Nếu người dùng yêu cầu một hình ảnh (có từ khóa như 'vẽ', 'ảnh', 'hình', 'tấm hình', 'tạo hình', 'generate image', 'draw', 'show me a picture', 'give me an image'...), hãy trả lời là "sendImageBot". Nếu người dùng yêu cầu câu trả lời bằng văn bản, hãy trả lời là "sendChatBot". Chỉ trả lời một từ, không thêm bất kỳ nội dung nào khác.`;
       const typeOfAnswer = await messageService.sendChatBot(prompt);
       console.log("typeOfAnswer", typeOfAnswer.data.answer.trim());
       if (typeOfAnswer.data.answer.trim() === "sendImageBot") {
