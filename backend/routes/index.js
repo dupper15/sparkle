@@ -7,7 +7,7 @@ const MessageRouter = require("./MessageRouter");
 const ProjectRouter = require("./ProjectRouter");
 const CanvasRouter = require("./CanvasRouter");
 const BackgroundRouter = require("./BackgroundRouter");
-
+const HistoryRouter = require("./HistoryRouter");
 const routes = (app) => {
   app.use("/api/user", UserRouter);
   app.use("/api/component", ComponentRouter);
@@ -18,6 +18,7 @@ const routes = (app) => {
   app.use("/api/project", ProjectRouter);
   app.use("/api/canvas", CanvasRouter);
   app.use("/api/background", BackgroundRouter);
+  app.use("/api/history", HistoryRouter);
 };
 
 module.exports = routes;

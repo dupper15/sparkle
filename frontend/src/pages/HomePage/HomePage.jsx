@@ -89,7 +89,7 @@ const HomePage = () => {
           <div className='px-4 md:px-8'>
             <div className='flex justify-between items-center my-2 md:ml-2'>
               <div className='text-lg md:text-2xl font-bold pointer-events-none'>
-                Hot Trending
+                New template
               </div>
               <Link
                 to='../template'

@@ -49,7 +49,7 @@ const Project = ({ addProjectFromWorkplace }) => {
             onClick={() => handleProjectClick(project._id)}
             className='cursor-pointer'>
             <div
-              className='w-[140px] h-[140px] relative bg-cover overflow-hidden  rounded-md'
+              className='w-[140px] h-[140px] relative bg-cover overflow-hidden rounded-md'
               style={{
                 backgroundImage:
                   project.canvasArray?.[0]?.background === "#ffffff"

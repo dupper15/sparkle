@@ -32,7 +32,7 @@ const useCanvasViewModel = (id, databaseId, ref) => {
   const user = useSelector((state) => state.user);
   const userId = user.id;
   const room = useSelector((state) => state.project);
-  const roomId = room.id;
+  const [roomId, setRoomId] = useState("");
   const [focuses, setFocuses] = useState({});
   const [cursors, setCursors] = useState({});
   const [selectedComponentHorizontalFlip, setSelectedComponentHorizontalFlip] =
@@ -42,6 +42,11 @@ const useCanvasViewModel = (id, databaseId, ref) => {
   const [isOver1, setIsOver1] = useState(false);
   const [isOver2, setIsOver2] = useState(true);
   // Fetch components from the database
+  useEffect(() => {
+    if (room?.id) {
+      setRoomId(room.id);
+    }
+  }, [roomId, room]);
   useEffect(() => {
     const fetchComponents = async () => {
       try {
@@ -393,33 +398,33 @@ const useCanvasViewModel = (id, databaseId, ref) => {
       setIsOver2(true);
     });
 
-		return () => {
-			socket.emit('leave-page', { databaseId, userId });
-			socket.off('update-cursor');
-		};
-	}, [databaseId]);
-	const handleMouseMove = throttle((e) => {
-		if (isOver1) {
-			const rect = document.getElementById(id).getBoundingClientRect();
-			const x = e.clientX - rect.left;
-			const y = e.clientY - rect.top;
-			socket.emit('mousemove', { databaseId, x, y });
-		}
-	}, 50);
-	const handleMouseLeave = () => {
-		setIsOver1(false);
-		socket.emit('leave-page', { databaseId, userId });
-	};
-	// useEffect(() => {
-	// 	console.log('5', isOver1);
-	// 	console.log('7', isOver2);
-	// });
-	// // Handle shape click
-	const handleShapeClick = (shapeId, event) => {
-		handleSelectComponent(shapeId, event);
-		setOpenImageToolBar(true);
-		setOpenTextToolBar(false);
-	};
+    return () => {
+      socket.emit("leave-page", { databaseId, userId });
+      socket.off("update-cursor");
+    };
+  }, [databaseId]);
+  const handleMouseMove = throttle((e) => {
+    if (isOver1) {
+      const rect = document.getElementById(id).getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      socket.emit("mousemove", { databaseId, x, y });
+    }
+  }, 50);
+  const handleMouseLeave = () => {
+    setIsOver1(false);
+    socket.emit("leave-page", { databaseId, userId });
+  };
+  // useEffect(() => {
+  // 	console.log('5', isOver1);
+  // 	console.log('7', isOver2);
+  // });
+  // // Handle shape click
+  const handleShapeClick = (shapeId, event) => {
+    handleSelectComponent(shapeId, event);
+    setOpenImageToolBar(true);
+    setOpenTextToolBar(false);
+  };
 
   // Handle text click
   const handleTextClick = (textId, event) => {
@@ -549,6 +554,9 @@ const useCanvasViewModel = (id, databaseId, ref) => {
         componentId
       );
       socket.emit("remove-component", { componentId, roomId });
+      socket.emit("changedCanvas", {
+        roomId: roomId,
+      });
       setComponents((prevComponents) => {
         const updatedComponents = prevComponents.filter(
           (component) => component._id !== componentId
