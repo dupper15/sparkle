@@ -12,6 +12,7 @@ const ShapeToolBar = ({
   selectedComponentOpacity,
   selectedComponentHorizontalFlip,
   selectedComponentVerticalFlip,
+    selectedComponentType,
   handleColorChange,
   handleSendBackward,
   handleSendToBack,
@@ -32,16 +33,21 @@ const ShapeToolBar = ({
 
   return (
     <div className='toolbar h-[48px] inline-flex items-center space-x-2 bg-white p-2 rounded-lg shadow-md'>
-      <ImageStylesEditSection
-        setOpenPickerPanel={setOpenPickerPanel}
-        activeColor={selectedComponentColor}
-        setActiveColor={setActiveColor}
-        handleColorChange={handleColorChange}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
-
-      <RxDividerVertical />
+        {
+            selectedComponentType ==="Shape" && (
+                <div className={"inline-flex items-center"}>
+                    <ImageStylesEditSection
+                        setOpenPickerPanel={setOpenPickerPanel}
+                        activeColor={selectedComponentColor}
+                        setActiveColor={setActiveColor}
+                        handleColorChange={handleColorChange}
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
+                    />
+                    <RxDividerVertical />
+                </div>
+            )
+        }
 
       <OpacitySlider
         currentOpacity={selectedComponentOpacity}

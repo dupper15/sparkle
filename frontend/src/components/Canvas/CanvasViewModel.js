@@ -41,6 +41,7 @@ const useCanvasViewModel = (id, databaseId, ref) => {
     useState(false);
   const [isOver1, setIsOver1] = useState(false);
   const [isOver2, setIsOver2] = useState(true);
+  const [selectedComponentType, setSelectedComponentType] = useState(null);
   // Fetch components from the database
   useEffect(() => {
     if (room?.id) {
@@ -133,6 +134,10 @@ const useCanvasViewModel = (id, databaseId, ref) => {
       "verticalFlip",
       setSelectedComponentVerticalFlip
     );
+    updateSelectedComponentProperty(
+        "type",
+        setSelectedComponentType
+    )
   }, [components, selectedComponents]);
 
   useEffect(() => {
@@ -694,6 +699,7 @@ const useCanvasViewModel = (id, databaseId, ref) => {
     selectedComponentOpacity,
     selectedComponentHorizontalFlip,
     selectedComponentVerticalFlip,
+    selectedComponentType,
     selectedComponents,
     components,
     isImageToolBarOpen,

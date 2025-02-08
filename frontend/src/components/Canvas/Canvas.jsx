@@ -42,6 +42,7 @@ const Canvas = React.forwardRef(
       selectedComponentOpacity,
       selectedComponentHorizontalFlip,
       selectedComponentVerticalFlip,
+        selectedComponentType,
       isImageToolBarOpen,
       isTextToolBarOpen,
       isDarkMode,
@@ -109,6 +110,7 @@ const Canvas = React.forwardRef(
                   selectedComponentHorizontalFlip
                 }
                 selectedComponentVerticalFlip={selectedComponentVerticalFlip}
+                selectedComponentType={selectedComponentType}
                 handleColorChange={handleColorChange}
                 handleSendBackward={handleSendBackward}
                 handleSendToBack={handleSendToBack}
