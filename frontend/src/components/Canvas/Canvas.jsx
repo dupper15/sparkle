@@ -8,6 +8,7 @@ import useCanvasViewModel from "./CanvasViewModel.js";
 import socket from "../../utils/socket";
 import { FaMousePointer } from "react-icons/fa";
 import TextComponent from "../TextComponent/TextComponent.jsx";
+import { useSelector } from "react-redux";
 
 /* eslint react/prop-types: 0 */
 const Canvas = React.forwardRef(
@@ -72,7 +73,13 @@ const Canvas = React.forwardRef(
       handleComponentHorizontalFlip,
       handleComponentVerticalFlip,
     } = useCanvasViewModel(id, databaseId, ref);
-
+    const project = useSelector((state) => state.project);
+    const [roomId, setRoomId] = useState(project?.id);
+    useEffect(() => {
+      if (project) {
+        setRoomId(project.id);
+      }
+    }, []);
     const [cursorSize, setCursorSize] = useState(16);
     useEffect(() => {
       const handleGlobalMouseLeave = (event) => {
@@ -197,6 +204,7 @@ const Canvas = React.forwardRef(
                 onClick={(info, event) => handleTextClick(info._id, event)}
                 removeComponent={removeComponent}
                 selectedComponents={selectedComponents}
+                roomId={roomId}
                 handleTextContentChange={handleTextContentChange}
                 isFocused={
                   Array.isArray(focuses[info._id]) &&
@@ -218,6 +226,7 @@ const Canvas = React.forwardRef(
                 updateShapePosition={updateShapePosition}
                 onClick={(info, event) => handleShapeClick(info._id, event)}
                 selectedComponents={selectedComponents}
+                roomId={roomId}
                 isFocused={
                   Array.isArray(focuses[info._id]) &&
                   focuses[info._id].length > 0

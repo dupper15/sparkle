@@ -1,6 +1,7 @@
 const ProjectService = require("../services/ProjectService");
 const User = require("../models/UserModel");
 const Project = require("../models/ProjectModel");
+const HistoryService = require("../services/HistoryService");
 const createProject = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -18,6 +19,12 @@ const createProject = async (req, res) => {
       width: width,
     };
     const response = await ProjectService.createProject(newProject);
+    const history = {
+      projectId: response.data._id.toString(),
+      userId: userId,
+      content: `Created project`,
+    };
+    const historysave = await HistoryService.createHistory(history);
     return res.status(200).json(response);
   } catch (e) {
     return res.status(404).json({

@@ -23,6 +23,7 @@ const AddEditorForm = ({ childCloseFormRequest }) => {
         error.response?.data?.message || "An unexpected error occurred.";
       console.log(error);
       setErrorMessage(apiErrorMessage);
+      Alert.error("An unexpected error occurred.");
     },
     onSuccess: (data) => {
       setErrorMessage("");

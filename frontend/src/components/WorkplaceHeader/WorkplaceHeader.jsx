@@ -622,7 +622,7 @@ const WorkplaceHeader = ({ usersInRoom }) => {
           />
         )}
         {openSetting && (
-          <div className='absolute top-[4rem] right-[1rem] padding-[15px] z-50'>
+          <div className='absolute top-[4rem] right-[1rem] padding-[15px] h-max z-50'>
             <SettingWork
               isLoading={isLoading}
               status={status}

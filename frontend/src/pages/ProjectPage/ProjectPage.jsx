@@ -33,7 +33,7 @@ const ProjectPage = () => {
 
           {/* Project Section */}
           <div className=''>
-            <div className='text-xl md:text-2xl font-bold mt-2 ml-4 md:ml-10'>
+            <div className='text-xl md:text-2xl text-slate-900 dark:text-white  font-bold mt-2 ml-4 md:ml-10'>
               Your project
             </div>
             <ResponsiveGrid />

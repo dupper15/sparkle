@@ -195,3 +195,13 @@ export const removeEditor = async (data) => {
     throw new Error(error.response?.data?.message || "API call failed");
   }
 };
+export const getHistory = async (id) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_API_KEY}/history/getAll/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "API call failed");
+  }
+};

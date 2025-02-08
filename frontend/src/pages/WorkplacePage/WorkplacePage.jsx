@@ -36,7 +36,6 @@ const WorkplaceCanvas = () => {
   const dispatch = useDispatch();
   const project = useSelector((state) => state.project);
   const user = useSelector((state) => state.user);
-
   const { isDarkMode } = useDarkMode();
   const [state, setState] = useState("");
   const canvasRef = useRef([]);
@@ -48,6 +47,13 @@ const WorkplaceCanvas = () => {
   const [height, setHeight] = useState("");
 
   const [refresh, setRefresh] = useState(false);
+  const [projectId, setProjectId] = useState("");
+
+  useEffect(() => {
+    if (project?.id) {
+      setProjectId(project.id);
+    }
+  }, [projectId, project]);
 
   useEffect(() => {
     setWidth(project?.width);
@@ -136,8 +142,6 @@ const WorkplaceCanvas = () => {
   });
 
   const scrollToCanvas = (index) => {
-    console.log("alo", index);
-
     if (index >= 0 && index < canvases.length) {
       if (canvasRef.current[index]) {
         canvasRef.current[index].scrollIntoView({
@@ -153,11 +157,8 @@ const WorkplaceCanvas = () => {
   const [backgrounds, setBackgrounds] = useState({});
 
   useEffect(() => {
-    socket.on("addCanvas", ({ newCanvas }) => {
-      setCanvases((prev) => {
-        const newCanvases = [...prev, newCanvas];
-        return newCanvases;
-      });
+    socket.on("changedCanvas", (roomId) => {
+      handleGetDetailProject(roomId);
     });
     socket.on("removeCanvas", ({ canvasId }) => {
       setCanvases((prev) => {
@@ -181,7 +182,6 @@ const WorkplaceCanvas = () => {
       }
     });
     socket.on("componentAdded", ({ canvasId, component }) => {
-      console.log("kora", canvasId, component);
       const eventName = `update-${component.type.toLowerCase()}s-${canvasId}`;
       console.log("Dispatching event:", eventName, "with data:", component);
       document.dispatchEvent(
@@ -223,7 +223,7 @@ const WorkplaceCanvas = () => {
 
   const addCanvas = async () => {
     try {
-      const newCanvas = await mutation.mutateAsync({ id: project?.id });
+      const newCanvas = await mutation.mutateAsync({ id: projectId });
       setCanvases((prev) => {
         const newCanvases = [...prev, project?.canvasArray];
         setCurrentCanvas(newCanvases[newCanvases.length]?.id);
@@ -231,8 +231,11 @@ const WorkplaceCanvas = () => {
         return newCanvases;
       });
       Alert.success("Add canvas successfully!");
-      socket.emit("addCanvas", { roomId: project?.id, newCanvas });
-      handleGetDetailProject(project?.id);
+      socket.emit("addCanvas", { roomId: projectId, newCanvas });
+      socket.emit("changedCanvas", {
+        roomId: projectId,
+      });
+      handleGetDetailProject(projectId);
     } catch (error) {
       console.error("Failed to add canvas:", error.message);
       Alert.error("Failed to add canvas.");
@@ -261,7 +264,9 @@ const WorkplaceCanvas = () => {
       setRefresh(!refresh);
 
       Alert.success("Template added successfully!");
-
+      socket.emit("changedCanvas", {
+        roomId: projectId,
+      });
       handleGetDetailProject(project?.id);
     } catch (error) {
       console.error("Failed to add canvas:", error.message);
@@ -292,8 +297,10 @@ const WorkplaceCanvas = () => {
         setRefresh(!refresh);
       });
 
-      Alert.success("Template added successfully!");
-
+      Alert.success("Project added successfully!");
+      socket.emit("changedCanvas", {
+        roomId: projectId,
+      });
       handleGetDetailProject(project?.id);
     } catch (error) {
       console.error("Failed to add canvas:", error.message);
@@ -306,7 +313,7 @@ const WorkplaceCanvas = () => {
         Alert.error("Can not delete canvas!");
         return;
       }
-      await deleteCanvas(id, project?.id);
+      await deleteCanvas(id, projectId);
 
       setCanvases((prev) => {
         const newCanvases = prev.filter((canvas) => canvas.id !== id);
@@ -319,8 +326,10 @@ const WorkplaceCanvas = () => {
         return newCanvases;
       });
       Alert.success("Delete canvas successfully!");
-
-      await handleGetDetailProject(project?.id);
+      socket.emit("changedCanvas", {
+        roomId: projectId,
+      });
+      await handleGetDetailProject(projectId);
     } catch (error) {
       console.error("Failed to delete canvas:", error.message);
       Alert.error("Failed to delete canvas.");
@@ -343,7 +352,7 @@ const WorkplaceCanvas = () => {
 
         await CanvasService.updateCanvas(canvasId, data);
         socket.emit("updateBackground", {
-          roomId: project?.id,
+          roomId: projectId,
           canvasId: current_canvas,
           background: bgLink || "white",
         });
@@ -413,6 +422,7 @@ const WorkplaceCanvas = () => {
           );
           return res;
         });
+
         newComponent.id = response.data._id;
         document.dispatchEvent(
           new CustomEvent(
@@ -423,9 +433,12 @@ const WorkplaceCanvas = () => {
           )
         );
         socket.emit("componentAdded", {
-          roomId: project?.id,
+          roomId: projectId,
           canvasId: over.id,
           component: newComponent,
+        });
+        socket.emit("changedCanvas", {
+          roomId: roomId,
         });
       } catch (error) {
         console.error(
@@ -455,6 +468,7 @@ const WorkplaceCanvas = () => {
   };
 
   useEffect(() => {
+    if (!socket) return;
     if (project?.id && user?.id) {
       socket.emit("setUserId", user.id);
       socket.emit("joinRoom", project.id);
@@ -469,7 +483,7 @@ const WorkplaceCanvas = () => {
         socket.emit("leaveRoom", project.id);
       };
     }
-  }, [project?.id, user?.id]);
+  }, [socket, project?.id, user?.id]);
   const handleReset = () => {
     setRefresh(!refresh);
   };
