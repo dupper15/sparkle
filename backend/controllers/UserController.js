@@ -52,13 +52,13 @@ const createUser = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "22520734@gm.uit.edu.vn",
-        pass: "kvfs inzl katz poyv",
+        user: "nguyenchinghia15@gmail.com",
+        pass: "txwm oipt vlxx cqjn",
       },
     });
 
     const mailOptions = {
-      from: '"Sparkle" <22520734@gm.uit.edu.vn>',
+      from: '"Sparkle" <nguyenchinghia15@gmail.com>',
       to: `${email}`,
       subject: "Sparkle Email Verification",
       html: `
@@ -332,13 +332,13 @@ const sendEmail = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "22520734@gm.uit.edu.vn",
-        pass: "kvfs inzl katz poyv",
+        user: "nguyenchinghia15@gmail.com",
+        pass: "txwm oipt vlxx cqjn",
       },
     });
 
     const mailOptions = {
-      from: '"Sparkle" <22520734@gm.uit.edu.vn>',
+      from: '"Sparkle" <nguyenchinghia15@gmail.com>',
       to: `${data.email}`,
       subject: "Sparkle Email Verification",
       html: `
