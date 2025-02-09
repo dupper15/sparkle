@@ -1,411 +1,395 @@
-import testImage from "../../../assets/banner1.png";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
-import { useDispatch, useSelector } from "react-redux";
-import { useMutationHooks } from "../../../hooks/useMutationHook";
-import * as ProjectService from "../../../services/ProjectService";
-import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { SlOptionsVertical } from "react-icons/sl";
-import * as Alert from "../../Alert/Alert";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
+import testImage from '../../../assets/banner1.png';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import { IoIosArrowDropright, IoIosArrowDropleft } from 'react-icons/io';
+import { useDispatch, useSelector } from 'react-redux';
+import { useMutationHooks } from '../../../hooks/useMutationHook';
+import * as ProjectService from '../../../services/ProjectService';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { SlOptionsVertical } from 'react-icons/sl';
+import * as Alert from '../../Alert/Alert';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3001 }, // >3000px
-    items: 5,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1661 }, // 1441px - 3000px
-    items: 5,
-  },
-  smalDesktop: {
-    breakpoint: { max: 1660, min: 1361 }, // 1441px - 3000px
-    items: 4,
-  },
-  smallDesktop: {
-    breakpoint: { max: 1360, min: 1061 }, // 1025px - 1440px
-    items: 3,
-  },
-  tablet: {
-    breakpoint: { max: 1060, min: 801 }, // 465px - 1024px
-    items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 800, min: 0 }, // <464px
-    items: 1,
-  },
+	superLargeDesktop: {
+		breakpoint: { max: 4000, min: 3001 }, // >3000px
+		items: 5,
+	},
+	desktop: {
+		breakpoint: { max: 3000, min: 1661 }, // 1441px - 3000px
+		items: 5,
+	},
+	smalDesktop: {
+		breakpoint: { max: 1660, min: 1361 }, // 1441px - 3000px
+		items: 4,
+	},
+	smallDesktop: {
+		breakpoint: { max: 1360, min: 1061 }, // 1025px - 1440px
+		items: 3,
+	},
+	tablet: {
+		breakpoint: { max: 1060, min: 801 }, // 465px - 1024px
+		items: 2,
+	},
+	mobile: {
+		breakpoint: { max: 800, min: 0 }, // <464px
+		items: 1,
+	},
 };
 function CustomCarousel({ onDelete }) {
-  const user = useSelector((state) => state.user);
-  const navigate = useNavigate();
+	const user = useSelector((state) => state.user);
+	const navigate = useNavigate();
 
-  const [projects, setProjects] = useState([]);
+	const [projects, setProjects] = useState([]);
 
-  const [hoveredProjectId, setHoveredProjectId] = useState(null);
-  const [option, setOption] = useState(false);
-  const [renameId, setRenameId] = useState(null);
-  const [newProjectName, setNewProjectName] = useState("");
-  const inputRef = useRef(null);
+	const [hoveredProjectId, setHoveredProjectId] = useState(null);
+	const [option, setOption] = useState(false);
+	const [renameId, setRenameId] = useState(null);
+	const [newProjectName, setNewProjectName] = useState('');
+	const inputRef = useRef(null);
 
-  const mutation = useMutationHooks(async (data) => {
-    try {
-      setIsLoading(true);
+	const mutation = useMutationHooks(async (data) => {
+		try {
+			setIsLoading(true);
 
-      // Gọi API để lấy danh sách dự án
-      const project_arr = await ProjectService.getAllProject(data);
+			// Gọi API để lấy danh sách dự án
+			const project_arr = await ProjectService.getAllProject(data);
 
-      // Kiểm tra tính hợp lệ của `project_arr` và `project_arr.data`
-      if (project_arr && Array.isArray(project_arr.data)) {
-        const totalProjects = project_arr.data.length; // Tổng số dự án
+			// Kiểm tra tính hợp lệ của `project_arr` và `project_arr.data`
+			if (project_arr && Array.isArray(project_arr.data)) {
+				const totalProjects = project_arr.data.length; // Tổng số dự án
 
-        // Lấy 6 dự án cuối cùng
-        const limitedProjects = project_arr.data.slice(
-          Math.max(0, totalProjects - 6),
-          totalProjects
-        );
+				// Lấy 6 dự án cuối cùng
+				const limitedProjects = project_arr.data.slice(Math.max(0, totalProjects - 6), totalProjects);
 
-        setProjects(limitedProjects);
-      } else {
-        console.error("Invalid project data:", project_arr);
-      }
+				setProjects(limitedProjects);
+			} else {
+				console.error('Invalid project data:', project_arr);
+			}
 
-      setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      console.error("Error fetching projects:", error);
-    }
-  });
+			setIsLoading(false);
+		} catch (error) {
+			setIsLoading(false);
+			console.error('Error fetching projects:', error);
+		}
+	});
 
-  const [isLoading, setIsLoading] = useState(true);
-  const mutationRename = useMutationHooks(async (data) => {
-    try {
-      const id = data.projectId;
-      const projectName = data.newProjectName;
-      const result = await ProjectService.renameProject(id, projectName);
-      return result; // Trả về kết quả từ API
-    } catch (error) {
-      console.error("Error renaming project:", error);
-      throw error; // Quăng lỗi để mutation xử lý
-    }
-  });
+	const [isLoading, setIsLoading] = useState(true);
+	const mutationRename = useMutationHooks(async (data) => {
+		try {
+			const id = data.projectId;
+			const projectName = data.newProjectName;
+			const result = await ProjectService.renameProject(id, projectName);
+			return result; // Trả về kết quả từ API
+		} catch (error) {
+			console.error('Error renaming project:', error);
+			throw error; // Quăng lỗi để mutation xử lý
+		}
+	});
 
-  useEffect(() => {
-    handleGetAllProject();
-  }, [user, onDelete]);
+	useEffect(() => {
+		handleGetAllProject();
+	}, [user, onDelete]);
 
-  const handleGetAllProject = () => {
-    mutation.mutate(user?.id);
-  };
+	const handleGetAllProject = () => {
+		mutation.mutate(user?.id);
+	};
 
-  const handleClick = (id) => {
-    localStorage.setItem("projectId", id);
-    navigate(`/${id}/edit`);
-  };
+	const handleClick = (id) => {
+		localStorage.setItem('projectId', id);
+		navigate(`/${id}/edit`);
+	};
 
-  const handleRename = (id) => {
-    const project = projects.find((p) => p._id === id);
-    setRenameId(id);
-    setNewProjectName(project?.projectName || "");
-    setTimeout(() => {
-      inputRef.current?.focus(); // Focus vào ô input sau khi render
-    }, 0);
-  };
+	const handleRename = (id) => {
+		const project = projects.find((p) => p._id === id);
+		setRenameId(id);
+		setNewProjectName(project?.projectName || '');
+		setTimeout(() => {
+			inputRef.current?.focus(); // Focus vào ô input sau khi render
+		}, 0);
+	};
 
-  const handleSaveRename = async (projectId) => {
-    try {
-      mutationRename.mutate({
-        projectId,
-        newProjectName,
-      });
-      // Cập nhật danh sách project sau khi gọi API thành công
-      const updatedProjects = projects.map((project) =>
-        project._id === projectId
-          ? { ...project, projectName: newProjectName }
-          : project
-      );
-      setProjects(updatedProjects);
-      setRenameId(null); // Đóng chế độ rename
-      Alert.success("Rename project successfully");
-    } catch (error) {
-      console.error("Error saving renamed project:", error);
-      // Bạn có thể thêm logic hiển thị thông báo lỗi ở đây
-    }
-  };
+	const handleSaveRename = async (projectId) => {
+		try {
+			mutationRename.mutate({
+				projectId,
+				newProjectName,
+			});
+			// Cập nhật danh sách project sau khi gọi API thành công
+			const updatedProjects = projects.map((project) =>
+				project._id === projectId ? { ...project, projectName: newProjectName } : project
+			);
+			setProjects(updatedProjects);
+			setRenameId(null); // Đóng chế độ rename
+			Alert.success('Rename project successfully');
+		} catch (error) {
+			console.error('Error saving renamed project:', error);
+			// Bạn có thể thêm logic hiển thị thông báo lỗi ở đây
+		}
+	};
 
-  return (
-    <Carousel
-      customLeftArrow={
-        <IoIosArrowDropleft className='left-arrow text-slate-400 dark:text-slate-200' />
-      }
-      customRightArrow={
-        <IoIosArrowDropright className='right-arrow text-slate-400 dark:text-slate-200' />
-      }
-      responsive={responsive}
-      swipeable={false}
-      draggable={false}
-      infinite={true}
-      autoPlay={false}
-      autoPlaySpeed={2000}
-      keyBoardControl={true}
-      transitionDuration={500}
-      className='items-center'
-      itemClass='py-4 px-0 flex gap-4'>
-      {isLoading ? (
-        Array.from({ length: 5 }).map((_, index) => (
-          <div className='' key={index}>
-            <div className='bg-gray-200 rounded-md w-[300px] h-[200px]'>
-              <Skeleton height={200} width='100%' borderRadius='8px' />
-            </div>
-            <div className='mt-2'>
-              <Skeleton width='60%' />
-            </div>
-          </div>
-        ))
-      ) : projects.length === 0 ? (
-        <div className='pl-4 h-full w-full text-gray-500 text-start whitespace-nowrap'>
-          There are no projects to display.
-        </div>
-      ) : (
-        projects
-          .slice()
-          .reverse()
-          .map((project, index) => (
-            <div
-              key={project._id}
-              id={project?._id}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClick(project._id);
-              }}
-              onMouseEnter={(e) => {
-                e.stopPropagation();
-                setHoveredProjectId(project._id);
-              }}
-              onMouseLeave={(e) => {
-                e.stopPropagation();
-                if (option) {
-                  setOption(false);
-                }
-                setHoveredProjectId(null);
-              }}
-              className='bg-white w-full group cursor-pointer mb-4  max-w-[300px] mx-auto rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'>
-              <div
-                className='max-w-[300px] w-full h-[200px]  relative bg-cover overflow-hidden border '
-                style={{
-                  backgroundImage:
-                    project.canvasArray?.[0]?.background === "#ffffff"
-                      ? "none" // Không hiển thị hình ảnh nền
-                      : `url(${project.canvasArray?.[0]?.background})`,
-                  backgroundColor:
-                    project.canvasArray?.[0]?.background === "#ffffff"
-                      ? "#ffffff" // Hiển thị màu trắng
-                      : "transparent", // Màu nền trong suốt nếu có hình ảnh nền
-                  backgroundSize: "100% 100%",
-                  backgroundPosition: "center",
-                  backgroundRepeat: "no-repeat",
-                }}>
-                {project.canvasArray?.[0]?.componentArray?.map(
-                  (component, index) => {
-                    const getShapeStyle = (shapeType) => {
-                      switch (shapeType) {
-                        case "circle":
-                          return {
-                            borderRadius: "50%", // Tạo hình tròn
-                          };
-                        case "triangle":
-                          return {
-                            clipPath: "polygon(50% 0, 100% 100%, 0 100%)", // Hình tam giác
-                          };
-                        case "invertedTriangle":
-                          return {
-                            clipPath: "polygon(50% 100%, 0 0, 100% 0)", // Hình tam giác ngược
-                          };
-                        case "pentagon":
-                          return {
-                            clipPath:
-                              "polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)", // Hình ngũ giác
-                          };
-                        case "hexagon":
-                          return {
-                            clipPath:
-                              "polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)", // Hình lục giác
-                          };
-                        case "octagon":
-                          return {
-                            clipPath:
-                              "polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%)",
-                          }; // Hình bát giác
-                        case "arrowUp":
-                          return {
-                            clipPath:
-                              "polygon(50% 0%, 100% 50%, 75% 50%, 75% 100%, 25% 100%, 25% 50%, 0% 50%)",
-                          }; // Mũi tên hướng lên
-                        case "arrowDown":
-                          return {
-                            clipPath:
-                              "polygon(50% 100%, 100% 50%, 75% 50%, 75% 0%, 25% 0%, 25% 50%, 0% 50%)",
-                          }; // Mũi tên hướng xuống
-                        case "arrowRight":
-                          return {
-                            clipPath:
-                              "polygon(0% 50%, 50% 0%, 50% 25%, 100% 25%, 100% 75%, 50% 75%, 50% 100%)",
-                          }; // Mũi tên hướng phải
-                        case "arrowLeft":
-                          return {
-                            clipPath:
-                              "polygon(100% 50%, 50% 0%, 50% 25%, 0% 25%, 0% 75%, 50% 75%, 50% 100%)",
-                          }; // Mũi tên hướng trái
-                        case "rect":
-                          return {}; // Hình chữ nhật (mặc định không cần clipPath)
-                        default:
-                          return {};
-                      }
-                    };
+	return (
+		<Carousel
+			customLeftArrow={<IoIosArrowDropleft className='left-arrow text-slate-400 dark:text-slate-200' />}
+			customRightArrow={<IoIosArrowDropright className='right-arrow text-slate-400 dark:text-slate-200' />}
+			responsive={responsive}
+			swipeable={false}
+			draggable={false}
+			infinite={true}
+			autoPlay={false}
+			autoPlaySpeed={2000}
+			keyBoardControl={true}
+			transitionDuration={500}
+			className='items-center'
+			itemClass='py-4 px-0 flex gap-4'
+		>
+			{isLoading ? (
+				Array.from({ length: 5 }).map((_, index) => (
+					<div className='' key={index}>
+						<div className='bg-gray-200  rounded-md w-[300px] h-[200px]'>
+							<Skeleton height={200} width='100%' borderRadius='8px' />
+						</div>
+						<div className='mt-2'>
+							<Skeleton width='60%' />
+						</div>
+					</div>
+				))
+			) : projects.length === 0 ? (
+				<div className='pl-4 h-full w-full text-gray-500 text-start whitespace-nowrap'>
+					There are no projects to display.
+				</div>
+			) : (
+				projects
+					.slice()
+					.reverse()
+					.map((project, index) => (
+						<div
+							key={project._id}
+							id={project?._id}
+							onClick={(e) => {
+								e.stopPropagation();
+								handleClick(project._id);
+							}}
+							onMouseEnter={(e) => {
+								e.stopPropagation();
+								setHoveredProjectId(project._id);
+							}}
+							onMouseLeave={(e) => {
+								e.stopPropagation();
+								if (option) {
+									setOption(false);
+								}
+								setHoveredProjectId(null);
+							}}
+							className='bg-white w-full group cursor-pointer mb-4  max-w-[300px] mx-auto rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'
+						>
+							<div
+								className='max-w-[300px] w-full h-[200px]  relative bg-cover overflow-hidden border'
+								style={{
+									backgroundImage:
+										project.canvasArray?.[0]?.background === '#ffffff'
+											? 'none' // Không hiển thị hình ảnh nền
+											: `url(${project.canvasArray?.[0]?.background})`,
+									backgroundColor:
+										project.canvasArray?.[0]?.background === '#ffffff'
+											? '#ffffff' // Hiển thị màu trắng
+											: 'transparent', // Màu nền trong suốt nếu có hình ảnh nền
+									backgroundSize: '100% 100%',
+									backgroundPosition: 'center',
+									backgroundRepeat: 'no-repeat',
+								}}
+							>
+								{project.canvasArray?.[0]?.componentArray?.map((component, index) => {
+									const getShapeStyle = (shapeType) => {
+										switch (shapeType) {
+											case 'circle':
+												return {
+													borderRadius: '50%', // Tạo hình tròn
+												};
+											case 'triangle':
+												return {
+													clipPath: 'polygon(50% 0, 100% 100%, 0 100%)', // Hình tam giác
+												};
+											case 'invertedTriangle':
+												return {
+													clipPath: 'polygon(50% 100%, 0 0, 100% 0)', // Hình tam giác ngược
+												};
+											case 'pentagon':
+												return {
+													clipPath: 'polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%)', // Hình ngũ giác
+												};
+											case 'hexagon':
+												return {
+													clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)', // Hình lục giác
+												};
+											case 'octagon':
+												return {
+													clipPath: 'polygon(50% 0%, 85% 15%, 100% 50%, 85% 85%, 50% 100%, 15% 85%, 0% 50%, 15% 15%)',
+												}; // Hình bát giác
+											case 'arrowUp':
+												return {
+													clipPath: 'polygon(50% 0%, 100% 50%, 75% 50%, 75% 100%, 25% 100%, 25% 50%, 0% 50%)',
+												}; // Mũi tên hướng lên
+											case 'arrowDown':
+												return {
+													clipPath: 'polygon(50% 100%, 100% 50%, 75% 50%, 75% 0%, 25% 0%, 25% 50%, 0% 50%)',
+												}; // Mũi tên hướng xuống
+											case 'arrowRight':
+												return {
+													clipPath: 'polygon(0% 50%, 50% 0%, 50% 25%, 100% 25%, 100% 75%, 50% 75%, 50% 100%)',
+												}; // Mũi tên hướng phải
+											case 'arrowLeft':
+												return {
+													clipPath: 'polygon(100% 50%, 50% 0%, 50% 25%, 0% 25%, 0% 75%, 50% 75%, 50% 100%)',
+												}; // Mũi tên hướng trái
+											case 'rect':
+												return {}; // Hình chữ nhật (mặc định không cần clipPath)
+											default:
+												return {};
+										}
+									};
 
-                    const shapeStyle = getShapeStyle(component.shapeType);
+									const shapeStyle = getShapeStyle(component.shapeType);
 
-                    const scaleX = 300 / project.width;
-                    const scaleY = 200 / project.height;
+									const scaleX = 300 / project.width;
+									const scaleY = 200 / project.height;
 
-                    const widthComponent = component.width * scaleX;
-                    const heightComponent = component.height * scaleY;
-                    const topComponent = component.y * scaleY;
-                    const leftComponent = component.x * scaleX;
+									const widthComponent = component.width * scaleX;
+									const heightComponent = component.height * scaleY;
+									const topComponent = component.y * scaleY;
+									const leftComponent = component.x * scaleX;
 
-                    return (
-                      <>
-                        {/* Xử lý Text */}
-                        {component.type === "Text" && component.content && (
-                          <div
-                            key={index}
-                            style={{
-                              position: "absolute",
-                              top: topComponent,
-                              left: leftComponent,
-                              width: Math.max(widthComponent, 50),
-                              height: Math.max(heightComponent, 20),
-                              transform: `rotate(${component.rotate || 0}deg)`,
-                              transformOrigin: "center",
-                              color: component.color || "black",
-                              fontSize: Math.max(
-                                component.fontSize * scaleY,
-                                12
-                              ),
-                              fontFamily: component.fontFamily || "Arial",
-                              fontStyle: component.fontStyle || "normal",
-                              fontWeight: component.fontWeight || "normal",
-                              textDecoration:
-                                component.textDecorationLine || "none",
-                              textAlign: component.textAlign || "left",
-                              whiteSpace: "pre-wrap",
-                            }}>
-                            {component.content}
-                          </div>
-                        )}
+									return (
+										<>
+											{/* Xử lý Text */}
+											{component.type === 'Text' && component.content && (
+												<div
+													key={index}
+													style={{
+														position: 'absolute',
+														top: topComponent,
+														left: leftComponent,
+														width: Math.max(widthComponent, 50),
+														height: Math.max(heightComponent, 20),
+														transform: `rotate(${component.rotate || 0}deg)`,
+														transformOrigin: 'center',
+														color: component.color || 'black',
+														fontSize: Math.max(component.fontSize * scaleY, 12),
+														fontFamily: component.fontFamily || 'Arial',
+														fontStyle: component.fontStyle || 'normal',
+														fontWeight: component.fontWeight || 'normal',
+														textDecoration: component.textDecorationLine || 'none',
+														textAlign: component.textAlign || 'left',
+														whiteSpace: 'pre-wrap',
+													}}
+												>
+													{component.content}
+												</div>
+											)}
 
-                        {/* Xử lý Image */}
-                        {component.type === "Image" && component.image && (
-                          <img
-                            key={index}
-                            src={component.image}
-                            alt=''
-                            style={{
-                              position: "absolute",
-                              top: topComponent,
-                              left: leftComponent,
-                              width: widthComponent,
-                              height: heightComponent,
-                              transform: `rotate(${component.rotate || 0}deg)`,
-                              transformOrigin: "center",
-                              opacity: component.opacity || 1,
-                              objectFit: "contain",
-                            }}
-                          />
-                        )}
+											{/* Xử lý Image */}
+											{component.type === 'Image' && component.image && (
+												<img
+													key={index}
+													src={component.image}
+													alt=''
+													style={{
+														position: 'absolute',
+														top: topComponent,
+														left: leftComponent,
+														width: widthComponent,
+														height: heightComponent,
+														transform: `rotate(${component.rotate || 0}deg)`,
+														transformOrigin: 'center',
+														opacity: component.opacity || 1,
+														objectFit: 'contain',
+													}}
+												/>
+											)}
 
-                        {/* Xử lý Shape */}
-                        {component.type === "Shape" && (
-                          <div
-                            key={index}
-                            style={{
-                              position: "absolute",
-                              top: topComponent,
-                              left: leftComponent,
-                              width: widthComponent,
-                              height: heightComponent,
-                              transform: `rotate(${component.rotate || 0}deg)`,
-                              transformOrigin: "center",
-                              backgroundColor: component.color || "transparent",
-                              ...shapeStyle,
-                            }}></div>
-                        )}
-                      </>
-                    );
-                  }
-                )}
-              </div>
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOption(!option);
-                }}
-                className='absolute top-2 right-1 hidden group-hover:flex justify-between border p-1 bg-white rounded shadow'>
-                <SlOptionsVertical className='text-black' />
-              </div>
-              {option && hoveredProjectId === project._id && (
-                <div className='absolute top-10 right-1 bg-white dark:bg-gray-700 p-2 rounded shadow'>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRename(project._id);
-                    }}
-                    className='block px-2 py-2 w-full text-sm text-gray-700  hover:bg-gray-100 dark:text-white dark:hover:bg-gray-400'>
-                    <span>Rename</span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDelete(project._id);
-                    }}
-                    className='block px-2 w-full py-2 text-sm text-red-600 hover:bg-red-100'>
-                    <span>Delete</span>
-                  </button>
-                </div>
-              )}
-              {renameId === project._id ? (
-                <div className='p-2 flex flex-row'>
-                  <input
-                    type='text'
-                    ref={inputRef} // Gán input với useRef
-                    value={newProjectName}
-                    onChange={(e) => {
-                      e.stopPropagation();
-                      setNewProjectName(e.target.value);
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.stopPropagation();
-                        handleSaveRename(project._id); // Gọi hàm rename khi nhấn Enter
-                      }
-                    }}
-                    className='border rounded bg-white text-slate-800 dark:bg-black dark:text-white w-full px-2 py-1'
-                  />
-                </div>
-              ) : (
-                <div className='p-4'>
-                  <h3 className='font-semibold text-gray-800'>
-                    {project.projectName}
-                  </h3>
-                  <p className='text-xs text-gray-500'>Your design</p>
-                </div>
-              )}
-            </div>
-          ))
-      )}
-    </Carousel>
-  );
+											{/* Xử lý Shape */}
+											{component.type === 'Shape' && (
+												<div
+													key={index}
+													style={{
+														position: 'absolute',
+														top: topComponent,
+														left: leftComponent,
+														width: widthComponent,
+														height: heightComponent,
+														transform: `rotate(${component.rotate || 0}deg)`,
+														transformOrigin: 'center',
+														backgroundColor: component.color || 'transparent',
+														...shapeStyle,
+													}}
+												></div>
+											)}
+										</>
+									);
+								})}
+							</div>
+							<div
+								onClick={(e) => {
+									e.stopPropagation();
+									setOption(!option);
+								}}
+								className='absolute top-2 right-1 hidden group-hover:flex justify-between border p-1 bg-white rounded shadow'
+							>
+								<SlOptionsVertical className='text-black' />
+							</div>
+							{option && hoveredProjectId === project._id && (
+								<div className='absolute top-10 right-1 bg-white dark:bg-gray-700 p-2 rounded shadow'>
+									<button
+										onClick={(e) => {
+											e.stopPropagation();
+											handleRename(project._id);
+										}}
+										className='block px-2 py-2 w-full text-sm text-gray-700  hover:bg-gray-100 dark:text-white dark:hover:bg-gray-400'
+									>
+										<span>Rename</span>
+									</button>
+									<button
+										onClick={(e) => {
+											e.stopPropagation();
+											onDelete(project._id);
+										}}
+										className='block px-2 w-full py-2 text-sm text-red-600 hover:bg-red-100'
+									>
+										<span>Delete</span>
+									</button>
+								</div>
+							)}
+							{renameId === project._id ? (
+								<div className='p-2 flex flex-row'>
+									<input
+										type='text'
+										ref={inputRef} // Gán input với useRef
+										value={newProjectName}
+										onChange={(e) => {
+											e.stopPropagation();
+											setNewProjectName(e.target.value);
+										}}
+										onKeyDown={(e) => {
+											if (e.key === 'Enter') {
+												e.stopPropagation();
+												handleSaveRename(project._id); // Gọi hàm rename khi nhấn Enter
+											}
+										}}
+										className='border rounded bg-white text-slate-800 dark:bg-black dark:text-white w-full px-2 py-1'
+									/>
+								</div>
+							) : (
+								<div className='p-4'>
+									<h3 className='font-semibold text-gray-800'>{project.projectName}</h3>
+									<p className='text-xs text-gray-500'>Your design</p>
+								</div>
+							)}
+						</div>
+					))
+			)}
+		</Carousel>
+	);
 }
 
 export default CustomCarousel;
