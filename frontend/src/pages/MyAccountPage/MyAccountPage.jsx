@@ -303,19 +303,6 @@ const MyAccountPage = () => {
 									Connected
 								</button>
 							</div>
-
-							{/* <div className='flex flex-col sm:flex-row items-center border-slate-600  w-full h-auto border rounded-lg my-2 py-3 px-2 dark:border-white'>
-								<div className='flex flex-row items-center w-full sm:w-auto'>
-									<FaFacebook className='h-10 w-10' />
-									<div className='flex flex-col px-4'>
-										<span className='font-semibold text-lg sm:text-xl pointer-events-none'>Facebook</span>
-										<span className='font-thin text-sm sm:text-base pointer-events-none'>caoduonglam@gmail.com</span>
-									</div>
-								</div>
-								<button className='mt-3 w-28 ml-auto sm:mt-0 sm:ml-auto bg-white text-slate-800 font-semibold rounded-lg shadow-sm border-slate-600 border-2 flex justify-center items-center px-4 py-2 hover:bg-slate-100 dark:bg-black dark:text-white'>
-									Connect
-								</button>
-							</div> */}
 						</div>
 					</div>
 				</div>
