@@ -14,7 +14,7 @@ import { signInWithPopup } from "firebase/auth";
 import { MdOutlineEmail } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
-
+import * as Message from "../../components/Alert/Alert";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -169,6 +169,7 @@ const LoginPage = () => {
 
   const handleSendEmail = () => {
     mutationSendEmail.mutate({ email: email });
+    Message.success("Please check your email to get the code!");
   };
 
   const handleVerifyCode = () => {
@@ -177,6 +178,7 @@ const LoginPage = () => {
 
   const handleChangePassword = () => {
     mutationChangePassword.mutate({ email, password, confirmPassword });
+    Message.success("Change password successfully!");
   };
 
   const { isSuccess, isError } = mutation;
@@ -340,8 +342,11 @@ const LoginPage = () => {
                     />
                   </div>
                   <button
-                    onClick={handleSendEmail}
-                    className='w-full h-12 bg-gradient-to-r from-purple-400 to-purple-600 text-white rounded-lg font-semibold text-lg transition-transform transform hover:scale-105'>
+                    onClick={(e) => {
+                      handleSendEmail();
+                      e.preventDefault();
+                    }}
+                    className='w-full h-12 bg-[#4335DE] text-white rounded-lg font-semibold text-lg transition-all hover:bg-[#584cdb]'>
                     Send
                   </button>
                 </div>
@@ -367,8 +372,11 @@ const LoginPage = () => {
 
                 {/* Verify Button */}
                 <button
-                  onClick={handleVerifyCode}
-                  className='w-full max-w-md h-12 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-lg font-semibold text-lg transition-transform transform hover:scale-105'>
+                  onClick={(e) => {
+                    handleVerifyCode();
+                    e.preventDefault();
+                  }}
+                  className='w-full max-w-md h-12 bg-green-600 text-white rounded-lg font-semibold text-lg transition-all hover:bg-green-500'>
                   Verify
                 </button>
               </div>
@@ -410,7 +418,10 @@ const LoginPage = () => {
                 <span className='text-red-500'>{errorMessage}</span>
               )}
               <button
-                onClick={handleChangePassword}
+                onClick={(e) => {
+                  handleChangePassword();
+                  e.preventDefault();
+                }}
                 className=' w-full h-max p-1 bg-gradient text-white rounded-lg font-semibold text-lg'>
                 Change password
               </button>
