@@ -147,7 +147,7 @@ function CustomCarousel({ onDelete }) {
 			{isLoading ? (
 				Array.from({ length: 5 }).map((_, index) => (
 					<div className='' key={index}>
-						<div className='bg-gray-200 mx-auto rounded-md w-[300px] h-[200px]'>
+						<div className='bg-gray-200  rounded-md w-[300px] h-[200px]'>
 							<Skeleton height={200} width='100%' borderRadius='8px' />
 						</div>
 						<div className='mt-2'>
@@ -185,7 +185,7 @@ function CustomCarousel({ onDelete }) {
 							className='bg-white w-full group cursor-pointer mb-4  max-w-[300px] mx-auto rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'
 						>
 							<div
-								className='max-w-[300px] w-full h-[200px]  relative bg-cover overflow-hidden border '
+								className='max-w-[300px] w-full h-[200px]  relative bg-cover overflow-hidden border'
 								style={{
 									backgroundImage:
 										project.canvasArray?.[0]?.background === '#ffffff'
