@@ -1,5 +1,5 @@
 import template from '../../assets/bg-dm.png';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useMutationHooks } from '../../hooks/useMutationHook';
 import * as ProjectService from '../../services/ProjectService';
 import { useSelector } from 'react-redux';
@@ -8,7 +8,12 @@ const Project = ({ addProjectFromWorkplace }) => {
 	const user = useSelector((state) => state.user);
 	const project = useSelector((state) => state.project);
 	const [projects, setProjects] = useState([]);
-
+	const [userId, setUserId] = useState(user?.id || '');
+	useEffect(() => {
+		if (user) {
+			setUserId(user?.id || '');
+		}
+	}, [user, project]);
 	const mutation = useMutationHooks(async (data) => {
 		try {
 			const project_arr = await ProjectService.getAllProject(data);
@@ -19,22 +24,21 @@ const Project = ({ addProjectFromWorkplace }) => {
 	});
 
 	useEffect(() => {
-		if (project?.id) {
-			handleGetAllProject();
-		}
-	}, [addProjectFromWorkplace]);
+		handleGetAllProject();
+	}, [addProjectFromWorkplace, project]);
 
-	const handleGetAllProject = () => {
-		mutation.mutate(user?.id);
-	};
+	const handleGetAllProject = useCallback(() => {
+		if (userId) {
+			mutation.mutate(userId);
+		}
+	}, [userId, mutation]);
 
 	const handleProjectClick = (projectId) => {
-		const selectedProject = projects.find((project) => project._id === projectId);
+		const selectedProject = projects.find((p) => p._id === projectId);
 		if (selectedProject) {
 			addProjectFromWorkplace(selectedProject);
 		}
 	};
-
 	return (
 		<div className='grid grid-cols-1 md:grid-cols-2 gap-2 mt-5 w-full h-full pb-20 overflow-y-auto scrollbar-hide'>
 			{projects

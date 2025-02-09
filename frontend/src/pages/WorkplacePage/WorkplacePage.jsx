@@ -241,7 +241,7 @@ const WorkplaceCanvas = () => {
 	const addTemplate = async (templateCanvas) => {
 		try {
 			await mutationTemplate.mutateAsync({
-				id: project?.id,
+				id: projectId,
 				canvas: templateCanvas,
 			});
 
@@ -273,7 +273,7 @@ const WorkplaceCanvas = () => {
 	const addProject = async (projectAdd) => {
 		try {
 			await mutationProject.mutateAsync({
-				id: project?.id,
+				id: projectId,
 				canvasArray: projectAdd.canvasArray,
 			});
 
