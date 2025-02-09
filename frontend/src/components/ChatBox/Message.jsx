@@ -81,7 +81,7 @@ const Message = ({ message }) => {
 		<div className='px-2 pb-4'>
 			<div className={`chat ${message.sender === user.id ? 'chat-end' : 'chat-start'}`}>
 				<div className='chat-image avatar'>
-					<div className='w-10 rounded-full'>
+					<div className='w-8 sm:w-10 rounded-full'>
 						{message.senderName !== 'SparkleBot' ? (
 							message.avatar ? (
 								<img alt={message.senderName || 'Avatar'} src={message.avatar} />

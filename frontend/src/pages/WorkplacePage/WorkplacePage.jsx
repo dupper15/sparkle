@@ -518,7 +518,11 @@ const WorkplaceCanvas = () => {
 
 					<div className='h-full w-[calc(100%-75px)]'>
 						<div
-							className={`${show.status ? 'py-5 -left-[400px]' : 'px-8 left-[50px] sm:left-[75px] py-5'} ${
+							className={`${
+								show.status
+									? 'py-5 -left-[400px]'
+									: 'px-8 left-[50px] border-r-2 border-slate-200 xl:border-none sm:left-[75px] py-5'
+							} ${
 								isDarkMode ? 'bg-[#252627]' : 'bg-white'
 							} h-full fixed top-[60px]  transition-all w-[200px]  md:w-[350px] ${
 								draggingComponent ? 'z-10' : 'z-10'
@@ -526,7 +530,7 @@ const WorkplaceCanvas = () => {
 						>
 							<div
 								onClick={() => setShow({ name: '', status: true })}
-								className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%] cursor-pointer h-[100px] rounded-full ${
+								className={`flex absolute justify-center items-center w-[20px] -right-2 top-[40%]   border-slate-200 xl:border-none border-r-2 cursor-pointer h-[100px] rounded-full ${
 									isDarkMode ? 'bg-[#252627] text-slate-200' : 'bg-white text-slate-800'
 								}`}
 							>
@@ -541,7 +545,7 @@ const WorkplaceCanvas = () => {
 							{state === 'image' && <Image drag={setDraggingComponent} handleReset={handleReset} />}
 							{state === 'background' && <Background setBackground={setBackground} />}
 						</div>
-						<div className='flex flex-col  items-center justify-start gap-8 m-2 overflow-y-auto h-[calc(100%-50px)] scrollbar-hide'>
+						<div className='flex flex-col  items-center justify-start gap-8 pb-2 sm:pb-0 my-2 overflow-y-auto h-[calc(100%-50px)]  scrollbar-hide'>
 							{canvases.map((canvasData, index) => (
 								<div
 									key={canvasData.id}
