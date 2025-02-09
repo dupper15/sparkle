@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// ImageStylesEditSection.jsx
+import React, { useState, useEffect } from "react";
 import { FaCircle } from "react-icons/fa";
 import ColorPickerPanel from "../../../ColorPickerPanel/ColorPickerPanel.jsx";
 
@@ -14,20 +15,6 @@ const ImageStylesEditSection = ({
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-    const handleCloseColorPickerPanel = () => {
-        setActiveTab("");
-    };
-
-    const handleMouseDown = (e) => {
-        if (e.target.closest('.color-picker-handle')) {
-            setIsDragging(true);
-            setDragStart({
-                x: e.clientX - position.x,
-                y: e.clientY - position.y
-            });
-        }
-    };
-
     const handleMouseMove = (e) => {
         if (isDragging) {
             setPosition({
@@ -41,7 +28,7 @@ const ImageStylesEditSection = ({
         setIsDragging(false);
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (isDragging) {
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
@@ -51,6 +38,10 @@ const ImageStylesEditSection = ({
             document.removeEventListener('mouseup', handleMouseUp);
         };
     }, [isDragging]);
+
+    const handleCloseColorPickerPanel = () => {
+        setActiveTab("");
+    };
 
     return (
         <div>
@@ -75,24 +66,20 @@ const ImageStylesEditSection = ({
                 }}
             >
                 {activeTab === "color" && (
-                    <div className="relative">
-                        <div
-                            className="color-picker-handle h-6 bg-gray-200 cursor-grab active:cursor-grabbing mb-1 rounded"
-                            onMouseDown={handleMouseDown}
-                        >
-                            <div className="text-center text-sm text-gray-600">Drag here</div>
-                        </div>
-                        <ColorPickerPanel
-                            colorPanelCloseRequest={handleCloseColorPickerPanel}
-                            activeColor={activeColor}
-                            setActiveColor={setActiveColor}
-                            handleColorChange={handleColorChange}
-                        />
-                    </div>
+                    <ColorPickerPanel
+                        colorPanelCloseRequest={handleCloseColorPickerPanel}
+                        activeColor={activeColor}
+                        setActiveColor={setActiveColor}
+                        handleColorChange={handleColorChange}
+                        position={position}
+                        setPosition={setPosition}
+                        isDragging={isDragging}
+                        setIsDragging={setIsDragging}
+                        dragStart={dragStart}
+                        setDragStart={setDragStart}
+                    />
                 )}
             </div>
         </div>
     );
 };
-
-export default ImageStylesEditSection;

@@ -2,13 +2,18 @@ import { useState, useCallback, useEffect } from "react";
 import { HexColorInput, HexColorPicker } from "react-colorful";
 import debounce from "lodash.debounce";
 
-// eslint-disable-next-line react/prop-types
 const ColorPickerPanel = ({
-  colorPanelCloseRequest,
-  activeColor,
-  setActiveColor,
-  handleColorChange,
-}) => {
+                            colorPanelCloseRequest,
+                            activeColor,
+                            setActiveColor,
+                            handleColorChange,
+                            position,
+                            setPosition,
+                            isDragging,
+                            setIsDragging,
+                            dragStart,
+                            setDragStart
+                          }) => {
   const solidColorArray = [
     { name: "Black", hex: "#000000" },
     { name: "Dark Gray", hex: "#333333" },
@@ -38,12 +43,11 @@ const ColorPickerPanel = ({
 
   const [debouncedColor, setDebouncedColor] = useState(activeColor);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedHandleColorChange = useCallback(
-    debounce((color) => {
-      handleColorClick(color);
-    }, 300),
-    []
+      debounce((color) => {
+        handleColorClick(color);
+      }, 300),
+      []
   );
 
   useEffect(() => {
@@ -56,55 +60,70 @@ const ColorPickerPanel = ({
     setActiveColor(color);
   };
 
+  const handleMouseDown = (e) => {
+    if (!e.target.closest('button')) {
+      setIsDragging(true);
+      setDragStart({
+        x: e.clientX - position.x,
+        y: e.clientY - position.y
+      });
+    }
+  };
+
   return (
-    <div className='color-picker-panel w-80 bg-white rounded-lg shadow-lg p-4 font-sans'>
-      <div className='flex justify-between items-center'>
-        <h2 className='text-lg font-medium'>Colour</h2>
-        <button
-          className='text-2xl text-gray-500 hover:text-gray-700'
-          onClick={colorPanelCloseRequest}>
-          &times;
-        </button>
-      </div>
+      <div className='color-picker-panel w-80 bg-white rounded-lg shadow-lg overflow-hidden font-sans'>
+        <div
+            className='flex justify-between items-center cursor-move select-none bg-blue-500 pt-2 pb-2 pl-4 pr-4 text-white'
+            onMouseDown={handleMouseDown}
+        >
+          <h2 className='text-lg font-medium'>Colour</h2>
+          <button
+              className='text-2xl text-white hover:text-blue-100 transition-colors'
+              onClick={colorPanelCloseRequest}>
+            &times;
+          </button>
+        </div>
 
-      <div className='relative mt-4 mb-2'>
-        <HexColorInput
-          placeholder='Try "#00c4cc"'
-          className='bg-white w-full pl-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-          color={activeColor}
-          onChange={(color) => {
-            handleColorClick(color);
-          }}
-        />
-        <span className='absolute left-3 top-1.5 text-gray-500'>&#128269;</span>
-      </div>
-
-      <div className={"w-full"}>
-        <HexColorPicker
-          style={{ width: "100%" }}
-          color={activeColor}
-          onChange={(color) => {
-            setDebouncedColor(color);
-          }}
-        />
-      </div>
-
-      <div className='mt-6'>
-        <h3 className='text-sm font-semibold text-gray-600 mb-2'>
-          Solid colours
-        </h3>
-        <div className='grid grid-cols-6 gap-2'>
-          {solidColorArray.map((color, index) => (
-            <div
-              key={index}
-              className={`w-8 h-8 rounded-md cursor-pointer border hover:bg-gray-200`}
-              style={{ backgroundColor: color.hex }}
-              onClick={() => handleColorClick(color.hex)}
+        <div className='p-4'>
+          <div className='relative mb-2'>
+            <HexColorInput
+                placeholder='Try "#00c4cc"'
+                className='bg-white w-full pl-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+                color={activeColor}
+                onChange={(color) => {
+                  handleColorClick(color);
+                }}
             />
-          ))}
+            <span className='absolute left-3 top-1.5 text-gray-500'>&#128269;</span>
+          </div>
+
+          <div className={"w-full"}>
+            <HexColorPicker
+                style={{ width: "100%" }}
+                color={activeColor}
+                onChange={(color) => {
+                  setDebouncedColor(color);
+                }}
+            />
+          </div>
+
+          <div className='mt-6'>
+            <h3 className='text-sm font-semibold text-gray-600 mb-2'>
+              Solid colours
+            </h3>
+            <div className='grid grid-cols-6 gap-2'>
+              {solidColorArray.map((color, index) => (
+                  <div
+                      key={index}
+                      className={`w-8 h-8 rounded-md cursor-pointer border hover:bg-gray-200`}
+                      style={{ backgroundColor: color.hex }}
+                      onClick={() => handleColorClick(color.hex)}
+                  />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 
