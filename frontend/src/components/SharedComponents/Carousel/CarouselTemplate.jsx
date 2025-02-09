@@ -139,10 +139,10 @@ function CarouselTemplate() {
 							onClick={() => {
 								handleClick(project._id);
 							}}
-							className='bg-white w-full cursor-pointer mb-4  max-w-[300px] mx-auto rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'
+							className='bg-white cursor-pointer mb-4  w-[300px] mx-auto rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'
 						>
 							<div
-								className='max-w-[300px] w-full h-[200px]  relative bg-cover overflow-hidden border '
+								className='w-[300px]  h-[200px]  relative bg-cover overflow-hidden border '
 								style={{
 									backgroundImage:
 										project.canvasArray?.[0]?.background === '#ffffff'
