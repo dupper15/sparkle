@@ -14,6 +14,7 @@ import { signInWithPopup } from "firebase/auth";
 import { updateUser } from "../../redux/slides/userSlide";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
+import * as Message from "../../components/Alert/Alert";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -162,6 +163,7 @@ const SignupPage = () => {
       },
       {
         onSuccess: () => {
+          Message.success("Please check your email to get the code!");
           setIsVerificationStep(true);
         },
       }

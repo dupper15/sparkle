@@ -92,10 +92,10 @@ const ResponsiveGrid = () => {
 							onClick={() => handleClick(project?._id)}
 							key={project?._id}
 							id={project?._id}
-							className='bg-white w-full mb-4 cursor-pointer max-w-[300px] mx-auto rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'
+							className='bg-white mb-4 cursor-pointer w-[300px] mx-auto rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'
 						>
 							<div
-								className='relative w-full h-0 pb-[56.25%] bg-cover overflow-hidden border'
+								className='relative w-full h-[200px] pb-[56.25%] bg-cover overflow-hidden border'
 								style={{
 									backgroundImage:
 										project.canvasArray?.[0]?.background === '#ffffff'
