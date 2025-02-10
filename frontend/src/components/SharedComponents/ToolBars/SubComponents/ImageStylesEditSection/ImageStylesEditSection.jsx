@@ -83,3 +83,5 @@ const ImageStylesEditSection = ({
         </div>
     );
 };
+
+export default ImageStylesEditSection;
