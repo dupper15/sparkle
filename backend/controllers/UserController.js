@@ -3,7 +3,7 @@ const JwtService = require("../services/JwtService");
 const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
-
+dotenv.config();
 const createUser = async (req, res) => {
   try {
     const { userName, email, password, confirmPassword } = req.body;
@@ -53,7 +53,7 @@ const createUser = async (req, res) => {
       service: "gmail",
       auth: {
         user: "nguyenchinghia15@gmail.com",
-        pass: "txwm oipt vlxx cqjn",
+        pass: process.env.GMAIL_PASS,
       },
     });
 

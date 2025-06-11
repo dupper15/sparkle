@@ -44,7 +44,7 @@ const createImage = (newImage) => {
         height,
         width,
         image,
-        zIndex
+        zIndex,
       });
 
       if (createdImage) {
@@ -196,8 +196,9 @@ const removeBackground = async (imageUrl) => {
 // Hàm upload ảnh lên Cloudinary
 const uploadToCloudinary = async (filePath) => {
   const cloudinaryUrl =
-    "https://api.cloudinary.com/v1_1/ddcjjegzf/image/upload";
-  const uploadPreset = "afh5sfc"; // Thay bằng preset của bạn trên Cloudinary
+    process.env.CLOUDINARY_URL ||
+    "https://api.cloudinary.com/v1_1/your_cloud_name/image/upload";
+  const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET || "aaa"; // Thay bằng preset của bạn trên Cloudinary
 
   const formData = new FormData();
   formData.append("file", fs.createReadStream(filePath)); // Đọc ảnh từ file

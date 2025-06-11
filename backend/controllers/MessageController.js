@@ -49,7 +49,16 @@ const sendChatBot = async (req, res) => {
         console.log("response", response);
         return res.status(200).json(response.data.answer);
       } else {
-        const response = await messageService.sendChatBot(text, imageUrl);
+        const designPrompt = `Người dùng đặt câu hỏi: "${text}".  
+        1. Nếu câu hỏi liên quan đến thiết kế đồ họa, UI/UX, nghệ thuật kỹ thuật số hoặc các lĩnh vực sáng tạo tương tự, hãy trả lời một cách chi tiết và hữu ích.  
+        2. Nếu câu hỏi không liên quan đến thiết kế, hãy từ chối với một câu như: "Xin lỗi, tôi chỉ hỗ trợ các câu hỏi liên quan đến thiết kế."  
+        Chỉ trả lời theo đúng hướng dẫn trên.`;
+
+        const response = await messageService.sendChatBot(
+          designPrompt,
+          imageUrl
+        );
+
         console.log("response", response);
         return res.status(200).json(response.data.answer);
       }

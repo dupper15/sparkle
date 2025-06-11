@@ -134,10 +134,7 @@ const useCanvasViewModel = (id, databaseId, ref) => {
       "verticalFlip",
       setSelectedComponentVerticalFlip
     );
-    updateSelectedComponentProperty(
-        "type",
-        setSelectedComponentType
-    )
+    updateSelectedComponentProperty("type", setSelectedComponentType);
   }, [components, selectedComponents]);
 
   useEffect(() => {
